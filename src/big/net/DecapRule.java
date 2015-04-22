@@ -1,0 +1,53 @@
+package big.net;
+
+import it.uniud.mads.jlibbig.core.std.*;
+
+public class DecapRule {
+	
+	
+	
+	public static RewritingRule getRule(Signature signature){
+		Bigraph redex = getRedex(signature);
+		Bigraph reactum = getReactum(signature);
+		InstantiationMap map = new InstantiationMap(1,0);
+		return new RewritingRule(redex, reactum, map);
+	}
+	
+	
+	public static Bigraph getRedex(Signature signature){
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root r1 = builder.addRoot();
+		OuterName id1 = builder.addOuterName("id1");
+		OuterName down1 = builder.addOuterName("down1");
+		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		
+		Root r2 = builder.addRoot();
+		OuterName id2 = builder.addOuterName("id2");
+		OuterName down2 = builder.addOuterName("down2");
+		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		Node packet = builder.addNode("packet",r2,id1,id2);
+		builder.addSite(packet);
+		
+		return builder.makeBigraph();
+	}
+	
+	
+	
+
+	public static Bigraph getReactum(Signature signature){
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root r1 = builder.addRoot();
+		OuterName id1 = builder.addOuterName("id1");
+		OuterName down1 = builder.addOuterName("down1");
+		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		
+		Root r2 = builder.addRoot();
+		OuterName id2 = builder.addOuterName("id2");
+		OuterName down2 = builder.addOuterName("down2");
+		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		builder.addSite(r2);
+		
+		return builder.makeBigraph();
+	}
+	
+}

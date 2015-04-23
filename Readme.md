@@ -11,6 +11,8 @@ All code is licensed under the GNU GPL version 3.
 	- **prprint** : classes for pretty printing Bigraph object from LibBig (making them more human-readable)
 - **nmap** : modules to parse network scans made with [Nmap](https://nmap.org/)
 
+## [Wiki](https://github.com/EPresident/UniUdBig/wiki)
+
 ## License
 
 Copyright (C) 2015 Elia Calligaris <calligaris.elia@spes.uniud.it> 

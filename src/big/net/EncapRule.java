@@ -16,7 +16,7 @@ public class EncapRule extends RewritingRule{
 	private Bigraph redex;
 	private Bigraph reactum;
 	private Map<String, Node[]> rr;//Link from reactum node to redex nodes.
-	private LinkedList<String> auxProperties;
+	private static LinkedList<String> auxProperties;
 	
 	public EncapRule(Bigraph redex, Bigraph reactum, InstantiationMap map){
 		super(redex, reactum, map);
@@ -33,31 +33,6 @@ public class EncapRule extends RewritingRule{
 	public Iterable<Bigraph> apply(Bigraph b){
 		this.bigraph = b;
 		Iterable<Bigraph> bgl = super.apply(b);
-		
-		//Deletes auxiliary properties, such as NodeType and PacketType.
-		boolean pass = false;
-		for(Bigraph bg : bgl){
-			for(Node n: bg.getNodes()){
-				CopyOnWriteArrayList<Property> cow = new CopyOnWriteArrayList<Property>(n.getProperties());
-				Property[] a = new Property[0];
-				Property[] ap = cow.toArray( a );
-				for(int i=0;i<ap.length;i++){
-					String name = ap[i].getName();
-					if( !name.equals("Owner") ){
-						for(String str : auxProperties){
-							if(name.equals(str)){
-								pass = true;
-							}
-						}
-						if(pass){
-							System.out.println(ap[i].getName());
-							n.detachProperty(ap[i]);
-						}
-						pass = false;
-					}
-				}
-			}
-		}
 		
 		return bgl;
 	}
@@ -174,6 +149,33 @@ public class EncapRule extends RewritingRule{
 			}
 		}
 		
+	}
+	
+	
+	
+	public static void clearAuxProperties(Bigraph bg){
+		//Deletes auxiliary properties, such as NodeType and PacketType.
+		boolean pass = false;
+		for(Node n: bg.getNodes()){
+				CopyOnWriteArrayList<Property> cow = new CopyOnWriteArrayList<Property>(n.getProperties());
+				Property[] a = new Property[0];
+				Property[] ap = cow.toArray( a );
+				for(int i=0;i<ap.length;i++){
+					String name = ap[i].getName();
+					if( !name.equals("Owner") ){
+						for(String str : auxProperties){
+							if(name.equals(str)){
+								pass = true;
+							}
+						}
+						if(pass){
+							System.out.println(ap[i].getName());
+							n.detachProperty(ap[i]);
+						}
+						pass = false;
+					}
+				}
+			}
 	}
 	
 	

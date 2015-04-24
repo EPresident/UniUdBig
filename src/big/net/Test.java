@@ -17,7 +17,7 @@ public class Test {
     public static Signature signature;
 
     public static void main(String[] args) {
-        runTest1();
+        runTest2();
     }
 
     protected static void runTest1() {

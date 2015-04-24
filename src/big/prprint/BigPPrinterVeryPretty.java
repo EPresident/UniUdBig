@@ -32,11 +32,11 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 /**
- * The Prettiest PrettyPrinter for JLibBig bigraphs EVER. This pretty-printer
- * gathers information about the bigraph and then builds its own data-structure,
- * a PrintTree: a PrintTree is an n-ary tree where every node represents a node
- * in the bigraph, except for the root (of the tree), which is a "fake node"
- * with no meaning.
+ * The Prettiest PrettyPrinter for JLibBig bigraphs EVER. Seriously. 
+ * This pretty-printer gathers information about the bigraph and then builds its 
+ * own data-structure, a PrintTree: a PrintTree is an n-ary tree where every 
+ * node represents a node in the bigraph, except for the root (of the tree), 
+ * which is a "fake node" with no meaning.
  *
  * BigPPrinterVeryPretty needs to be instantiated before usage. Pretty printing
  * is achieved by invoking the prettyPrint method.
@@ -46,8 +46,15 @@ import java.util.regex.Pattern;
  * <b>If a Node has a "Name" Property, that name is used for that Node</b> when
  * pretty-printing (format: Name[ID]).
  *
- * DONE: printing node hierarchy, node properties. TODO: printing edge and
- * outer/inner-names info.
+ * <b>This pretty printer recognizes and uses several special properties:</b>
+ * <ul>
+ * <li>Name: the prettyprinter prints this property instead of the ID given by
+ * LibBig;</li>
+ * <li>PortXName(where X is a number): identifies the name of port number X 
+ * of a node;</li>
+ * </ul>
+ * Other properties are printed next to the node pretty-print, within curly
+ * brackets: node nodeName[nodeID] {prop1: val1, ... , propN: valN}.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
@@ -77,12 +84,13 @@ public class BigPPrinterVeryPretty {
      */
     public String prettyPrint(Bigraph big, String bigName) {
         pprtBig = big;
-        // StringBuilder is more efficient than String concatenation!
+        // StringBuilder is more efficient than concatenation with overloaded + !
         StringBuilder pprt = new StringBuilder();
         // Initialize PrintTree (support data-structure)
         PrintTree pT = new PrintTree();
         // Analyze node hierarchy (place graph)
-        int rid = 0;  // number assigned to the roots
+        int rid = 0;  // root ID - incremental integer
+        // Roots are the top-level nodes, from there we scan the place graph
         for (Root r : big.getRoots()) {
             // Populate the PrintTree
             TreeNode bigRoot = new TreeNode("root", Integer.toString(rid), 0);
@@ -94,6 +102,7 @@ public class BigPPrinterVeryPretty {
             rid++;
         }
 
+        // Analyze node links (link graph) and update the PrintTree accordingly
         buildLinks(pT);
 
         // Print the PrintTree
@@ -139,6 +148,7 @@ public class BigPPrinterVeryPretty {
 
         // Scan and add properties
         LinkedList<String> portNames = new LinkedList<>();
+        // Find Property PortXName, where X is an number
         Pattern pPortName = Pattern.compile("Port\\dName");
         for (Property p : n.getProperties()) {
             if (pPortName.matcher(p.getName()).matches()) {
@@ -173,13 +183,14 @@ public class BigPPrinterVeryPretty {
     private void buildLinks(PrintTree pT) {
         // Scan edges
         for (Edge e : pprtBig.getEdges()) {
+            String eID=e.toString();
             for (Point p : e.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
                 int port = Integer.parseInt(portId[0]);
                 String id = portId[1];
 
-                StringBuilder sb = new StringBuilder();
+                /*StringBuilder sb = new StringBuilder();
                 for (Point pt : e.getPoints()) {
                     // Point.toString() output: portNumber@nodeID:controlType
                     String poI = pt.toString().split(":")[0];
@@ -192,8 +203,9 @@ public class BigPPrinterVeryPretty {
                 }
 
                 TreeNode tn = pT.findNodeByID(id);
-                tn.linkPort(port, sb.toString());
-
+                tn.linkPort(port, sb.toString());*/
+                StringBuilder sb=new StringBuilder("Edge ").append(eID);
+                pT.findNodeByID(id).linkPort(port, sb.toString());
             }
         }
 
@@ -344,15 +356,14 @@ public class BigPPrinterVeryPretty {
         }
 
         protected <T> void addAttribute(String propName, T propValue) {
-            attributes.add(new Attribute(propName, propValue));
+            attributes.add(new Attribute<>(propName, propValue));
         }
 
         /**
-         * Links (symbolically) a port to another Node
+         * Links (symbolically) a port to a point.
          *
          * @param portNum Number of the port
-         * @param dest Name (or ID) and port of the destination(s). Example:
-         * portName@nodeName
+         * @param dest Name (or ID) and port of the destination.
          */
         protected void linkPort(int portNum, String dest) {
             int currentPort = 0;

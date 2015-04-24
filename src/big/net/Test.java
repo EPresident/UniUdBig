@@ -12,7 +12,7 @@ public class Test {
     public static Signature signature;
 
     public static void main(String[] args) {
-        runTest2();
+        runTest1();
     }
 
     protected static void runTest1() {
@@ -87,13 +87,15 @@ public class Test {
             EncapRule.clearAuxProperties(bigraph);
             System.out.println(pp.prettyPrint(bigraph, "Encap"));
         }
-     /* RewritingRule forward = ForwardRule.getRule(signature);
+        ForwardRule forward = new ForwardRule(ForwardRule.getRedex(signature),
+        		ForwardRule.getReactum(signature), new InstantiationMap(1, 0));
         if (matcher.match(bigraph, ForwardRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = forward.apply(bigraph).iterator();
             bigraph = iterator.next();
-           // System.out.println("FORWARD:\n" + bigraph + "\n\n");
+            ForwardRule.clearAuxProperties(bigraph);
+            System.out.println(pp.prettyPrint(bigraph, "Forward"));
         }
-        RewritingRule decap = DecapRule.getRule(signature);
+        /*RewritingRule decap = DecapRule.getRule(signature);
         if (matcher.match(bigraph, DecapRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = decap.apply(bigraph).iterator();
             bigraph = iterator.next();

@@ -37,8 +37,12 @@ public class Test {
         Node domain = builder.addNode("domain", r);
         OuterName http_id_server = builder.addOuterName("http_id_server");
         OuterName tcp_id_server = builder.addOuterName("tcp_id_server");
+        OuterName ipv4_id_server = builder.addOuterName("ipv4_id_server");
+        OuterName eth_id_server = builder.addOuterName("eth_id_server");
         OuterName http_id_client = builder.addOuterName("http_id_client");
         OuterName tcp_id_client = builder.addOuterName("tcp_id_client");
+        OuterName ipv4_id_client = builder.addOuterName("ipv4_id_client");
+        OuterName eth_id_client = builder.addOuterName("eth_id_client");
         
         //Server
         Node server = builder.addNode("host", domain);
@@ -46,11 +50,17 @@ public class Test {
 				new SimpleProperty<String>("HostName","server_google")));
         Node http_server = builder.addNode("stackNode", server, http_id_server, tcp_id_server);
         http_server.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName","http_server")));
-        Node tcp_server = builder.addNode("stackNode", server, tcp_id_server, tcp_id_client);
+				new SimpleProperty<String>("ProtocolName","http_server_google")));
+        Node tcp_server = builder.addNode("stackNode", server, tcp_id_server, ipv4_id_server);
         tcp_server.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("ProtocolName","tcp_server_google")));
-
+        Node ipv4_server = builder.addNode("stackNode", server, ipv4_id_server, eth_id_server);
+        ipv4_server.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName","ipv4_server_google")));
+        Node eth_server = builder.addNode("stackNode", server, eth_id_server, eth_id_client);
+        eth_server.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName","eth_server_google")));
+        
         //Client
         Node client = builder.addNode("host", domain);
         client.attachProperty(new SharedProperty<String>(
@@ -58,9 +68,16 @@ public class Test {
         Node http_client = builder.addNode("stackNode", client, http_id_client, tcp_id_client);
         http_client.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("ProtocolName","http_my_client")));
-        Node tcp_client = builder.addNode("stackNode", client, tcp_id_client, tcp_id_server);
+        Node tcp_client = builder.addNode("stackNode", client, tcp_id_client, ipv4_id_client);
         tcp_client.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("ProtocolName","tcp_my_client")));
+        Node ipv4_client = builder.addNode("stackNode", client, ipv4_id_client, eth_id_client);
+        ipv4_client.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName","ipv4_my_client")));
+        Node eth_client = builder.addNode("stackNode", client, eth_id_client, eth_id_server);
+        eth_client.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName","eth_my_client")));
+        
         //Packet
         Node http_packet = builder.addNode("packet", client, http_id_client, http_id_server);
         http_packet.attachProperty(new SharedProperty<String>(
@@ -78,7 +95,8 @@ public class Test {
         EncapRule encap = new EncapRule(EncapRule.getRedex(signature),
                 						EncapRule.getReactum(signature), 
                 						new InstantiationMap(2, 0, 1));
-        if (matcher.match(bigraph, EncapRule.getRedex(signature)).iterator().hasNext()) {
+        while (matcher.match(bigraph, EncapRule.getRedex(signature)).iterator().hasNext()
+        		&& !matcher.match(bigraph, ForwardRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = encap.apply(bigraph).iterator();
             bigraph = iterator.next();
             EncapRule.clearAuxProperties(bigraph);
@@ -87,7 +105,7 @@ public class Test {
         ForwardRule forward = new ForwardRule(ForwardRule.getRedex(signature),
         									ForwardRule.getReactum(signature), 
         									new InstantiationMap(1, 0));
-        if (matcher.match(bigraph, ForwardRule.getRedex(signature)).iterator().hasNext()) {
+        while (matcher.match(bigraph, ForwardRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = forward.apply(bigraph).iterator();
             bigraph = iterator.next();
             ForwardRule.clearAuxProperties(bigraph);
@@ -96,7 +114,7 @@ public class Test {
         DecapRule decap = new DecapRule(DecapRule.getRedex(signature),
         								DecapRule.getReactum(signature),
         								new InstantiationMap(1,0));
-        if (matcher.match(bigraph, DecapRule.getRedex(signature)).iterator().hasNext()) {
+        while (matcher.match(bigraph, DecapRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = decap.apply(bigraph).iterator();
             bigraph = iterator.next();
             DecapRule.clearAuxProperties(bigraph);

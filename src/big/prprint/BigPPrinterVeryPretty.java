@@ -32,11 +32,11 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 /**
- * The Prettiest PrettyPrinter for JLibBig bigraphs EVER. Seriously. 
- * This pretty-printer gathers information about the bigraph and then builds its 
- * own data-structure, a PrintTree: a PrintTree is an n-ary tree where every 
- * node represents a node in the bigraph, except for the root (of the tree), 
- * which is a "fake node" with no meaning.
+ * The Prettiest PrettyPrinter for JLibBig bigraphs EVER. Seriously. This
+ * pretty-printer gathers information about the bigraph and then builds its own
+ * data-structure, a PrintTree: a PrintTree is an n-ary tree where every node
+ * represents a node in the bigraph, except for the root (of the tree), which is
+ * a "fake node" with no meaning.
  *
  * BigPPrinterVeryPretty needs to be instantiated before usage. Pretty printing
  * is achieved by invoking the prettyPrint method.
@@ -50,17 +50,23 @@ import java.util.regex.Pattern;
  * <ul>
  * <li>Name: the prettyprinter prints this property instead of the ID given by
  * LibBig;</li>
- * <li>PortXName(where X is a number): identifies the name of port number X 
- * of a node;</li>
+ * <li>PortXName(where X is a number): identifies the name of port number X of a
+ * node;</li>
+ * <li>Also all property names beginning with "port" are reserved.</li>
  * </ul>
  * Other properties are printed next to the node pretty-print, within curly
  * brackets: node nodeName[nodeID] {prop1: val1, ... , propN: valN}.
  *
+ * TODO: add support for InnerNames
+ * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class BigPPrinterVeryPretty {
 
     private Bigraph pprtBig;
+    private StringBuilder pprt;
+    private PrintTree pT;
+    private StringBuilder edges, outerNames;
 
     /**
      * Produce a readable text-based representation of the given Bigraph. The
@@ -85,10 +91,12 @@ public class BigPPrinterVeryPretty {
     public String prettyPrint(Bigraph big, String bigName) {
         pprtBig = big;
         // StringBuilder is more efficient than concatenation with overloaded + !
-        StringBuilder pprt = new StringBuilder();
+        pprt = new StringBuilder();
         // Initialize PrintTree (support data-structure)
-        PrintTree pT = new PrintTree();
+        pT = new PrintTree();
+        //---------------------------------------
         // Analyze node hierarchy (place graph)
+        //---------------------------------------
         int rid = 0;  // root ID - incremental integer
         // Roots are the top-level nodes, from there we scan the place graph
         for (Root r : big.getRoots()) {
@@ -96,17 +104,20 @@ public class BigPPrinterVeryPretty {
             TreeNode bigRoot = new TreeNode("root", Integer.toString(rid), 0);
             pT.addNode(pT.root, bigRoot);
             for (Child c : r.getChildren()) {
-                // Iterate on each child
-                buildTree(pT, bigRoot, c, 1);
+                // Recursive call on each child
+                buildTree(bigRoot, c, 1);
             }
             rid++;
         }
-
+        //----------------------------------------------------------------------
         // Analyze node links (link graph) and update the PrintTree accordingly
+        //----------------------------------------------------------------------
         buildLinks(pT);
-
+        //----------------------------------------------------------------------
         // Print the PrintTree
         pprt.append("----- Printing Bigraph ").append(bigName).append(" -----\n");
+        pprt.append(edges.toString());
+        pprt.append(outerNames.toString());
         pprt.append(pT.toString());
         pprt.append("----- Done Printing ").append(bigName).append(" ------\n");
         return pprt.toString();
@@ -116,23 +127,23 @@ public class BigPPrinterVeryPretty {
      * Populate the PrintTree by analysing recurively the objects provided by
      * JLibBig.
      *
-     * @param pT PrintTree instance in use.
      * @param parent Parent (in the PrintTree) of the (bigraph) node currently
      * analyzed.
      * @param c The (bigraph) node currently analyzed.
      * @param indent Length of indentation used when pretty printing ( can also
      * be thought as the height of the node in the PrintTree )
      */
-    private void buildTree(PrintTree pT, TreeNode parent, Child c, int indent) {
+    private void buildTree(TreeNode parent, Child c, int indent) {
         // Cast the Child instance into a Node to access more methods
         Node n = (Node) c;
         // Populate the PrintTree
         TreeNode bigNode = new TreeNode("node", getName(n), indent);
-        buildNode(bigNode, n);
+        // Add properties, etc...
+        fillNode(bigNode, n);
         pT.addNode(parent, bigNode);
         // Call recursively for each child
         for (Child cc : n.getChildren()) {
-            buildTree(pT, bigNode, cc, indent + 1);
+            buildTree(bigNode, cc, indent + 1);
         }
     }
 
@@ -143,17 +154,17 @@ public class BigPPrinterVeryPretty {
      * @param tn TreeNode instance to work on.
      * @param n Bigraph Node instance to analyze.
      */
-    private void buildNode(TreeNode tn, Node n) {
+    private void fillNode(TreeNode tn, Node n) {
         tn.id = getId(n); // add Id
 
         // Scan and add properties
         LinkedList<String> portNames = new LinkedList<>();
-        // Find Property PortXName, where X is an number
+        // Find Property PortXName, where X is a number
         Pattern pPortName = Pattern.compile("Port\\dName");
         for (Property p : n.getProperties()) {
             if (pPortName.matcher(p.getName()).matches()) {
                 // Port name special property detected, store the value
-                portNames.add(p.get().toString());
+                portNames.add(portNames.size() + "-" + p.get().toString());
             } else if (!(p.getName().equals("Owner") || p.getName().equals("Name"))) {
                 /* Skip Owner and Name property:
                  *  - Owner is too lengthy to print, and it's redundant;
@@ -164,13 +175,26 @@ public class BigPPrinterVeryPretty {
         }
 
         // Add ports to the PrintTree
-        Iterator<String> it = portNames.iterator();
+        int portNum = 0;
         for (Port p : n.getPorts()) {
-         //   if (it.hasNext()) {
-            //  tn.addAttribute(it.next(), "");
-            //  } else {
-            tn.addAttribute("Port", "");
-            //   }
+            // If a port has a name assigned to it, use it; else use its number
+            String name = "";
+            Iterator<String> it = portNames.iterator();
+            while (it.hasNext() && name.equals("")) {
+                // portNames format: portNumber-portName
+                String[] numName = it.next().split("-");
+                int num = Integer.parseInt(numName[0]);
+                if (num == portNum) {
+                    name = numName[1];
+                }
+            }
+            if (name.equals("")) {
+                tn.addAttribute("port" + portNum, "");
+            } else {
+                tn.addAttribute("port" + name, "");
+            }
+
+            portNum++;
         }
 
     }
@@ -181,36 +205,29 @@ public class BigPPrinterVeryPretty {
      * @param pT PrintTree built during the Bigraph analysis
      */
     private void buildLinks(PrintTree pT) {
+        // Init StringBuilders
+        edges = new StringBuilder();
+        outerNames = new StringBuilder();
         // Scan edges
         for (Edge e : pprtBig.getEdges()) {
-            String eID=e.toString();
+            String eID = e.toString();
+            edges.append("edge ").append(eID).append("{ ");
             for (Point p : e.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
                 int port = Integer.parseInt(portId[0]);
                 String id = portId[1];
-
-                /*StringBuilder sb = new StringBuilder();
-                for (Point pt : e.getPoints()) {
-                    // Point.toString() output: portNumber@nodeID:controlType
-                    String poI = pt.toString().split(":")[0];
-                    if (!poI.split("@")[1].equals(id)) {
-                        sb.append(poI).append(",");
-                    }
-                }
-                if (sb.length() > 0) {
-                    sb.deleteCharAt(sb.length() - 1);
-                }
-
+                StringBuilder sb = new StringBuilder("Edge ").append(eID);
                 TreeNode tn = pT.findNodeByID(id);
-                tn.linkPort(port, sb.toString());*/
-                StringBuilder sb=new StringBuilder("Edge ").append(eID);
-                pT.findNodeByID(id).linkPort(port, sb.toString());
+                tn.linkPort(port, sb.toString());
+                edges.append(tn.name).append("; ");
             }
+            edges.append("}\n");
         }
 
         // scan outernames
         for (OuterName o : pprtBig.getOuterNames()) {
+            outerNames.append("outername ").append(o.toString()).append("{ ");
             for (Point p : o.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
@@ -218,8 +235,9 @@ public class BigPPrinterVeryPretty {
                 String id = portId[1];
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, o.getName());
-                //System.out.println("link "+port+"@"+tn.toString()+" to "+o.getName());
+                outerNames.append(tn.name).append("; ");
             }
+            outerNames.append("}\n");
         }
     }
 
@@ -269,7 +287,7 @@ public class BigPPrinterVeryPretty {
     /**
      * Auxiliary data-structure used in pretty printing. It's an n-ary tree
      * where all nodes, except the root, represent Bigraph Roots and Nodes.
-     * PrintTree.toString() returns the pretty-printed Bigraph.
+     * <i>PrintTree.toString()</i> returns the pretty-printed Bigraph.
      */
     private class PrintTree {
 
@@ -368,7 +386,7 @@ public class BigPPrinterVeryPretty {
         protected void linkPort(int portNum, String dest) {
             int currentPort = 0;
             for (Attribute att : attributes) {
-                if (att.name.equals("Port")) {
+                if (att.name.startsWith("port")) {
                     if (currentPort == portNum) {
                         att.value = att.value.toString().concat(dest);
                         return;
@@ -399,6 +417,9 @@ public class BigPPrinterVeryPretty {
 
         // toString only prints this TreeNode
         @Override
+        /**
+         * Output: type name { prop1: val1; ... ; propN: valN; }
+         */
         public String toString() {
             StringBuilder sb = new StringBuilder();
             prIndent(indent, sb);

@@ -65,25 +65,20 @@ public class ForwardRule extends RewritingRule{
 		BigraphBuilder builder = new BigraphBuilder(signature);
 		Root r1 = builder.addRoot();
 		OuterName id1 = builder.addOuterName("id1");
-		OuterName down1 = builder.addOuterName("down1");
-		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		OuterName id2 = builder.addOuterName("id2");
+		
+		Node sn1 = builder.addNode("stackNode", r1, id1, id2);
 		sn1.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("NodeType","EncapSender")));
-		OuterName id2 = builder.addOuterName("id2");
-		OuterName down2 = builder.addOuterName("down2");
 		Node packet = builder.addNode("packet",r1,id1,id2);
 		packet.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("PacketType","packet")));
 		builder.addSite(packet);
 		
 		Root r2 = builder.addRoot();
-		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		Node sn2 = builder.addNode("stackNode",r2,id2,id1);
 		sn2.attachProperty(new SharedProperty<String>(
 				new SimpleProperty("NodeType","EncapReceiver")));
-		//Points are link entities connected by the hyper-edges composing the link graphs. 
-		//Points are inner names or ports depending on whereas they belong to an inner interface or to a node.
-		builder.relink( sn1.getPort(0) , sn2.getPort(1) );
-		builder.relink( sn1.getPort(1) , sn2.getPort(0) );
 		
 		return builder.makeBigraph();
 	}
@@ -95,24 +90,20 @@ public class ForwardRule extends RewritingRule{
 		BigraphBuilder builder = new BigraphBuilder(signature);
 		Root r1 = builder.addRoot();
 		OuterName id1 = builder.addOuterName("id1");
-		OuterName down1 = builder.addOuterName("down1");
-		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		OuterName id2 = builder.addOuterName("id2");
+		
+		Node sn1 = builder.addNode("stackNode", r1, id1, id2);
 		sn1.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("NodeType","EncapSender")));
-		OuterName id2 = builder.addOuterName("id2");
-		OuterName down2 = builder.addOuterName("down2");
 		
 		Root r2 = builder.addRoot();
-		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		Node sn2 = builder.addNode("stackNode",r2,id2,id1);
 		sn2.attachProperty(new SharedProperty<String>(
 				new SimpleProperty("NodeType","EncapReceiver")));
 		Node packet = builder.addNode("packet",r2,id1,id2);
 		packet.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("PacketType","packet")));
 		builder.addSite(packet);
-		
-		builder.relink( down2 , sn1.getPort(0) );
-		builder.relink( down1,  sn2.getPort(0) );
 		
 		return builder.makeBigraph();
 	}

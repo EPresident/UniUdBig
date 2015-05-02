@@ -1,17 +1,62 @@
 package big.net;
 
+import it.uniud.mads.jlibbig.core.attachedProperties.*;
 import it.uniud.mads.jlibbig.core.std.*;
 
-public class DecapRule {
+import java.util.*;
+import java.util.concurrent.*;
+/**
+ * Class for the decapsulation reaction. Doesn't matter what protocols are involved.
+ * Pay attention to the "auxProperty" list.
+ * @author Luca Geatti <geatti.luca@spes.uniud.it>
+ *
+ */
+public class DecapRule extends RewritingRule{
 	
+	private Bigraph bigraph;
+	private Bigraph redex;
+	private Bigraph reactum;
+	private Map<String, Node[]> rr;//Link from reactum node to redex nodes.
+	private static LinkedList<String> auxProperties;
 	
-	
-	public static RewritingRule getRule(Signature signature){
-		Bigraph redex = getRedex(signature);
-		Bigraph reactum = getReactum(signature);
-		InstantiationMap map = new InstantiationMap(1,0);
-		return new RewritingRule(redex, reactum, map);
+	public DecapRule(Bigraph redex, Bigraph reactum, InstantiationMap map){
+		super(redex, reactum, map);
+		this.redex = redex;
+		this.reactum = reactum;
+		rr = new HashMap<String, Node[]>();
+		createAssociations();
+		this.auxProperties = new LinkedList<String>();
+		auxProperties.add("NodeType");
+		auxProperties.add("PacketType");
 	}
+	
+	@Override
+	public Iterable<Bigraph> apply(Bigraph b){
+		this.bigraph = b;
+		Iterable<Bigraph> bgl = super.apply(b);
+		
+		return bgl;
+	}
+	
+	
+	@Override
+	public void instantiateReactumNode(Node original, Node instance, Match match){
+		for(Property p : original.getProperties()){//Original = node of the reactum
+			Node[] array = rr.get(p.get());
+			if(array != null){
+				Node n = array[1]; //Node of the redex
+				if(n != null){
+					Node img = match.getImage(n);//Node of the original bigraph
+					if(img != null){
+						copyProperties(img,instance);
+					}
+				}
+			}
+		}
+		
+	} 
+
+	
 	
 	
 	public static Bigraph getRedex(Signature signature){
@@ -20,12 +65,19 @@ public class DecapRule {
 		OuterName id1 = builder.addOuterName("id1");
 		OuterName down1 = builder.addOuterName("down1");
 		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		sn1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","EncapSender")));
 		
 		Root r2 = builder.addRoot();
 		OuterName id2 = builder.addOuterName("id2");
 		OuterName down2 = builder.addOuterName("down2");
 		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		sn2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty("NodeType","EncapReceiver")));
+		
 		Node packet = builder.addNode("packet",r2,id1,id2);
+		packet.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("PacketType","packet")));
 		builder.addSite(packet);
 		
 		return builder.makeBigraph();
@@ -40,14 +92,83 @@ public class DecapRule {
 		OuterName id1 = builder.addOuterName("id1");
 		OuterName down1 = builder.addOuterName("down1");
 		Node sn1 = builder.addNode("stackNode", r1, id1, down1);
+		sn1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","EncapSender")));
 		
 		Root r2 = builder.addRoot();
 		OuterName id2 = builder.addOuterName("id2");
 		OuterName down2 = builder.addOuterName("down2");
 		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
+		sn2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty("NodeType","EncapReceiver")));
 		builder.addSite(r2);
 		
 		return builder.makeBigraph();
 	}
 	
+
+	
+	private void copyProperties(Node from, Node to){
+		for(Property p : from.getProperties()){
+			if( !p.getName().equals("Owner") ){
+				if( !p.getName().equals("NodeType") ){
+					to.attachProperty(p);
+				}
+			}
+		}
+	}
+	
+	
+	private void createAssociations(){
+		
+		for(Node n1 : this.reactum.getNodes()){
+			for(Property p1 : n1.getProperties()){
+				if( !p1.getName().equals("Owner") ){
+					Node[] array = new Node[2];
+					array[0] = n1;
+					rr.put(p1.get().toString(), array);
+				}
+			}
+		}
+		
+		for(Node n2 : this.redex.getNodes()){
+			for(Property p2 : n2.getProperties()){
+				if( !p2.getName().equals("Owner") ){
+					Node[] array = rr.get(p2.get());
+					if(array != null){
+						array[1] = n2;
+						rr.put(p2.get().toString(), array);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	public static void clearAuxProperties(Bigraph bg){
+		//Deletes auxiliary properties, such as NodeType and PacketType.
+		boolean pass = false;
+		for(Node n: bg.getNodes()){
+				CopyOnWriteArrayList<Property> cow = new CopyOnWriteArrayList<Property>(n.getProperties());
+				Property[] a = new Property[0];
+				Property[] ap = cow.toArray( a );
+				for(int i=0;i<ap.length;i++){
+					String name = ap[i].getName();
+					if( !name.equals("Owner") ){
+						for(String str : auxProperties){
+							if(name.equals(str)){
+								pass = true;
+							}
+						}
+						if(pass){
+							n.detachProperty(ap[i]);
+						}
+						pass = false;
+					}
+				}
+			}
+	}
+		
 }

@@ -7,8 +7,10 @@ All code is licensed under the GNU GPL version 3.
 
 - **big**
 	- **examples** : short, self-contained examples of how to use LibBig
+	- **hash** : Hash functions for JLibBig Bigraphs
 	- **net** : classes for handling bigraphic representations of computer networks
 	- **prprint** : classes for pretty printing Bigraph object from LibBig (making them more human-readable)
+	- **sim** : classes to simulate the evolution of a Bigraphic Reactive System (BRS)
 - **nmap** : modules to parse network scans made with [Nmap](https://nmap.org/)
 
 ## [Wiki](https://github.com/EPresident/UniUdBig/wiki)

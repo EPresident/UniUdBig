@@ -21,9 +21,7 @@ import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
 import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import it.uniud.mads.jlibbig.core.std.Match;
-import it.uniud.mads.jlibbig.core.std.Matcher;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,18 +46,24 @@ public class BigStateGraph {
      */
     private BSGNode current;
     /**
-     * Pseudo-hash function used to determine if two states (bigraphs) are
-     * similar enough to warrant a full equality check.
+     * Hash function used to determine if two states (bigraphs) are similar
+     * enough to warrant a full equality check.
      */
     private BigHashFunction hashFunc;
     public static final BigHashFunction PLACE_HASH = new PlaceGraphBHF(),
             PLACELINK_HASH = new PlaceLinkBHF();
+    /**
+     * Hash table used to quickly detect (possible) duplicates on the fly.
+     */
+    HashMap<Integer, BSGNode> hashTable;
 
     public BigStateGraph(Bigraph big, BigHashFunction bhf) {
         hashFunc = bhf;
         root = new BSGNode(big, hashFunc);
         nodes = new LinkedList<>();
+        hashTable = new HashMap<>();
         nodes.add(root);
+        hashTable.put(root.getHashCode(), root);
         current = root;
     }
 
@@ -100,8 +104,8 @@ public class BigStateGraph {
             // Generate a new state, build links
             BSGNode newNode = new BSGNode(reactum, hashFunc);
             nodes.add(newNode);
+            hashTable.put(newNode.getHashCode(), newNode);
             redex.addLink(newNode, rewritingRule);
-            newNode.addLink(redex, rewritingRule);
             return newNode;
         } else {
             // Create a cycle
@@ -113,7 +117,7 @@ public class BigStateGraph {
     /**
      * Searches for duplicate states in the graph, i.e. detects cycles. A coarse
      * selection is made by using the bigraph hash function, a more accurate
-     * equality test is made by using a Matcher (see comments below).
+     * equality test will be made with an isomorphism-checking function.
      *
      * @param redex BSGNode to whom the rule is applied.
      * @param rewritingRule Name of the rewriting rule. The name <u>must</u> be
@@ -124,33 +128,19 @@ public class BigStateGraph {
      * @return A BSGNode that has the same state of the reactum, or null.
      */
     private BSGNode findDuplicate(BSGNode redex, String rewritingRule, Bigraph reactum) {
-        // Search adjacent states in the graph
-        // TODO A more intelligent search might be required to find all cycles
-        for (BSGLink link : redex.getLinks()) {
-            //if (link.rewRule.equals(rewritingRule)) {
-            // Check if hash matches
-            if (link.destNode.getHashCode() == hashFunc.bigHash(reactum)) {
-                // Hash matches, make a more detailed check
-                /*
-                  A Matcher is used to match the reactum to the state currently
-                  analyzed. If they are indeed equal, the Matcher will return a
-                  Match with no parameters.
-                */
-                Matcher matcher = new Matcher();
-                Iterator<? extends Match> it = matcher.match(link.destNode.getState(), reactum).iterator();
-                if (it.hasNext()) {
-                    Match match = it.next();
-                    if (match.getParam().isEmpty()) {
-                        // Duplicate found!
-                        // FIXME System.out.println("Duplicate found!");
-                        return link.destNode;
-                    }
-                }
-            }
-            // }
+        // Use the hash table to find possible duplicates
+        /*
+         The "Matcher" equality check has been removed while the
+         isomorphism check is being implemented in the library.
+         */
+        BSGNode dup = hashTable.get(redex.getHashCode());
+        if (dup == null) {
+            // No duplicates detected
+            return null;
+        }else{
+            // Duplicate found
+            return dup;
         }
-        // No duplicates detected
-        return null;
     }
 
 }

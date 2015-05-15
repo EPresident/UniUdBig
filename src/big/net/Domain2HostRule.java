@@ -23,13 +23,21 @@ import it.uniud.mads.jlibbig.core.std.*;
  */
 public class Domain2HostRule extends RewRuleWProps {
 
-    public Domain2HostRule(Bigraph redex, Bigraph reactum, InstantiationMap map) {
+    private static final Bigraph redex, reactum;
+    private static final InstantiationMap map;
+
+    static {
+        redex = generateRedex();
+        reactum = generateReactum();
+        map = new InstantiationMap(3, 0, 1, 2);
+    }
+
+    public Domain2HostRule() {
         super(redex, reactum, map);
     }
 
-    @Override
-    public Bigraph getRedex(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateRedex() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         builder.addSite(r1);//Site 0
         //Host
@@ -53,9 +61,8 @@ public class Domain2HostRule extends RewRuleWProps {
         return builder.makeBigraph();
     }
 
-    @Override
-    public Bigraph getReactum(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateReactum() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         builder.addSite(r1);//Site 0
         //Host

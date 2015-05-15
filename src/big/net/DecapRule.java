@@ -12,14 +12,21 @@ import it.uniud.mads.jlibbig.core.std.*;
  *
  */
 public class DecapRule extends RewRuleWProps {
+    private static final Bigraph redex, reactum;
+    private static final InstantiationMap map;
+    
+    static{
+        redex=generateRedex();
+        reactum=generateReactum();
+        map=new InstantiationMap(1,0);
+    }
 
-    public DecapRule(Bigraph redex, Bigraph reactum, InstantiationMap map) {
+    public DecapRule() {
         super(redex, reactum, map);
     }
 
-    @Override
-    public Bigraph getRedex(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateRedex() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         OuterName id1 = builder.addOuterName("id1");
         OuterName down1 = builder.addOuterName("down1");
@@ -42,9 +49,8 @@ public class DecapRule extends RewRuleWProps {
         return builder.makeBigraph();
     }
 
-    @Override
-    public Bigraph getReactum(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateReactum() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         OuterName id1 = builder.addOuterName("id1");
         OuterName down1 = builder.addOuterName("down1");

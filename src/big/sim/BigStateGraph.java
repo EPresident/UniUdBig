@@ -143,4 +143,16 @@ public class BigStateGraph {
         }
     }
 
+    public BSGNode getRoot() {
+        return root;
+    }
+
+    /**
+     * Returns the last node a rule has been applied to.
+     * @return The last node a rule has been applied to, or the root.
+     */
+    public BSGNode getLastNodeUsed() {
+        return current;
+    }
+
 }

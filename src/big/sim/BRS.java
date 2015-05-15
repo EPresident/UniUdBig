@@ -16,36 +16,37 @@
  */
 package big.sim;
 
-import big.net.Utils;
-import big.prprint.BigPPrinterVeryPretty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 
 /**
- * Test class for Bigraphic Reactive Systems simulation using BigStateGraph
- *
- * @see BigStateGraph
+ * Bigraphic Reactive System.
+ * Class for applying a set of rewriting rules to a bigraph.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class SimTest {
+public class BRS {
 
-    public static void main(String[] args) {
-        Bigraph bigraph = Utils.clientServerPacketExchange();
-        BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
-        System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
+    private final RewritingRule[] rules;
+    private BRSStrategy strategy;
 
-        /*
-         * ---------------------------------------------------------------
-         * Start of the reactions.
-         * ---------------------------------------------------------------
-         */
-        RewritingRule[] rules=Utils.getNetRules();
-        BRS brs = new BRS(new BreadthFirstStrat(), rules);
-        int i = 0;
-        for(Bigraph big : brs.apply(bigraph)){
-            System.out.println(pp.prettyPrint(big, "BRS-"+i));
-            i++;
-        }
+    public BRS(BRSStrategy ss, RewritingRule[] rs) {
+        rules = rs;
+        strategy = ss;
+        strategy.setRules(rules);
     }
+
+    public BRSStrategy getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(BRSStrategy strategy) {
+        this.strategy = strategy;
+        this.strategy.setRules(rules);
+    }
+    
+    public Iterable<Bigraph> apply(Bigraph to) {
+        return strategy.apply(to);
+    }
+
 }

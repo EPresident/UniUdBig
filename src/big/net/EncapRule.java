@@ -25,14 +25,23 @@ import java.util.*;
  */
 public final class EncapRule extends RewRuleWProps {
 
-    public EncapRule(Bigraph redex, Bigraph reactum, InstantiationMap map) {
+    private static final Bigraph redex, reactum;
+    private static final InstantiationMap map;
+
+    static {
+        redex = generateRedex();
+        reactum = generateReactum();
+        map = new InstantiationMap(2, 0, 1);
+    }
+
+    public EncapRule() {
         super(redex, reactum, map);
     }
 
     @Override
     public void instantiateReactumNode(Node original, Node instance, Match match) {
         for (Property p : original.getProperties()) {//Original = node of the reactum
-            Node[] array = rr.get(p.get());
+            Node[] array = rr.get(p.get().toString());
             if (array != null) {
                 Node n = array[1]; //Node of the redex
                 if (n != null) {
@@ -49,9 +58,8 @@ public final class EncapRule extends RewRuleWProps {
 
     }
 
-    @Override
-    public Bigraph getRedex(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateRedex() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         OuterName id1 = builder.addOuterName("id1");
         OuterName down1 = builder.addOuterName("down1");
@@ -74,9 +82,8 @@ public final class EncapRule extends RewRuleWProps {
         return builder.makeBigraph();
     }
 
-    @Override
-    public Bigraph getReactum(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateReactum() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         OuterName id1 = builder.addOuterName("id1");
         OuterName down1 = builder.addOuterName("down1");
@@ -105,7 +112,7 @@ public final class EncapRule extends RewRuleWProps {
     }
 
     private void createRightProperty(Node original, Node instance, Match match) {
-		//First step : find the neighbor node of the new node ("EncapSender" is a neighbor of "packetOut").
+        //First step : find the neighbor node of the new node ("EncapSender" is a neighbor of "packetOut").
         //Second step : find the image neighbor in the real bigraph.
         //Third step : Take the name of the second OuterName (on the port 1).
         Handle handle = original.getPort(0).getHandle();

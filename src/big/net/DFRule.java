@@ -4,9 +4,6 @@ import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.attachedProperties.*;
 import it.uniud.mads.jlibbig.core.std.*;
 
-import java.util.*;
-import java.util.concurrent.*;
-
 /**
  * Class for the encapsulation reaction. This class doesn't have to implement
  * the "createRightProperty()" method, because the reactum doesn't introduce new
@@ -21,13 +18,21 @@ import java.util.concurrent.*;
  */
 public class DFRule extends RewRuleWProps {
 
-    public DFRule(Bigraph redex, Bigraph reactum, InstantiationMap map) {
+    private static final Bigraph redex, reactum;
+    private static final InstantiationMap map;
+
+    static {
+        redex = generateRedex();
+        reactum = generateReactum();
+        map = new InstantiationMap(5, 0, 1, 2, 3, 4);
+    }
+
+    public DFRule() {
         super(redex, reactum, map);
     }
 
-    @Override
-    public Bigraph getRedex(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateRedex() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         builder.addSite(r1);//Site 0
         //Domain
@@ -72,9 +77,8 @@ public class DFRule extends RewRuleWProps {
         return builder.makeBigraph();
     }
 
-    @Override
-    public Bigraph getReactum(Signature signature) {
-        BigraphBuilder builder = new BigraphBuilder(signature);
+    private static Bigraph generateReactum() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
         Root r1 = builder.addRoot();
         builder.addSite(r1);//Site 0
         //Domain

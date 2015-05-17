@@ -83,7 +83,6 @@ public class EncapRule extends RewritingRule{
 				new SimpleProperty<String>("PacketType","packetIn")));
 		builder.addSite(packet);
 		
-		builder.addSite(r1);
 		Root r2 = builder.addRoot();
 		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
 		sn2.attachProperty(new SharedProperty<String>(
@@ -115,13 +114,20 @@ public class EncapRule extends RewritingRule{
 		
 		builder.addSite(packetIn);
 		
-		builder.addSite(r1);
 		Root r2 = builder.addRoot();
 		Node sn2 = builder.addNode("stackNode",r2,id2,down2);
 		sn2.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("NodeType","EncapReceiver")));
 		
 		return builder.makeBigraph();
+	}
+	
+	
+	
+
+	
+	public static InstantiationMap getInstMap(){
+		return new InstantiationMap(1, 0);
 	}
 	
 	

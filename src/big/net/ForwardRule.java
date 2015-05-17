@@ -6,9 +6,13 @@ import it.uniud.mads.jlibbig.core.std.*;
 import java.util.*;
 import java.util.concurrent.*;
 /**
- * Class for the encapsulation reaction.
+ * Class for forwarding packets. The packet in the first domain goes in the second one, if and only if 
+ * there are two router directly linked. This is a basic rule that allows you to add "n" domains and to 
+ * forward packets from one to the other.
+ * 
  * This class doesn't have to implement the "createRightProperty()" method, because the reactum doesn't
  * introduce new nodes.
+ * 
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
@@ -28,7 +32,7 @@ public class ForwardRule extends RewritingRule{
 		createAssociations();
 		this.auxProperties = new LinkedList<String>();
 		auxProperties.add("NodeType");
-		auxProperties.add("PacketType");
+		auxProperties.add("HostType");
 	}
 	
 	
@@ -63,22 +67,33 @@ public class ForwardRule extends RewritingRule{
 	
 	public static Bigraph getRedex(Signature signature){
 		BigraphBuilder builder = new BigraphBuilder(signature);
+		//First Domain
 		Root r1 = builder.addRoot();
-		OuterName id1 = builder.addOuterName("id1");
-		OuterName id2 = builder.addOuterName("id2");
+		Node domain1 = builder.addNode("domain", r1);
+		domain1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","domain1")));
+		builder.addSite(domain1);//Site 0
+		//Router1
+		OuterName linkR = builder.addOuterName("linkR");
+		OuterName localS = builder.addOuterName("localS");
+		Node router1 = builder.addNode("stackNode", domain1, linkR, localS);
+		router1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Router1")));
 		
-		Node sn1 = builder.addNode("stackNode", r1, id1, id2);
-		sn1.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","EncapSender")));
-		Node packet = builder.addNode("packet",r1,id1,id2);
+		//Second Domain
+		Root r2 = builder.addRoot();
+		//Router2
+		OuterName localR = builder.addOuterName("localR");
+		Node router2 = builder.addNode("stackNode", r2, linkR, localR);
+		router2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Router2")));
+		//Packet
+		OuterName idS = builder.addOuterName("idS");
+		OuterName idR = builder.addOuterName("idR");
+		Node packet = builder.addNode("packet", domain1, idS, idR);
 		packet.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("PacketType","packet")));
-		builder.addSite(packet);
-		
-		Root r2 = builder.addRoot();
-		Node sn2 = builder.addNode("stackNode",r2,id2,id1);
-		sn2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty("NodeType","EncapReceiver")));
+		builder.addSite(packet);//Site 1
 		
 		return builder.makeBigraph();
 	}
@@ -88,27 +103,41 @@ public class ForwardRule extends RewritingRule{
 
 	public static Bigraph getReactum(Signature signature){
 		BigraphBuilder builder = new BigraphBuilder(signature);
+		//First Domain
 		Root r1 = builder.addRoot();
-		OuterName id1 = builder.addOuterName("id1");
-		OuterName id2 = builder.addOuterName("id2");
+		Node domain1 = builder.addNode("domain", r1);
+		domain1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","domain1")));
+		builder.addSite(domain1);//Site 0
+		//Router1
+		OuterName linkR = builder.addOuterName("linkR");
+		OuterName localS = builder.addOuterName("localS");
+		Node router1 = builder.addNode("stackNode", domain1, linkR, localS);
+		router1.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Router1")));
 		
-		Node sn1 = builder.addNode("stackNode", r1, id1, id2);
-		sn1.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","EncapSender")));
-		
+		//Second Domain
 		Root r2 = builder.addRoot();
-		Node sn2 = builder.addNode("stackNode",r2,id2,id1);
-		sn2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty("NodeType","EncapReceiver")));
-		Node packet = builder.addNode("packet",r2,id1,id2);
+		//Router2
+		OuterName localR = builder.addOuterName("localR");
+		Node router2 = builder.addNode("stackNode", r2, linkR, localR);
+		router2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Router2")));
+		//Packet
+		OuterName idS = builder.addOuterName("idS");
+		OuterName idR = builder.addOuterName("idR");
+		Node packet = builder.addNode("packet", r2, idS, idR);
 		packet.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("PacketType","packet")));
-		builder.addSite(packet);
+		builder.addSite(packet);//Site 1
 		
 		return builder.makeBigraph();
 	}
 	
-	
+
+	public static InstantiationMap getInstMap(){
+		return new InstantiationMap(2, 0, 1);
+	}
 	
 
 	

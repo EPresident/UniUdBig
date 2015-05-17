@@ -57,7 +57,7 @@ public class SimTest {
         Matcher matcher = new Matcher();
         EncapRule encap = new EncapRule(EncapRule.getRedex(signature),
                 EncapRule.getReactum(signature),
-                new InstantiationMap(2, 0, 1));
+                EncapRule.getInstMap());
         while (matcher.match(bigraph, EncapRule.getRedex(signature)).iterator().hasNext()) {
             if (matcher.match(bigraph, DFRule.getRedex(signature)).iterator().hasNext()) {
                 break;
@@ -69,7 +69,7 @@ public class SimTest {
         }
         DFRule ip_forward = new DFRule(DFRule.getRedex(signature),
                 DFRule.getReactum(signature),
-                new InstantiationMap(5, 0, 1, 2, 3, 4));
+                DFRule.getInstMap());
         if (matcher.match(bigraph, DFRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = ip_forward.apply(bigraph).iterator();
             bigraph = iterator.next();
@@ -79,7 +79,7 @@ public class SimTest {
 
         Domain2HostRule d2h = new Domain2HostRule(Domain2HostRule.getRedex(signature),
                 Domain2HostRule.getReactum(signature),
-                new InstantiationMap(3, 0, 1, 2));
+                Domain2HostRule.getInstMap());
         if (matcher.match(bigraph, Domain2HostRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = d2h.apply(bigraph).iterator();
             bigraph = iterator.next();
@@ -89,7 +89,7 @@ public class SimTest {
 
         DecapRule decap = new DecapRule(DecapRule.getRedex(signature),
                 DecapRule.getReactum(signature),
-                new InstantiationMap(1, 0));
+                DecapRule.getInstMap());
         while (matcher.match(bigraph, DecapRule.getRedex(signature)).iterator().hasNext()) {
             Iterator<Bigraph> iterator = decap.apply(bigraph).iterator();
             bigraph = iterator.next();

@@ -21,18 +21,53 @@ public class DecapRule extends RewRuleWProps {
         map=new InstantiationMap(1,0);
     }
 
-    public DecapRule() {
-        super(redex, reactum, map);
-    }
+	
+	
+	
+	public static Bigraph getRedex(Signature signature){
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root r = builder.addRoot();
+		//StackNode
+		OuterName idR = builder.addOuterName("idR");
+		OuterName downR = builder.addOuterName("downR");
+		Node snR = builder.addNode("stackNode", r, idR, downR);
+		snR.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Receiver")));
+		//Packet
+		OuterName idS = builder.addOuterName("idS");
+		Node packet = builder.addNode("packet", r, idS, idR);
+		packet.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("PacketType","packet")));
+		builder.addSite(packet);//Site 0
+		
+		return builder.makeBigraph();
+	}
+	
+	
+	
 
-    private static Bigraph generateRedex() {
-        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
-        Root r1 = builder.addRoot();
-        OuterName id1 = builder.addOuterName("id1");
-        OuterName down1 = builder.addOuterName("down1");
-        Node sn1 = builder.addNode("stackNode", r1, id1, down1);
-        sn1.attachProperty(new SharedProperty<String>(
-                new SimpleProperty<String>("NodeType", "EncapSender")));
+	public static Bigraph getReactum(Signature signature){
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root r = builder.addRoot();
+		//StackNode
+		OuterName idR = builder.addOuterName("idR");
+		OuterName downR = builder.addOuterName("downR");
+		Node snR = builder.addNode("stackNode", r, idR, downR);
+		snR.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("NodeType","Receiver")));
+		//Packet
+		OuterName idS = builder.addOuterName("idS");
+		builder.addSite(r);//Site 0
+		
+		return builder.makeBigraph();
+	}
+	
+	
+	
+	public static InstantiationMap getInstMap(){
+		return new InstantiationMap(1, 0);
+	}
+	
 
         Root r2 = builder.addRoot();
         OuterName id2 = builder.addOuterName("id2");

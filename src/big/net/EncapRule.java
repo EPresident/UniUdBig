@@ -27,15 +27,23 @@ public final class EncapRule extends RewRuleWProps {
 
     private static final Bigraph redex, reactum;
     private static final InstantiationMap map;
+    private final static LinkedList<String> auxProperties;
 
     static {
         redex = generateRedex();
         reactum = generateReactum();
         map = new InstantiationMap(2, 0, 1);
+        auxProperties = new LinkedList<>();
+        auxProperties.add("NodeType");
+        auxProperties.add("PacketType");
     }
 
     public EncapRule() {
         super(redex, reactum, map);
+    }
+
+    protected static List<String> getAuxProperties() {
+        return auxProperties;
     }
 
     @Override

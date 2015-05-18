@@ -53,8 +53,12 @@ public class Utils {
             it.add(ctrl_stackNode);
             Control ctrl_domain = new Control("domain", true, 1);
             it.add(ctrl_domain);
-            Control ctrl_firewall = new Control("firewall", true, 1);
+            Control ctrl_firewall = new Control("firewall", true, 2);
             it.add(ctrl_firewall);
+            Control ctrl_tokenIN = new Control("tokenIN", true, 1);
+            it.add(ctrl_tokenIN);
+            Control ctrl_tokenOUT = new Control("tokenOUT", true, 1);
+            it.add(ctrl_tokenOUT);
             Control ctrl_packet = new Control("packet", true, 2);
             it.add(ctrl_packet);
             Control ctrl_payload = new Control("payload", true, 0);

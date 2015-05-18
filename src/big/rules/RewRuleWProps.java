@@ -19,13 +19,17 @@ package big.rules;
 
 import it.uniud.mads.jlibbig.core.attachedProperties.Property;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.Handle;
 import it.uniud.mads.jlibbig.core.std.InstantiationMap;
 import it.uniud.mads.jlibbig.core.std.Match;
 import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.OuterName;
+import it.uniud.mads.jlibbig.core.std.Port;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -42,15 +46,11 @@ public abstract class RewRuleWProps extends RewritingRule {
 
     protected Bigraph bigraph;
     protected Map<String, Node[]> rr;//Link from reactum node to redex nodes.
-    protected static LinkedList<String> auxProperties;
 
     public RewRuleWProps(Bigraph redex, Bigraph reactum, InstantiationMap map) {
         super(redex, reactum, map);
         rr = new HashMap<>();
         createAssociations();
-        auxProperties = new LinkedList<>();
-        auxProperties.add("NodeType");
-        auxProperties.add("PacketType");
     }
 
     @Override
@@ -61,21 +61,7 @@ public abstract class RewRuleWProps extends RewritingRule {
     }
 
     @Override
-    public void instantiateReactumNode(Node original, Node instance, Match match) {
-        for (Property p : original.getProperties()) {//Original = node of the reactum
-            Node[] array = rr.get(p.get());
-            if (array != null) {
-                Node n = array[1]; //Node of the redex
-                if (n != null) {
-                    Node img = match.getImage(n);//Node of the original bigraph
-                    if (img != null) {
-                        copyProperties(img, instance);
-                    }
-                }
-            }
-        }
-
-    }
+    public abstract void instantiateReactumNode(Node original, Node instance, Match match);
 
     protected void copyProperties(Node from, Node to) {
         for (Property p : from.getProperties()) {
@@ -121,7 +107,7 @@ public abstract class RewRuleWProps extends RewritingRule {
             for (int i = 0; i < ap.length; i++) {
                 String name = ap[i].getName();
                 if (!name.equals("Owner")) {
-                    for (String str : auxProperties) {
+                    for (String str : getAuxProperties()) {
                         if (name.equals(str)) {
                             pass = true;
                         }
@@ -133,6 +119,34 @@ public abstract class RewRuleWProps extends RewritingRule {
                 }
             }
         }
+    }
+    
+    protected static List<String> getAuxProperties(){
+        return new LinkedList<>();
+    }
+
+    protected String getOuterNameImage(String name, Match match, int nPort) {
+        String str = "";
+        Node redexN = rr.get(name)[1];
+        if (redexN != null) {
+            Node imgNode = match.getImage(redexN);
+            if (imgNode != null) {
+                Port port = imgNode.getPort(nPort);
+                if (port != null) {
+                    Handle handle = port.getHandle();
+                    if (handle != null && handle.isOuterName()) {
+                        OuterName outer = (OuterName) handle;
+                        str += outer.getName();
+                    }
+                }
+            }
+        }
+        return str;
+    }
+
+    public boolean isApplicable(Bigraph bigraph) {
+        // Defaulted
+        return true;
     }
 
     /**
@@ -150,7 +164,7 @@ public abstract class RewRuleWProps extends RewritingRule {
         public Iterator<Bigraph> iterator() {
             return new RRWPIterator(iterable.iterator());
         }
-        
+
         /**
          * Iterator wrapper used to lazily clear aux properties.
          */

@@ -73,7 +73,6 @@ public final class EncapRule extends RewRuleWProps {
                 new SimpleProperty<String>("PacketType", "packetIn")));
         builder.addSite(packet);
 
-        builder.addSite(r1);
         Root r2 = builder.addRoot();
         Node sn2 = builder.addNode("stackNode", r2, id2, down2);
         sn2.attachProperty(new SharedProperty<String>(
@@ -102,7 +101,6 @@ public final class EncapRule extends RewRuleWProps {
 
         builder.addSite(packetIn);
 
-        builder.addSite(r1);
         Root r2 = builder.addRoot();
         Node sn2 = builder.addNode("stackNode", r2, id2, down2);
         sn2.attachProperty(new SharedProperty<String>(

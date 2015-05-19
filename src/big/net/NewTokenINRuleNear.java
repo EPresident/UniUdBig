@@ -1,273 +1,166 @@
 package big.net;
 
+import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.attachedProperties.*;
 import it.uniud.mads.jlibbig.core.std.*;
 
 import java.util.*;
 import java.util.concurrent.*;
+
 /**
- * This class adds a TokenIN to a packet if and only if the packet has the permissions. This rule checks
- * the sender's field of the packet and the firewall's list.
- * 
- * This rule is applicable only if the packet and the sender are in the same root. 
- * 
+ * This class adds a TokenIN to a packet if and only if the packet has the
+ * permissions. This rule checks the sender's field of the packet and the
+ * firewall's list.
+ *
+ * This rule is applicable only if the packet and the sender are in the same
+ * root.
+ *
  * @see DFRuleFW , FWINRule
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
-public class NewTokenINRuleNear extends RewritingRule{
-	
-	private final String DELIMITER = "%";
-	private Bigraph bigraph;
-	private Bigraph redex;
-	private Bigraph reactum;
-	private Map<String, Node[]> rr;//Link from reactum node to redex nodes.
-	private static LinkedList<String> auxProperties;
-	private Matcher matcher;
-	
-	public NewTokenINRuleNear(Bigraph redex, Bigraph reactum, InstantiationMap map){
-		super(redex, reactum, map);
-		this.redex = redex;
-		this.reactum = reactum;
-		rr = new HashMap<String, Node[]>();
-		createAssociations();
-		this.auxProperties = new LinkedList<String>();
-		auxProperties.add("NodeType");
-		auxProperties.add("PacketType");
-		this.matcher = new Matcher();
-	}
-	
-	@Override
-	public Iterable<Bigraph> apply(Bigraph b){
-		this.bigraph = b;
-		Iterable<Bigraph> bgl = super.apply(b);
-		
-		return bgl;
-	}
-	
-	
-	@Override
-	public void instantiateReactumNode(Node original, Node instance, Match match){
-		for(Property p : original.getProperties()){//Original = node of the reactum
-			Node[] array = rr.get(p.get());
-			if(array != null){
-				Node n = array[1]; //Node of the redex
-				if(n != null){
-					Node img = match.getImage(n);//Node of the original bigraph
-					if(img != null){
-						copyProperties(img,instance);
-					}
-				}
-			}
-		}
-		
-	} 
+public class NewTokenINRuleNear extends RewRuleWProps {
 
-	
-	public static Bigraph getRedex(Signature signature){
-		BigraphBuilder builder = new BigraphBuilder(signature);
-		Root r1 = builder.addRoot();
-		//Sender
-		OuterName idS = builder.addOuterName("idS");
-		OuterName downR = builder.addOuterName("downR");
-		Node sender = builder.addNode("stackNode", r1, idS, downR);
-		sender.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","sender")));
-		//Packet
-		OuterName idR = builder.addOuterName("idR");
-		Node packet = builder.addNode("packet", r1, idS, idR);
-		packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketType","packet")));
-		builder.addSite(packet);//Site 0
-		
-		//Firewall
-		Root r2 = builder.addRoot();
-		OuterName listFWIN = builder.addOuterName("listFWIN");
-		OuterName listFWOUT = builder.addOuterName("listFWOUT");
-		Node firewall = builder.addNode("firewall", r2, listFWIN, listFWOUT);
-		firewall.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","firewall")));
-		builder.addSite(firewall);//Site 1
-		
-		return builder.makeBigraph();
-	}
-	
-	
-	
+    private static final Bigraph redex, reactum;
+    private static final InstantiationMap map;
+    private final static LinkedList<String> auxProperties;
 
-	public static Bigraph getReactum(Signature signature){
-		BigraphBuilder builder = new BigraphBuilder(signature);
-		Root r1 = builder.addRoot();
-		//Sender
-		OuterName idS = builder.addOuterName("idS");
-		OuterName downR = builder.addOuterName("downR");
-		Node sender = builder.addNode("stackNode", r1, idS, downR);
-		sender.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","sender")));
-		//Packet
-		OuterName idR = builder.addOuterName("idR");
-		Node packet = builder.addNode("packet", r1, idS, idR);
-		packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketType","packet")));
-		builder.addSite(packet);//Site 0
-		
-		//Firewall
-		Root r2 = builder.addRoot();
-		OuterName listFWIN = builder.addOuterName("listFWIN");
-		OuterName listFWOUT = builder.addOuterName("listFWOUT");
-		Node firewall = builder.addNode("firewall", r2, listFWIN, listFWOUT);
-		firewall.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","firewall")));
-		builder.addSite(firewall);//Site 1
-		
-		//Token
-		Node tokenIN = builder.addNode("tokenIN", packet, listFWIN);
-		tokenIN.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("NodeType","tokenIN")));
-		
-		return builder.makeBigraph();
-	}
-	
-	
-	
-	public static InstantiationMap getInstMap(){
-		return new InstantiationMap(2, 0, 1);
-	}
-	
-	
-	private void copyProperties(Node from, Node to){
-		for(Property p : from.getProperties()){
-			if( !p.getName().equals("Owner") ){
-				if( !p.getName().equals("NodeType") ){
-					to.attachProperty(p);
-				}
-			}
-		}
-	}
-	
-	
-	private void createAssociations(){
-		
-		for(Node n1 : this.reactum.getNodes()){
-			for(Property p1 : n1.getProperties()){
-				if( !p1.getName().equals("Owner") ){
-					Node[] array = new Node[2];
-					array[0] = n1;
-					rr.put(p1.get().toString(), array);
-				}
-			}
-		}
-		
-		for(Node n2 : this.redex.getNodes()){
-			for(Property p2 : n2.getProperties()){
-				if( !p2.getName().equals("Owner") ){
-					Node[] array = rr.get(p2.get());
-					if(array != null){
-						array[1] = n2;
-						rr.put(p2.get().toString(), array);
-					}
-				}
-			}
-		}
-		
-	}
-	
-	
-	
-	public static void clearAuxProperties(Bigraph bg){
-		//Deletes auxiliary properties, such as NodeType and PacketType.
-		boolean pass = false;
-		for(Node n: bg.getNodes()){
-				CopyOnWriteArrayList<Property> cow = new CopyOnWriteArrayList<Property>(n.getProperties());
-				Property[] a = new Property[0];
-				Property[] ap = cow.toArray( a );
-				for(int i=0;i<ap.length;i++){
-					String name = ap[i].getName();
-					if( !name.equals("Owner") ){
-						for(String str : auxProperties){
-							if(name.equals(str)){
-								pass = true;
-							}
-						}
-						if(pass){
-							n.detachProperty(ap[i]);
-						}
-						pass = false;
-					}
-				}
-			}
-	}
-	
-	
-	
+    static {
+        redex = generateRedex();
+        reactum = generateReactum();
+        map = new InstantiationMap(2, 0, 1);
+        auxProperties = new LinkedList<>();
+        auxProperties.add("NodeType");
+        auxProperties.add("PacketType");
+    }
+    private final String DELIMITER = "%";
+    private Matcher matcher;
 
-	
-	private void createRightProperty(Node original, Node instance, Match match){
-		//First step : find the neighbor node of the new node ("EncapSender" is a neighbor of "packetOut").
-		//Second step : find the image neighbor in the real bigraph.
-		//Third step : Take the name of the second OuterName (on the port 1).
-		
-	}
-	
-	
-	
-	
-	public boolean isApplicable(Bigraph bigraph, Signature signature){
-		Iterator<? extends Match> iter = this.matcher.match(bigraph, this.redex).iterator();
-		if( iter.hasNext() ){
-			Match match = iter.next();
-			String listFW = getOuterNameImage("firewall", match, 0);
-			LinkedList<String> permissions = prepareList(listFW);
-			String idR = getOuterNameImage("sender", match, 0);
-			if( checkPermission(idR, permissions) ){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
-	
-	private String getOuterNameImage(String name, Match match, int nPort){
-		String str = "";
-		Node redexN = rr.get(name)[1];
-		if(redexN!=null){
-			Node imgNode = match.getImage(redexN);
-			if(imgNode != null){
-				Port port = imgNode.getPort(nPort);
-				if(port != null){
-					Handle handle = port.getHandle();
-					if( handle!= null && handle.isOuterName() ){
-						OuterName outer = (OuterName) handle;
-						str += outer.getName();
-					}
-				}
-			}	
-		}	
-		return str;
-	}
-	
-	
-	private LinkedList<String> prepareList(String str){
-		LinkedList<String> list = new LinkedList<String>();
-		String[] array = str.split(DELIMITER);
-		for(int i=0; i<array.length; i++){
-			list.add(array[i]);
-		}
-		return list;
-	}
-	
-	
-	private boolean checkPermission(String x, LinkedList<String> list){
-		for(String s : list){
-			if( s.equals(x) ){
-				return true;
-			}
-		}
-		return false;
-	}
-	
+    public NewTokenINRuleNear() {
+        super(redex, reactum, map);
+        this.matcher = new Matcher();
+    }
+
+    protected static List<String> getAuxProperties() {
+        return auxProperties;
+    }
+
+    @Override
+    public void instantiateReactumNode(Node original, Node instance, Match match) {
+        for (Property p : original.getProperties()) {//Original = node of the reactum
+            Node[] array = rr.get(p.get());
+            if (array != null) {
+                Node n = array[1]; //Node of the redex
+                if (n != null) {
+                    Node img = match.getImage(n);//Node of the original bigraph
+                    if (img != null) {
+                        copyProperties(img, instance);
+                    }
+                }
+            }
+        }
+
+    }
+
+    private static Bigraph generateRedex() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
+        Root r1 = builder.addRoot();
+        //Sender
+        OuterName idS = builder.addOuterName("idS");
+        OuterName downR = builder.addOuterName("downR");
+        Node sender = builder.addNode("stackNode", r1, idS, downR);
+        sender.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "sender")));
+        //Packet
+        OuterName idR = builder.addOuterName("idR");
+        Node packet = builder.addNode("packet", r1, idS, idR);
+        packet.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packet")));
+        builder.addSite(packet);//Site 0
+
+        //Firewall
+        Root r2 = builder.addRoot();
+        OuterName listFWIN = builder.addOuterName("listFWIN");
+        OuterName listFWOUT = builder.addOuterName("listFWOUT");
+        Node firewall = builder.addNode("firewall", r2, listFWIN, listFWOUT);
+        firewall.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "firewall")));
+        builder.addSite(firewall);//Site 1
+
+        return builder.makeBigraph();
+    }
+
+    private static Bigraph generateReactum() {
+        BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
+        Root r1 = builder.addRoot();
+        //Sender
+        OuterName idS = builder.addOuterName("idS");
+        OuterName downR = builder.addOuterName("downR");
+        Node sender = builder.addNode("stackNode", r1, idS, downR);
+        sender.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "sender")));
+        //Packet
+        OuterName idR = builder.addOuterName("idR");
+        Node packet = builder.addNode("packet", r1, idS, idR);
+        packet.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packet")));
+        builder.addSite(packet);//Site 0
+
+        //Firewall
+        Root r2 = builder.addRoot();
+        OuterName listFWIN = builder.addOuterName("listFWIN");
+        OuterName listFWOUT = builder.addOuterName("listFWOUT");
+        Node firewall = builder.addNode("firewall", r2, listFWIN, listFWOUT);
+        firewall.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "firewall")));
+        builder.addSite(firewall);//Site 1
+
+        //Token
+        Node tokenIN = builder.addNode("tokenIN", packet, listFWIN);
+        tokenIN.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "tokenIN")));
+
+        return builder.makeBigraph();
+    }
+
+    private void createRightProperty(Node original, Node instance, Match match) {
+        //First step : find the neighbor node of the new node ("EncapSender" is a neighbor of "packetOut").
+        //Second step : find the image neighbor in the real bigraph.
+        //Third step : Take the name of the second OuterName (on the port 1).
+
+    }
+
+    @Override
+    public boolean isApplicable(Bigraph bigraph) {
+        Iterator<? extends Match> iter = this.matcher.match(bigraph, this.redex).iterator();
+        if (iter.hasNext()) {
+            Match match = iter.next();
+            String listFW = getOuterNameImage("firewall", match, 0);
+            LinkedList<String> permissions = prepareList(listFW);
+            String idR = getOuterNameImage("sender", match, 0);
+            if (checkPermission(idR, permissions)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private LinkedList<String> prepareList(String str) {
+        LinkedList<String> list = new LinkedList<String>();
+        String[] array = str.split(DELIMITER);
+        for (int i = 0; i < array.length; i++) {
+            list.add(array[i]);
+        }
+        return list;
+    }
+
+    private boolean checkPermission(String x, LinkedList<String> list) {
+        for (String s : list) {
+            if (s.equals(x)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
-
-
-

@@ -16,36 +16,38 @@
  */
 package big.sim;
 
-import big.net.Utils;
-import big.prprint.BigPPrinterVeryPretty;
+import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
+import java.util.LinkedList;
 
 /**
- * Test class for Bigraphic Reactive Systems simulation using BigStateGraph
- *
- * @see BigStateGraph
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class SimTest {
+public class BreadthFirstStrat implements BRSStrategy {
 
-    public static void main(String[] args) {
-        Bigraph bigraph = Utils.clientServerPacketExchange();
-        BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
-        System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
+    private final LinkedList<Bigraph> queue;
+    private RewritingRule[] rules;
 
-        /*
-         * ---------------------------------------------------------------
-         * Start of the reactions.
-         * ---------------------------------------------------------------
-         */
-        RewritingRule[] rules=Utils.getNetRules();
-        BRS brs = new BRS(new BreadthFirstStrat(), rules);
-        int i = 0;
-        for(Bigraph big : brs.apply(bigraph)){
-            System.out.println(pp.prettyPrint(big, "BRS-"+i));
-            i++;
-        }
+    public BreadthFirstStrat() {
+        queue = new LinkedList<>();
     }
+
+    @Override
+    public Iterable<Bigraph> apply(Bigraph to) {
+        for (RewritingRule r : rules) {
+            RewRuleWProps rrwp = (RewRuleWProps) r;
+            for(Bigraph big : rrwp.apply(to)){
+                queue.add(big);
+            }
+        }
+        return queue;
+    }
+
+    @Override
+    public void setRules(RewritingRule[] rs) {
+        rules = rs;
+    }
+
 }

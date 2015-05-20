@@ -28,7 +28,7 @@ import java.util.List;
  * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-class BSGNode {
+public class BSGNode {
     private Bigraph state;
     private List<BSGLink> links;
     /**

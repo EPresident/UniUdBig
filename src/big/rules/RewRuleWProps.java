@@ -148,6 +148,10 @@ public abstract class RewRuleWProps extends RewritingRule {
         // Defaulted
         return true;
     }
+    
+    public String getName(){
+        return this.getClass().getSimpleName();
+    }
 
     /**
      * Wrapper for the Iterable provided by RewritingRule.apply(to)

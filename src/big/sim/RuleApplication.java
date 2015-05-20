@@ -16,40 +16,35 @@
  */
 package big.sim;
 
+import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 
 /**
- * Bigraphic Reactive System. Class for applying a set of rewriting rules to a
- * bigraph.
+ * This class associates a RewritingRule (and/or its user-defined name) and the
+ * result of its application to a Bigraph.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class BRS {
+public class RuleApplication {
 
-    private final RewritingRule[] rules;
-    private BRSStrategy strategy;
+    protected Bigraph big;
+    protected RewritingRule rule;
+    protected String ruleName;
 
-    public BRS(BRSStrategy ss, RewritingRule[] rs) {
-        rules = rs;
-        strategy = ss;
-        strategy.setRules(rules);
+    protected RuleApplication(Bigraph b, RewritingRule rr, String s) {
+        big = b;
+        rule = rr;
+        ruleName = s;
     }
 
-    public BRSStrategy getStrategy() {
-        return strategy;
+    protected RuleApplication(Bigraph b, RewRuleWProps rr) {
+        big = b;
+        rule = rr;
+        ruleName = rr.getName();
     }
 
-    public void setStrategy(BRSStrategy strategy) {
-        this.strategy = strategy;
-        this.strategy.setRules(rules);
-    }
+    /*protected RuleApplication(Bigraph b, String s) {
 
-    public Iterable<Bigraph> apply(Bigraph to) {
-        return strategy.apply(to);
-    }
-
-    public Iterable<RuleApplication> apply_RA(Bigraph to){
-        return strategy.apply_RA(to);
-    }
+    }*/
 }

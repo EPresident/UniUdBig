@@ -25,6 +25,18 @@ import it.uniud.mads.jlibbig.core.std.RewritingRule;
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public interface BRSStrategy {
+    /**
+     * Apply a RewritingRule to (all redex matches within) a Bigraph.
+     * @param to Bigraph to match the rule on
+     * @return An Iterable with the resulting Bigraph(s)
+     */
     public Iterable<Bigraph> apply(Bigraph to);
+    /**
+     * Apply a RewritingRule to (all redex matches within) a Bigraph.
+     * @param to Bigraph to match the rule on
+     * @return An Iterable of RuleApplication objects, i.e. the resulting 
+     * Bigraphs paired with the rules that were applied on them.
+     */
+    public Iterable<RuleApplication> apply_RA(Bigraph to);
     public void setRules(RewritingRule[] rs);
 }

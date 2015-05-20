@@ -19,11 +19,20 @@ package big.sim;
 import big.hash.BigHashFunction;
 import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
-import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.Handle;
+import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.ICF;
+import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VF;
+import org.chocosolver.util.ESat;
 
 /**
  * Represents a graph where each node is a different possible state of the
@@ -137,9 +146,12 @@ public class BigStateGraph {
         if (dup == null) {
             // No duplicates detected
             return null;
-        }else{
-            // Duplicate found
-            return dup;
+        } else {
+            // Check isomorphism
+            if (areIsomorph(redex.getState(), reactum)) {
+                return dup;
+            }
+            return null;
         }
     }
 
@@ -149,10 +161,74 @@ public class BigStateGraph {
 
     /**
      * Returns the last node a rule has been applied to.
+     *
      * @return The last node a rule has been applied to, or the root.
      */
     public BSGNode getLastNodeUsed() {
         return current;
     }
 
+    /**
+     * Checks if two Bigraphs are isomorph.
+     * @param a First Bigraph.
+     * @param b Second Bigraph.
+     * @return <i>true</i> if the Bigraphs are isomorph, <i>false</i> otherwise.
+     */
+    protected static boolean areIsomorph(Bigraph a, Bigraph b) {
+        Solver chocoSolver = new Solver("Link graph isomorphism");
+        // Link graph
+        //<editor-fold desc="Creazione lista handle e point">
+        ArrayList<Handle> handlesA = new ArrayList<>();
+        for (Handle h : a.getOuterNames()) {
+            handlesA.add(h);
+        }
+        for (Handle h : a.getEdges()) {
+            handlesA.add(h);
+        }
+        ArrayList<Handle> handlesB = new ArrayList<>();
+        for (Handle h : b.getOuterNames()) {
+            handlesB.add(h);
+        }
+        for (Handle h : b.getEdges()) {
+            handlesB.add(h);
+        }
+        ArrayList<Point> pointsA = new ArrayList<>();
+        for (Point p : a.getInnerNames()) {
+            pointsA.add(p);
+        }
+        for (Node n : a.getNodes()) {
+            for (Point p : n.getPorts()) {
+                pointsA.add(p);
+            }
+        }
+        ArrayList<Point> pointsB = new ArrayList<>();
+        for (Point p : b.getInnerNames()) {
+            pointsB.add(p);
+        }
+        for (Node n : b.getNodes()) {
+            for (Point p : n.getPorts()) {
+                pointsB.add(p);
+            }
+        }
+        int nPtsA = pointsA.size(), nPtsB = pointsB.size(),
+                nHdlsA = handlesA.size(), nHdlsB = handlesB.size();
+        //</editor-fold>
+        
+        if (nPtsA != nPtsB || nHdlsA != nHdlsB) {
+            // Mismatching point/handle cardinality
+            return false;
+        }
+        BoolVar[][] ptsVars = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver);
+        BoolVar[][] hdlsVars = VF.boolMatrix("hdlsVars", nHdlsA, nHdlsA, chocoSolver);
+        IntVar one = VF.fixed(1, chocoSolver);
+
+        for (BoolVar[] bs : ptsVars) {
+            chocoSolver.post(ICF.sum(bs, one));
+        }
+        for (BoolVar[] bs : hdlsVars) {
+            chocoSolver.post(ICF.sum(bs, one));
+        }
+
+        return chocoSolver.findSolution();
+    }
 }

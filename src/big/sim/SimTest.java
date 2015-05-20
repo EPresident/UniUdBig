@@ -33,22 +33,17 @@ public class SimTest {
     public static void main(String[] args) {
         Bigraph bigraph = Utils.clientServerPacketExchange();
         BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
-        //       System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
-
-        /*
-         * ---------------------------------------------------------------
-         * Start of the reactions.
-         * ---------------------------------------------------------------
-         */
+        System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
         RewritingRule[] rules = Utils.getNetRules();
+        RewritingRule[] rules2 = Utils.getNetFWRules();
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
-        int i = 0;
-        Bigraph b1=null;
-        for (Bigraph big : brs.apply(bigraph)) {
-            b1 = big;
-            System.out.println(pp.prettyPrint(big, "BRS-" + i));
-            i++;
-        }
-        System.out.println(BigStateGraph.areIsomorph(bigraph, b1));
+        BigStateGraph bsg = new BigStateGraph(bigraph);
+        Sim sim = new Sim(bsg, brs);
+        do {
+            for (RuleApplication ra : sim.stepAndGet()) {
+                System.out.println(pp.prettyPrint(ra.big,ra.ruleName));
+            }
+        } while (sim.hasNext());
+
     }
 }

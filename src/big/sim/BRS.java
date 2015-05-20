@@ -45,10 +45,21 @@ public class BRS {
         this.strategy.setRules(rules);
     }
 
+    /**
+     * Apply a RewritingRule to (all redex matches within) a Bigraph.
+     * @param to Bigraph to match the rule on
+     * @return An Iterable with the resulting Bigraph(s)
+     */
     public Iterable<Bigraph> apply(Bigraph to) {
         return strategy.apply(to);
     }
 
+    /**
+     * Apply a RewritingRule to (all redex matches within) a Bigraph.
+     * @param to Bigraph to match the rule on
+     * @return An Iterable of RuleApplication objects, i.e. the resulting 
+     * Bigraphs paired with the rules that were applied on them.
+     */
     public Iterable<RuleApplication> apply_RA(Bigraph to){
         return strategy.apply_RA(to);
     }

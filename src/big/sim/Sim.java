@@ -51,9 +51,13 @@ public class Sim {
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         LinkedList<RuleApplication> lra = new LinkedList<>();
         for (RuleApplication ra : ras) {
-            nodeQueue.add(graph.applyRewritingRule(node, ra.ruleName, ra.big));
+            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big);
+            if(newNode!=null){
+                nodeQueue.add(newNode);
+            }
             lra.add(ra);
         }
+        System.out.println("StepAndGet: "+lra.size()+" new applications");
         return lra;
     }
     

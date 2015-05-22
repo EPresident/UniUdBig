@@ -18,8 +18,13 @@ package big.sim;
 
 import big.net.Utils;
 import big.prprint.BigPPrinterVeryPretty;
+import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  * Test class for Bigraphic Reactive Systems simulation using BigStateGraph
@@ -39,11 +44,49 @@ public class SimTest {
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
         BigStateGraph bsg = new BigStateGraph(bigraph);
         Sim sim = new Sim(bsg, brs);
+        int i = 1000;
+        int applcations = 0;
         do {
             for (RuleApplication ra : sim.stepAndGet()) {
-                System.out.println(pp.prettyPrint(ra.big,ra.ruleName));
+                //  System.out.println(pp.prettyPrint(ra.big,ra.ruleName));
+                applcations++;
             }
-        } while (sim.hasNext());
+            System.out.println(applcations+ " applications");
+            i--;
+        } while (i > 0 && sim.hasNext());
+        // } while (sim.hasNext());
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println(bsg.getGraphSize() + " - " + applcations);
+        BSGNode currentNode = bsg.getRoot();
+        String prName = "Root";
+        List<BSGLink> links = bsg.getRoot().getLinks();
+        while (true) {
+            System.out.println(pp.prettyPrint(currentNode.getState(), prName));
+            i = 0;
+            System.out.println("Choose a branch: ");
+            for (BSGLink bsgl : links) {
+                System.out.println(i + "- " + bsgl.rewRule);
+                i++;
+            }
+            int choice = 0;
+            try {
+                String in = input.readLine();
+                if(in.isEmpty()){
+                    System.out.println("Exiting.");
+                    System.exit(0);
+                }
+                choice = Integer.parseInt(in);
+            } catch (IOException ioex) {
+                System.err.println(ioex.getMessage() + "\n Halting simulation.");
+                System.exit(1);
+            } catch (NumberFormatException nfex) {
+                System.err.println("Expected a number as input: " + nfex.getMessage());
+                System.exit(1);
+            }
+            prName = links.get(choice).rewRule;
+            currentNode = links.get(choice).destNode;
+            links = currentNode.getLinks();
+        }
 
     }
 }

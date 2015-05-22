@@ -121,7 +121,7 @@ public class BigStateGraph {
         } else {
             // Create a cycle
             redex.addLink(dup, rewritingRule);
-            return dup;
+            return null;
         }
     }
 
@@ -259,5 +259,9 @@ public class BigStateGraph {
         //</editor-fold>
 
         return chocoSolver1.findSolution() && chocoSolver2.findSolution();
+    }
+    
+    public int getGraphSize(){
+        return nodes.size();
     }
 }

@@ -32,7 +32,7 @@ public final class EncapRule extends RewRuleWProps {
     static {
         redex = generateRedex();
         reactum = generateReactum();
-        map = new InstantiationMap(2, 0, 1);
+        map = new InstantiationMap(1, 0);
         auxProperties = new LinkedList<>();
         auxProperties.add("NodeType");
         auxProperties.add("PacketType");

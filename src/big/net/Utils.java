@@ -194,7 +194,25 @@ public class Utils {
     public static RewritingRule[] getNetRules() {
         if (NET_RULES == null) {
             NET_RULES = new RewritingRule[]{new EncapRule(), new DFRule(),
-                new Domain2HostRule(), new DecapRule()};
+                new Domain2HostRule(), new DecapRule(), new ForwardRule()};
+        }
+        return NET_RULES;
+    }
+    
+        /**
+     * Generate an array with instances of the rewriting rules for network
+     * bigraphs, plus firewall rules.
+     *
+     * @return An array of RewritingRule instances for net bigraphs.
+     */
+    public static RewritingRule[] getNetFWRules() {
+        if (NET_RULES == null) {
+            NET_RULES = new RewritingRule[]{new EncapRule(), new DFRule(),
+                new Domain2HostRule(), new DecapRule(), new ForwardRule(),
+            new DFRuleFW(),new Domain2HostFWRule(),new FWINRule(),
+            new FWOUTRule(), new ForwardFWRule(), new NewTokenINRuleFar(),
+            new NewTokenINRuleNear(), new NewTokenOUTRuleFar(),
+            new NewTokenOUTRuleNear()};
         }
         return NET_RULES;
     }

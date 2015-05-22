@@ -28,13 +28,13 @@ import java.util.List;
  * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-class BSGNode {
-    private Bigraph state;
-    private List<BSGLink> links;
+public class BSGNode {
+    private final Bigraph state;
+    private final List<BSGLink> links;
     /**
      * Hash code is pre-computed and stored here.
      */
-    private int hashCode;
+    private final int hashCode;
     
     protected BSGNode(Bigraph big, BigHashFunction bhf){
         state=big;
@@ -49,8 +49,6 @@ class BSGNode {
      * @param rr Name of the rewriting rule applied. The name <u>must</u> be
      * used consistently for the graph to recognise cycles, i.e. the same name
      * must be <b>always</b> used for the same rewriting rule.
-     * @param reactum Bigraph resulting from the application of the rewriting
-     * rule.
      */
     protected void addLink(BSGNode reactum, String rr){
         links.add(new BSGLink(reactum,rr));

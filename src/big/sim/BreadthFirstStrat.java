@@ -27,18 +27,18 @@ import java.util.LinkedList;
  */
 public class BreadthFirstStrat implements BRSStrategy {
 
-    private final LinkedList<Bigraph> queue;
     private RewritingRule[] rules;
 
     public BreadthFirstStrat() {
-        queue = new LinkedList<>();
+
     }
 
     @Override
     public Iterable<Bigraph> apply(Bigraph to) {
+        LinkedList<Bigraph> queue = new LinkedList<>();
         for (RewritingRule r : rules) {
             RewRuleWProps rrwp = (RewRuleWProps) r;
-            for(Bigraph big : rrwp.apply(to)){
+            for (Bigraph big : rrwp.apply(to)) {
                 queue.add(big);
             }
         }
@@ -48,6 +48,18 @@ public class BreadthFirstStrat implements BRSStrategy {
     @Override
     public void setRules(RewritingRule[] rs) {
         rules = rs;
+    }
+
+    @Override
+    public Iterable<RuleApplication> apply_RA(Bigraph to) {
+        LinkedList<RuleApplication> queue = new LinkedList<>();
+        for (RewritingRule r : rules) {
+            RewRuleWProps rrwp = (RewRuleWProps) r;
+            for (Bigraph big : rrwp.apply(to)) {              
+                queue.add(new RuleApplication(big,rrwp));
+            }
+        }
+        return queue;
     }
 
 }

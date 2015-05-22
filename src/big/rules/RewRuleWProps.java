@@ -28,7 +28,6 @@ import it.uniud.mads.jlibbig.core.std.Port;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -145,6 +144,10 @@ public abstract class RewRuleWProps extends RewritingRule {
     public boolean isApplicable(Bigraph bigraph) {
         // Defaulted
         return true;
+    }
+    
+    public String getName(){
+        return this.getClass().getSimpleName();
     }
 
     /**

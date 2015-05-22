@@ -19,11 +19,21 @@ package big.sim;
 import big.hash.BigHashFunction;
 import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
-import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.Handle;
+import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.PlaceEntity;
+import it.uniud.mads.jlibbig.core.std.Point;
+import it.uniud.mads.jlibbig.core.std.Root;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.ICF;
+import org.chocosolver.solver.variables.BoolVar;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VF;
 
 /**
  * Represents a graph where each node is a different possible state of the
@@ -73,20 +83,21 @@ public class BigStateGraph {
 
     /**
      * Adds a new state to the state graph, through application of a rewriting
-     * rule to the current state.
+     * rule to the current state(i.e. the last one added/selected).
      *
      * @param rewritingRule Name of the rewriting rule. The name <u>must</u> be
      * used consistently for the graph to recognise cycles, i.e. the same name
      * must be <b>always</b> used for the same rewriting rule.
      * @param reactum Bigraph resulting from the application of the rewriting
      * rule.
+     * @return The new state reached (as a BSGNode).
      */
-    public void applyRewritingRule(String rewritingRule, Bigraph reactum) {
-        current = applyRewritingRule(current, rewritingRule, reactum);
+    public BSGNode applyRewritingRule(String rewritingRule, Bigraph reactum) {
+        return current = applyRewritingRule(current, rewritingRule, reactum);
     }
 
     /**
-     * Internal method that applies a rewriting rule, generating a new state. If
+     * Applies a rewriting rule, generating a new state. If
      * the state already exists, a cycle is created in the graph.
      *
      * @param redex BSGNode to whom the rule is applied.
@@ -95,11 +106,11 @@ public class BigStateGraph {
      * must be <b>always</b> used for the same rewriting rule.
      * @param reactum Bigraph resulting from the application of the rewriting
      * rule.
-     * @return The new current node.
+     * @return The new state reached (as a BSGNode).
      */
-    private BSGNode applyRewritingRule(BSGNode redex, String rewritingRule, Bigraph reactum) {
+    public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule, Bigraph reactum) {
         // Find duplicate node (if present)
-        BSGNode dup = findDuplicate(redex, rewritingRule, reactum);
+        BSGNode dup = findDuplicate(redex, reactum);
         if (dup == null) {
             // Generate a new state, build links
             BSGNode newNode = new BSGNode(reactum, hashFunc);
@@ -110,7 +121,7 @@ public class BigStateGraph {
         } else {
             // Create a cycle
             redex.addLink(dup, rewritingRule);
-            return dup;
+            return null;
         }
     }
 
@@ -127,19 +138,19 @@ public class BigStateGraph {
      * rule.
      * @return A BSGNode that has the same state of the reactum, or null.
      */
-    private BSGNode findDuplicate(BSGNode redex, String rewritingRule, Bigraph reactum) {
+    private BSGNode findDuplicate(BSGNode redex, Bigraph reactum) {
         // Use the hash table to find possible duplicates
-        /*
-         The "Matcher" equality check has been removed while the
-         isomorphism check is being implemented in the library.
-         */
         BSGNode dup = hashTable.get(redex.getHashCode());
         if (dup == null) {
             // No duplicates detected
             return null;
-        }else{
-            // Duplicate found
-            return dup;
+        } else {
+            // Hash collision suggests possible duplicate (or isomorphism)
+            // Check isomorphism
+            if (areIsomorph(redex.getState(), reactum)) {
+                return dup;
+            }
+            return null;
         }
     }
 
@@ -149,10 +160,108 @@ public class BigStateGraph {
 
     /**
      * Returns the last node a rule has been applied to.
+     *
      * @return The last node a rule has been applied to, or the root.
      */
     public BSGNode getLastNodeUsed() {
         return current;
     }
 
+    /**
+     * Checks if two Bigraphs are isomorph.
+     *
+     * @param a First Bigraph.
+     * @param b Second Bigraph.
+     * @return <i>true</i> if the Bigraphs are isomorph, <i>false</i> otherwise.
+     */
+    protected static boolean areIsomorph(Bigraph a, Bigraph b) {
+        Solver chocoSolver1 = new Solver("Link graph isomorphism"),
+                chocoSolver2 = new Solver("Place graph isomorphism");
+        // Link graph
+        //<editor-fold desc="Link graph isomorphism">
+        //<editor-fold desc="Creazione lista handle e point">
+        ArrayList<Handle> handlesA = new ArrayList<>();
+        for (Handle h : a.getOuterNames()) {
+            handlesA.add(h);
+        }
+        for (Handle h : a.getEdges()) {
+            handlesA.add(h);
+        }
+        ArrayList<Handle> handlesB = new ArrayList<>();
+        for (Handle h : b.getOuterNames()) {
+            handlesB.add(h);
+        }
+        for (Handle h : b.getEdges()) {
+            handlesB.add(h);
+        }
+        ArrayList<Point> pointsA = new ArrayList<>();
+        for (Point p : a.getInnerNames()) {
+            pointsA.add(p);
+        }
+        for (Node n : a.getNodes()) {
+            for (Point p : n.getPorts()) {
+                pointsA.add(p);
+            }
+        }
+        ArrayList<Point> pointsB = new ArrayList<>();
+        for (Point p : b.getInnerNames()) {
+            pointsB.add(p);
+        }
+        for (Node n : b.getNodes()) {
+            for (Point p : n.getPorts()) {
+                pointsB.add(p);
+            }
+        }
+        int nPtsA = pointsA.size(), nPtsB = pointsB.size(),
+                nHdlsA = handlesA.size(), nHdlsB = handlesB.size();
+        //</editor-fold>
+
+        if (nPtsA != nPtsB || nHdlsA != nHdlsB) {
+            // Mismatching point/handle cardinality
+            return false;
+        }
+        BoolVar[][] ptsVars = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver1);
+        BoolVar[][] hdlsVars = VF.boolMatrix("hdlsVars", nHdlsA, nHdlsA, chocoSolver1);
+        IntVar one = VF.fixed(1, chocoSolver1);
+
+        for (BoolVar[] bs : ptsVars) {
+            chocoSolver1.post(ICF.sum(bs, one));
+        }
+        for (BoolVar[] bs : hdlsVars) {
+            chocoSolver1.post(ICF.sum(bs, one));
+        }
+        //</editor-fold>
+
+        //<editor-fold desc="Place graph isomorphism">
+        LinkedList<PlaceEntity> placeEntA = new LinkedList<>();
+        for (Root r : a.getRoots()) {
+            placeEntA.add(r);
+        }
+        placeEntA.addAll(a.getNodes());
+
+        LinkedList<PlaceEntity> placeEntB = new LinkedList<>();
+        for (Root r : b.getRoots()) {
+            placeEntB.add(r);
+        }
+        placeEntB.addAll(b.getNodes());
+        int nPlcEntA = placeEntA.size(), nPlcEntB = placeEntB.size();
+
+        if (nPlcEntA != nPlcEntB) {
+            // Mismatching place entity cardinality
+            return false;
+        }
+        BoolVar[][] placeEntVars = VF.boolMatrix("placeEntVars", nPlcEntA,
+                nPlcEntA, chocoSolver2);
+
+        for (BoolVar[] bs : placeEntVars) {
+            chocoSolver2.post(ICF.sum(bs, one));
+        }
+        //</editor-fold>
+
+        return chocoSolver1.findSolution() && chocoSolver2.findSolution();
+    }
+    
+    public int getGraphSize(){
+        return nodes.size();
+    }
 }

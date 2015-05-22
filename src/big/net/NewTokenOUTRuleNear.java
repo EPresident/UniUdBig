@@ -35,8 +35,7 @@ public class NewTokenOUTRuleNear extends RewRuleWProps {
     private final String DELIMITER = "%";
     private Matcher matcher;
 
-    public NewTokenOUTRuleNear(Bigraph redex, Bigraph reactum,
-            InstantiationMap map) {
+    public NewTokenOUTRuleNear() {
         super(redex, reactum, map);
         this.matcher = new Matcher();
     }

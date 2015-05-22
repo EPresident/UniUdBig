@@ -42,7 +42,7 @@ public final class EncapRule extends RewRuleWProps {
         super(redex, reactum, map);
     }
 
-    protected static List<String> getAuxProperties() {
+    protected List<String> getAuxProperties() {
         return auxProperties;
     }
 
@@ -142,7 +142,7 @@ public final class EncapRule extends RewRuleWProps {
                                         OuterName downId = (OuterName) downH;
                                         String valueP = downH.toString().split("_")[0] + "_packet";
                                         instance.attachProperty(new SharedProperty<String>(
-                                                new SimpleProperty<String>("PacketName", valueP)));
+                                                new SimpleProperty<String>("Name", valueP)));
 
                                     }
                                 }

@@ -40,7 +40,7 @@ public class NewTokenOUTRuleNear extends RewRuleWProps {
         this.matcher = new Matcher();
     }
 
-    protected static List<String> getAuxProperties() {
+    protected List<String> getAuxProperties() {
         return auxProperties;
     }
 

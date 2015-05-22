@@ -21,6 +21,10 @@ changelog.txt
 */config.txt
 lib/
 
+# Eclipse Project Files #
+##########################
+.project
+
 # OS generated files #
 ######################
 .DS_Store

@@ -97,8 +97,8 @@ public abstract class RewRuleWProps extends RewritingRule {
 
     }
 
-    public static void clearAuxProperties(Bigraph bg) {
-        //Deletes auxiliary properties, such as NodeType and PacketType.
+    public void clearAuxProperties(Bigraph bg) {
+    	//Deletes auxiliary properties, such as NodeType and PacketType.
         boolean pass = false;
         for (Node n : bg.getNodes()) {
             CopyOnWriteArrayList<Property> cow = new CopyOnWriteArrayList<Property>(n.getProperties());
@@ -107,13 +107,13 @@ public abstract class RewRuleWProps extends RewritingRule {
             for (int i = 0; i < ap.length; i++) {
                 String name = ap[i].getName();
                 if (!name.equals("Owner")) {
-                    for (String str : getAuxProperties()) {
-                        if (name.equals(str)) {
-                            pass = true;
+                	for (String str : getAuxProperties()) {
+                		if (name.equals(str)) {
+                        	pass = true;
                         }
                     }
                     if (pass) {
-                        n.detachProperty(ap[i]);
+                    	n.detachProperty(ap[i]);
                     }
                     pass = false;
                 }
@@ -121,9 +121,7 @@ public abstract class RewRuleWProps extends RewritingRule {
         }
     }
     
-    protected static List<String> getAuxProperties(){
-        return new LinkedList<>();
-    }
+    protected abstract List<String> getAuxProperties();
 
     protected String getOuterNameImage(String name, Match match, int nPort) {
         String str = "";

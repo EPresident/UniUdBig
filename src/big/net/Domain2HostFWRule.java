@@ -34,7 +34,7 @@ public class Domain2HostFWRule extends RewRuleWProps {
         super(redex, reactum, map);
     }
 
-    protected static List<String> getAuxProperties() {
+    protected List<String> getAuxProperties() {
         return auxProperties;
     }
 

@@ -3,6 +3,7 @@ package big.net;
 import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.attachedProperties.*;
 import it.uniud.mads.jlibbig.core.std.*;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -86,7 +87,20 @@ public class Domain2HostRule extends RewRuleWProps {
 
     @Override
     public void instantiateReactumNode(Node original, Node instance, Match match) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	for (Property p : original.getProperties()) {//Original = node of the reactum
+            Node[] array = rr.get(p.get().toString());
+            if (array != null) {
+                Node n = array[1]; //Node of the redex
+                if (n != null) {
+                    Node img = match.getImage(n);//Node of the original bigraph
+                    if (img != null) {
+                        copyProperties(img, instance);
+                    }
+                }
+            }
+            
+        }
+
     }
 
 }

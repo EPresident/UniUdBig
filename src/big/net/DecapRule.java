@@ -3,6 +3,7 @@ package big.net;
 import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.attachedProperties.*;
 import it.uniud.mads.jlibbig.core.std.*;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,8 +74,8 @@ public class DecapRule extends RewRuleWProps {
 
     @Override
     public void instantiateReactumNode(Node original, Node instance, Match match) {
-        for (Property p : original.getProperties()) {//Original = node of the reactum
-            Node[] array = rr.get((String) p.get());
+    	for (Property p : original.getProperties()) {//Original = node of the reactum
+            Node[] array = rr.get(p.get().toString());
             if (array != null) {
                 Node n = array[1]; //Node of the redex
                 if (n != null) {
@@ -84,6 +85,7 @@ public class DecapRule extends RewRuleWProps {
                     }
                 }
             }
+            
         }
 
     }

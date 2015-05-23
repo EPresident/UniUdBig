@@ -48,7 +48,7 @@ public class NewTokenOUTRuleNear extends RewRuleWProps {
     public void instantiateReactumNode(Node original, Node instance, Match match) {
         for (Property p : original.getProperties()) {// Original = node of the
             // reactum
-            Node[] array = rr.get(p.get());
+            Node[] array = rr.get(p.get().toString());
             if (array != null) {
                 Node n = array[1]; // Node of the redex
                 if (n != null) {

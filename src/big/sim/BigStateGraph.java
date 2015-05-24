@@ -97,8 +97,8 @@ public class BigStateGraph {
     }
 
     /**
-     * Applies a rewriting rule, generating a new state. If
-     * the state already exists, a cycle is created in the graph.
+     * Applies a rewriting rule, generating a new state. If the state already
+     * exists, a cycle is created in the graph.
      *
      * @param redex BSGNode to whom the rule is applied.
      * @param rewritingRule Name of the rewriting rule. The name <u>must</u> be
@@ -220,14 +220,34 @@ public class BigStateGraph {
             // Mismatching point/handle cardinality
             return false;
         }
-        BoolVar[][] ptsVars = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver1);
-        BoolVar[][] hdlsVars = VF.boolMatrix("hdlsVars", nHdlsA, nHdlsA, chocoSolver1);
+        // Rows
+        BoolVar[][] ptsVarsR = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver1);
+        BoolVar[][] hdlsVarsR = VF.boolMatrix("hdlsVars", nHdlsA, nHdlsA, chocoSolver1);
+        // Columns
+        BoolVar[][] ptsVarsC = new BoolVar[nPtsA][nPtsA];
+        BoolVar[][] hdlsVarsC = new BoolVar[nHdlsA][nHdlsA];
         IntVar one = VF.fixed(1, chocoSolver1);
 
-        for (BoolVar[] bs : ptsVars) {
+        for (int i = 0; i < nPtsA; i++) {
+            for (int j = 0; j < nPtsA; j++) {
+                ptsVarsC[j][i] = ptsVarsR[i][j];
+            }
+        }
+        for (int i = 0; i < nHdlsA; i++) {
+            for (int j = 0; j < nHdlsA; j++) {
+                hdlsVarsC[j][i] = hdlsVarsR[i][j];
+            }
+        }
+        for (BoolVar[] bs : ptsVarsR) {
             chocoSolver1.post(ICF.sum(bs, one));
         }
-        for (BoolVar[] bs : hdlsVars) {
+        for (BoolVar[] bs : hdlsVarsR) {
+            chocoSolver1.post(ICF.sum(bs, one));
+        }
+        for (BoolVar[] bs : ptsVarsC) {
+            chocoSolver1.post(ICF.sum(bs, one));
+        }
+        for (BoolVar[] bs : hdlsVarsC) {
             chocoSolver1.post(ICF.sum(bs, one));
         }
         //</editor-fold>
@@ -250,18 +270,27 @@ public class BigStateGraph {
             // Mismatching place entity cardinality
             return false;
         }
-        BoolVar[][] placeEntVars = VF.boolMatrix("placeEntVars", nPlcEntA,
+        BoolVar[][] placeEntVarsR = VF.boolMatrix("placeEntVars", nPlcEntA,
                 nPlcEntA, chocoSolver2);
+        BoolVar[][] placeEntVarsC = new BoolVar[nPlcEntA][nPlcEntA];
 
-        for (BoolVar[] bs : placeEntVars) {
+        for (int i = 0; i < nPlcEntA; i++) {
+            for (int j = 0; j < nPlcEntA; j++) {
+                placeEntVarsC[j][i] = placeEntVarsR[i][j];
+            }
+        }
+        for (BoolVar[] bs : placeEntVarsR) {
+            chocoSolver2.post(ICF.sum(bs, one));
+        }
+        for (BoolVar[] bs : placeEntVarsC) {
             chocoSolver2.post(ICF.sum(bs, one));
         }
         //</editor-fold>
 
         return chocoSolver1.findSolution() && chocoSolver2.findSolution();
     }
-    
-    public int getGraphSize(){
+
+    public int getGraphSize() {
         return nodes.size();
     }
 }

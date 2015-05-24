@@ -20,6 +20,7 @@ import big.net.Utils;
 import big.prprint.BigPPrinterVeryPretty;
 import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,10 +41,12 @@ public class SimTest {
         BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
         System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
         RewritingRule[] rules = Utils.getNetRules();
-        RewritingRule[] rules2 = Utils.getNetFWRules();
+        //     RewritingRule[] rules2 = Utils.getNetFWRules();
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
         BigStateGraph bsg = new BigStateGraph(bigraph);
         Sim sim = new Sim(bsg, brs);
+
+        //System.out.println(BigStateGraph.areIsomorph(bigraph, new BigraphBuilder(bigraph).makeBigraph()));
         int i = 1000;
         int applcations = 0;
         do {
@@ -51,10 +54,10 @@ public class SimTest {
                 //  System.out.println(pp.prettyPrint(ra.big,ra.ruleName));
                 applcations++;
             }
-            System.out.println(applcations+ " applications");
+            System.out.println(applcations + " applications");
             i--;
         } while (i > 0 && sim.hasNext());
-        // } while (sim.hasNext());
+
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         System.out.println(bsg.getGraphSize() + " - " + applcations);
         BSGNode currentNode = bsg.getRoot();
@@ -71,7 +74,7 @@ public class SimTest {
             int choice = 0;
             try {
                 String in = input.readLine();
-                if(in.isEmpty()){
+                if (in.isEmpty()) {
                     System.out.println("Exiting.");
                     System.exit(0);
                 }

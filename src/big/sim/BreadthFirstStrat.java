@@ -37,8 +37,8 @@ public class BreadthFirstStrat implements BRSStrategy {
     public Iterable<Bigraph> apply(Bigraph to) {
         LinkedList<Bigraph> queue = new LinkedList<>();
         for (RewritingRule r : rules) {
-            RewRuleWProps rrwp = (RewRuleWProps) r;
-            for (Bigraph big : rrwp.apply(to)) {
+            //RewRuleWProps rrwp = (RewRuleWProps) r;
+            for (Bigraph big : r.apply(to)) {
                 queue.add(big);
             }
         }

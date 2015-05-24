@@ -20,6 +20,7 @@ import big.hash.BigHashFunction;
 import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.Child;
 import it.uniud.mads.jlibbig.core.std.Handle;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.PlaceEntity;
@@ -120,7 +121,9 @@ public class BigStateGraph {
             return newNode;
         } else {
             // Create a cycle
-            redex.addLink(dup, rewritingRule);
+            //System.out.println("iso - ");
+            // redex.addLink(dup, rewritingRule);
+            //return dup;
             return null;
         }
     }
@@ -187,6 +190,7 @@ public class BigStateGraph {
         for (Handle h : a.getEdges()) {
             handlesA.add(h);
         }
+
         ArrayList<Handle> handlesB = new ArrayList<>();
         for (Handle h : b.getOuterNames()) {
             handlesB.add(h);
@@ -194,6 +198,7 @@ public class BigStateGraph {
         for (Handle h : b.getEdges()) {
             handlesB.add(h);
         }
+
         ArrayList<Point> pointsA = new ArrayList<>();
         for (Point p : a.getInnerNames()) {
             pointsA.add(p);
@@ -203,6 +208,7 @@ public class BigStateGraph {
                 pointsA.add(p);
             }
         }
+
         ArrayList<Point> pointsB = new ArrayList<>();
         for (Point p : b.getInnerNames()) {
             pointsB.add(p);
@@ -212,6 +218,7 @@ public class BigStateGraph {
                 pointsB.add(p);
             }
         }
+
         int nPtsA = pointsA.size(), nPtsB = pointsB.size(),
                 nHdlsA = handlesA.size(), nHdlsB = handlesB.size();
         //</editor-fold>
@@ -219,6 +226,16 @@ public class BigStateGraph {
         if (nPtsA != nPtsB || nHdlsA != nHdlsB) {
             // Mismatching point/handle cardinality
             return false;
+        }
+        // Flow
+
+        int[] flowHdlsA = new int[nHdlsA];
+        for (int i = 0; i < nHdlsA; i++) {
+            flowHdlsA[i] = handlesA.get(i).getPoints().size();
+        }
+        int[] flowHdlsB = new int[nHdlsB];
+        for (int i = 0; i < nHdlsB; i++) {
+            flowHdlsB[i] = handlesB.get(i).getPoints().size();
         }
         // Rows
         BoolVar[][] ptsVarsR = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver1);
@@ -241,14 +258,16 @@ public class BigStateGraph {
         for (BoolVar[] bs : ptsVarsR) {
             chocoSolver1.post(ICF.sum(bs, one));
         }
-        for (BoolVar[] bs : hdlsVarsR) {
-            chocoSolver1.post(ICF.sum(bs, one));
+        for (int i = 0; i < nHdlsA; i++) {
+            chocoSolver1.post(ICF.sum(hdlsVarsR[i], one));
+            chocoSolver1.post(ICF.scalar(hdlsVarsR[i], flowHdlsA, VF.fixed(flowHdlsB[i], chocoSolver1)));
         }
         for (BoolVar[] bs : ptsVarsC) {
             chocoSolver1.post(ICF.sum(bs, one));
         }
-        for (BoolVar[] bs : hdlsVarsC) {
-            chocoSolver1.post(ICF.sum(bs, one));
+        for (int i = 0; i < nHdlsA; i++) {
+            chocoSolver1.post(ICF.sum(hdlsVarsC[i], one));
+            chocoSolver1.post(ICF.scalar(hdlsVarsR[i], flowHdlsB, VF.fixed(flowHdlsA[i], chocoSolver1)));
         }
         //</editor-fold>
 
@@ -264,30 +283,64 @@ public class BigStateGraph {
             placeEntB.add(r);
         }
         placeEntB.addAll(b.getNodes());
+
         int nPlcEntA = placeEntA.size(), nPlcEntB = placeEntB.size();
 
         if (nPlcEntA != nPlcEntB) {
             // Mismatching place entity cardinality
             return false;
         }
+
+        // FIXME: very inefficient
+        int[] flowA = new int[nPlcEntA], flowB = new int[nPlcEntB];
+        for (int i = 0; i < nPlcEntA; i++) {
+            flowA[i] = getPlaceFlow(placeEntA.get(i));
+            flowB[i] = getPlaceFlow(placeEntB.get(i));
+        }
+
         BoolVar[][] placeEntVarsR = VF.boolMatrix("placeEntVars", nPlcEntA,
                 nPlcEntA, chocoSolver2);
         BoolVar[][] placeEntVarsC = new BoolVar[nPlcEntA][nPlcEntA];
+        IntVar one2 = VF.fixed(1, chocoSolver2);
 
         for (int i = 0; i < nPlcEntA; i++) {
             for (int j = 0; j < nPlcEntA; j++) {
                 placeEntVarsC[j][i] = placeEntVarsR[i][j];
             }
         }
-        for (BoolVar[] bs : placeEntVarsR) {
-            chocoSolver2.post(ICF.sum(bs, one));
+
+        // Constraints
+        for (int i = 0; i < nPlcEntA; i++) {
+            chocoSolver2.post(ICF.sum(placeEntVarsR[i], one2));
+            chocoSolver2.post(ICF.scalar(placeEntVarsR[i], flowB, VF.fixed(flowA[i], chocoSolver2)));
         }
-        for (BoolVar[] bs : placeEntVarsC) {
-            chocoSolver2.post(ICF.sum(bs, one));
+        for (int i = 0; i < nPlcEntA; i++) {
+            chocoSolver2.post(ICF.sum(placeEntVarsC[i], one2));
+            chocoSolver2.post(ICF.scalar(placeEntVarsC[i], flowA, VF.fixed(flowB[i], chocoSolver2)));
         }
         //</editor-fold>
 
         return chocoSolver1.findSolution() && chocoSolver2.findSolution();
+    }
+
+    private static int getPlaceFlow(PlaceEntity pe) {
+        int flow = 1;
+        if (pe.isRoot()) {
+            Root r = (Root) pe;
+            for (Child c : r.getChildren()) {
+                flow += getPlaceFlow(c);
+            }
+            return flow;
+        }
+        if (pe.isNode()) {
+            Node n = (Node) pe;
+            for (Child c : n.getChildren()) {
+                flow += getPlaceFlow(c);
+            }
+            return flow;
+        }
+        System.err.println("suspicious...");
+        return 1;
     }
 
     public int getGraphSize() {

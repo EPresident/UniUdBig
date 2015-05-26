@@ -101,8 +101,6 @@ public class BigStateGraph {
      * @param reactum Bigraph resulting from the application of the rewriting
      * rule.
      * @return The new state reached (as a BSGNode).
-     * @author EPresident <prez_enquiry@hotmail.com>
-     * 		   Luca Geatti <geatti.luca@spes.uniud.it>
      */
     public BSGNode applyRewritingRule(String rewritingRule, Bigraph reactum) {
         return current = applyRewritingRule(current, rewritingRule, reactum);
@@ -187,10 +185,10 @@ public class BigStateGraph {
      * @param a First Bigraph.
      * @param b Second Bigraph.
      * @return <i>true</i> if the Bigraphs are isomorph, <i>false</i> otherwise.
+     * @author EPresident <prez_enquiry@hotmail.com>
+     * 		   Luca Geatti <geatti.luca@spes.uniud.it>
      */
-
-    
-    public static boolean areIsomorph(Bigraph a, Bigraph b){
+ public static boolean areIsomorph(Bigraph a, Bigraph b){
     	Solver linkSolver = new Solver("Link Graph Isomorphism");
     	Solver placeSolver = new Solver("Place Graph Isomorphism");
     	

@@ -21,15 +21,24 @@ import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.Child;
+import it.uniud.mads.jlibbig.core.std.Edge;
 import it.uniud.mads.jlibbig.core.std.Handle;
+import it.uniud.mads.jlibbig.core.std.InnerName;
+import it.uniud.mads.jlibbig.core.std.LinkEntity;
 import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.PlaceEntity;
 import it.uniud.mads.jlibbig.core.std.Point;
+import it.uniud.mads.jlibbig.core.std.Port;
 import it.uniud.mads.jlibbig.core.std.Root;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.BoolVar;
@@ -92,6 +101,8 @@ public class BigStateGraph {
      * @param reactum Bigraph resulting from the application of the rewriting
      * rule.
      * @return The new state reached (as a BSGNode).
+     * @author EPresident <prez_enquiry@hotmail.com>
+     * 		   Luca Geatti <geatti.luca@spes.uniud.it>
      */
     public BSGNode applyRewritingRule(String rewritingRule, Bigraph reactum) {
         return current = applyRewritingRule(current, rewritingRule, reactum);
@@ -177,101 +188,458 @@ public class BigStateGraph {
      * @param b Second Bigraph.
      * @return <i>true</i> if the Bigraphs are isomorph, <i>false</i> otherwise.
      */
-    protected static boolean areIsomorph(Bigraph a, Bigraph b) {
-        Solver chocoSolver1 = new Solver("Link graph isomorphism"),
-                chocoSolver2 = new Solver("Place graph isomorphism");
-        // Link graph
-        //<editor-fold desc="Link graph isomorphism">
-        //<editor-fold desc="Creazione lista handle e point">
-        ArrayList<Handle> handlesA = new ArrayList<>();
-        for (Handle h : a.getOuterNames()) {
-            handlesA.add(h);
-        }
-        for (Handle h : a.getEdges()) {
-            handlesA.add(h);
-        }
 
-        ArrayList<Handle> handlesB = new ArrayList<>();
-        for (Handle h : b.getOuterNames()) {
-            handlesB.add(h);
-        }
-        for (Handle h : b.getEdges()) {
-            handlesB.add(h);
-        }
+    
+    public static boolean areIsomorph(Bigraph a, Bigraph b){
+    	Solver linkSolver = new Solver("Link Graph Isomorphism");
+    	Solver placeSolver = new Solver("Place Graph Isomorphism");
+    	
+    	/*
+    	 * LinkGraph Variables and Constraints 
+    	 */
+    	IntVar[] aux = new IntVar[1];
+    	Collection<? extends Node> nodesA = a.getNodes();
+    	Collection<? extends InnerName> innersA = a.getInnerNames();
+    	Collection<Port> portsA = new HashSet<>();
+    	Collection<? extends OuterName> outersA = a.getOuterNames();
+    	Collection<? extends Edge> edgesA = a.getEdges();
+    	
+    	Collection<? extends Node> nodesB = b.getNodes();
+    	Collection<? extends InnerName> innersB = b.getInnerNames();
+    	Collection<Port> portsB = new HashSet<>();
+    	Collection<? extends OuterName> outersB = b.getOuterNames();
+    	Collection<? extends Edge> edgesB = b.getEdges();
+    	
+    	for(Node nodeA : a.getNodes()){
+    		portsA.addAll(nodeA.getPorts());
+    	}
+    	
+    	for(Node nodeB : b.getNodes()){
+    		portsB.addAll(nodeB.getPorts());
+    	}
+    	
+    	
+    	if(nodesA.size()!=nodesB.size()  ||  innersA.size()!=innersB.size() || outersA.size()!=outersB.size()
+    			|| portsA.size()!=portsB.size() || edgesA.size()!= edgesB.size() ){
+    		return false;
+    	}
+    	
+    	
+    	//Fixed Values for the structure of a's LinkGraph.
+    	//Map from Points of A to their IntegerVariables.
+    	HashMap<LinkEntity, HashMap<LinkEntity, IntVar>> linksA = new HashMap<LinkEntity, HashMap<LinkEntity, IntVar>>();
+    	ArrayList<IntVar> linkVarsA = new ArrayList<IntVar>();
+    	for(OuterName outer : outersA){//outernames of "a"
+    		HashMap<LinkEntity, IntVar> map = new HashMap<LinkEntity, IntVar>();
+    		for(Point point : outer.getPoints()){// points of "a"
+    			IntVar var = VF.fixed(1, linkSolver);
+    			map.put(point, var);
+    			linkVarsA.add(var);
+    		}
+    		linksA.put(outer, map);
+    	}
+    	for(Edge e : edgesA){
+    		HashMap<LinkEntity, IntVar> map = new HashMap<LinkEntity, IntVar>();
+    		for(Point point: e.getPoints()){
+    			IntVar var = VF.fixed(1, linkSolver);
+    			map.put(point, var);
+    			linkVarsA.add(var);
+    		}
+    		linksA.put(e, map);
+    	}
+    	
+    	
 
-        ArrayList<Point> pointsA = new ArrayList<>();
-        for (Point p : a.getInnerNames()) {
-            pointsA.add(p);
-        }
-        for (Node n : a.getNodes()) {
-            for (Point p : n.getPorts()) {
-                pointsA.add(p);
-            }
-        }
+    	HashMap<LinkEntity, HashMap<LinkEntity,IntVar>> pointsA = new HashMap<LinkEntity, HashMap<LinkEntity,IntVar>>();
+    	LinkedList<IntVar> pointsABVars = new LinkedList<IntVar>();
+    	int pointNumA = 0;
+    	//Inners of "a"
+    	for(InnerName innerA : innersA){
+    		int pointNumB = 0;
+    		//Variables for the edge from Points of "a" to Points of "b"
+    		HashMap<LinkEntity, IntVar> pointsAB = new HashMap<LinkEntity, IntVar>();
+    		for(InnerName innerB : innersB){
+    			IntVar var = VF.bool("PA_PB_"+pointNumA+"_"+pointNumB, linkSolver);
+    			pointsAB.put(innerB, var);
+    			pointsABVars.add(var);
+    			pointNumB++;
+    		}
+    		
+    		pointsA.put(innerA, pointsAB);
+    		pointNumA++;
+    	}
+    	
+    	//Points of "a"
+    	for(Port port : portsA){
+	    		int pointNumB = 0;
+	    		HashMap<LinkEntity, IntVar> pointsAB = new HashMap<LinkEntity, IntVar>();
+	    		for(Node nodeB : nodesB){
+	    			for(Port portB : nodeB.getPorts()){
+	    				IntVar var = VF.bool("PA_PB_"+pointNumA+"_"+pointNumB, linkSolver);
+	    				if(port.getNumber() != portB.getNumber()){
+	    					var = VF.fixed(0, linkSolver);
+	    				}
+	    				pointsAB.put(portB, var);
+	    				pointsABVars.add(var);
+	    				pointNumB++;
+	    			}
+	    		}
+	    		pointsA.put(port, pointsAB);
+	    		pointNumA++;
+    	}
+    	
+    	
+    	
+    	//Outers of "b"
+    	HashMap<LinkEntity, HashMap<LinkEntity,IntVar>> handlesB = new HashMap<LinkEntity, HashMap<LinkEntity,IntVar>>();
+    	HashMap<LinkEntity, HashMap<LinkEntity,IntVar>> fluxBA = new HashMap<LinkEntity, HashMap<LinkEntity,IntVar>>();
+    	ArrayList<IntVar> handleABVars = new ArrayList<IntVar>();
+    	int handleNumB = 0;
+    	for(OuterName outer : outersB){
+    		int handleNumA = 0;
+    		HashMap<LinkEntity, IntVar> handlesAB = new HashMap<LinkEntity, IntVar>();
+    		HashMap<LinkEntity, IntVar> handlesFluxAB = new HashMap<LinkEntity, IntVar>();
+    		for(OuterName outerA : outersA){
+    			IntVar var = VF.enumerated("HB_HA_"+handleNumB+"_"+handleNumA, 0, portsA.size()+innersA.size(), linkSolver);
+    			IntVar flux = VF.bool("HB_HA_FLUX_"+handleNumB+"_"+handleNumA, linkSolver);
+    			handlesAB.put(outerA, var);
+    			handlesFluxAB.put(outerA, flux);
+    			handleABVars.add(var);
+    			handleNumA++;
+    		}
+    		handlesB.put(outer, handlesAB);
+    		fluxBA.put(outer, handlesFluxAB);
+    		handleNumB++;
+    	}
+    	
+    	for(Edge e: edgesB){
+    		int handleNumA = 0;
+    		HashMap<LinkEntity, IntVar> handlesAB = new HashMap<LinkEntity, IntVar>();
+    		HashMap<LinkEntity, IntVar> handlesFluxAB = new HashMap<LinkEntity, IntVar>();
+    		for(Edge eB : edgesA){
+    			IntVar var = VF.enumerated("HB_HA_"+handleNumB+"_"+handleNumA, 0, portsA.size()+innersA.size(),linkSolver);
+    			IntVar flux = VF.bool("HB_HA_FLUX_"+handleNumB+"_"+handleNumA, linkSolver);
+    			handlesAB.put(eB, var);
+    			handleABVars.add(var);
+    			handlesFluxAB.put(eB, flux);
+    			handleNumA++;
+    		}
+    		handlesB.put(e, handlesAB);
+    		fluxBA.put(e, handlesFluxAB);
+    		handleNumB++;
+    	}
+    	
+    	
 
-        ArrayList<Point> pointsB = new ArrayList<>();
-        for (Point p : b.getInnerNames()) {
-            pointsB.add(p);
-        }
-        for (Node n : b.getNodes()) {
-            for (Point p : n.getPorts()) {
-                pointsB.add(p);
-            }
-        }
-
-        int nPtsA = pointsA.size(), nPtsB = pointsB.size(),
-                nHdlsA = handlesA.size(), nHdlsB = handlesB.size();
-        //</editor-fold>
-
-        if (nPtsA != nPtsB || nHdlsA != nHdlsB) {
-            // Mismatching point/handle cardinality
-            return false;
-        }
-        // Flow
-
-        int[] flowHdlsA = new int[nHdlsA];
-        for (int i = 0; i < nHdlsA; i++) {
-            flowHdlsA[i] = handlesA.get(i).getPoints().size();
-        }
-        int[] flowHdlsB = new int[nHdlsB];
-        for (int i = 0; i < nHdlsB; i++) {
-            flowHdlsB[i] = handlesB.get(i).getPoints().size();
-        }
-        // Rows
-        BoolVar[][] ptsVarsR = VF.boolMatrix("ptsVars", nPtsA, nPtsA, chocoSolver1);
-        BoolVar[][] hdlsVarsR = VF.boolMatrix("hdlsVars", nHdlsA, nHdlsA, chocoSolver1);
-        // Columns
-        BoolVar[][] ptsVarsC = new BoolVar[nPtsA][nPtsA];
-        BoolVar[][] hdlsVarsC = new BoolVar[nHdlsA][nHdlsA];
-        IntVar one = VF.fixed(1, chocoSolver1);
-
-        for (int i = 0; i < nPtsA; i++) {
-            for (int j = 0; j < nPtsA; j++) {
-                ptsVarsC[j][i] = ptsVarsR[i][j];
-            }
-        }
-        for (int i = 0; i < nHdlsA; i++) {
-            for (int j = 0; j < nHdlsA; j++) {
-                hdlsVarsC[j][i] = hdlsVarsR[i][j];
-            }
-        }
-        for (BoolVar[] bs : ptsVarsR) {
-            chocoSolver1.post(ICF.sum(bs, one));
-        }
-        for (int i = 0; i < nHdlsA; i++) {
-            chocoSolver1.post(ICF.sum(hdlsVarsR[i], one));
-            chocoSolver1.post(ICF.scalar(hdlsVarsR[i], flowHdlsA, VF.fixed(flowHdlsB[i], chocoSolver1)));
-        }
-        for (BoolVar[] bs : ptsVarsC) {
-            chocoSolver1.post(ICF.sum(bs, one));
-        }
-        for (int i = 0; i < nHdlsA; i++) {
-            chocoSolver1.post(ICF.sum(hdlsVarsC[i], one));
-            chocoSolver1.post(ICF.scalar(hdlsVarsR[i], flowHdlsB, VF.fixed(flowHdlsA[i], chocoSolver1)));
-        }
-        //</editor-fold>
-
-        //<editor-fold desc="Place graph isomorphism">
+    	
+    	
+    	/*
+    	 * First Constraint (M1) --Source Constraint
+    	 */
+    	int outFluxNum = 0;
+    	for(InnerName innerA : innersA){
+    		HashMap<LinkEntity, IntVar> map = pointsA.get(innerA);
+    		IntVar[] outFlux = map.values().toArray(aux);
+    		//Constraint
+    		linkSolver.post( ICF.sum(outFlux, VF.fixed(1, linkSolver)));
+    		outFluxNum++;
+    	}
+    	
+    	for(Port port : portsA){
+    		HashMap<LinkEntity, IntVar> map = pointsA.get(port);
+    		IntVar[] outFlux = map.values().toArray(aux);
+    		//Constraint
+    		linkSolver.post( ICF.sum(outFlux, VF.fixed(1, linkSolver)) );
+    		outFluxNum++;
+    	}
+    	
+    	
+    	
+    	/*
+    	 * Second Constraint (M2) --Source Constraint
+    	 */
+    	for(InnerName innerB : innersB){
+    		ArrayList<IntVar> fluxIN = new ArrayList<IntVar>();
+    		for(InnerName innerA : innersA){
+    			IntVar var = pointsA.get(innerA).get(innerB);
+    			fluxIN.add(var);
+    		}
+    		//Constraint
+    		IntVar[] fluxINArray = fluxIN.toArray(aux);
+    		linkSolver.post( ICF.sum(fluxINArray, VF.fixed(1, linkSolver)) );
+    	}
+    	
+    	for(Port portB : portsB){
+    		ArrayList<IntVar> fluxIN = new ArrayList<IntVar>();
+    		for(Port portA : portsA){
+    			IntVar var = pointsA.get(portA).get(portB);
+    			if(portA.getNumber() != portB.getNumber()){
+    				var = VF.fixed(0, linkSolver);
+    			}
+    			fluxIN.add(var);
+    		}
+    		//Constraint
+    		IntVar[] fluxINArray = fluxIN.toArray(aux);
+       		linkSolver.post( ICF.sum(fluxINArray, VF.fixed(1, linkSolver)) );
+    	}
+    	
+    	
+    	
+    	
+    	/*
+    	 * Third Constraint (M3)
+    	 */
+    	int sumNum=0;
+    	for(OuterName outerB : outersB){
+    		ArrayList<IntVar> fluxOUT = new ArrayList<IntVar>();
+    		for(InnerName innerA : innersA){
+    			HashMap<LinkEntity, IntVar> map = pointsA.get(innerA);
+    			for(Point innerB : outerB.getPoints()){
+    				if(innerB.isInnerName()){
+    					IntVar var = map.get(innerB);
+    					fluxOUT.add(var);
+    				}
+    			}
+    		}
+    		for(Port portA : portsA){
+    			HashMap<LinkEntity, IntVar> map = pointsA.get(portA);
+    			for(Point portB : outerB.getPoints()){
+    				if(portB.isPort()){
+    					IntVar var = map.get(portB);
+    					fluxOUT.add(var);
+    				}
+    			}
+    		}
+    		if(!fluxOUT.isEmpty()){
+	    		//Constraint
+	    		IntVar[] fluxIN = handlesB.get(outerB).values().toArray(aux);
+	    		IntVar[] fluxOUTArray = fluxOUT.toArray(aux);
+	    		IntVar sum = VF.enumerated("SUM_"+sumNum, 0, innersA.size()+portsA.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxIN, sum) );
+	    		linkSolver.post( ICF.sum(fluxOUTArray, sum) );
+    		}
+    		
+    		
+    		sumNum++;
+    	}
+    	
+    	for(Edge eB : edgesB){
+    		ArrayList<IntVar> fluxOUT = new ArrayList<IntVar>();
+    		for(InnerName innerA : innersA){
+    			HashMap<LinkEntity, IntVar> map = pointsA.get(innerA);
+    			for(Point innerB : eB.getPoints()){
+    				if(innerB.isInnerName()){
+    					IntVar var = map.get(innerB);
+    					fluxOUT.add(var);
+    				}
+    			}
+    		}
+    		for(Port portA : portsA){
+    			HashMap<LinkEntity, IntVar> map = pointsA.get(portA);
+    			for(Point portB : eB.getPoints()){
+    				if(portB.isPort()){
+    					IntVar var = map.get(portB);
+    					fluxOUT.add(var);
+    				}
+    			}
+    		}
+    		if(!fluxOUT.isEmpty()){
+	    		//Constraint
+	    		IntVar[] fluxIN = handlesB.get(eB).values().toArray(aux);
+	    		IntVar[] fluxOUTArray = fluxOUT.toArray(aux);
+	    		IntVar sum = VF.enumerated("SUM_"+sumNum, 0, outersA.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxIN, sum) );
+	    		linkSolver.post( ICF.sum(fluxOUTArray, sum) );
+    		}
+    		sumNum++;
+    	}
+    	
+    	
+    	/*
+    	 * Fourth Constraint (M4) --The most important: it closes the flow --Sink Constraint
+    	 * Seventh Constraint (M7)
+    	 */
+    	
+    	int sinkNum = 0;
+    	for(OuterName outerA : outersA){
+    		//Left Flow
+    		ArrayList<IntVar> fluxLeft = new ArrayList<IntVar>();
+    		HashMap<LinkEntity, IntVar> map = linksA.get(outerA);
+    		for(Port portA : portsA){
+    			IntVar var = map.get(portA);
+    			if(var != null){
+    				fluxLeft.add(var);
+    			}
+    		}
+    		for(InnerName innerA : innersA){
+    			IntVar var = map.get(innerA);
+    			if(var != null){
+    				fluxLeft.add(var);
+    			}
+    		}
+    		
+    		//Bottom Flow
+    		ArrayList<IntVar> fluxBottom = new ArrayList<IntVar>();
+    		for(OuterName outerB : outersB){
+    			HashMap<LinkEntity, IntVar> mapB = handlesB.get(outerB);
+    			IntVar var = mapB.get(outerA);
+    			if(var != null){
+    				fluxBottom.add(var);
+    			}
+    			HashMap<LinkEntity, IntVar> flowB = fluxBA.get(outerB);
+    			IntVar flow = flowB.get(outerA);
+    			if(flow != null){	
+    				linkSolver.post( ICF.times(var, flow, var) );
+    			}
+    		}
+    		for(Edge eB : edgesB){
+    			HashMap<LinkEntity, IntVar> mapB = handlesB.get(eB);
+    			IntVar var = mapB.get(outerA);
+    			if(var != null){
+    				fluxBottom.add(var);
+    			}
+    			HashMap<LinkEntity, IntVar> flowB = fluxBA.get(eB);
+    			IntVar flow = flowB.get(outerA);
+    			if(flow != null){	
+    				linkSolver.post( ICF.times(var, flow, var) );
+    			}
+    		}
+    		
+    		
+	    	if( !fluxLeft.isEmpty() && !fluxBottom.isEmpty()){
+	    		//Constraints M4
+	    		IntVar[] fluxLeftArray = fluxLeft.toArray(aux);
+	    		IntVar sumLeft = VF.enumerated("SumLeft"+sinkNum, 0, innersA.size()+portsA.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxLeftArray,"=" , sumLeft) );
+	    		
+	    		IntVar[] fluxBottomArray = fluxBottom.toArray(aux);
+	    		IntVar sumBottom = VF.enumerated("SumBottom"+sinkNum, 0, outersB.size()+edgesB.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxBottomArray, sumBottom) );
+	    		
+	    		linkSolver.post( ICF.arithm(sumLeft, "=", sumBottom) );
+	    		
+	    	}	
+    		
+    		sinkNum++;
+    	}
+    	
+    	for(Edge eA : edgesA){
+    		//Left Flow
+    		ArrayList<IntVar> fluxIN = new ArrayList<IntVar>();
+    		HashMap<LinkEntity, IntVar> map = linksA.get(eA);
+    		for(Port portA : portsA){
+    			IntVar var = map.get(portA);
+    			if(var != null)
+    				fluxIN.add(var);
+    		}
+    		for(InnerName innerA : innersA){
+    			IntVar var = map.get(innerA);
+    			if(var != null)
+    				fluxIN.add(var);
+    		}
+    		
+    		//Bottom Flow
+    		ArrayList<IntVar> fluxBottom = new ArrayList<IntVar>();
+    		for(OuterName outerB : outersB){
+    			HashMap<LinkEntity, IntVar> mapB = handlesB.get(outerB);
+    			IntVar var = mapB.get(eA);
+    			if(var != null){	
+    				fluxBottom.add(var);
+    			}
+    			HashMap<LinkEntity, IntVar> flowB = fluxBA.get(outerB);
+    			IntVar flow = flowB.get(eA);
+    			if(flow != null){	
+    				linkSolver.post( ICF.times(var, flow, var) );
+    			}
+    		}
+    		for(Edge eB : edgesB){
+    			HashMap<LinkEntity, IntVar> mapB = handlesB.get(eB);
+    			IntVar var = mapB.get(eA);
+    			if(var != null){
+    				fluxBottom.add(var);
+    			}
+    			HashMap<LinkEntity, IntVar> flowB = fluxBA.get(eB);
+    			IntVar flow = flowB.get(eA);
+    			if(flow != null){	
+    				linkSolver.post( ICF.times(var, flow, var) );
+    			}
+    		}
+    		
+    		if( !fluxIN.isEmpty() && !fluxBottom.isEmpty()){
+	    		//Constraints
+	    		IntVar[] fluxINArray = fluxIN.toArray(aux);
+	    		IntVar sumLeft = VF.enumerated("SumLeft"+sinkNum, 0, innersA.size()+pointsA.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxINArray , sumLeft) );
+	    		
+	    		IntVar[] fluxBottomArray = fluxBottom.toArray(aux);
+	    		IntVar sumBottom = VF.enumerated("SumBottom"+sinkNum, 0, outersB.size()+edgesB.size(), linkSolver);
+	    		linkSolver.post( ICF.sum(fluxBottomArray, sumBottom) );
+	    		
+	    		linkSolver.post( ICF.arithm(sumLeft, "=", sumBottom) );
+    		}
+    		sinkNum++;
+    	}
+    	
+    	
+    	
+    	/*
+    	 * Fifth Constraint (M5) --the total flow out of the handles of "b" must be exactly 1.
+    	 */
+    	for(OuterName outerB : outersB){
+    		HashMap<LinkEntity, IntVar> map = fluxBA.get(outerB);
+    		IntVar[] flows = map.values().toArray(aux);
+    		//Constraint
+    		if(flows.length>0){
+    			linkSolver.post( ICF.sum(flows, VF.fixed(1, linkSolver)) );
+    		}
+    	}
+    	for(Edge eB : edgesB){
+    		HashMap<LinkEntity, IntVar> map = fluxBA.get(eB);
+    		IntVar[] flows = map.values().toArray(aux);
+    		//Constraint
+    		if(flows.length>0){
+    			linkSolver.post( ICF.sum(flows, VF.fixed(1, linkSolver)) );
+    		}
+    	}
+    	
+    	
+    	/*
+    	 * Sixth Constraint (M6) --the total flow into the handles of "a" must be exactly 1.
+    	 */
+    	for(OuterName outerA : outersA){
+    		ArrayList<IntVar> flows = new ArrayList<IntVar>();
+    		for(OuterName outerB : outersB){
+    			HashMap<LinkEntity, IntVar> map = fluxBA.get(outerB);
+    			IntVar var = map.get(outerA);
+    			if(var != null){
+    				flows.add(var);
+    			}
+    		}
+    		if(!flows.isEmpty()){
+    			IntVar[] flowsArray = flows.toArray(aux);
+        		linkSolver.post( ICF.sum(flowsArray, VF.fixed(1, linkSolver)) );
+    		}
+    	}
+    	for(Edge eA : edgesA){
+    		ArrayList<IntVar> flows = new ArrayList<IntVar>();
+    		for(Edge eB : edgesB){
+    			HashMap<LinkEntity, IntVar> map = fluxBA.get(eB);
+    			IntVar var = map.get(eA);
+    			if(var != null){
+    				flows.add(var);
+    			}
+    		}
+    		if(!flows.isEmpty()){
+    			IntVar[] flowsArray = flows.toArray(aux);
+        		linkSolver.post( ICF.sum(flowsArray, VF.fixed(1, linkSolver)) );
+    		}
+    	}
+    	
+    	
+    	/*
+    	 * Place Graph Variables and Constraints
+    	 */
+    	//<editor-fold desc="Place graph isomorphism">
         LinkedList<PlaceEntity> placeEntA = new LinkedList<>();
         for (Root r : a.getRoots()) {
             placeEntA.add(r);
@@ -299,9 +667,9 @@ public class BigStateGraph {
         }
 
         BoolVar[][] placeEntVarsR = VF.boolMatrix("placeEntVars", nPlcEntA,
-                nPlcEntA, chocoSolver2);
+                nPlcEntA, placeSolver);
         BoolVar[][] placeEntVarsC = new BoolVar[nPlcEntA][nPlcEntA];
-        IntVar one2 = VF.fixed(1, chocoSolver2);
+        IntVar one2 = VF.fixed(1, placeSolver);
 
         for (int i = 0; i < nPlcEntA; i++) {
             for (int j = 0; j < nPlcEntA; j++) {
@@ -311,17 +679,21 @@ public class BigStateGraph {
 
         // Constraints
         for (int i = 0; i < nPlcEntA; i++) {
-            chocoSolver2.post(ICF.sum(placeEntVarsR[i], one2));
-            chocoSolver2.post(ICF.scalar(placeEntVarsR[i], flowB, VF.fixed(flowA[i], chocoSolver2)));
+        	placeSolver.post(ICF.sum(placeEntVarsR[i], one2));
+        	placeSolver.post(ICF.scalar(placeEntVarsR[i], flowB, VF.fixed(flowA[i], placeSolver)));
         }
         for (int i = 0; i < nPlcEntA; i++) {
-            chocoSolver2.post(ICF.sum(placeEntVarsC[i], one2));
-            chocoSolver2.post(ICF.scalar(placeEntVarsC[i], flowA, VF.fixed(flowB[i], chocoSolver2)));
+        	placeSolver.post(ICF.sum(placeEntVarsC[i], one2));
+        	placeSolver.post(ICF.scalar(placeEntVarsC[i], flowA, VF.fixed(flowB[i], placeSolver)));
         }
         //</editor-fold>
 
-        return chocoSolver1.findSolution() && chocoSolver2.findSolution();
-    }
+    	
+    	return linkSolver.findSolution() && placeSolver.findSolution();
+     }
+    
+    
+    
 
     private static int getPlaceFlow(PlaceEntity pe) {
         int flow = 1;
@@ -342,7 +714,8 @@ public class BigStateGraph {
         System.err.println("suspicious...");
         return 1;
     }
-
+    
+    
     public int getGraphSize() {
         return nodes.size();
     }

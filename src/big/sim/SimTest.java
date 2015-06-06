@@ -45,7 +45,7 @@ public class SimTest {
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
         BigStateGraph bsg = new BigStateGraph(bigraph);
         Sim sim = new Sim(bsg, brs);
-
+        
         //System.out.println(BigStateGraph.areIsomorph(bigraph, new BigraphBuilder(bigraph).makeBigraph()));
         int i = 1000;
         int applcations = 0;

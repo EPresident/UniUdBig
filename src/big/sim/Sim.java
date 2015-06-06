@@ -19,6 +19,8 @@ package big.sim;
 import java.util.LinkedList;
 import java.util.List;
 
+import big.prprint.BigPPrinterVeryPretty;
+
 /**
  * Class for simulating the evolution of bigraphic systems.
  *
@@ -29,30 +31,35 @@ public class Sim {
     private final BigStateGraph graph;
     private final BRS brs;
     private final LinkedList<BSGNode> nodeQueue;
-
+    private final LinkedList<BSGNode> prevNodeQueue;
+    private final BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
+    
     public Sim(BigStateGraph bs, BRS br) {
         graph = bs;
         brs = br;
         nodeQueue = new LinkedList<>();
         nodeQueue.add(graph.getRoot());
+        prevNodeQueue = new LinkedList<>();
     }
-
-    public void step() {
+    
+    /*public void step() {
         BSGNode node = nodeQueue.pop();
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         for (RuleApplication ra : ras) {
             nodeQueue.add(graph.applyRewritingRule(node, ra.ruleName, ra.big));
         }
-    }
+    }*/
 
     public List<RuleApplication> stepAndGet() {
         BSGNode node = nodeQueue.pop();
+        prevNodeQueue.add(node);
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         LinkedList<RuleApplication> lra = new LinkedList<>();
         for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big);
+            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big , prevNodeQueue );
             if(newNode!=null){
-                nodeQueue.add(newNode);
+            	//System.out.println( pp.prettyPrint(newNode.getState()) );
+            	nodeQueue.add(newNode);
             }
             lra.add(ra);
         }

@@ -17,7 +17,7 @@ import java.util.concurrent.*;
  * should have a property. This allows you to keep all the properties of the
  * original bigraph even after the rule is performed.
  *
- * @see DFRuleFW
+ * @see NewTokenINRuleNear
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */

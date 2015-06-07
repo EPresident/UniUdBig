@@ -76,7 +76,8 @@ public class BigStateGraph {
 	private BigHashFunction hashFunc;
 	public static final BigHashFunction PLACE_HASH = new PlaceGraphBHF(),
 			PLACELINK_HASH = new PlaceLinkBHF();
-	private myMatcher matcher;
+	private PropertyMatcher matcher;
+	private BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
 	
 	
 	public BigStateGraph(Bigraph big, BigHashFunction bhf) {
@@ -85,7 +86,7 @@ public class BigStateGraph {
 		nodes = new LinkedList<>();
 		nodes.add(root);
 		current = root;
-		this.matcher = new myMatcher();
+		this.matcher = new PropertyMatcher();
 	}
 
 	public BigStateGraph(Bigraph big) {
@@ -114,8 +115,15 @@ public class BigStateGraph {
 	 */
 	public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule,
 			Bigraph reactum, LinkedList<BSGNode> prevNodeQueue) {
-
+		
 		for (BSGNode previous : prevNodeQueue) {
+			/*
+			System.out.println("\n\n\n");
+			System.out.println( pp.prettyPrint(previous.getState()) );
+			System.out.println("-------------------------------------");
+			System.out.println(pp.prettyPrint(reactum));
+			System.out.println("\n\n\n");
+			*/
 			BSGNode dupNode = findDuplicate(reactum, previous);
 			if (dupNode != null) {// Found a duplicate
 				return null;
@@ -149,7 +157,7 @@ public class BigStateGraph {
         } else {
         	// Hash collision suggests possible duplicate (or isomorphism)
             // Check isomorphism
-            if (matcher.areIsomorph(object.getState(), subject)) {
+        	if (matcher.areIsomorph(object.getState(), subject)) {
             	return object;
             }
             return null;

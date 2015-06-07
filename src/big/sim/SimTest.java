@@ -40,8 +40,7 @@ public class SimTest {
         Bigraph bigraph = Utils.clientServerPacketExchange();
         BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
         System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
-        RewritingRule[] rules = Utils.getNetRules();
-        //     RewritingRule[] rules2 = Utils.getNetFWRules();
+        RewritingRule[] rules = Utils.getNetFWRules();
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
         BigStateGraph bsg = new BigStateGraph(bigraph);
         Sim sim = new Sim(bsg, brs);

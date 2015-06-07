@@ -37,7 +37,6 @@ import java.util.LinkedList;
 public class Utils {
 
 	private static Signature NET_SIGNATURE = null;
-	
 
 	/**
 	 * Generate net signature.
@@ -45,7 +44,7 @@ public class Utils {
 	 * @return Signature for net bigraphs.
 	 */
 	public static Signature getNetSignature() {
-		if(NET_SIGNATURE == null){
+		if (NET_SIGNATURE == null) {
 			LinkedList<Control> it = new LinkedList<>();
 			Control ctrl_host = new Control("host", true, 0);
 			it.add(ctrl_host);
@@ -65,7 +64,7 @@ public class Utils {
 			it.add(ctrl_payload);
 			NET_SIGNATURE = new Signature(it);
 		}
-		return NET_SIGNATURE;	
+		return NET_SIGNATURE;
 	}
 
 	/**
@@ -88,123 +87,116 @@ public class Utils {
 	 * 
 	 */
 	public static Bigraph clientServerPacketExchange(Signature signature) {
-		
-			/*
-			 * ----------------------------------------------------- Http packet
-			 * exchange with Firewalls.
-			 * -----------------------------------------------------
-			 */
-			BigraphBuilder builder = new BigraphBuilder(signature);
-			Root r = builder.addRoot();
-			// Client
-			Node domainC = builder.addNode("domain", r);
-			domainC.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("DomainName", "Client_Domain")));
-			Node client = builder.addNode("host", domainC);
-			client.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("HostName", "Client")));
-			OuterName http_idc = builder.addOuterName("http_idc");
-			OuterName tcp_idc = builder.addOuterName("tcp_idc");
-			Node http_C = builder.addNode("stackNode", client, http_idc,
-					tcp_idc);
-			http_C.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Http_Client")));
-			OuterName ip_idc = builder.addOuterName("192.168.0.1");
-			Node tcp_C = builder.addNode("stackNode", client, tcp_idc, ip_idc);
-			tcp_C.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Tcp_Client")));
-			OuterName localC = builder.addOuterName("localC");
-			Node ip_C = builder.addNode("stackNode", client, ip_idc, localC);
-			ip_C.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Ip_Client")));
 
-			// Firewall
-			OuterName listFWCIN = builder
-					.addOuterName("IN_CLIENT%192.168.0.1%192.168.0.2%192.168.0.3");
-			OuterName listFWCOUT = builder
-					.addOuterName("OUT_CLIENT%158.130.0.1%158.130.0.2%158.130.0.3");
-			Node firewallC = builder.addNode("firewall", domainC, listFWCIN,
-					listFWCOUT);
-			firewallC.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("FirewallName",
-							"Client_Firewall")));
-			// Router's Client
-			OuterName linkR1 = builder.addOuterName("linkR1");
-			Node routerINC = builder.addNode("stackNode", firewallC, linkR1,
-					localC);
-			routerINC
-					.attachProperty(new SharedProperty<String>(
-							new SimpleProperty<String>("RouterName",
-									"Client_Router_IN")));
+		/*
+		 * ----------------------------------------------------- Http packet
+		 * exchange with Firewalls.
+		 * -----------------------------------------------------
+		 */
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root r = builder.addRoot();
+		// Client
+		Node domainC = builder.addNode("domain", r);
+		domainC.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("DomainName", "Client_Domain")));
+		Node client = builder.addNode("host", domainC);
+		client.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("HostName", "Client")));
+		OuterName http_idc = builder.addOuterName("http_idc");
+		OuterName tcp_idc = builder.addOuterName("tcp_idc");
+		Node http_C = builder.addNode("stackNode", client, http_idc, tcp_idc);
+		http_C.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Http_Client")));
+		OuterName ip_idc = builder.addOuterName("192.168.0.1");
+		Node tcp_C = builder.addNode("stackNode", client, tcp_idc, ip_idc);
+		tcp_C.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Tcp_Client")));
+		OuterName localC = builder.addOuterName("localC");
+		Node ip_C = builder.addNode("stackNode", client, ip_idc, localC);
+		ip_C.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Ip_Client")));
 
-			// Second Domain
-			Node domain2 = builder.addNode("domain", r);
-			domain2.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("DomainName", "Second_Domain")));
-			// Second Router
-			OuterName local2 = builder.addOuterName("local2");
-			Node router2 = builder
-					.addNode("stackNode", domain2, linkR1, local2);
-			router2.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("RouterName", "router2")));
-			// Third Router
-			OuterName linkR2 = builder.addOuterName("linkR2");
-			Node router3 = builder
-					.addNode("stackNode", domain2, linkR2, local2);
-			router3.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("RouterName", "Third_Router")));
+		// Firewall
+		OuterName listFWCIN = builder
+				.addOuterName("IN_CLIENT%192.168.0.1%192.168.0.2%192.168.0.3");
+		OuterName listFWCOUT = builder
+				.addOuterName("OUT_CLIENT%158.130.0.1%158.130.0.2%158.130.0.3");
+		Node firewallC = builder.addNode("firewall", domainC, listFWCIN,
+				listFWCOUT);
+		firewallC.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("FirewallName", "Client_Firewall")));
+		// Router's Client
+		OuterName linkR1 = builder.addOuterName("linkR1");
+		Node routerINC = builder
+				.addNode("stackNode", firewallC, linkR1, localC);
+		routerINC.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("RouterName", "Client_Router_IN")));
 
-			// Server's Domain
-			Node domainS = builder.addNode("domain", r);
-			domainS.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("DomainName", "Server_Domain")));
-			// Server
-			Node server = builder.addNode("host", domainS);
-			server.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("HostName", "Server")));
-			OuterName http_ids = builder.addOuterName("http_ids");
-			OuterName tcp_ids = builder.addOuterName("tcp_ids");
-			Node http_S = builder.addNode("stackNode", server, http_ids,
-					tcp_ids);
-			http_S.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Http_Server")));
-			OuterName ip_ids = builder.addOuterName("158.130.0.1");
-			Node tcp_S = builder.addNode("stackNode", server, tcp_ids, ip_ids);
-			tcp_S.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Tcp_Server")));
-			OuterName localS = builder.addOuterName("localS");
-			Node ip_S = builder.addNode("stackNode", server, ip_ids, localS);
-			ip_S.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ProtocolName", "Ip_server")));
-			// Server's Router
-			OuterName listFWSIN = builder
-					.addOuterName("IN_SERVER%192.168.0.1%192.168.0.2%192.168.0.3");
-			OuterName listFWSOUT = builder
-					.addOuterName("OUT_SERVER%158.130.0.1%158.130.0.2%158.130.0.3");
-			Node firewallS = builder.addNode("firewall", domainS, listFWSIN,
-					listFWSOUT);
-			firewallS.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("FirewallName",
-							"Server's Firewall")));
-			Node routerS = builder.addNode("stackNode", firewallS, linkR2,
-					localS);
-			routerS.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("RouterName", "Server_Router")));
+		// Second Domain
+		Node domain2 = builder.addNode("domain", r);
+		domain2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("DomainName", "Second_Domain")));
+		// Second Router
+		OuterName local2 = builder.addOuterName("local2");
+		Node router2 = builder.addNode("stackNode", domain2, linkR1, local2);
+		router2.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("RouterName", "router2")));
+		// Third Router
+		OuterName linkR2 = builder.addOuterName("linkR2");
+		Node router3 = builder.addNode("stackNode", domain2, linkR2, local2);
+		router3.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("RouterName", "Third_Router")));
 
-			// Packet
-			Node http_packet = builder.addNode("packet", client, http_idc,
-					http_ids);
-			http_packet.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("PacketName", "Http_Packet")));
-			Node http_payload = builder.addNode("payload", http_packet);
-			http_payload.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("PacketName", "Http_Payload")));
+		// Server's Domain
+		Node domainS = builder.addNode("domain", r);
+		domainS.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("DomainName", "Server_Domain")));
+		// Server
+		Node server = builder.addNode("host", domainS);
+		server.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("HostName", "Server")));
+		OuterName http_ids = builder.addOuterName("http_ids");
+		OuterName tcp_ids = builder.addOuterName("tcp_ids");
+		Node http_S = builder.addNode("stackNode", server, http_ids, tcp_ids);
+		http_S.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Http_Server")));
+		OuterName ip_ids = builder.addOuterName("158.130.0.1");
+		Node tcp_S = builder.addNode("stackNode", server, tcp_ids, ip_ids);
+		tcp_S.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Tcp_Server")));
+		OuterName localS = builder.addOuterName("localS");
+		Node ip_S = builder.addNode("stackNode", server, ip_ids, localS);
+		ip_S.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("ProtocolName", "Ip_server")));
+		// Server's Router
+		OuterName listFWSIN = builder
+				.addOuterName("IN_SERVER%192.168.0.1%192.168.0.2%192.168.0.3");
+		OuterName listFWSOUT = builder
+				.addOuterName("OUT_SERVER%158.130.0.1%158.130.0.2%158.130.0.3");
+		Node firewallS = builder.addNode("firewall", domainS, listFWSIN,
+				listFWSOUT);
+		firewallS
+				.attachProperty(new SharedProperty<String>(
+						new SimpleProperty<String>("FirewallName",
+								"Server's Firewall")));
+		Node routerS = builder.addNode("stackNode", firewallS, linkR2, localS);
+		routerS.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("RouterName", "Server_Router")));
 
-			return builder.makeBigraph();
-		
+		// Packet
+
+		Node http_packet = builder
+				.addNode("packet", client, http_idc, http_ids);
+		http_packet.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("PacketName", "Http_Packet")));
+		Node http_payload = builder.addNode("payload", server);
+		http_payload.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("PacketName", "Http_Payload")));
+
+		return builder.makeBigraph();
+
 	}
 
-	
 	/**
 	 * Generate an array with instances of the rewriting rules for network
 	 * bigraphs, plus firewall rules.
@@ -212,106 +204,32 @@ public class Utils {
 	 * @return An array of RewritingRule instances for net bigraphs.
 	 */
 	public static RewritingRule[] getNetFWRules() {
-		
-			return new RewritingRule[] { new EncapRule(), new DFRule(),
-					new Domain2HostRule(), new DecapRule(), new ForwardRule(),
-					new DFRuleFW(), new Domain2HostFWRule(), new FWINRule(),
-					new FWOUTRule(), new ForwardFWRule(),
-					new NewTokenINRuleFar(), new NewTokenINRuleNear(),
-					new NewTokenOUTRuleFar(), new NewTokenOUTRuleNear() };
-		
+
+		return new RewritingRule[] { new EncapRule(), new DFRule(),
+				new Domain2HostRule(), new DecapRule(), new ForwardRule(),
+				new DFRuleFW(), new Domain2HostFWRule(), new FWINRule(),
+				new FWOUTRule(), new ForwardFWRule(), new NewTokenINRuleFar(),
+				new NewTokenINRuleNear(), new NewTokenOUTRuleFar(),
+				new NewTokenOUTRuleNear() };
+
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public static Bigraph getBigTest1(Signature signature) {
-		
-		/*
-		 * ----------------------------------------------------- Http packet
-		 * exchange with Firewalls.
-		 * -----------------------------------------------------
-		 */
-		BigraphBuilder builder = new BigraphBuilder(signature);
-		Root r = builder.addRoot();
-		// Client
-		Node domainC = builder.addNode("domain", r);
-		domainC.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Client_Domain")));
-		Node client = builder.addNode("host", domainC);
-		client.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("HostName", "Client")));
-		OuterName http_idc = builder.addOuterName("http_idc");
-		OuterName tcp_idc = builder.addOuterName("tcp_idc");
-		Node http_C = builder.addNode("stackNode", client, http_idc,
-				tcp_idc);
-		http_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Http_Client")));
-		OuterName ip_idc = builder.addOuterName("192.168.0.1");
-		Node tcp_C = builder.addNode("stackNode", client, tcp_idc, ip_idc);
-		tcp_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Tcp_Client")));
-		OuterName localC = builder.addOuterName("localC");
-		Node ip_C = builder.addNode("stackNode", client, ip_idc, localC);
-		ip_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Ip_Client")));
 
-		// Firewall
-		OuterName listFWCIN = builder
-				.addOuterName("IN_CLIENT%192.168.0.1%192.168.0.2%192.168.0.3");
-		OuterName listFWCOUT = builder
-				.addOuterName("OUT_CLIENT%158.130.0.1%158.130.0.2%158.130.0.3");
-		Node firewallC = builder.addNode("firewall", domainC, listFWCIN,
-				listFWCOUT);
-		firewallC.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("FirewallName",
-						"Client_Firewall")));
-		// Router's Client
-		OuterName linkR1 = builder.addOuterName("linkR1");
-		Node routerINC = builder.addNode("stackNode", firewallC, linkR1,
-				localC);
-		routerINC
-				.attachProperty(new SharedProperty<String>(
-						new SimpleProperty<String>("RouterName",
-								"Client_Router_IN")));
+	/*
+	 * The http packet has arrived in the server, and the server has consumed
+	 * it. Then: there must be the http payload in the server.
+	 */
+	public static Bigraph getAimHttpPayload() {
+		BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
+		Root r1 = builder.addRoot();
+		builder.addSite(r1);
 
-		// Second Domain
-		Node domain2 = builder.addNode("domain", r);
-		domain2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Second_Domain")));
-		// Second Router
-		OuterName local2 = builder.addOuterName("local2");
-		Node router2 = builder
-				.addNode("stackNode", domain2, linkR1, local2);
-		router2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "router2")));
-		// Third Router
-		OuterName linkR2 = builder.addOuterName("linkR2");
-		Node router3 = builder
-				.addNode("stackNode", domain2, linkR2, local2);
-		router3.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "Third_Router")));
-
-		// Server's Domain
-		Node domainS = builder.addNode("domain", r);
-		domainS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Server_Domain")));
 		// Server
-		Node server = builder.addNode("host", domainS);
+		Node server = builder.addNode("host", r1);
 		server.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("HostName", "Server")));
 		OuterName http_ids = builder.addOuterName("http_ids");
 		OuterName tcp_ids = builder.addOuterName("tcp_ids");
-		Node http_S = builder.addNode("stackNode", server, http_ids,
-				tcp_ids);
+		Node http_S = builder.addNode("stackNode", server, http_ids, tcp_ids);
 		http_S.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("ProtocolName", "Http_Server")));
 		OuterName ip_ids = builder.addOuterName("158.130.0.1");
@@ -322,164 +240,13 @@ public class Utils {
 		Node ip_S = builder.addNode("stackNode", server, ip_ids, localS);
 		ip_S.attachProperty(new SharedProperty<String>(
 				new SimpleProperty<String>("ProtocolName", "Ip_server")));
-		// Server's Router
-		OuterName listFWSIN = builder
-				.addOuterName("IN_SERVER%192.168.0.1%192.168.0.2%192.168.0.3");
-		OuterName listFWSOUT = builder
-				.addOuterName("OUT_SERVER%158.130.0.1%158.130.0.2%158.130.0.3");
-		Node firewallS = builder.addNode("firewall", domainS, listFWSIN,
-				listFWSOUT);
-		firewallS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("FirewallName",
-						"Server's Firewall")));
-		Node routerS = builder.addNode("stackNode", firewallS, linkR2,
-				localS);
-		routerS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "Server_Router")));
+		// Http payload
+		Node http_payload = builder.addNode("payload", server);
+		http_payload.attachProperty(new SharedProperty<>(new SimpleProperty<>(
+				"PacketName", "Http_Payload")));
 
-		// Packet
-		Node ip_packet = builder.addNode("packet", client, ip_idc, ip_ids);
-		ip_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "192.168.0.1_packet")));
-		Node tcp_packet = builder.addNode("packet", ip_packet, tcp_idc, tcp_ids);
-		tcp_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Tcp_Packet")));
-		Node http_packet = builder.addNode("packet", tcp_packet, http_idc,
-				http_ids);
-		http_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Http_Packet")));
-		Node http_payload = builder.addNode("payload", http_packet);
-		http_payload.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Http_Payload")));
-		
-		return builder.makeBigraph();
-	
+		Bigraph bigraph = builder.makeBigraph();
+		return bigraph;
 	}
-	
-	
-	
 
-	public static Bigraph getBigTest2(Signature signature) {
-		
-		/*
-		 * ----------------------------------------------------- Http packet
-		 * exchange with Firewalls.
-		 * -----------------------------------------------------
-		 */
-		BigraphBuilder builder = new BigraphBuilder(signature);
-		Root r = builder.addRoot();
-		// Client
-		Node domainC = builder.addNode("domain", r);
-		domainC.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Client_Domain")));
-		Node client = builder.addNode("host", domainC);
-		client.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("HostName", "Client")));
-		OuterName http_idc = builder.addOuterName("http_idc");
-		OuterName tcp_idc = builder.addOuterName("tcp_idc");
-		Node http_C = builder.addNode("stackNode", client, http_idc,
-				tcp_idc);
-		http_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Http_Client")));
-		OuterName ip_idc = builder.addOuterName("192.168.0.1");
-		Node tcp_C = builder.addNode("stackNode", client, tcp_idc, ip_idc);
-		tcp_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Tcp_Client")));
-		OuterName localC = builder.addOuterName("localC");
-		Node ip_C = builder.addNode("stackNode", client, ip_idc, localC);
-		ip_C.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Ip_Client")));
-
-		// Firewall
-		OuterName listFWCIN = builder
-				.addOuterName("IN_CLIENT%192.168.0.1%192.168.0.2%192.168.0.3");
-		OuterName listFWCOUT = builder
-				.addOuterName("OUT_CLIENT%158.130.0.1%158.130.0.2%158.130.0.3");
-		Node firewallC = builder.addNode("firewall", domainC, listFWCIN,
-				listFWCOUT);
-		firewallC.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("FirewallName",
-						"Client_Firewall")));
-		// Router's Client
-		OuterName linkR1 = builder.addOuterName("linkR1");
-		Node routerINC = builder.addNode("stackNode", firewallC, linkR1,
-				localC);
-		routerINC
-				.attachProperty(new SharedProperty<String>(
-						new SimpleProperty<String>("RouterName",
-								"Client_Router_IN")));
-
-		// Second Domain
-		Node domain2 = builder.addNode("domain", r);
-		domain2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Second_Domain")));
-		// Second Router
-		OuterName local2 = builder.addOuterName("local2");
-		Node router2 = builder
-				.addNode("stackNode", domain2, linkR1, local2);
-		router2.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "router2")));
-		// Third Router
-		OuterName linkR2 = builder.addOuterName("linkR2");
-		Node router3 = builder
-				.addNode("stackNode", domain2, linkR2, local2);
-		router3.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "Third_Router")));
-
-		// Server's Domain
-		Node domainS = builder.addNode("domain", r);
-		domainS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("DomainName", "Server_Domain")));
-		// Server
-		Node server = builder.addNode("host", domainS);
-		server.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("HostName", "Server")));
-		OuterName http_ids = builder.addOuterName("http_ids");
-		OuterName tcp_ids = builder.addOuterName("tcp_ids");
-		Node http_S = builder.addNode("stackNode", server, http_ids,
-				tcp_ids);
-		http_S.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Http_Server")));
-		OuterName ip_ids = builder.addOuterName("158.130.0.1");
-		Node tcp_S = builder.addNode("stackNode", server, tcp_ids, ip_ids);
-		tcp_S.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Tcp_Server")));
-		OuterName localS = builder.addOuterName("localS");
-		Node ip_S = builder.addNode("stackNode", server, ip_ids, localS);
-		ip_S.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("ProtocolName", "Ip_server")));
-		// Server's Router
-		OuterName listFWSIN = builder
-				.addOuterName("IN_SERVER%192.168.0.1%192.168.0.2%192.168.0.3");
-		OuterName listFWSOUT = builder
-				.addOuterName("OUT_SERVER%158.130.0.1%158.130.0.2%158.130.0.3");
-		Node firewallS = builder.addNode("firewall", domainS, listFWSIN,
-				listFWSOUT);
-		firewallS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("FirewallName",
-						"Server's Firewall")));
-		Node routerS = builder.addNode("stackNode", firewallS, linkR2,
-				localS);
-		routerS.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("RouterName", "Server_Router")));
-
-		// Packet
-		Node ip_packet = builder.addNode("packet", firewallC, ip_idc, ip_ids);
-		ip_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "192.168.0.1_packet")));
-		Node tcp_packet = builder.addNode("packet", ip_packet, tcp_idc, tcp_ids);
-		tcp_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Tcp_Packet")));
-		Node http_packet = builder.addNode("packet", tcp_packet, http_idc,
-				http_ids);
-		http_packet.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Http_Packet")));
-		Node http_payload = builder.addNode("payload", http_packet);
-		http_payload.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("PacketName", "Http_Payload")));
-		
-		return builder.makeBigraph();
-	
-	}
-	
 }

@@ -24,7 +24,7 @@ public class Test {
     public static Signature signature;
 
     public static void main(String[] args) {
-        runTest3();
+        runTest2();
     }
 
     protected static void runTest1() {
@@ -125,7 +125,7 @@ public class Test {
    
     protected static void runTest2(){
     	Bigraph bigraph = Utils.clientServerPacketExchange();
-    	Bigraph aim = getTestAim();
+    	Bigraph aim = Utils.getAimHttpPayload();
     	
     	//Sfruttando Wario, posso cercare di creare un Aim molto piu semplice, cioè per esempio un redex
     	//con solamente il server come nodo. Poi controllo il nel Contesto gli attributi del dominio 
@@ -134,60 +134,7 @@ public class Test {
     	System.out.println( atom.isSatisfied(bigraph) );
     	
     }
-    
-    
-    
-    /*
-     * The http packet has arrived in the server, and the server has consumed it.
-     * Then: there must be the http payload in the server.
-     */
-    private static Bigraph getTestAim(){
-    	BigraphBuilder builder = new BigraphBuilder(Utils.getNetSignature());
-    	Root r1 = builder.addRoot();
-    	builder.addSite(r1);
-    	//Outers
-    	OuterName http_is = builder.addOuterName("http_id_server");
-        OuterName tcp_is = builder.addOuterName("tcp_id_server");
-        OuterName ipv4_is = builder.addOuterName("ipv4_id_server");
-        OuterName localLinkS = builder.addOuterName("localLinkS");
-        //Server
-        Node server = builder.addNode("host", r1);
-        server.attachProperty(new SharedProperty<>(
-                new SimpleProperty<>("Name", "server_google")));
-        Node http_server = builder.addNode("stackNode", server, http_is, tcp_is);
-        http_server.attachProperty(new SharedProperty<>(
-                new SimpleProperty<>("Name", "http_server_google")));
-        Node tcp_server = builder.addNode("stackNode", server, tcp_is, ipv4_is);
-        tcp_server.attachProperty(new SharedProperty<>(
-                new SimpleProperty<>("Name", "tcp_server_google")));
-        Node ipv4_server = builder.addNode("stackNode", server, ipv4_is, localLinkS);
-        ipv4_server.attachProperty(new SharedProperty<>(
-                new SimpleProperty<>("Name", "ipv4_server_google")));
-    	
-    	//Http payload
-        Node http_payload = builder.addNode("payload", server);
-        http_payload.attachProperty(new SharedProperty<>(
-                new SimpleProperty<>("Name", "http_payload")));
-        
-        Bigraph bigraph = builder.makeBigraph();
-        return bigraph;
-    }
-    
-    
-    
-    public static void runTest3(){
-    	signature = Utils.getNetSignature();
-    	Bigraph b1 = Utils.getBigTest1(signature);
-    	Bigraph b2 = Utils.getBigTest2(signature);
-    	
-    	PropertyMatcher matcher = new PropertyMatcher();
-    	System.out.println(matcher.areIsomorph(b1, b2));
-    	
-    	
-    }
-    
-    
-    
+   
     
 }
 

@@ -113,23 +113,14 @@ public class BigStateGraph {
 	 * 
 	 * @return The new state reached (as a BSGNode) or null if there's  duplicate.
 	 */
-	public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule,
-			Bigraph reactum, LinkedList<BSGNode> prevNodeQueue) {
-		
-		for (BSGNode previous : prevNodeQueue) {
-			/*
-			System.out.println("\n\n\n");
-			System.out.println( pp.prettyPrint(previous.getState()) );
-			System.out.println("-------------------------------------");
-			System.out.println(pp.prettyPrint(reactum));
-			System.out.println("\n\n\n");
-			*/
+	public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule, Bigraph reactum) {
+		for (BSGNode previous : nodes) {
 			BSGNode dupNode = findDuplicate(reactum, previous);
 			if (dupNode != null) {// Found a duplicate
+				redex.addLink(dupNode, rewritingRule);
 				return null;
 			}
 		}
-
 		// Generate a new state, build links
 		BSGNode newNode = new BSGNode(reactum, hashFunc);
 		nodes.add(newNode);
@@ -185,6 +176,10 @@ public class BigStateGraph {
 	
 	public int getGraphSize() {
 		return nodes.size();
+	}
+	
+	public List<BSGNode> getNodes(){
+		return nodes;
 	}
 	
 }

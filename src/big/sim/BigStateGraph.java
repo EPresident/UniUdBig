@@ -20,34 +20,10 @@ import big.hash.BigHashFunction;
 import big.hash.PlaceGraphBHF;
 import big.hash.PlaceLinkBHF;
 import big.prprint.BigPPrinterVeryPretty;
-import it.uniud.mads.jlibbig.core.attachedProperties.Property;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import it.uniud.mads.jlibbig.core.std.Child;
-import it.uniud.mads.jlibbig.core.std.Edge;
-import it.uniud.mads.jlibbig.core.std.Handle;
-import it.uniud.mads.jlibbig.core.std.InnerName;
-import it.uniud.mads.jlibbig.core.std.LinkEntity;
-import it.uniud.mads.jlibbig.core.std.Node;
-import it.uniud.mads.jlibbig.core.std.OuterName;
-import it.uniud.mads.jlibbig.core.std.Parent;
-import it.uniud.mads.jlibbig.core.std.PlaceEntity;
-import it.uniud.mads.jlibbig.core.std.Point;
-import it.uniud.mads.jlibbig.core.std.Port;
-import it.uniud.mads.jlibbig.core.std.Root;
-import it.uniud.mads.jlibbig.core.std.Site;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.ICF;
-import org.chocosolver.solver.variables.BoolVar;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.VF;
 
 /**
  * Represents a graph where each node is a different possible state of the

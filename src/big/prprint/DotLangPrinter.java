@@ -1,19 +1,7 @@
 /*
- * Copyright (C) 2015 Elia Calligaris <calligaris.elia@spes.uniud.it> 
- * and Luca Geatti <geatti.luca@spes.uniud.it>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package big.prprint;
 
@@ -26,42 +14,22 @@ import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.Point;
 import it.uniud.mads.jlibbig.core.std.Port;
 import it.uniud.mads.jlibbig.core.std.Root;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 /**
- * The Prettiest PrettyPrinter for JLibBig bigraphs EVER. Seriously. This
- * pretty-printer gathers information about the bigraph and then builds its own
- * data-structure, a PrintTree: a PrintTree is an n-ary tree where every node
- * represents a node in the bigraph, except for the root (of the tree), which is
- * a "fake node" with no meaning.
- *
- * BigPPrinterVeryPretty needs to be instantiated before usage. Pretty printing
- * is achieved by invoking the prettyPrint method.
- *
- * When pretty-printing, each Node of the Bigraph has a name assigned to itself.
- * By default that name is the ID-code provided by the JLibBig representation.
- * <b>If a Node has a "Name" Property, that name is used for that Node</b> when
- * pretty-printing (format: Name[ID]).
- *
- * <b>This pretty printer recognizes and uses several special properties:</b>
- * <ul>
- * <li>Name: the prettyprinter prints this property instead of the ID given by
- * LibBig;</li>
- * <li>PortXName(where X is a number): identifies the name of port number X of a
- * node;</li>
- * <li>Also all property names beginning with "port" are reserved.</li>
- * </ul>
- * Other properties are printed next to the node pretty-print, within curly
- * brackets: node nodeName[nodeID] {prop1: val1, ... , propN: valN}.
- *
- * TODO: add support for InnerNames
+ * Class for exporting a Bigraph in DOT language.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class BigPPrinterVeryPretty {
+public class DotLangPrinter {
 
     private Bigraph pprtBig;
     private StringBuilder pprt;
@@ -115,12 +83,28 @@ public class BigPPrinterVeryPretty {
         buildLinks(pT);
         //----------------------------------------------------------------------
         // Print the PrintTree
-        pprt.append("----- Printing Bigraph ").append(bigName).append(" -----\n");
+        pprt.append("digraph ").append(bigName).append(" {\n");
         pprt.append(edges.toString());
         pprt.append(outerNames.toString());
         pprt.append(pT.toString());
-        pprt.append("----- Done Printing ").append(bigName).append(" ------\n");
+        pprt.append("}");
         return pprt.toString();
+    }
+
+    public String printDotFile(Bigraph big, String bName, String fName) {
+        String out = prettyPrint(big, bName);
+        File file;
+        try {
+            file=new File(fName + ".dot");
+            BufferedWriter fOut = new BufferedWriter(new FileWriter(file));
+            fOut.write(out);
+            fOut.close();
+            return file.getCanonicalPath();
+        } catch (IOException ex) {
+            System.err.println("Failed to write file");
+            System.err.println(Arrays.toString(ex.getStackTrace()));
+        }
+        return "";
     }
 
     /**
@@ -211,23 +195,23 @@ public class BigPPrinterVeryPretty {
         // Scan edges
         for (Edge e : pprtBig.getEdges()) {
             String eID = e.toString();
-            edges.append("edge ").append(eID).append("{ ");
             for (Point p : e.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
                 int port = Integer.parseInt(portId[0]);
                 String id = portId[1];
-                StringBuilder sb = new StringBuilder("Edge ").append(eID);
+                String sb = "Edge " + eID;
                 TreeNode tn = pT.findNodeByID(id);
-                tn.linkPort(port, sb.toString());
-                edges.append(tn.name).append("; ");
+                tn.linkPort(port, sb);
+                edges.append(id).append(" -> ").append(eID).append(";\n");
+                edges.append(id).append("[shape=ellipse];\n");
             }
-            edges.append("}\n");
+            edges.append(eID).append("[shape=point];\n");
         }
 
         // scan outernames
         for (OuterName o : pprtBig.getOuterNames()) {
-            outerNames.append("outername ").append(o.toString()).append("{ ");
+            String oID = o.toString();
             for (Point p : o.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
@@ -235,9 +219,11 @@ public class BigPPrinterVeryPretty {
                 String id = portId[1];
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, o.getName());
-                outerNames.append(tn.name).append("; ");
+                outerNames.append(id).append(" -> ").append(oID).append(";\n");
+                outerNames.append(id).append("[shape=ellipse];\n");
             }
-            outerNames.append("}\n");
+            outerNames.append(oID).append("[style=filled,color=ivory]")
+                    .append(";\n");
         }
     }
 
@@ -404,11 +390,12 @@ public class BigPPrinterVeryPretty {
         private String printTree() {
             StringBuilder sb = new StringBuilder();
             if (!name.equals(PrintTree.FRN)) {
-                sb.append(this).append("\n");;
+                sb.append(this).append("\n");
             }
             if (!children.isEmpty()) {
 
                 for (TreeNode n : children) {
+                    sb.append(n.id).append(" -> ").append(this.id).append("[style=dashed];\n");
                     sb.append(n.printTree());
                 }
             }
@@ -422,12 +409,12 @@ public class BigPPrinterVeryPretty {
          */
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            prIndent(indent, sb);
-            sb.append(type).append(" ").append(name).append(" {");
-            for (Attribute a : attributes) {
-                sb.append(" ").append(a).append(";");
+            if (type.equals("root")) {
+                sb.append(id).append("[shape=box");
+            } else {
+                sb.append(id).append("[shape=ellipse");
             }
-            sb.append("}");
+            sb.append(",label=").append(name).append("];");
             return sb.toString();
         }
 

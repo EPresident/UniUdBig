@@ -31,6 +31,7 @@ import java.util.List;
 public class BSGNode {
     private final Bigraph state;
     private final List<BSGLink> links;
+    private char color;
     /**
      * Hash code is pre-computed and stored here.
      */
@@ -40,6 +41,7 @@ public class BSGNode {
         state=big;
         links=new LinkedList<>();
         hashCode=bhf.bigHash(big);
+        this.color = 'W';
     }
     
     /**
@@ -65,15 +67,25 @@ public class BSGNode {
     public int getHashCode() {
         return hashCode;
     }
+    
+    public char getColor(){
+    	return this.color;
+    }
+    
+    public void setColor(char cl){
+    	this.color = cl;
+    }
+    
+    
         
     /**
      * Encapsulates a link as a (Destination Node, Rule Applied) couple.
      */
-    protected class BSGLink{
-        protected BSGNode destNode;
-        protected String rewRule;
+    public class BSGLink{
+        public BSGNode destNode;
+        public String rewRule;
         
-        protected BSGLink(BSGNode bsgn, String rr){
+        public BSGLink(BSGNode bsgn, String rr){
             destNode=bsgn;
             rewRule=rr;
         }

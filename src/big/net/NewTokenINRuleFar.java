@@ -86,7 +86,14 @@ public class NewTokenINRuleFar extends RewRuleWProps {
         Node packet = builder.addNode("packet", r2, idS, idR);
         packet.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("PacketType", "packet")));
-        builder.addSite(packet);// Site 1
+        //PacketIN
+        OuterName idSP1 = builder.addOuterName("idSP1");
+        OuterName idRP1 = builder.addOuterName("idRP1");
+        Node packetIN = builder.addNode("packet", packet, idSP1, idRP1 );
+        packetIN.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packetIN")));
+        
+        builder.addSite(packetIN);// Site 1
 
         return builder.makeBigraph();
     }
@@ -115,7 +122,14 @@ public class NewTokenINRuleFar extends RewRuleWProps {
         Node packet = builder.addNode("packet", r2, idS, idR);
         packet.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("PacketType", "packet")));
-        builder.addSite(packet);// Site 1
+        //PacketIN
+        OuterName idSP1 = builder.addOuterName("idSP1");
+        OuterName idRP1 = builder.addOuterName("idRP1");
+        Node packetIN = builder.addNode("packet", packet, idSP1, idRP1 );
+        packetIN.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packetIN")));
+        
+        builder.addSite(packetIN);// Site 1
 
         // Token
         Node tokenIN = builder.addNode("tokenIN", packet, listFWIN);

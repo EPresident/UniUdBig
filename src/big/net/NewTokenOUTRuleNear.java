@@ -78,7 +78,16 @@ public class NewTokenOUTRuleNear extends RewRuleWProps {
         Node packet = builder.addNode("packet", firewall, idS, idR);
         packet.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("PacketType", "packet")));
-        builder.addSite(packet);//Site 1
+        
+        //PacketIN
+        OuterName idSP1 = builder.addOuterName("idSP1");
+        OuterName idRP1 = builder.addOuterName("idRP1");
+        Node packetIN = builder.addNode("packet", packet, idSP1, idRP1 );
+        packetIN.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packetIN")));
+        
+        builder.addSite(packetIN);// Site 1
+        
         //Receiver
         OuterName downR = builder.addOuterName("downR");
         Node receiver = builder.addNode("stackNode", firewall, idR, downR);
@@ -104,7 +113,16 @@ public class NewTokenOUTRuleNear extends RewRuleWProps {
         Node packet = builder.addNode("packet", firewall, idS, idR);
         packet.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("PacketType", "packet")));
-        builder.addSite(packet);//Site 1
+        
+        //PacketIN
+        OuterName idSP1 = builder.addOuterName("idSP1");
+        OuterName idRP1 = builder.addOuterName("idRP1");
+        Node packetIN = builder.addNode("packet", packet, idSP1, idRP1 );
+        packetIN.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("PacketType", "packetIN")));
+        
+        builder.addSite(packetIN);// Site 1
+        
         //Receiver
         OuterName downR = builder.addOuterName("downR");
         Node receiver = builder.addNode("stackNode", firewall, idR, downR);

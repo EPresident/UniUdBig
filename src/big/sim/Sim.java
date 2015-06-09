@@ -16,8 +16,12 @@
  */
 package big.sim;
 
+import it.uniud.mads.jlibbig.core.std.Bigraph;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import big.prprint.BigPPrinterVeryPretty;
 
 /**
  * Class for simulating the evolution of bigraphic systems.
@@ -29,30 +33,40 @@ public class Sim {
     private final BigStateGraph graph;
     private final BRS brs;
     private final LinkedList<BSGNode> nodeQueue;
-
+    private final BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
+    
     public Sim(BigStateGraph bs, BRS br) {
         graph = bs;
         brs = br;
         nodeQueue = new LinkedList<>();
         nodeQueue.add(graph.getRoot());
     }
-
-    public void step() {
+    
+    
+    public Sim(BRS br, Bigraph root) {
+        graph = new BigStateGraph(root);
+        brs = br;
+        nodeQueue = new LinkedList<>();
+        nodeQueue.add(graph.getRoot());
+    }
+    
+    
+    /*public void step() {
         BSGNode node = nodeQueue.pop();
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         for (RuleApplication ra : ras) {
             nodeQueue.add(graph.applyRewritingRule(node, ra.ruleName, ra.big));
         }
-    }
+    }*/
 
     public List<RuleApplication> stepAndGet() {
         BSGNode node = nodeQueue.pop();
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         LinkedList<RuleApplication> lra = new LinkedList<>();
         for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big);
-            if(newNode!=null){
-                nodeQueue.add(newNode);
+        	BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big );
+        	if(newNode!=null){
+            	nodeQueue.add(newNode);
             }
             lra.add(ra);
         }
@@ -62,5 +76,21 @@ public class Sim {
     
     public boolean hasNext(){
         return !nodeQueue.isEmpty();
+    }
+    
+    
+    
+    /**
+     * Creates the entire state graph.
+     * 
+     * @param max Maximum number of iterations.
+     * @return
+     */
+    public BigStateGraph getGraph(int max){
+    	while(max>0 && this.hasNext()){
+    		this.stepAndGet();
+    		max--;
+    	}
+    	return graph;
     }
 }

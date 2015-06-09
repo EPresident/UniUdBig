@@ -12,5 +12,5 @@ import it.uniud.mads.jlibbig.core.std.Bigraph;
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public interface Predicate {
-    public boolean isSatisfied(Bigraph big);
+	public boolean isSatisfied(Bigraph big);
 }

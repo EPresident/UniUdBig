@@ -31,6 +31,9 @@ import java.util.List;
 public class BSGNode {
     private final Bigraph state;
     private final List<BSGLink> links;
+    /**
+     * FIXME Color used in DFSVisit, not pertinent to the class itself.
+     */
     private char color;
     /**
      * Hash code is pre-computed and stored here.

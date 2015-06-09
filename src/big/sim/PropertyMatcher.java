@@ -24,14 +24,8 @@ import java.util.LinkedList;
 
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.ICF;
-import org.chocosolver.solver.search.strategy.ISF;
-import org.chocosolver.solver.search.strategy.selectors.VariableSelectorWithTies;
-import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
-import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
-import org.chocosolver.solver.search.strategy.selectors.variables.Random;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VF;
-import org.chocosolver.solver.variables.Variable;
 
 /**
  * This class adds to the Matcher of JLibbig the possibility to control if two bigraphs 

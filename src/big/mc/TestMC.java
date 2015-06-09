@@ -10,7 +10,6 @@ import big.prprint.BigPPrinterVeryPretty;
 import big.sim.BRS;
 import big.sim.BigStateGraph;
 import big.sim.BreadthFirstStrat;
-import big.sim.RuleApplication;
 import big.sim.Sim;
 
 /**

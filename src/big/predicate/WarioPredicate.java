@@ -17,18 +17,25 @@ public class WarioPredicate implements Predicate {
 
     private final Predicate p1, p2, p3;
     private final Bigraph B;
+    private final Matcher matcher;
 
+    
     public WarioPredicate(Bigraph big1, Predicate a, Predicate b, Predicate c) {
+        this(Matcher.DEFAULT, big1, a, b, c);
+    }
+    
+    public WarioPredicate(Matcher m, Bigraph big1, Predicate a, Predicate b, Predicate c) {
         p1 = a;
         p2 = b;
         p3 = c;
         B = big1;
+        matcher = m;
     }
 
     @Override
     public boolean isSatisfied(Bigraph big) {
         // return "Wario";
-        for(Match m : Matcher.DEFAULT.match(big, B)){
+        for(Match m : matcher.match(big, B)){
             if(p1.isSatisfied(m.getContext()) && p2.isSatisfied(m.getRedex()) && p3.isSatisfied(m.getParam())){
                 return true;
             }

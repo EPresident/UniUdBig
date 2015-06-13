@@ -35,6 +35,7 @@ public class DotLangPrinter {
     private StringBuilder pprt;
     private PrintTree pT;
     private StringBuilder edges, outerNames;
+    private static int unknownId = 0;
 
     /**
      * Produce a readable text-based representation of the given Bigraph. The
@@ -84,9 +85,9 @@ public class DotLangPrinter {
         //----------------------------------------------------------------------
         // Print the PrintTree
         pprt.append("digraph ").append(bigName).append(" {\n");
-        pprt.append(edges.toString());
-        pprt.append(outerNames.toString());
-        pprt.append(pT.toString());
+        pprt.append("//printing edges \n").append(edges.toString());
+        pprt.append("//printing outernames \n").append(outerNames.toString());
+        pprt.append("//printing tree \n").append(pT.toString());
         pprt.append("}");
         return pprt.toString();
     }
@@ -95,7 +96,7 @@ public class DotLangPrinter {
         String out = prettyPrint(big, bName);
         File file;
         try {
-            file=new File(fName + ".dot");
+            file = new File(fName + ".dot");
             BufferedWriter fOut = new BufferedWriter(new FileWriter(file));
             fOut.write(out);
             fOut.close();
@@ -250,13 +251,24 @@ public class DotLangPrinter {
         // Node.toString() output is      ID:ControlType
         StringBuilder sb = new StringBuilder();
         String id = getId(n);
-
-        if (n.getProperty("Name") != null) {
-            sb.append(n.getProperty("Name").get());
-            sb.append("[").append(id).append("]");
-        } else {
+        boolean named = false;
+        for (Property p : n.getProperties()) {
+            if (p.getName().matches("\\w*Name")) {
+                named = true;
+                sb.append(p.get());
+                sb.append("[").append(id).append("]");
+                break;
+            }
+        }
+        if (!named) {
             sb.append(id);
         }
+        /*  if (n.getProperty("Name") != null) {
+         sb.append(n.getProperty("Name").get());
+         sb.append("[").append(id).append("]");
+         } else {
+         sb.append(id);
+         }*/
         return sb.toString();
     }
 
@@ -395,7 +407,8 @@ public class DotLangPrinter {
             if (!children.isEmpty()) {
 
                 for (TreeNode n : children) {
-                    sb.append(n.id).append(" -> ").append(this.id).append("[style=dashed];\n");
+                    sb.append(n.normalizeName(id)).append(" -> ")
+                            .append(this.normalizeName(id)).append("[style=dashed];\n");
                     sb.append(n.printTree());
                 }
             }
@@ -410,12 +423,29 @@ public class DotLangPrinter {
         public String toString() {
             StringBuilder sb = new StringBuilder();
             if (type.equals("root")) {
-                sb.append(id).append("[shape=box");
+                sb.append(normalizeName(id)).append("[shape=box");
             } else {
-                sb.append(id).append("[shape=ellipse");
+                sb.append(normalizeName(id)).append("[shape=ellipse");
             }
-            sb.append(",label=").append(name).append("];");
+            sb.append(",label=").append(normalizeName(name)).append("];");
             return sb.toString();
+        }
+
+        /**
+         * Removes special characters, except underscore, from names.
+         *
+         * @param name
+         * @return
+         */
+        private String normalizeName(String name) {
+            char[] o = name.toCharArray();
+            for (char c : o) {
+                if (c == '?' || c == '.' || c == '!'
+                        || c == ',' || c == ';' || c == '%' || c == '$') {
+                    c = '_';
+                }
+            }
+            return Arrays.toString(o);
         }
 
         /**

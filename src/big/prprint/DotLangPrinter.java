@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Elia Calligaris <calligaris.elia@spes.uniud.it> 
+ * and Luca Geatti <geatti.luca@spes.uniud.it>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package big.prprint;
 
@@ -27,8 +39,15 @@ import java.util.regex.Pattern;
 /**
  * Class for exporting a Bigraph in DOT language.
  *
+ * Nodes are printed as ellipses;
+ * OuterNames are printed as (upward) triangles;
+ * Edges are printed as dots;
+ * Roots are printed as rectangles.
+ * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
+
+
 public class DotLangPrinter {
 
     private Bigraph pprtBig;
@@ -70,7 +89,8 @@ public class DotLangPrinter {
         // Roots are the top-level nodes, from there we scan the place graph
         for (Root r : big.getRoots()) {
             // Populate the PrintTree
-            TreeNode bigRoot = new TreeNode("root", Integer.toString(rid), 0);
+            TreeNode bigRoot = new TreeNode("root", "Root" + Integer.toString(rid),
+                    r.toString().split(":")[0], 0);
             pT.addNode(pT.root, bigRoot);
             for (Child c : r.getChildren()) {
                 // Recursive call on each child
@@ -85,9 +105,9 @@ public class DotLangPrinter {
         //----------------------------------------------------------------------
         // Print the PrintTree
         pprt.append("digraph ").append(bigName).append(" {\n");
-        pprt.append("//printing edges \n").append(edges.toString());
-        pprt.append("//printing outernames \n").append(outerNames.toString());
-        pprt.append("//printing tree \n").append(pT.toString());
+        pprt.append("\n\n//printing edges \n").append(edges.toString());
+        pprt.append("\n\n//printing outernames\n").append(outerNames.toString());
+        pprt.append("\n\n//printing tree \n").append(pT.toString());
         pprt.append("}");
         return pprt.toString();
     }
@@ -195,7 +215,7 @@ public class DotLangPrinter {
         outerNames = new StringBuilder();
         // Scan edges
         for (Edge e : pprtBig.getEdges()) {
-            String eID = e.toString();
+            String eID = normalizeName(e.toString());
             for (Point p : e.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
@@ -205,14 +225,14 @@ public class DotLangPrinter {
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, sb);
                 edges.append(id).append(" -> ").append(eID).append(";\n");
-                edges.append(id).append("[shape=ellipse];\n");
+                //  edges.append(id).append("[shape=ellipse];\n");
             }
             edges.append(eID).append("[shape=point];\n");
         }
 
         // scan outernames
         for (OuterName o : pprtBig.getOuterNames()) {
-            String oID = o.toString();
+            String oID = normalizeName(o.toString());
             for (Point p : o.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
@@ -221,9 +241,9 @@ public class DotLangPrinter {
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, o.getName());
                 outerNames.append(id).append(" -> ").append(oID).append(";\n");
-                outerNames.append(id).append("[shape=ellipse];\n");
+                //   outerNames.append(id).append("[shape=ellipse];\n");
             }
-            outerNames.append(oID).append("[style=filled,color=ivory]")
+            outerNames.append(oID).append("[shape=triangle]")//,style=filled,color=ivory
                     .append(";\n");
         }
     }
@@ -256,7 +276,6 @@ public class DotLangPrinter {
             if (p.getName().matches("\\w*Name")) {
                 named = true;
                 sb.append(p.get());
-                sb.append("[").append(id).append("]");
                 break;
             }
         }
@@ -280,6 +299,60 @@ public class DotLangPrinter {
      */
     private String getId(Node n) {
         return n.toString().split(":")[0];
+    }
+
+    /**
+     * Removes special characters, except underscore, from names.
+     *
+     * @param name
+     * @return
+     */
+    private String normalizeName(String name) {
+        final int MAXLEN = 20;
+        final char[] badchars = {'?', '%', '.', ' ', '\''};
+        final String[] badstr = {"\\?", "\\!", ".", "\\,", "\\\\", "\\'", " ", "\\;", "\\%", "\\$"};
+        /* char[] o = name.toCharArray();
+         for (int i = 0; i < o.length && i < MAXLEN; i++) {
+         if (o[i] == '?' || o[i] == '.' || o[i] == '!' || o[i] == '\'' || o[i] == ' '
+         || o[i] == ',' || o[i] == ';' || o[i] == '%' || o[i] == '$') {
+         char[] o2 = new char[o.length-1];
+         for(int j=0;j< i; j++){
+         o2[j]=o[j];
+         }
+         for(int j=i+i;j< o.length; j++){
+         o2[j-1]=o[j];
+         }
+         o=o2;
+         }
+         }
+         if (o.length <= MAXLEN) {
+         return new String(o);
+         } else {
+         return (new String(o).substring(0, MAXLEN));
+         }*/
+        String o = new String(name);
+        /* for (String bc : badchars) {
+         o.replaceAll(bc, "");
+         }*/
+        for (int i = 0; i < o.length(); i++) {
+            boolean replace = false;
+            char c = o.charAt(i);
+            for (char bc : badchars) {
+                if (bc == c) {
+                    replace = true;
+                    break;
+                }
+            }
+            if (replace) {
+                o = new String(o.substring(0, i) + o.substring(i + 1));
+            }
+        }
+
+        if (o.length() <= MAXLEN) {
+            return o;
+        } else {
+            return (o.substring(0, MAXLEN));
+        }
     }
 
     /**
@@ -365,7 +438,16 @@ public class DotLangPrinter {
         private TreeNode(String t, String n, int i) {
             type = t;
             name = n;
-            id = "?";
+            id = "unknown" + (++unknownId);
+            indent = i;
+            attributes = new LinkedList<>();
+            children = new LinkedList<>();
+        }
+
+        private TreeNode(String t, String n, String id, int i) {
+            type = t;
+            name = n;
+            this.id = id;
             indent = i;
             attributes = new LinkedList<>();
             children = new LinkedList<>();
@@ -403,13 +485,20 @@ public class DotLangPrinter {
             StringBuilder sb = new StringBuilder();
             if (!name.equals(PrintTree.FRN)) {
                 sb.append(this).append("\n");
-            }
-            if (!children.isEmpty()) {
+                if (!children.isEmpty()) {
 
-                for (TreeNode n : children) {
-                    sb.append(n.normalizeName(id)).append(" -> ")
-                            .append(this.normalizeName(id)).append("[style=dashed];\n");
-                    sb.append(n.printTree());
+                    for (TreeNode n : children) {
+                        sb.append(normalizeName(n.id)).append(" -> ")
+                                .append(normalizeName(id)).append("[style=dashed];\n");
+                        sb.append(n.printTree());
+                    }
+                }
+            } else {
+                if (!children.isEmpty()) {
+
+                    for (TreeNode n : children) {
+                        sb.append(n.printTree());
+                    }
                 }
             }
             return sb.toString();
@@ -429,23 +518,6 @@ public class DotLangPrinter {
             }
             sb.append(",label=").append(normalizeName(name)).append("];");
             return sb.toString();
-        }
-
-        /**
-         * Removes special characters, except underscore, from names.
-         *
-         * @param name
-         * @return
-         */
-        private String normalizeName(String name) {
-            char[] o = name.toCharArray();
-            for (char c : o) {
-                if (c == '?' || c == '.' || c == '!'
-                        || c == ',' || c == ';' || c == '%' || c == '$') {
-                    c = '_';
-                }
-            }
-            return Arrays.toString(o);
         }
 
         /**

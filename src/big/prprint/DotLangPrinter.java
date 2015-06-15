@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
  * OuterNames are printed as (upward) triangles;
  * Edges are printed as dots;
  * Roots are printed as rectangles.
- * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 

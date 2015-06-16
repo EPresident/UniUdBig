@@ -18,6 +18,7 @@ package big.sim;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
+import java.util.List;
 
 /**
  * Class encapsulating the behavior of a BRS, e.g. which rules are applied where,
@@ -30,13 +31,13 @@ public interface BRSStrategy {
      * @param to Bigraph to match the rule on
      * @return An Iterable with the resulting Bigraph(s)
      */
-    public Iterable<Bigraph> apply(Bigraph to);
+    public List<Bigraph> apply(Bigraph to);
     /**
      * Apply a RewritingRule to (all redex matches within) a Bigraph.
      * @param to Bigraph to match the rule on
      * @return An Iterable of RuleApplication objects, i.e. the resulting 
      * Bigraphs paired with the rules that were applied on them.
      */
-    public Iterable<RuleApplication> apply_RA(Bigraph to);
+    public List<RuleApplication> apply_RA(Bigraph to);
     public void setRules(RewritingRule[] rs);
 }

@@ -46,5 +46,17 @@ public class RuleApplication {
 
     /*protected RuleApplication(Bigraph b, String s) {
 
-    }*/
+     }*/
+    public Bigraph getBig() {
+        return big;
+    }
+
+    public RewritingRule getRule() {
+        return rule;
+    }
+
+    public String getRuleName() {
+        return ruleName;
+    }
+
 }

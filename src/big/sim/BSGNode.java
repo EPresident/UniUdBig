@@ -34,7 +34,7 @@ public class BSGNode {
     /**
      * FIXME Color used in DFSVisit, not pertinent to the class itself.
      */
-    private char color;
+    //private char color;
     /**
      * Hash code is pre-computed and stored here.
      */
@@ -44,7 +44,7 @@ public class BSGNode {
         state=big;
         links=new LinkedList<>();
         hashCode=bhf.bigHash(big);
-        this.color = 'W';
+      //  this.color = 'W';
     }
     
     /**
@@ -71,13 +71,13 @@ public class BSGNode {
         return hashCode;
     }
     
-    public char getColor(){
+  /*  public char getColor(){
     	return this.color;
     }
     
     public void setColor(char cl){
     	this.color = cl;
-    }
+    }*/
     
     
         

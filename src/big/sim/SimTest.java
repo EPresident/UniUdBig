@@ -20,7 +20,6 @@ import big.net.Utils;
 import big.prprint.BigPPrinterVeryPretty;
 import big.sim.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,8 +41,7 @@ public class SimTest {
         System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
         RewritingRule[] rules = Utils.getNetFWRules();
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
-        BigStateGraph bsg = new BigStateGraph(bigraph);
-        Sim sim = new Sim(bsg, brs);
+        Sim sim = new Sim(bigraph, brs);        
         
         //System.out.println(BigStateGraph.areIsomorph(bigraph, new BigraphBuilder(bigraph).makeBigraph()));
         int i = 1000;
@@ -57,8 +55,10 @@ public class SimTest {
             i--;
         } while (i > 0 && sim.hasNext());
 
+        BigStateGraph bsg = sim.getGraph();
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         System.out.println(bsg.getGraphSize() + " - " + applcations);
+        System.out.println(bsg.toDotLang());
         BSGNode currentNode = bsg.getRoot();
         String prName = "Root";
         List<BSGLink> links = bsg.getRoot().getLinks();

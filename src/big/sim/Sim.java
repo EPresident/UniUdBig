@@ -16,81 +16,89 @@
  */
 package big.sim;
 
-import it.uniud.mads.jlibbig.core.std.Bigraph;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import big.prprint.BigPPrinterVeryPretty;
+import it.uniud.mads.jlibbig.core.std.Bigraph;
+import java.util.LinkedList;
 
 /**
- * Class for simulating the evolution of bigraphic systems.
+ * Class for simulating the evolution of bigraphic systems. This class might be
+ * superflous: strategies could be used directly.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class Sim {
 
+    private final SimStrategy simStrat;
+    private final LinkedList<BSGNode> nodeQueue;
     private final BigStateGraph graph;
     private final BRS brs;
-    private final LinkedList<BSGNode> nodeQueue;
-    private final BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
-    
-    public Sim(BigStateGraph bs, BRS br) {
-        graph = bs;
-        brs = br;
-        nodeQueue = new LinkedList<>();
-        nodeQueue.add(graph.getRoot());
-    }
-    
-    
-    public Sim(BRS br, Bigraph root) {
-        graph = new BigStateGraph(root);
-        brs = br;
-        nodeQueue = new LinkedList<>();
-        nodeQueue.add(graph.getRoot());
-    }
-    
-    
-    /*public void step() {
-        BSGNode node = nodeQueue.pop();
-        Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
-        for (RuleApplication ra : ras) {
-            nodeQueue.add(graph.applyRewritingRule(node, ra.ruleName, ra.big));
-        }
-    }*/
 
-    public List<RuleApplication> stepAndGet() {
-        BSGNode node = nodeQueue.pop();
-        Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
-        LinkedList<RuleApplication> lra = new LinkedList<>();
-        for (RuleApplication ra : ras) {
-        	BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big );
-        	if(newNode!=null){
-            	nodeQueue.add(newNode);
-            }
-            lra.add(ra);
-        }
-        System.out.println("StepAndGet: "+lra.size()+" new applications");
-        return lra;
+    /**
+     * Creates a new Sim with the default breadth-first strategy.
+     *
+     * @param br The BRS to use
+     * @param root Starting Bigraph
+     */
+    public Sim(Bigraph root, BRS br) {
+        this(root, br, new BreadthFirstSim());
     }
-    
-    public boolean hasNext(){
+
+    public Sim(Bigraph root, BRS brs, SimStrategy ss) {
+        simStrat = ss;
+        graph = new BigStateGraph(root);
+        this.brs = brs;
+        nodeQueue = new LinkedList<>();
+        nodeQueue.add(graph.getRoot());
+    }
+
+    private final BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
+
+    /**
+     * Makes a step in the simulation, i.e. it applies the BRS to the current
+     * state.
+     */
+    public void step() {
+        simStrat.step(nodeQueue, brs, graph);
+    }
+
+    /**
+     * Makes a step in the simulation and returns the result(s) of applied
+     * rules.
+     *
+     * @return A List of RuleApplications (state+rule)
+     */
+    public List<RuleApplication> stepAndGet() {
+        return simStrat.stepAndGet(nodeQueue, brs, graph);
+    }
+
+    /**
+     * Returns true if the simulation is over, which means that all possible
+     * states have been created.
+     *
+     * @return true if the simulation is over.
+     */
+    public boolean hasNext() {
         return !nodeQueue.isEmpty();
     }
-    
-    
-    
+
     /**
-     * Creates the entire state graph.
-     * 
+     * Computes the entire state graph.
+     *
      * @param max Maximum number of iterations.
      * @return
      */
-    public BigStateGraph getGraph(int max){
-    	while(max>0 && this.hasNext()){
-    		this.stepAndGet();
-    		max--;
-    	}
-    	return graph;
+    public BigStateGraph fullSim(int max) {
+        while (max > 0 && this.hasNext()) {
+            this.stepAndGet();
+            max--;
+        }
+        return graph;
     }
+
+    public BigStateGraph getGraph() {
+        return graph;
+    }
+
 }

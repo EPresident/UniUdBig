@@ -20,9 +20,12 @@ import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
- *
+ * Applies the rules following a breadth-first approach.
+ * This means that, for each node/state, all possible nodes/states (deriving
+ * from the application of the rules) are computed.
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class BreadthFirstStrat implements BRSStrategy {
@@ -34,7 +37,7 @@ public class BreadthFirstStrat implements BRSStrategy {
     }
 
     @Override
-    public Iterable<Bigraph> apply(Bigraph to) {
+    public List<Bigraph> apply(Bigraph to) {
         LinkedList<Bigraph> queue = new LinkedList<>();
         for (RewritingRule r : rules) {
             //RewRuleWProps rrwp = (RewRuleWProps) r;
@@ -51,7 +54,7 @@ public class BreadthFirstStrat implements BRSStrategy {
     }
 
     @Override
-    public Iterable<RuleApplication> apply_RA(Bigraph to) {
+    public List<RuleApplication> apply_RA(Bigraph to) {
         LinkedList<RuleApplication> queue = new LinkedList<>();
         for (RewritingRule r : rules) {
             RewRuleWProps rrwp = (RewRuleWProps) r;

@@ -1,32 +1,46 @@
 package big.mc;
 
 import big.predicate.Predicate;
-import big.sim.BSGNode;
-import big.sim.BigStateGraph;
+import big.sim.BRS;
+import big.sim.RandomSim;
+import big.sim.RuleApplication;
+import big.sim.Sim;
+import big.sim.SimStrategy;
+import it.uniud.mads.jlibbig.core.std.Bigraph;
 
 /**
- * Simple model checker that checks a property (expressed in any type of logic) for all nodes of the graph.
- * The user can specify the way the nodes are visited.
- * 
- * @author Luca Geatti <geatti.luca@spes.uniud.it>
+ * Simple model checker that checks a property (expressed in any type of logic)
+ * for all nodes of the graph. The user can specify the way the nodes are
+ * visited. The strategy employed by the BRS affects the performance of the
+ * model checker. Currently, if one state satisfies the given predicate, the
+ * model checker returns true.
  *
+ * @author Luca Geatti <geatti.luca@spes.uniud.it>
+ * @author Elia Calligaris <calligaris.elia@spes.uniud.it>
  */
 public class ModelChecker {
-	
-	private Visit visit;
-	
-	public ModelChecker(BigStateGraph bsg, Predicate predicate, Visit visit){
-		this.visit = visit;
-		
-		this.visit.setBSG(bsg);
-		this.visit.setPredicate(predicate);
-	}
-	
-	public boolean go(){
-		return visit.startFromRoot();
-	}
-	
-	public boolean go(BSGNode first){
-		return visit.start(first);
-	}
+    private final Sim sim;
+    private final Predicate predicate;
+
+    /**
+     * @param root The starting Bigraph (i.e. root of the state graph)
+     * @param brs The BRS (rules + application strategy) to use.
+     * @param p The predicate whose validity must be checked.
+     * @param ss The simulation strategy (graph building order)to employ.
+     */
+    public ModelChecker(Bigraph root, BRS brs, Predicate p, SimStrategy ss) {
+        sim = new Sim(root, brs, ss);
+        predicate = p;
+    }
+
+    public boolean modelCheck() {
+        while (sim.hasNext()) {
+            for (RuleApplication ra : sim.stepAndGet()) {
+                if (predicate.isSatisfied(ra.getBig())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

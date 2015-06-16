@@ -18,6 +18,7 @@ package big.sim;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
+import java.util.List;
 
 /**
  * Bigraphic Reactive System. Class for applying a set of rewriting rules to a
@@ -50,7 +51,7 @@ public class BRS {
      * @param to Bigraph to match the rule on
      * @return An Iterable with the resulting Bigraph(s)
      */
-    public Iterable<Bigraph> apply(Bigraph to) {
+    public List<Bigraph> apply(Bigraph to) {
         return strategy.apply(to);
     }
 
@@ -60,7 +61,7 @@ public class BRS {
      * @return An Iterable of RuleApplication objects, i.e. the resulting 
      * Bigraphs paired with the rules that were applied on them.
      */
-    public Iterable<RuleApplication> apply_RA(Bigraph to){
+    public List<RuleApplication> apply_RA(Bigraph to){
         return strategy.apply_RA(to);
     }
 }

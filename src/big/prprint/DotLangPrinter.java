@@ -30,6 +30,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -39,21 +40,20 @@ import java.util.regex.Pattern;
 /**
  * Class for exporting a Bigraph in DOT language.
  *
- * Nodes are printed as ellipses;
- * OuterNames are printed as (upward) triangles;
- * Edges are printed as dots;
- * Roots are printed as rectangles.
+ * Nodes are printed as ellipses; OuterNames are printed as (upward) triangles;
+ * Edges are printed as dots; Roots are printed as rectangles.
+ *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-
-
 public class DotLangPrinter {
 
     private Bigraph pprtBig;
     private StringBuilder pprt;
     private PrintTree pT;
     private StringBuilder edges, outerNames;
+    private ArrayList<StringBuilder> ranks;
     private static int unknownId = 0;
+    private int maxIndent = 0;
 
     /**
      * Produce a readable text-based representation of the given Bigraph. The
@@ -77,8 +77,9 @@ public class DotLangPrinter {
      */
     public String prettyPrint(Bigraph big, String bigName) {
         pprtBig = big;
-        // StringBuilder is more efficient than concatenation with overloaded + !
+        // StringBuilder is more efficient than concatenation with overloaded "+" !
         pprt = new StringBuilder();
+        ranks = new ArrayList<>();
         // Initialize PrintTree (support data-structure)
         pT = new PrintTree();
         //---------------------------------------
@@ -97,6 +98,9 @@ public class DotLangPrinter {
             }
             rid++;
         }
+        for (int i = 0; i <= maxIndent; i++) {
+            ranks.add(new StringBuilder());
+        }
         //----------------------------------------------------------------------
         // Analyze node links (link graph) and update the PrintTree accordingly
         //----------------------------------------------------------------------
@@ -104,9 +108,23 @@ public class DotLangPrinter {
         //----------------------------------------------------------------------
         // Print the PrintTree
         pprt.append("digraph ").append(bigName).append(" {\n");
+
+        pprt.append("ranksep=.75;");
+        pprt.append("{\n").append("rank").append(0);
+        for (int i = 1; i < ranks.size(); i++) {
+            pprt.append("->").append("rank").append(i);
+        }
+        pprt.append(";\n}");
+
+        pprt.append("\n\n//printing tree \n").append(pT.toString());
+        for (int i = 0; i < ranks.size(); i++) {
+            StringBuilder sb = ranks.get(i);
+            if (sb.length() > 0) {
+                pprt.append("{\nrank=same;\nrank").append(i).append(";").append(sb.toString()).append("}\n");
+            }
+        }
         pprt.append("\n\n//printing edges \n").append(edges.toString());
         pprt.append("\n\n//printing outernames\n").append(outerNames.toString());
-        pprt.append("\n\n//printing tree \n").append(pT.toString());
         pprt.append("}");
         return pprt.toString();
     }
@@ -138,6 +156,7 @@ public class DotLangPrinter {
      * be thought as the height of the node in the PrintTree )
      */
     private void buildTree(TreeNode parent, Child c, int indent) {
+        updateMaxIndent(indent);
         // Cast the Child instance into a Node to access more methods
         Node n = (Node) c;
         // Populate the PrintTree
@@ -242,7 +261,7 @@ public class DotLangPrinter {
                 outerNames.append(id).append(" -> ").append(oID).append(";\n");
                 //   outerNames.append(id).append("[shape=ellipse];\n");
             }
-            outerNames.append(oID).append("[shape=triangle]")//,style=filled,color=ivory
+            outerNames.append(oID).append("[shape=house]")//,style=filled,color=ivory
                     .append(";\n");
         }
     }
@@ -310,29 +329,8 @@ public class DotLangPrinter {
         final int MAXLEN = 20;
         final char[] badchars = {'?', '%', '.', ' ', '\''};
         final String[] badstr = {"\\?", "\\!", ".", "\\,", "\\\\", "\\'", " ", "\\;", "\\%", "\\$"};
-        /* char[] o = name.toCharArray();
-         for (int i = 0; i < o.length && i < MAXLEN; i++) {
-         if (o[i] == '?' || o[i] == '.' || o[i] == '!' || o[i] == '\'' || o[i] == ' '
-         || o[i] == ',' || o[i] == ';' || o[i] == '%' || o[i] == '$') {
-         char[] o2 = new char[o.length-1];
-         for(int j=0;j< i; j++){
-         o2[j]=o[j];
-         }
-         for(int j=i+i;j< o.length; j++){
-         o2[j-1]=o[j];
-         }
-         o=o2;
-         }
-         }
-         if (o.length <= MAXLEN) {
-         return new String(o);
-         } else {
-         return (new String(o).substring(0, MAXLEN));
-         }*/
         String o = new String(name);
-        /* for (String bc : badchars) {
-         o.replaceAll(bc, "");
-         }*/
+
         for (int i = 0; i < o.length(); i++) {
             boolean replace = false;
             char c = o.charAt(i);
@@ -343,7 +341,7 @@ public class DotLangPrinter {
                 }
             }
             if (replace) {
-                o = new String(o.substring(0, i) + o.substring(i + 1));
+                o = o.substring(0, i) + o.substring(i + 1);
             }
         }
 
@@ -351,6 +349,12 @@ public class DotLangPrinter {
             return o;
         } else {
             return (o.substring(0, MAXLEN));
+        }
+    }
+
+    private void updateMaxIndent(int newIndent) {
+        if (newIndent > maxIndent) {
+            maxIndent = newIndent;
         }
     }
 
@@ -424,6 +428,7 @@ public class DotLangPrinter {
 
     } // End of PrintTree class
 
+    // Node printing logic is in this class!
     private class TreeNode {
 
         private String type, name, id;
@@ -484,11 +489,11 @@ public class DotLangPrinter {
             StringBuilder sb = new StringBuilder();
             if (!name.equals(PrintTree.FRN)) {
                 sb.append(this).append("\n");
+                // Print links to children nodes
                 if (!children.isEmpty()) {
-
                     for (TreeNode n : children) {
                         sb.append(normalizeName(n.id)).append(" -> ")
-                                .append(normalizeName(id)).append("[style=dashed];\n");
+                                .append(normalizeName(id)).append("[style=dashed];");
                         sb.append(n.printTree());
                     }
                 }
@@ -505,18 +510,15 @@ public class DotLangPrinter {
 
         // toString only prints this TreeNode
         @Override
-        /**
-         * Output: type name { prop1: val1; ... ; propN: valN; }
-         */
         public String toString() {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = ranks.get(indent);
             if (type.equals("root")) {
                 sb.append(normalizeName(id)).append("[shape=box");
             } else {
                 sb.append(normalizeName(id)).append("[shape=ellipse");
             }
-            sb.append(",label=").append(normalizeName(name)).append("];");
-            return sb.toString();
+            sb.append(",label=").append(normalizeName(name)).append("];\n");
+            return "";
         }
 
         /**

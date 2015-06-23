@@ -50,7 +50,7 @@ public class DotLangPrinter {
     private Bigraph pprtBig;
     private StringBuilder pprt;
     private PrintTree pT;
-    private StringBuilder edges, outerNames;
+    private StringBuilder edges, outerNames_N, outerNames_E;
     private ArrayList<StringBuilder> ranks;
     private static int unknownId = 0;
     private int maxIndent = 0;
@@ -110,11 +110,16 @@ public class DotLangPrinter {
         pprt.append("digraph ").append(bigName).append(" {\n");
 
         pprt.append("ranksep=.75;");
-        pprt.append("{\n").append("rank").append(0);
+        pprt.append("{\n").append("outernames->rank0");
         for (int i = 1; i < ranks.size(); i++) {
             pprt.append("->").append("rank").append(i);
         }
-        pprt.append(";\n}");
+        pprt.append("[style=invisible arrowhead=none];outernames[shape=none style=invisible];\n");
+        pprt.append("rank0[label=\"roots\" shape=none style=invisible];\n");
+        for (int i = 1; i < ranks.size(); i++) {
+            pprt.append("rank").append(i).append("[shape=none style=invisible];\n");
+        }
+        pprt.append("\n}");
 
         pprt.append("\n\n//printing tree \n").append(pT.toString());
         for (int i = 0; i < ranks.size(); i++) {
@@ -123,8 +128,12 @@ public class DotLangPrinter {
                 pprt.append("{\nrank=same;\nrank").append(i).append(";").append(sb.toString()).append("}\n");
             }
         }
-        pprt.append("\n\n//printing edges \n").append(edges.toString());
-        pprt.append("\n\n//printing outernames\n").append(outerNames.toString());
+        pprt.append("\n\n//printing edges \n")
+                .append(edges.toString());
+        pprt.append("\n\n//printing outernames\n").append("{\nrank=same;\nouternames;\n")
+                .append(outerNames_N.toString()).append("}");
+        pprt.append(outerNames_E.toString());
+        
         pprt.append("}");
         return pprt.toString();
     }
@@ -230,7 +239,8 @@ public class DotLangPrinter {
     private void buildLinks(PrintTree pT) {
         // Init StringBuilders
         edges = new StringBuilder();
-        outerNames = new StringBuilder();
+        outerNames_N = new StringBuilder();
+        outerNames_E = new StringBuilder();
         // Scan edges
         for (Edge e : pprtBig.getEdges()) {
             String eID = normalizeName(e.toString());
@@ -242,7 +252,7 @@ public class DotLangPrinter {
                 String sb = "Edge " + eID;
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, sb);
-                edges.append(id).append(" -> ").append(eID).append(";\n");
+                edges.append(id).append(" -> ").append(eID).append("[arrowhead=none color=grey style=dashed];\n");
                 //  edges.append(id).append("[shape=ellipse];\n");
             }
             edges.append(eID).append("[shape=point];\n");
@@ -258,10 +268,10 @@ public class DotLangPrinter {
                 String id = portId[1];
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, o.getName());
-                outerNames.append(id).append(" -> ").append(oID).append(";\n");
+                outerNames_E.append(id).append(" -> ").append(oID).append("[arrowhead=none color=grey style=dashed];\n");
                 //   outerNames.append(id).append("[shape=ellipse];\n");
             }
-            outerNames.append(oID).append("[shape=house]")//,style=filled,color=ivory
+            outerNames_N.append(oID).append("[shape=house]")//,style=filled,color=ivory
                     .append(";\n");
         }
     }
@@ -493,7 +503,7 @@ public class DotLangPrinter {
                 if (!children.isEmpty()) {
                     for (TreeNode n : children) {
                         sb.append(normalizeName(n.id)).append(" -> ")
-                                .append(normalizeName(id)).append("[style=dashed];");
+                                .append(normalizeName(id));//.append("[weight=8];");
                         sb.append(n.printTree());
                     }
                 }
@@ -513,7 +523,7 @@ public class DotLangPrinter {
         public String toString() {
             StringBuilder sb = ranks.get(indent);
             if (type.equals("root")) {
-                sb.append(normalizeName(id)).append("[shape=box");
+                sb.append(normalizeName(id)).append("[shape=box color=blue");
             } else {
                 sb.append(normalizeName(id)).append("[shape=ellipse");
             }

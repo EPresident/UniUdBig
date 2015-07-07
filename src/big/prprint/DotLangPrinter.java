@@ -252,7 +252,7 @@ public class DotLangPrinter {
                 String sb = "Edge " + eID;
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, sb);
-                edges.append(id).append(" -> ").append(eID).append("[arrowhead=none color=grey style=dashed];\n");
+                edges.append(id).append(" -> ").append(eID).append("[arrowhead=none color=grey style=dashed k=2];\n");
                 //  edges.append(id).append("[shape=ellipse];\n");
             }
             edges.append(eID).append("[shape=point];\n");
@@ -268,7 +268,7 @@ public class DotLangPrinter {
                 String id = portId[1];
                 TreeNode tn = pT.findNodeByID(id);
                 tn.linkPort(port, o.getName());
-                outerNames_E.append(id).append(" -> ").append(oID).append("[arrowhead=none color=grey style=dashed];\n");
+                outerNames_E.append(id).append(" -> ").append(oID).append("[arrowhead=none color=grey style=dashed k=2];\n");
                 //   outerNames.append(id).append("[shape=ellipse];\n");
             }
             outerNames_N.append(oID).append("[shape=house]")//,style=filled,color=ivory

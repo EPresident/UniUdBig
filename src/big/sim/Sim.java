@@ -16,56 +16,32 @@
  */
 package big.sim;
 
-import big.bsg.BigStateGraph;
-import big.bsg.BSGNode;
 import big.brs.BRS;
+import big.bsg.BigStateGraph;
 import big.brs.RuleApplication;
 import java.util.List;
 
-import big.prprint.BigPPrinterVeryPretty;
-import it.uniud.mads.jlibbig.core.std.Bigraph;
-import java.util.LinkedList;
 
 /**
- * Class for simulating the evolution of bigraphic systems. This class might be
- * superflous: strategies could be used directly.
+ * Interface for classes simulating the evolution of bigraphic systems.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class Sim {
-
-    private final SimStrategy simStrat;
-    private final LinkedList<BSGNode> nodeQueue;
-    private final BigStateGraph graph;
-    private final BRS brs;
-
-    /**
-     * Creates a new Sim with the default breadth-first strategy.
-     *
-     * @param br The BRS to use
-     * @param root Starting Bigraph
-     */
-    public Sim(Bigraph root, BRS br) {
-        this(root, br, new BreadthFirstSim());
+public abstract class Sim {
+    
+    protected final BigStateGraph bsg;
+    protected final BRS brs;
+    
+    protected Sim(BigStateGraph graph, BRS br){
+        bsg = graph;
+        brs=br;
     }
-
-    public Sim(Bigraph root, BRS brs, SimStrategy ss) {
-        simStrat = ss;
-        graph = new BigStateGraph(root);
-        this.brs = brs;
-        nodeQueue = new LinkedList<>();
-        nodeQueue.add(graph.getRoot());
-    }
-
-    private final BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
 
     /**
      * Makes a step in the simulation, i.e. it applies the BRS to the current
      * state.
      */
-    public void step() {
-        simStrat.step(nodeQueue, brs, graph);
-    }
+    public abstract void step();
 
     /**
      * Makes a step in the simulation and returns the result(s) of applied
@@ -73,36 +49,35 @@ public class Sim {
      *
      * @return A List of RuleApplications (state+rule)
      */
-    public List<RuleApplication> stepAndGet() {
-        return simStrat.stepAndGet(nodeQueue, brs, graph);
-    }
-
+    public abstract List<RuleApplication> stepAndGet();
+    
     /**
      * Returns true if the simulation is over, which means that all possible
      * states have been created.
      *
      * @return true if the simulation is over.
      */
-    public boolean hasNext() {
-        return !nodeQueue.isEmpty();
-    }
+    public abstract boolean simOver();
 
     /**
      * Computes the entire state graph.
      *
-     * @param max Maximum number of iterations.
-     * @return
+     * @param max Maximum number of iterations (0 means unlimited).
+     * @return A BigStateGraph with all possible states.
      */
     public BigStateGraph fullSim(int max) {
-        while (max > 0 && this.hasNext()) {
-            this.stepAndGet();
+        while (max > 0 && !simOver()) {
+            this.step();
             max--;
         }
-        return graph;
+        return getGraph();
     }
 
-    public BigStateGraph getGraph() {
-        return graph;
+    /**
+     * @return The state graph computed so far.
+     */
+    public BigStateGraph getGraph(){
+        return bsg;
     }
 
 }

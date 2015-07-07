@@ -4,7 +4,6 @@ import big.predicate.Predicate;
 import big.brs.BRS;
 import big.brs.RuleApplication;
 import big.sim.Sim;
-import big.sim.SimStrategy;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 
 /**
@@ -21,17 +20,7 @@ public class ModelChecker {
 
     private final Sim sim;
     private final Predicate predicate;
-
-    /**
-     * @param root The starting Bigraph (i.e. root of the state graph)
-     * @param brs The BRS (rules + application strategy) to use.
-     * @param p The predicate whose validity must be checked.
-     * @param ss The simulation strategy (graph building order)to employ.
-     */
-    public ModelChecker(Bigraph root, BRS brs, Predicate p, SimStrategy ss) {
-        sim = new Sim(root, brs, ss);
-        predicate = p;
-    }
+    private final static int DEFAULT_MAX_APPLICATIONS = 100000;
 
     /**
      * @param s Simulator to employ.
@@ -43,11 +32,17 @@ public class ModelChecker {
     }
 
     public boolean modelCheck() {
-        while (sim.hasNext()) {
+        return modelCheck(DEFAULT_MAX_APPLICATIONS);
+    }
+
+    public boolean modelCheck(int maxApplications) {
+        int applications = 0;
+        while (!sim.simOver() && applications < maxApplications) {
             for (RuleApplication ra : sim.stepAndGet()) {
                 if (predicate.isSatisfied(ra.getBig())) {
                     return true;
                 }
+                applications++;
             }
         }
         return false;

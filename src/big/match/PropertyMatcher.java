@@ -1,15 +1,4 @@
-package big.sim;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-
-import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.ICF;
-import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.VF;
+package big.match;
 
 import it.uniud.mads.jlibbig.core.attachedProperties.Property;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
@@ -27,6 +16,17 @@ import it.uniud.mads.jlibbig.core.std.Port;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Site;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.ICF;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.VF;
+
 /**
  * This class adds to the Matcher of JLibbig the possibility to control if two bigraphs 
  * are isomorphic. The method "areMatchable" is override: here is implemented with the aim
@@ -36,7 +36,7 @@ import it.uniud.mads.jlibbig.core.std.Site;
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
-public class myMatcher extends Matcher{
+public class PropertyMatcher extends Matcher{
 	
 	
 
@@ -49,11 +49,13 @@ public class myMatcher extends Matcher{
 	public boolean areIsomorph(Bigraph a, Bigraph b) {
 		Solver linkSolver = new Solver("Link Graph Isomorphism");
 		Solver placeSolver = new Solver("Place Graph Isomorphism");
-
+		
 		/*
 		 * LinkGraph Variables and Constraints
 		 */
 		IntVar[] aux = new IntVar[1];
+		IntVar one = VF.fixed(1, linkSolver);
+		
 		Collection<? extends Node> nodesA = a.getNodes();
 		Collection<? extends InnerName> innersA = a.getInnerNames();
 		Collection<Port> portsA = new HashSet<>();
@@ -73,6 +75,8 @@ public class myMatcher extends Matcher{
 		for (Node nodeB : b.getNodes()) {
 			portsB.addAll(nodeB.getPorts());
 		}
+		
+		
 
 		if (nodesA.size() != nodesB.size() || innersA.size() != innersB.size()
 				|| outersA.size() != outersB.size()
@@ -80,7 +84,7 @@ public class myMatcher extends Matcher{
 				|| edgesA.size() != edgesB.size()) {
 			return false;
 		}
-
+		
 		// Fixed Values for the structure of a's LinkGraph.
 		// Map from Points of A to their IntegerVariables.
 		HashMap<LinkEntity, HashMap<LinkEntity, IntVar>> linksA = new HashMap<LinkEntity, HashMap<LinkEntity, IntVar>>();
@@ -110,7 +114,7 @@ public class myMatcher extends Matcher{
 		// Inners of "a"
 		for (InnerName innerA : innersA) {
 			int pointNumB = 0;
-			// Variables for the edge from Points of "a" to Points of "b"
+			// Variables for the edges from Points of "a" to Points of "b"
 			HashMap<LinkEntity, IntVar> pointsAB = new HashMap<LinkEntity, IntVar>();
 			for (InnerName innerB : innersB) {
 				IntVar var = VF.bool("PA_PB_" + pointNumA + "_" + pointNumB,
@@ -135,6 +139,9 @@ public class myMatcher extends Matcher{
 					if (port.getNumber() != portB.getNumber()) {
 						var = VF.fixed(0, linkSolver);
 					}
+					if( ! areMatchable( a , port.getNode() , b , portB.getNode()) ){
+						var = VF.fixed(0, linkSolver);
+					}
 					pointsAB.put(portB, var);
 					pointsABVars.add(var);
 					pointNumB++;
@@ -155,9 +162,9 @@ public class myMatcher extends Matcher{
 			HashMap<LinkEntity, IntVar> handlesFluxAB = new HashMap<LinkEntity, IntVar>();
 			for (OuterName outerA : outersA) {
 				IntVar var = VF.enumerated("HB_HA_" + handleNumB + "_"
-						+ handleNumA, 0, portsA.size() + innersA.size(),
+						+ handleNumA, 0, outer.getPoints().size(),/* portsA.size() + innersA.size(),*/
 						linkSolver);
-				IntVar flux = VF.bool("HB_HA_FLUX_" + handleNumB + "_"
+				IntVar flux = VF.bool("HB_HA_FLUX::" + handleNumB + "_"
 						+ handleNumA, linkSolver);
 				handlesAB.put(outerA, var);
 				handlesFluxAB.put(outerA, flux);
@@ -169,23 +176,23 @@ public class myMatcher extends Matcher{
 			handleNumB++;
 		}
 
-		for (Edge e : edgesB) {
+		for (Edge eB : edgesB) {
 			int handleNumA = 0;
 			HashMap<LinkEntity, IntVar> handlesAB = new HashMap<LinkEntity, IntVar>();
 			HashMap<LinkEntity, IntVar> handlesFluxAB = new HashMap<LinkEntity, IntVar>();
-			for (Edge eB : edgesA) {
+			for (Edge eA : edgesA) {
 				IntVar var = VF.enumerated("HB_HA_" + handleNumB + "_"
-						+ handleNumA, 0, portsA.size() + innersA.size(),
+						+ handleNumA, 0, eB.getPoints().size(),/*portsA.size() + innersA.size(),*/
 						linkSolver);
 				IntVar flux = VF.bool("HB_HA_FLUX_" + handleNumB + "_"
 						+ handleNumA, linkSolver);
-				handlesAB.put(eB, var);
+				handlesAB.put(eA, var);
 				handleABVars.add(var);
-				handlesFluxAB.put(eB, flux);
+				handlesFluxAB.put(eA, flux);
 				handleNumA++;
 			}
-			handlesB.put(e, handlesAB);
-			fluxBA.put(e, handlesFluxAB);
+			handlesB.put(eB, handlesAB);
+			fluxBA.put(eB, handlesFluxAB);
 			handleNumB++;
 		}
 
@@ -197,7 +204,7 @@ public class myMatcher extends Matcher{
 			HashMap<LinkEntity, IntVar> map = pointsA.get(innerA);
 			IntVar[] outFlux = map.values().toArray(aux);
 			// Constraint
-			linkSolver.post(ICF.sum(outFlux, VF.fixed(1, linkSolver)));
+			linkSolver.post(ICF.sum(outFlux, one));
 			outFluxNum++;
 		}
 
@@ -205,7 +212,7 @@ public class myMatcher extends Matcher{
 			HashMap<LinkEntity, IntVar> map = pointsA.get(port);
 			IntVar[] outFlux = map.values().toArray(aux);
 			// Constraint
-			linkSolver.post(ICF.sum(outFlux, VF.fixed(1, linkSolver)));
+			linkSolver.post(ICF.sum(outFlux, one));
 			outFluxNum++;
 		}
 
@@ -220,7 +227,7 @@ public class myMatcher extends Matcher{
 			}
 			// Constraint
 			IntVar[] fluxINArray = fluxIN.toArray(aux);
-			linkSolver.post(ICF.sum(fluxINArray, VF.fixed(1, linkSolver)));
+			linkSolver.post(ICF.sum(fluxINArray, one));
 		}
 
 		for (Port portB : portsB) {
@@ -234,7 +241,7 @@ public class myMatcher extends Matcher{
 			}
 			// Constraint
 			IntVar[] fluxINArray = fluxIN.toArray(aux);
-			linkSolver.post(ICF.sum(fluxINArray, VF.fixed(1, linkSolver)));
+			linkSolver.post(ICF.sum(fluxINArray, one));
 		}
 
 		/*
@@ -265,8 +272,8 @@ public class myMatcher extends Matcher{
 				// Constraint
 				IntVar[] fluxIN = handlesB.get(outerB).values().toArray(aux);
 				IntVar[] fluxOUTArray = fluxOUT.toArray(aux);
-				IntVar sum = VF.enumerated("SUM_" + sumNum, 0, innersA.size()
-						+ portsA.size(), linkSolver);
+				IntVar sum = VF.enumerated("SUM_" + sumNum, 0, outerB.getPoints().size(),/*innersA.size()+ portsA.size(),*/ linkSolver);
+				
 				linkSolver.post(ICF.sum(fluxIN, sum));
 				linkSolver.post(ICF.sum(fluxOUTArray, sum));
 			}
@@ -298,14 +305,15 @@ public class myMatcher extends Matcher{
 				// Constraint
 				IntVar[] fluxIN = handlesB.get(eB).values().toArray(aux);
 				IntVar[] fluxOUTArray = fluxOUT.toArray(aux);
-				IntVar sum = VF.enumerated("SUM_" + sumNum, 0, outersA.size(),
-						linkSolver);
+				IntVar sum = VF.enumerated("SUM_" + sumNum, 0, eB.getPoints().size() ,/*outersA.size(),*/ linkSolver);
 				linkSolver.post(ICF.sum(fluxIN, sum));
 				linkSolver.post(ICF.sum(fluxOUTArray, sum));
 			}
 			sumNum++;
 		}
-
+		
+		
+		
 		/*
 		 * Fourth Constraint (M4) --The most important: it closes the flow
 		 * --Sink Constraint Seventh Constraint (M7)
@@ -337,35 +345,38 @@ public class myMatcher extends Matcher{
 				if (var != null) {
 					fluxBottom.add(var);
 				}
+				//Flow
 				HashMap<LinkEntity, IntVar> flowB = fluxBA.get(outerB);
 				IntVar flow = flowB.get(outerA);
 				if (flow != null) {
 					linkSolver.post(ICF.times(var, flow, var));
 				}
 			}
-			for (Edge eB : edgesB) {
+			//Bottom Flow
+			/*for (Edge eB : edgesB) {
 				HashMap<LinkEntity, IntVar> mapB = handlesB.get(eB);
 				IntVar var = mapB.get(outerA);
 				if (var != null) {
 					fluxBottom.add(var);
 				}
+				//Flow
 				HashMap<LinkEntity, IntVar> flowB = fluxBA.get(eB);
 				IntVar flow = flowB.get(outerA);
 				if (flow != null) {
 					linkSolver.post(ICF.times(var, flow, var));
 				}
-			}
+			}*/
 
 			if (!fluxLeft.isEmpty() && !fluxBottom.isEmpty()) {
 				// Constraints M4
 				IntVar[] fluxLeftArray = fluxLeft.toArray(aux);
-				IntVar sumLeft = VF.enumerated("SumLeft" + sinkNum, 0,
-						innersA.size() + portsA.size(), linkSolver);
+				IntVar sumLeft = VF.enumerated("SumLeft" + sinkNum, 0, outerA.getPoints().size() ,
+						/*innersA.size() + portsA.size(),*/ linkSolver);
 				linkSolver.post(ICF.sum(fluxLeftArray, "=", sumLeft));
 
 				IntVar[] fluxBottomArray = fluxBottom.toArray(aux);
-				IntVar sumBottom = VF.enumerated("SumBottom" + sinkNum, 0,
-						outersB.size() + edgesB.size(), linkSolver);
+				IntVar sumBottom = VF.enumerated("SumBottom" + sinkNum, 0, outerA.getPoints().size(),
+						/*outersB.size() + edgesB.size(),*/ linkSolver);
 				linkSolver.post(ICF.sum(fluxBottomArray, sumBottom));
 
 				linkSolver.post(ICF.arithm(sumLeft, "=", sumBottom));
@@ -392,7 +403,7 @@ public class myMatcher extends Matcher{
 
 			// Bottom Flow
 			ArrayList<IntVar> fluxBottom = new ArrayList<IntVar>();
-			for (OuterName outerB : outersB) {
+			/*for (OuterName outerB : outersB) {
 				HashMap<LinkEntity, IntVar> mapB = handlesB.get(outerB);
 				IntVar var = mapB.get(eA);
 				if (var != null) {
@@ -403,7 +414,8 @@ public class myMatcher extends Matcher{
 				if (flow != null) {
 					linkSolver.post(ICF.times(var, flow, var));
 				}
-			}
+			}*/
+			
 			for (Edge eB : edgesB) {
 				HashMap<LinkEntity, IntVar> mapB = handlesB.get(eB);
 				IntVar var = mapB.get(eA);
@@ -420,20 +432,21 @@ public class myMatcher extends Matcher{
 			if (!fluxIN.isEmpty() && !fluxBottom.isEmpty()) {
 				// Constraints
 				IntVar[] fluxINArray = fluxIN.toArray(aux);
-				IntVar sumLeft = VF.enumerated("SumLeft" + sinkNum, 0,
-						innersA.size() + pointsA.size(), linkSolver);
+				IntVar sumLeft = VF.enumerated("SumLeft" + sinkNum, 0, eA.getPoints().size(),
+						/*innersA.size() + pointsA.size(),*/ linkSolver);
 				linkSolver.post(ICF.sum(fluxINArray, sumLeft));
 
 				IntVar[] fluxBottomArray = fluxBottom.toArray(aux);
-				IntVar sumBottom = VF.enumerated("SumBottom" + sinkNum, 0,
-						outersB.size() + edgesB.size(), linkSolver);
+				IntVar sumBottom = VF.enumerated("SumBottom" + sinkNum, 0, eA.getPoints().size() ,
+						/*outersB.size() + edgesB.size(),*/ linkSolver);
 				linkSolver.post(ICF.sum(fluxBottomArray, sumBottom));
 
 				linkSolver.post(ICF.arithm(sumLeft, "=", sumBottom));
 			}
 			sinkNum++;
 		}
-
+		
+		
 		/*
 		 * Fifth Constraint (M5) --the total flow out of the handles of "b" must
 		 * be exactly 1.
@@ -443,7 +456,7 @@ public class myMatcher extends Matcher{
 			IntVar[] flows = map.values().toArray(aux);
 			// Constraint
 			if (flows.length > 0) {
-				linkSolver.post(ICF.sum(flows, VF.fixed(1, linkSolver)));
+				linkSolver.post(ICF.sum(flows, one));
 			}
 		}
 		for (Edge eB : edgesB) {
@@ -451,10 +464,11 @@ public class myMatcher extends Matcher{
 			IntVar[] flows = map.values().toArray(aux);
 			// Constraint
 			if (flows.length > 0) {
-				linkSolver.post(ICF.sum(flows, VF.fixed(1, linkSolver)));
+				linkSolver.post(ICF.sum(flows, one));
 			}
 		}
-
+		
+		
 		/*
 		 * Sixth Constraint (M6) --the total flow into the handles of "a" must
 		 * be exactly 1.
@@ -470,7 +484,7 @@ public class myMatcher extends Matcher{
 			}
 			if (!flows.isEmpty()) {
 				IntVar[] flowsArray = flows.toArray(aux);
-				linkSolver.post(ICF.sum(flowsArray, VF.fixed(1, linkSolver)));
+				linkSolver.post(ICF.sum(flowsArray, one));
 			}
 		}
 		for (Edge eA : edgesA) {
@@ -484,7 +498,7 @@ public class myMatcher extends Matcher{
 			}
 			if (!flows.isEmpty()) {
 				IntVar[] flowsArray = flows.toArray(aux);
-				linkSolver.post(ICF.sum(flowsArray, VF.fixed(1, linkSolver)));
+				linkSolver.post(ICF.sum(flowsArray, one));
 			}
 		}
 		
@@ -503,7 +517,7 @@ public class myMatcher extends Matcher{
 		HashMap<PlaceEntity, HashMap<PlaceEntity, IntVar> > placeVars = new HashMap<>();
 		LinkedList<PlaceEntity> aEntities = new LinkedList<>();
 		LinkedList<PlaceEntity> bEntities = new LinkedList<>();
-		//Fill bEntities
+		//Fills bEntities
 		for(Root bRoot : b.getRoots()){
 			bEntities.add(bRoot);
 		}
@@ -735,6 +749,16 @@ public class myMatcher extends Matcher{
 			}
 			aPar++;
 		}
+		
+		/*
+		ArrayList<IntVar> listVars = new ArrayList<>();
+		for(Variable variable : linkSolver.getVars()){
+			listVars.add( (IntVar) variable );
+		}
+		IntVar[] varsLinkSolver = listVars.toArray(aux);
+		//linkSolver.set( ISF.custom( new VariableSelectorWithTies( new FirstFail(), new Random(123L)), new IntDomainMin(), varsLinkSolver ));
+		linkSolver.set( ISF.lexico_LB(varsLinkSolver) );
+		*/
 		
 		return linkSolver.findSolution() && placeSolver.findSolution();
 	}

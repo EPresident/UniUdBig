@@ -16,9 +16,14 @@
  */
 package big.sim;
 
+import big.bsg.BigStateGraph;
+import big.bsg.BSGNode;
+import big.brs.BRS;
+import big.brs.RuleApplication;
+import big.brs.BreadthFirstStrat;
 import big.net.Utils;
 import big.prprint.BigPPrinterVeryPretty;
-import big.sim.BSGNode.BSGLink;
+import big.bsg.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.io.BufferedReader;

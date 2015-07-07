@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package big.hash;
+package big.bsg;
 
 import static big.net.Test.signature;
 import it.uniud.mads.jlibbig.core.attachedProperties.SharedProperty;

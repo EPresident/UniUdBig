@@ -5,6 +5,10 @@
  */
 package big.sim;
 
+import big.bsg.BigStateGraph;
+import big.bsg.BSGNode;
+import big.brs.BRS;
+import big.brs.RuleApplication;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -40,7 +44,7 @@ public class RandomSim implements SimStrategy {
         }
 
         for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big);
+            BSGNode newNode = graph.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
             if (newNode != null) {
                 nodeQueue.add(newNode);
             }
@@ -62,7 +66,7 @@ public class RandomSim implements SimStrategy {
         }
         
         for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.ruleName, ra.big);
+            BSGNode newNode = graph.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
             if (newNode != null) {
                 nodeQueue.add(newNode);
             }

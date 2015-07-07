@@ -14,30 +14,49 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package big.sim;
+package big.brs;
 
+import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
-import java.util.List;
 
 /**
- * Class encapsulating the behavior of a BRS, e.g. which rules are applied where,
- * when, and how many times.
+ * This class associates a RewritingRule (and/or its user-defined name) and the
+ * result of its application to a Bigraph.
+ *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public interface BRSStrategy {
-    /**
-     * Apply a RewritingRule to (all redex matches within) a Bigraph.
-     * @param to Bigraph to match the rule on
-     * @return An Iterable with the resulting Bigraph(s)
-     */
-    public List<Bigraph> apply(Bigraph to);
-    /**
-     * Apply a RewritingRule to (all redex matches within) a Bigraph.
-     * @param to Bigraph to match the rule on
-     * @return An Iterable of RuleApplication objects, i.e. the resulting 
-     * Bigraphs paired with the rules that were applied on them.
-     */
-    public List<RuleApplication> apply_RA(Bigraph to);
-    public void setRules(RewritingRule[] rs);
+public class RuleApplication {
+
+    protected Bigraph big;
+    protected RewritingRule rule;
+    protected String ruleName;
+
+    protected RuleApplication(Bigraph b, RewritingRule rr, String s) {
+        big = b;
+        rule = rr;
+        ruleName = s;
+    }
+
+    protected RuleApplication(Bigraph b, RewRuleWProps rr) {
+        big = b;
+        rule = rr;
+        ruleName = rr.getName();
+    }
+
+    /*protected RuleApplication(Bigraph b, String s) {
+
+     }*/
+    public Bigraph getBig() {
+        return big;
+    }
+
+    public RewritingRule getRule() {
+        return rule;
+    }
+
+    public String getRuleName() {
+        return ruleName;
+    }
+
 }

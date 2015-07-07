@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package big.sim;
+package big.bsg;
 
-import big.hash.BigHashFunction;
+import big.bsg.BigHashFunction;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import java.util.LinkedList;
 import java.util.List;

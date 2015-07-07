@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package big.sim;
+package big.bsg;
 
-import big.hash.BigHashFunction;
-import big.hash.PlaceGraphBHF;
-import big.hash.PlaceLinkBHF;
+import big.match.PropertyMatcher;
+import big.bsg.BigHashFunction;
+import big.bsg.PlaceGraphBHF;
+import big.bsg.PlaceLinkBHF;
 import big.prprint.BigPPrinterVeryPretty;
-import big.sim.BSGNode.BSGLink;
+import big.bsg.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import java.io.BufferedWriter;
 import java.io.File;

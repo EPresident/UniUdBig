@@ -7,10 +7,10 @@ import big.predicate.Predicate;
 import big.predicate.TruePredicate;
 import big.predicate.WarioPredicate;
 import big.prprint.BigPPrinterVeryPretty;
-import big.sim.BRS;
-import big.sim.BigStateGraph;
+import big.brs.BRS;
+import big.bsg.BigStateGraph;
 import big.sim.BreadthFirstSim;
-import big.sim.BreadthFirstStrat;
+import big.brs.BreadthFirstStrat;
 import big.sim.RandomSim;
 import big.sim.Sim;
 

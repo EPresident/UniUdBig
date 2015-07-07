@@ -16,6 +16,10 @@
  */
 package big.sim;
 
+import big.bsg.BigStateGraph;
+import big.bsg.BSGNode;
+import big.brs.BRS;
+import big.brs.RuleApplication;
 import java.util.List;
 
 import big.prprint.BigPPrinterVeryPretty;

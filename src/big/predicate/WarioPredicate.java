@@ -7,7 +7,7 @@ package big.predicate;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.Match;
-import big.sim.PropertyMatcher;
+import big.match.PropertyMatcher;
 import it.uniud.mads.jlibbig.core.std.Matcher;
 
 /**

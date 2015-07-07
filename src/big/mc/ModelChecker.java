@@ -1,9 +1,8 @@
 package big.mc;
 
 import big.predicate.Predicate;
-import big.sim.BRS;
-import big.sim.RandomSim;
-import big.sim.RuleApplication;
+import big.brs.BRS;
+import big.brs.RuleApplication;
 import big.sim.Sim;
 import big.sim.SimStrategy;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
@@ -19,6 +18,7 @@ import it.uniud.mads.jlibbig.core.std.Bigraph;
  * @author Elia Calligaris <calligaris.elia@spes.uniud.it>
  */
 public class ModelChecker {
+
     private final Sim sim;
     private final Predicate predicate;
 
@@ -30,6 +30,15 @@ public class ModelChecker {
      */
     public ModelChecker(Bigraph root, BRS brs, Predicate p, SimStrategy ss) {
         sim = new Sim(root, brs, ss);
+        predicate = p;
+    }
+
+    /**
+     * @param s Simulator to employ.
+     * @param p The predicate whose validity must be checked.
+     */
+    public ModelChecker(Sim s, Predicate p) {
+        sim = s;
         predicate = p;
     }
 

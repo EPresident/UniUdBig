@@ -1,14 +1,28 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 EPresident <prez_enquiry@hotmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package big.sim;
 
 import big.bsg.BigStateGraph;
 import big.bsg.BSGNode;
 import big.brs.BRS;
+import big.brs.BreadthFirstStrat;
 import big.brs.RuleApplication;
+import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -19,58 +33,31 @@ import java.util.Random;
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class TrueRandomSim implements SimStrategy {
+public class TrueRandomSim extends Sim {
 
     private final Random randomGen;
+    private final LinkedList<BSGNode> nodeQueue;
 
-    public TrueRandomSim() {
+    public TrueRandomSim(Bigraph big, RewritingRule[] rwrls) {
+        super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+        nodeQueue = new LinkedList<>();
+        nodeQueue.add(bsg.getRoot());
         randomGen = new Random();
     }
 
     @Override
-    public void step(LinkedList<BSGNode> nodeQueue, BRS brs, BigStateGraph graph) {
-        BSGNode node = nodeQueue.pop();
-        List<RuleApplication> ras = brs.apply_RA(node.getState());
-
-        // Random choice
-        if (ras.size() > 0) {
-            int rand = randomGen.nextInt(ras.size());
-            RuleApplication chosen = ras.get(rand);
-            ras.remove(rand);
-            ras.add(chosen);
-        }
-
-        for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
-            if (newNode != null) {
-                nodeQueue.add(newNode);
-            }
-        }
+    public void step() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<RuleApplication> stepAndGet(LinkedList<BSGNode> nodeQueue, BRS brs, BigStateGraph graph) {
-        BSGNode node = nodeQueue.pop();
-        List<RuleApplication> ras = brs.apply_RA(node.getState());
-        LinkedList<RuleApplication> lra = new LinkedList<>();
-        
-        // Random choice
-        if (ras.size() > 0) {
-            int rand = randomGen.nextInt(ras.size());
-            RuleApplication chosen = ras.get(rand);
-            ras.remove(rand);
-            ras.add(chosen);
-        }
-        
-        for (RuleApplication ra : ras) {
-            BSGNode newNode = graph.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
-            if (newNode != null) {
-                nodeQueue.add(newNode);
-            }
-            lra.add(ra);
-        }
-        System.out.println(lra.size()+" applications");
-        return lra;
+    public List<RuleApplication> stepAndGet() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean simOver() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

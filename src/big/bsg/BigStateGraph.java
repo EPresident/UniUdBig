@@ -17,17 +17,8 @@
 package big.bsg;
 
 import big.match.PropertyMatcher;
-import big.bsg.BigHashFunction;
-import big.bsg.PlaceGraphBHF;
-import big.bsg.PlaceLinkBHF;
-import big.prprint.BigPPrinterVeryPretty;
 import big.bsg.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,7 +50,6 @@ public class BigStateGraph {
     public static final BigHashFunction PLACE_HASH = new PlaceGraphBHF(),
             PLACELINK_HASH = new PlaceLinkBHF();
     private PropertyMatcher matcher;
-    private BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
 
     public BigStateGraph(Bigraph big, BigHashFunction bhf) {
         hashFunc = bhf;
@@ -151,6 +141,8 @@ public class BigStateGraph {
     }
 
     /**
+     * @deprecated
+     * Use DotLangPrinter instead.
      * @return the Dot Language representation of this graph.
      */
     public String toDotLang() {

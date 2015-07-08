@@ -46,8 +46,8 @@ public class SimTest {
         System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
         RewritingRule[] rules = Utils.getNetFWRules();
         BRS brs = new BRS(new BreadthFirstStrat(), rules);
-        Sim sim = new Sim(bigraph, brs);        
-        
+        Sim sim = new BreadthFirstSim(bigraph, rules);
+
         //System.out.println(BigStateGraph.areIsomorph(bigraph, new BigraphBuilder(bigraph).makeBigraph()));
         int i = 1000;
         int applcations = 0;
@@ -58,7 +58,7 @@ public class SimTest {
             }
             System.out.println(applcations + " applications");
             i--;
-        } while (i > 0 && sim.hasNext());
+        } while (i > 0 && !sim.simOver());
 
         BigStateGraph bsg = sim.getGraph();
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));

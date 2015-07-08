@@ -8,11 +8,9 @@ import big.predicate.TruePredicate;
 import big.predicate.WarioPredicate;
 import big.prprint.BigPPrinterVeryPretty;
 import big.brs.BRS;
-import big.bsg.BigStateGraph;
-import big.sim.BreadthFirstSim;
 import big.brs.BreadthFirstStrat;
+import big.sim.BreadthFirstSim;
 import big.sim.RandomSim;
-import big.sim.Sim;
 
 /**
  * Some tests with the model checker.
@@ -39,7 +37,7 @@ public class TestMC {
         Bigraph aim = Utils.getAimHttpPayload();
         Predicate atom = new WarioPredicate(aim, new TruePredicate(), new TruePredicate(), new TruePredicate());
 
-        ModelChecker mc = new ModelChecker(net, brs, atom, new RandomSim());
+        ModelChecker mc = new ModelChecker(new BreadthFirstSim(net, rules), atom);
         //ModelChecker mc = new ModelChecker(net, brs, atom, new BreadthFirstSim());
 
         System.out.println("Has the goal been reached ? \t" + (mc.modelCheck() ? "YES" : "NO"));

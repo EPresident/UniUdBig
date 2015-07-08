@@ -23,7 +23,8 @@ import java.util.List;
 
 
 /**
- * Interface for classes simulating the evolution of bigraphic systems.
+ * Base class for simulating the possible evolutions of  a bigraphic 
+ * system. The data management and logic is up to the implementations.
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */

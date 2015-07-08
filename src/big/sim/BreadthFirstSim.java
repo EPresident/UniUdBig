@@ -27,7 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Simulator using a breadth-first approach.
+ * 
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class BreadthFirstSim extends Sim {

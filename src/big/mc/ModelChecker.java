@@ -1,10 +1,8 @@
 package big.mc;
 
 import big.predicate.Predicate;
-import big.brs.BRS;
 import big.brs.RuleApplication;
 import big.sim.Sim;
-import it.uniud.mads.jlibbig.core.std.Bigraph;
 
 /**
  * Simple model checker that checks a property (expressed in any type of logic)
@@ -31,10 +29,24 @@ public class ModelChecker {
         predicate = p;
     }
 
+    /**
+     * Start checking if the predicate is satisfied by some state. Rule
+     * applications are capped to the default value.
+     *
+     * @return true if the predicate holds in at least one state, false
+     * otherwise.
+     */
     public boolean modelCheck() {
         return modelCheck(DEFAULT_MAX_APPLICATIONS);
     }
 
+    /**
+     * Start checking if the predicate is satisfied by some state.
+     *
+     * @param maxApplications Maximum number of rewriting rule applications.
+     * @return true if the predicate holds in at least one state, false
+     * otherwise.
+     */
     public boolean modelCheck(int maxApplications) {
         int applications = 0;
         while (!sim.simOver() && applications < maxApplications) {

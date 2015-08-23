@@ -42,11 +42,10 @@ public class Isomorphism{
 	}
 	
 	public boolean areIsomorph(Bigraph a, Bigraph b){
-		Solver linkSolver = new Solver("Link Graph Isomorphism");
-		Solver placeSolver = new Solver("Place Graph Isomorphism");
+		Solver solver = new Solver("Bigraph Isomorphism");
 		//Aux Variables:
-		BoolVar zeroVar = (BoolVar) VF.fixed(0, linkSolver);
-		BoolVar oneVar = (BoolVar) VF.fixed(1, linkSolver);
+		BoolVar zeroVar = (BoolVar) VF.fixed(0, solver);
+		BoolVar oneVar = (BoolVar) VF.fixed(1, solver);
 		BoolVar[] aux = new BoolVar[1];
 		
 		/*
@@ -84,16 +83,16 @@ public class Isomorphism{
 		for(Point aPoint : aPoints){
 			HashMap<Point, BoolVar> col = new HashMap<>();
 			for(Point bPoint : bPoints){
-				BoolVar ppVar = VF.bool("PP___"+aPoint.toString()+"___"+bPoint.toString(), linkSolver);
+				BoolVar ppVar = VF.bool("PP___"+aPoint.toString()+"___"+bPoint.toString(), solver);
 				if(aPoint.isInnerName() && bPoint.isPort())
-					ppVar = (BoolVar) VF.fixed(0, linkSolver);
+					ppVar = (BoolVar) VF.fixed(0, solver);
 				if(aPoint.isPort() && bPoint.isInnerName())
-					ppVar = (BoolVar) VF.fixed(0, linkSolver);
-				if(aPoint.isPort() && bPoint.isPort()){
+					ppVar = (BoolVar) VF.fixed(0, solver);
+				if(aPoint.isPort() && bPoint.isPort()){//Not the same number of port
 					Port aPort = (Port) aPoint;
 					Port bPort = (Port) bPoint;
 					if(aPort.getNumber()!=bPort.getNumber())
-						ppVar = (BoolVar) VF.fixed(0, linkSolver);
+						ppVar = (BoolVar) VF.fixed(0, solver);
 				}
 				col.put(bPoint, ppVar);
 			}
@@ -105,7 +104,11 @@ public class Isomorphism{
 		for(Handle aHandle : aHandles){
 			HashMap<Handle, BoolVar> col = new HashMap<>();
 			for(Handle bHandle : bHandles){
-				BoolVar hhVar = VF.bool("HH___"+aHandle.toString()+"___"+bHandle.toString(), linkSolver);
+				BoolVar hhVar = VF.bool("HH___"+aHandle.toString()+"___"+bHandle.toString(), solver);
+				if(aHandle.isEdge() && bHandle.isOuterName())
+					hhVar = (BoolVar) VF.fixed(0, solver);
+				if(bHandle.isOuterName() && bHandle.isEdge())
+					hhVar = (BoolVar) VF.fixed(0, solver);
 				col.put(bHandle, hhVar);
 			}
 			handleVars.put(aHandle, col);
@@ -124,10 +127,13 @@ public class Isomorphism{
 			for(Handle bHandle : bHandles){
 				int bCardinality = bHandle.getPoints().size();
 				BoolVar hhVar = col.get(bHandle);
-				if(aCardinality != bCardinality){
-					//hhVar = (BoolVar) VF.fixed(0, linkSolver);
-					linkSolver.post(ICF.arithm(hhVar, "=", zeroVar));
+				if(aCardinality != bCardinality){//not the same number of children
+					//hhVar = (BoolVar) VF.fixed(0, solver);
+					solver.post(ICF.arithm(hhVar, "=", zeroVar));
 				}
+				/*if( (aHandle.isEdge() && bHandle.isOuterName()) || (aHandle.isOuterName() && bHandle.isEdge()) ){//Outername vs Edge
+					solver.post(ICF.arithm(hhVar, "=", zeroVar));
+				}*/
 			}
 		}
 		
@@ -137,7 +143,10 @@ public class Isomorphism{
 			for(Point bPoint : bPoints){
 				BoolVar ppVar = col.get(bPoint);
 				BoolVar hhVar = handleVars.get(aPoint.getHandle()).get(bPoint.getHandle());
-				linkSolver.post(ICF.arithm(ppVar, "<=", hhVar));
+				solver.post(ICF.arithm(ppVar, "<=", hhVar));
+				/*if( (aPoint.isPort() && bPoint.isInnerName()) || (aPoint.isInnerName() && bPoint.isPort()) ){//Points vs Innernames
+					solver.post(ICF.arithm(ppVar, "=", zeroVar));
+				}*/
 			}
 		}
 		
@@ -145,7 +154,7 @@ public class Isomorphism{
 		for(Point aPoint : aPoints){
 			HashMap<Point, BoolVar> col = pointVars.get(aPoint);
 			BoolVar[] outVars = col.values().toArray(aux);
-			linkSolver.post(ICF.sum(outVars, oneVar));
+			solver.post(ICF.sum(outVars, oneVar));
 		}
 		
 		//Fourth Constraint : input flow constraint in B points
@@ -156,14 +165,14 @@ public class Isomorphism{
 				invVars.add(col.get(bPoint));
 			}
 			BoolVar[] colVars = invVars.toArray(aux);
-			linkSolver.post(ICF.sum(colVars, oneVar));
+			solver.post(ICF.sum(colVars, oneVar));
 		}
 		
 		//Fifth Constraint : output flow from A handles
 		for(Handle aHandle : aHandles){
 			HashMap<Handle,BoolVar> col = handleVars.get(aHandle);
 			BoolVar[] colVars = col.values().toArray(aux);
-			linkSolver.post(ICF.sum(colVars, oneVar));
+			solver.post(ICF.sum(colVars, oneVar));
 		}
 		
 		//Sixth Constraint : input flow in B handles
@@ -174,7 +183,7 @@ public class Isomorphism{
 				invVars.add(col.get(bHandle));
 			}
 			BoolVar[] colVars = invVars.toArray(aux);
-			linkSolver.post(ICF.sum(colVars, oneVar));
+			solver.post(ICF.sum(colVars, oneVar));
 		}
 		
 		
@@ -214,7 +223,7 @@ public class Isomorphism{
 			for(PlaceEntity aNode : aNodesHeight.get(h)){
 				HashMap<PlaceEntity, BoolVar> col = new HashMap<>();
 				for(PlaceEntity bNode : bNodesHeight.get(h)){
-					BoolVar var = VF.bool("NN___"+aNode.toString()+"___"+bNode.toString(), placeSolver);
+					BoolVar var = VF.bool("NN___"+aNode.toString()+"___"+bNode.toString(), solver);
 					col.put(bNode, var);
 					varMap.put(aNode, col);
 					placeVars.put(h, varMap);
@@ -237,7 +246,7 @@ public class Isomorphism{
 						Node bbNode = (Node) bNode;
 						if(!matcher.areMatchable(a, aaNode, b, bbNode)){
 							BoolVar propVar = placeVars.get(h).get(aNode).get(bNode);
-							placeSolver.post(ICF.arithm(propVar, "=", zeroVar));
+							solver.post(ICF.arithm(propVar, "=", zeroVar));
 						}
 					}
 					if(aNode.isParent() && bNode.isParent()){//if h<depth
@@ -245,7 +254,7 @@ public class Isomorphism{
 						Parent bParent = (Parent) bNode;
 						if(aParent.getChildren().size() != bParent.getChildren().size()){
 							BoolVar auxVar = placeVars.get(h).get(aNode).get(bNode);
-							placeSolver.post(ICF.arithm(auxVar, "=", zeroVar));
+							solver.post(ICF.arithm(auxVar, "=", zeroVar));
 						}
 					}
 				}
@@ -263,7 +272,7 @@ public class Isomorphism{
 							Child bChild = (Child) bNode;
 							BoolVar var1 = placeVars.get(h).get(aChild).get(bChild);
 							BoolVar var2 = placeVars.get(h-1).get(aChild.getParent()).get(bChild.getParent());
-							placeSolver.post(ICF.arithm(var1, "<=", var2));
+							solver.post(ICF.arithm(var1, "<=", var2));
 						}
 					}
 				}
@@ -280,7 +289,7 @@ public class Isomorphism{
 					varList.add(col.get(bNode));
 				}
 				BoolVar[] varArray = varList.toArray(aux);
-				placeSolver.post(ICF.sum(varArray, oneVar));
+				solver.post(ICF.sum(varArray, oneVar));
 			}
 		}
 		
@@ -296,11 +305,38 @@ public class Isomorphism{
 					}
 				}
 				BoolVar[] varArray = varList.toArray(aux);
-				placeSolver.post(ICF.sum(varArray, oneVar));
+				solver.post(ICF.sum(varArray, oneVar));
 			}
 		}
 		
-		return linkSolver.findSolution() && placeSolver.findSolution();
+		
+		
+		/*
+		 * Coherence Constraints
+		 */
+		for(Integer h : placeVars.keySet()){
+			for(PlaceEntity aNode : aNodesHeight.get(h)){
+				for(PlaceEntity bNode : bNodesHeight.get(h)){
+					if(aNode.isNode() && bNode.isNode()){
+						Node aN = (Node) aNode;
+						Node bN = (Node) bNode;
+						if(aN.getPorts().size() == bN.getPorts().size()){
+							for(int i=0; i<aN.getPorts().size(); i++){
+								Port aP = aN.getPort(i);
+								Port bP = aN.getPort(i);
+								BoolVar pVar = pointVars.get(aP).get(bP);
+								BoolVar nVar = placeVars.get(h).get(aN).get(bN);
+								solver.post(ICF.arithm(pVar, "=", nVar));
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
+		
+		return solver.findSolution();
 	}
 	
 }

@@ -16,7 +16,6 @@ import java.util.Set;
  *
  */
 public class PropertyMatcher extends OpenMatcher{
-		
 	
 	@Override
 	public boolean areMatchable(Bigraph a, Node aNode, Bigraph b, Node bNode){

@@ -19,9 +19,17 @@
 package big.examples;
 
 
-import java.util.*;
+import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
+import it.uniud.mads.jlibbig.core.std.Control;
+import it.uniud.mads.jlibbig.core.std.InstantiationMap;
+import it.uniud.mads.jlibbig.core.std.Matcher;
+import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.RewritingRule;
+import it.uniud.mads.jlibbig.core.std.Root;
+import it.uniud.mads.jlibbig.core.std.Signature;
 
-import it.uniud.mads.jlibbig.core.std.*;
+import java.util.Iterator;
 
 /**
  * Esempio di moltiplicazione implementata con bigrafi.
@@ -32,10 +40,10 @@ public class Mult {
     public static Signature signature;
 
     public static void main(String[] args) {
-        Control mul_ctrl = new Control("mul", true, 0);
-        Control num_ctrl = new Control("num", false, 0);
-        Control one_ctrl = new Control("one", false, 0);
-        signature = new Signature(mul_ctrl, num_ctrl, one_ctrl);
+		Control mul_ctrl = new Control("mul", true, 0);
+		Control num_ctrl = new Control("num", false, 0);
+		Control one_ctrl = new Control("one", false, 0);
+		signature = new Signature(mul_ctrl, num_ctrl, one_ctrl);
 //recursive
         Bigraph redex_recursive = makeRedexRecursive();
         Bigraph reactum_recursive = makeReactumRecursive();

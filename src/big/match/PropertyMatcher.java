@@ -6,7 +6,6 @@ import it.uniud.mads.jlibbig.core.std.Child;
 import it.uniud.mads.jlibbig.core.std.Edge;
 import it.uniud.mads.jlibbig.core.std.InnerName;
 import it.uniud.mads.jlibbig.core.std.LinkEntity;
-import it.uniud.mads.jlibbig.core.std.Matcher;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.Parent;
@@ -36,7 +35,7 @@ import org.chocosolver.solver.variables.VF;
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
-public class PropertyMatcher extends Matcher{
+public class PropertyMatcher extends OpenMatcher{
 	
 	
 

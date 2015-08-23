@@ -17,7 +17,7 @@ import big.predicate.Predicate;
 import big.predicate.TruePredicate;
 import big.predicate.WarioPredicate;
 import big.prprint.BigPPrinterVeryPretty;
-import big.sim.PropertyMatcher;
+//import big.sim.PropertyMatcher;
 
 public class Test {
 

@@ -23,7 +23,7 @@ import java.util.List;
 
 
 /**
- * Base class for simulating the possible evolutions of  a bigraphic 
+ * Base class for simulating the possible evolutions of a bigraphical reactive 
  * system. The data management and logic is up to the implementations.
  *
  * @author EPresident <prez_enquiry@hotmail.com>

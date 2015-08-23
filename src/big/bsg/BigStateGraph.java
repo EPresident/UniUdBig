@@ -16,11 +16,14 @@
  */
 package big.bsg;
 
-import big.match.PropertyMatcher;
-import big.bsg.BSGNode.BSGLink;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import big.bsg.BSGNode.BSGLink;
+import big.iso.Isomorphism;
+import big.match.PropertyMatcher;
 
 /**
  * Represents a graph where each node is a different possible state of the
@@ -49,7 +52,7 @@ public class BigStateGraph {
     private BigHashFunction hashFunc;
     public static final BigHashFunction PLACE_HASH = new PlaceGraphBHF(),
             PLACELINK_HASH = new PlaceLinkBHF();
-    private PropertyMatcher matcher;
+    private Isomorphism iso;
 
     public BigStateGraph(Bigraph big, BigHashFunction bhf) {
         hashFunc = bhf;
@@ -57,7 +60,7 @@ public class BigStateGraph {
         nodes = new LinkedList<>();
         nodes.add(root);
         current = root;
-        this.matcher = new PropertyMatcher();
+        this.iso = new Isomorphism(new PropertyMatcher());
     }
 
     public BigStateGraph(Bigraph big) {
@@ -112,7 +115,7 @@ public class BigStateGraph {
         } else {
             // Hash collision suggests possible duplicate (or isomorphism)
             // Check isomorphism
-            if (matcher.areIsomorph(object.getState(), subject)) {
+            if (iso.areIsomorph(object.getState(), subject)) {
                 return object;
             }
             return null;

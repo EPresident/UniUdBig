@@ -2,6 +2,7 @@ package big.iso;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.Child;
 import it.uniud.mads.jlibbig.core.std.Handle;
+import it.uniud.mads.jlibbig.core.std.Matcher;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.Parent;
 import it.uniud.mads.jlibbig.core.std.PlaceEntity;
@@ -17,11 +18,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.chocosolver.solver.Solver;
-import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.VF;
-import org.chocosolver.solver.variables.Variable;
 
 import big.match.OpenMatcher;
 
@@ -233,6 +232,15 @@ public class Isomorphism {
 		for(Integer h : aNodesHeight.keySet()){
 			for(PlaceEntity aNode : aNodesHeight.get(h)){
 				for(PlaceEntity bNode : bNodesHeight.get(h)){
+					//Property check
+					if(aNode.isNode() && bNode.isNode()){
+						Node aaNode = (Node) aNode;
+						Node bbNode = (Node) bNode;
+						if(!matcher.areMatchable(a, aaNode, b, bbNode)){
+							BoolVar propVar = placeVars.get(h).get(aNode).get(bNode);
+							placeSolver.post(ICF.arithm(propVar, "=", zeroVar));
+						}
+					}
 					if(aNode.isParent() && bNode.isParent()){//if h<depth
 						Parent aParent = (Parent) aNode;
 						Parent bParent = (Parent) bNode;

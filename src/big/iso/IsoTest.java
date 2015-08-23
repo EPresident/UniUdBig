@@ -7,7 +7,6 @@ import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
-import it.uniud.mads.jlibbig.core.std.Site;
 import big.match.PropertyMatcher;
 
 /**

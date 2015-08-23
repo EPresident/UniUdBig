@@ -11,7 +11,7 @@ import it.uniud.mads.jlibbig.core.std.Node;
  *
  */
 public abstract class OpenMatcher extends Matcher{
-	
+
 	public abstract boolean areMatchable(Bigraph a, Node aNode, Bigraph b, Node bNode);
 	
 }

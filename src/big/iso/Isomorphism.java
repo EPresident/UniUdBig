@@ -2,7 +2,6 @@ package big.iso;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.Child;
 import it.uniud.mads.jlibbig.core.std.Handle;
-import it.uniud.mads.jlibbig.core.std.Matcher;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.Parent;
 import it.uniud.mads.jlibbig.core.std.PlaceEntity;
@@ -34,7 +33,7 @@ import big.match.OpenMatcher;
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
-public class Isomorphism {
+public class Isomorphism{
 	
 	private OpenMatcher matcher;
 	

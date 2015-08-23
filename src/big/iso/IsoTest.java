@@ -1,5 +1,6 @@
 package big.iso;
 
+import big.match.PropertyMatcher;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.Control;
@@ -7,7 +8,6 @@ import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
-import big.match.PropertyMatcher;
 
 /**
  * Some tests with the isomorphism algorithm.

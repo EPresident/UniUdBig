@@ -2,9 +2,12 @@ package big.match;
 
 import it.uniud.mads.jlibbig.core.attachedProperties.Property;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.Match;
 import it.uniud.mads.jlibbig.core.std.Node;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Set;
 
 /**
@@ -15,7 +18,7 @@ import java.util.Set;
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
-public class PropertyMatcher extends OpenMatcher{
+public class PropertyMatcher extends OpenMatcher implements MultiMatcher{
 	
 	@Override
 	public boolean areMatchable(Bigraph a, Node aNode, Bigraph b, Node bNode){
@@ -33,6 +36,15 @@ public class PropertyMatcher extends OpenMatcher{
 		
 		return aProps.equals(bProps);
 	}
+
+    @Override
+    public Iterable<Iterable<? extends Match>> match(Bigraph agent, Bigraph... redexes) {
+        LinkedList<Iterable<? extends Match>> out = new LinkedList<>();
+        for(Bigraph redex : redexes){
+            out.add(match(agent, redex));
+        }
+        return out;
+    }
 	
 	
 }

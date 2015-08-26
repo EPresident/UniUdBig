@@ -1,0 +1,46 @@
+\chapter{Notazione dei vari capitoli}\label{ch:appA}
+
+Sono riportate le principali notazioni delle varie sezioni.
+
+\section{Notazione della sezione \ref{sec:formalBigraphs}}
+Il più delle volte si tratterà un intero come l'insieme di tutti i suoi precedenti, così che se si scriverà $m$ in realtà si intende $\{0, \dots, m-1 \}$. \\
+Scriviamo $S \# T$ per dire che i due insiemi S e T sono disgiunti. Scriviamo $S \uplus T$ per descrivere l'unione dei due insiemi S e T dopo che sappiamo o assumiamo che
+siano disgiunti.\\
+Se $f$ ha dominio S e $S' \subset S$, allora denotiamo con $f \upharpoonleft S'$ la restrizione di f su S'. Per due funzioni f e g con dominio disgiunto S e T, scriviamo 
+$f \uplus g$ per la funzione con dominio $S \uplus T$ tale che $(f \uplus g)\upharpoonleft S = f$ e $(f \uplus g)\upharpoonleft T = g$.  
+
+
+
+\section{Notazione della sezione \ref{sec:algebra} }
+I \emph{posti} di $G: \langle m, X \rangle \to \langle n, Y \rangle$ sono i suoi siti $m$, i suoi nodi e le sue radici $n$.\\
+I \emph{punti} di $G$ sono le sue porte e i suoi inner names X. \\
+I \emph{link} di $G$ sono i suoi archi (edge) e i suoi outer names Y. \\
+Gli edges sono \emph{link chiusi} mentre gli outer names sono \emph{link aperti}. Un punto è detto \emph{aperto} se il suo punto è aperto, altrimenti è detto chiuso. G è
+detto \emph{aperto} se tutti i suoi link sono aperti (ovvero se non ha edges).\\
+Un place senza figli o un link senza punti viene detto \emph{idle}. Due places con lo stesso genitore o due link con lo stesso punto vengono detti \emph{fratelli}.\\
+Se un' interfaccia $I = \langle m, X \rangle$ ha $X = \emptyset$, allora scriveremo I come $m$; se $m = 0$ o $m = 1$, scriveremo $I$ come $X$ e $\langle X \rangle$
+rispettivamente.\\
+Si definisce l'unità $\varepsilon$ come $\varepsilon = \langle 0, \emptyset \rangle$.\\
+L'unico bigrafo con supporto vuoto in $\varepsilon \to I$ viene scritto come $I$.
+Un bigrafo $g: \varepsilon \to I$, con dominio $\varepsilon$, viene detto $ground$. Useremo lettere minuscole per i bigrafi ground e li scriveremo come $g:I$.
+
+
+\section{Notazione della sezione \ref{sec:operazioniDerivate}}
+Spesso si omette '$\cdots \otimes id_I$' in una composizione del tipo
+$(F \otimes id_I) \circ G$, dove $F$ non possiede un'interfaccia sufficiente per comporre con $G$. Si scriverà dunque,
+qualora non presenti ambiguità, $F \circ G$.
+Dato un linking $\lambda : Y \to Z$, potremmo volerlo applicare ad un bigrafo $G$ con interfaccia esterna $\left<m,X\right>$
+avente meno nomi, i.e. $Y = X \uplus X^\prime$. Scriveremo allora $\lambda \circ G$ per indicare
+$(id_m \otimes \lambda) \circ (G \otimes X^\prime)$, quando $m$ e $X^\prime$ possono essere capiti dal contesto.
+
+
+
+
+
+
+
+
+
+
+
+

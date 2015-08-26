@@ -1,0 +1,46 @@
+\select@language {italian}
+\select@language {italian}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Un semplice bigrafo.}}{2}
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Le due strutture ortogonali del bigrafo B.}}{2}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph}}}{2}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph}}}{2}
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Il bigrafo C.}}{4}
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Bigrafo C.}}{4}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph di C}}}{4}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph di C}}}{4}
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Un semplice bigrafo.}}{4}
+\contentsline {figure}{\numberline {1.6}{\ignorespaces Bigrafo A.}}{5}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph di A}}}{5}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph di A}}}{5}
+\contentsline {figure}{\numberline {1.7}{\ignorespaces Link Graph decomposto.}}{7}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Notazione grafica}}}{7}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Notazione funzionale}}}{7}
+\contentsline {figure}{\numberline {1.8}{\ignorespaces Esempio di bigrafo.}}{8}
+\contentsline {figure}{\numberline {1.9}{\ignorespaces Placing elementari.}}{13}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {$\gamma _{1,1}: 2 \to 2$}}}{13}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {$1: 0 \to 1$}}}{13}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {$join: 2 \to 1$}}}{13}
+\contentsline {figure}{\numberline {1.10}{\ignorespaces Linking elementari.}}{14}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {$^y / X: X \to y$}}}{14}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {$/x: x \to \varepsilon $}}}{14}
+\contentsline {figure}{\numberline {1.11}{\ignorespaces $K_{\mathaccentV {vec}17Ex}$.}}{14}
+\contentsline {figure}{\numberline {1.12}{\ignorespaces Atomo e molecola discreti.}}{15}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {$A_{pq} \circ 1$}}}{15}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {$(K_{xyz} \otimes id_{pq}) \circ L_{pq}$}}}{15}
+\contentsline {figure}{\numberline {1.13}{\ignorespaces Esempio.}}{17}
+\contentsline {figure}{\numberline {1.14}{\ignorespaces Prima regola di reazione}}{18}
+\contentsline {figure}{\numberline {1.15}{\ignorespaces Seconda regola di reazione}}{18}
+\contentsline {figure}{\numberline {1.16}{\ignorespaces Terza regola di reazione}}{19}
+\contentsline {figure}{\numberline {1.17}{\ignorespaces Moltiplicazione tramite bigrafi }}{22}
+\contentsline {figure}{\numberline {1.18}{\ignorespaces Caso ricorsivo }}{22}
+\contentsline {figure}{\numberline {1.19}{\ignorespaces Caso Base }}{23}
+\contentsline {figure}{\numberline {1.20}{\ignorespaces Match decomposto }}{24}
+\contentsline {figure}{\numberline {1.21}{\ignorespaces Bigrafo finale }}{24}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Bigrafi Isomorfi: $(4*2) = (2*4)$ }}{28}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Bigrafi non Isomorfi}}{29}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Place Graph e Link Graph del bigrafo \ref {fig:falseIso}}}{29}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph isomorfi}}}{29}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph isomorfi}}}{29}
+\addvspace {10\p@ }

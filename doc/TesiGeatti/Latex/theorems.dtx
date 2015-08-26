@@ -1,0 +1,2313 @@
+% \iffalse
+% File: theorems.dtx Copyright (C) 1995-2015
+%  Marco Comini <comini@dimi.uniud.it>. 
+%
+% This package adds mathematical features (theorem-like envs, etc) with
+% a LOT of options.
+% 
+%  This package is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+%
+% Direct use of code from this package in another package
+% which is either sold for profit, or not made freely available,
+% is explicitly forbidden by the author.
+%
+%<package>\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+%<package>\ProvidesPackage{theorems}[2015/04/01 3.5j adds mathematical features]
+%<*driver>
+\documentclass[american,a4paper,11pt,fleqn]{ltxdoc}
+\usepackage{multicol,amsmath,verbatim,color}
+\usepackage[hyperindex=false]{hyperref}
+
+\usepackage[fancyexamples,localproofs,bolditemtag]{theorems}[2015/04/01]
+
+\EnableCrossrefs
+\PageIndex
+\setlength\hfuzz{15pt}
+\hbadness=7000
+\addtolength\marginparwidth{-30pt}
+\newcommand{\NEWfeature}[1]{\hskip 1sp \marginpar{\small\sffamily\raggedright New feature\\#1}}
+\newcommand{\NEWdescription}[1]{\hskip 1sp \marginpar{\small\sffamily\raggedright New description\\#1}}
+\newenvironment{decl}
+	{\par\small\addvspace{4.5ex	plus 1ex}\vskip	-\parskip
+	 \noindent\hspace{-\leftmargini}%
+	 \begin{tabular}{|l|}\hline\ignorespaces}%
+	{\\\hline\end{tabular}\nobreak\par\nobreak\vspace{2.3ex}\vskip -\parskip}
+\newcommand{\m}[1]{\mbox{$\langle$\it #1\/$\rangle$}}
+\providecommand*{\href}[2]{#2}
+
+\begin{document}
+\GetFileInfo{theorems.sty}
+\typeout{*********************************************************}
+\typeout{* Documentation of the `\filename' file,}
+\typeout{* version \fileversion,  last revised \filedate}
+\typeout{*********************************************************}
+\title{Theorems Environments and various miscellaneous commands in
+\LaTeX\thanks{This description refers to file \filename, version number
+\fileversion, last revised \filedate.}}
+\author{Marco Comini\\ e-mail: \href{mailto:Marco Comini
+<comini@dimi.uniud.it>}{\texttt{comini@dimi.uniud.it}}}
+\date{\filedate}
+\maketitle
+\begin{multicols}{2}
+	\tableofcontents
+\end{multicols}
+This package is mainly used for the definition of theorem-like environments
+with different layout, customizable via the package options.
+
+It also provides some useful extensions for writing mathematical stuff.
+
+Almost all the functionalities of this package are accessible via options,
+but \emph{one of the main effects of this package is that of changing the
+equations numbering as `Section.ConsecutiveNumber'} (see explanation of
+|seceqn| option on page~\pageref{eq:seceqn} for details).
+
+The development of this package has evolved during a long period of time,
+mainly driven by the different needs of plenty of people.  I've been trying
+constantly to define a user interface as homogeneous as possible.
+Nethertheless, lots of discrepancies are still there.  I would welcome any
+suggestion or criticism which can be useful to improve the package.
+
+Remember that the syntax \marg{argument} denotes a mandatory argument,
+while \oarg{argument} denotes an optional argument.
+
+\DocInput{theorems.dtx}
+\InputIfFileExists{theorems.ind}{}{\typeout{No index file}}
+\end{document}
+%</driver>
+% \fi
+% \iffalse
+%<*package>
+% \fi
+%  \begin{comment}
+\DeclareRobustCommand{\showPackageTheoremsVersion}{Theorems 3.5j 2015/04/01}
+%** 
+%** Public Flags
+%** 
+\newif\ifThmNoExtendedOn
+\newif\ifThmExtendedOn
+\newif\ifThmDraftOn
+%** 
+%** Private Flags
+%** 
+\newif\ifThm@holes
+\newif\ifThm@holesfloat
+\newif\ifThm@holeskillcites
+\newif\ifThm@keep
+\newif\ifThm@myhyphen
+\newif\ifThm@seccnt
+\newif\ifThm@seceqn
+\newif\ifThm@usecolors
+\newif\ifThm@useadjustbox
+%** this are not set by options
+% \newif\ifThmExtendedOnON\ThmExtendedOnONfalse
+\newif\ifThm@noqed\Thm@noqedfalse
+%** 
+%** Package Options
+%** 
+%  \end{comment}
+%  \section{Options}\sloppy
+% 
+% The package has several options (described in the following) that 
+% may be used in two ways:
+% \begin{enumerate}
+% 
+%   \item\label{pt:1} while calling the package, with
+%   |\usepackage|\oarg{options}|{theorems}|, or
+% 
+%   \item\label{pt:2} via the |theorems.cfg| file, to customize the
+%   default behavior of the package. A practical example of
+%   |theorems.cfg| is the following:
+%   \begin{verbatim}
+% \typeout{*********************}
+% \typeout{* Marco Preferences *}
+% \typeout{*********************} 
+% \ExecuteOptions{localproofs,itmathop}
+%   \end{verbatim}
+% \end{enumerate}
+% The options are:
+% \begin{description}
+%   
+%   \item[{|adjustbox| (default)}]\NEWfeature{2012/06/12} uses package
+%   |adjustbox.sty|, if present, to make draft/extended boxes
+%   
+%  \begin{comment}
+\DeclareOption{adjustbox}{\Thm@useadjustboxtrue}
+\ExecuteOptions{adjustbox}
+%  \end{comment}
+%   
+%   \item[{|noadjustbox|}]\NEWfeature{2012/06/12} do not use, even if
+%   present, package |adjustbox.sty| to make draft/extended boxes
+%   
+%  \begin{comment}
+\DeclareOption{noadjustbox}{\Thm@useadjustboxfalse}
+%  \end{comment}
+%   
+%   \item[{|colors| (default)}]\NEWfeature{2011/10/30}  allow to use colors
+%   
+%  \begin{comment}
+\DeclareOption{colors}{\Thm@usecolorstrue}
+\ExecuteOptions{colors}
+%  \end{comment}
+%   
+%   \item[{|nocolors|}]\NEWfeature{2011/10/30} disable use of colors
+%   
+%  \begin{comment}
+\DeclareOption{nocolors}{\Thm@usecolorsfalse}
+%  \end{comment}
+%   
+%   \item[{|seceqn| (default)}] uses
+%   (\emph{Section}.\emph{ConsecutiveNumber}) style to enumerate
+%   equations.  For example,
+%   \begin{equation}
+%    f(x) = g(x)
+%    \label{eq:seceqn}
+%   \end{equation}
+%   
+%  \begin{comment}
+\DeclareOption{seceqn}{\Thm@seceqntrue}
+\ExecuteOptions{seceqn}
+%  \end{comment}
+% 
+%  \item[|plaineqn|] uses standard latex style to enumerate equations,
+%  i.e., the (\emph{ConsecutiveNumber}) style.
+% 
+%  \begin{comment}
+\DeclareOption{plaineqn}{\Thm@seceqnfalse}
+%  \end{comment}
+% 
+%  \item[|plaindefs| (default)] \NEWfeature{1998/05/22} Definition
+%  environments have a usual style, with italic font.
+% 
+%  \begin{comment}
+\DeclareOption{plaindefs}{\AtEndOfPackage{%
+	\let\Thm@definition@in\Thm@shape@PlainIt@in
+	\let\Thm@definition@out\Thm@shape@PlainIt@out
+}}
+\ExecuteOptions{plaindefs}
+%  \end{comment}
+% 
+%  \item[|plainexamples|, |plainremarks|, |plainproofs| (default)] Example,
+%  Remark and Proof environments have a usual style, with a black box
+%  ending the environment body.
+% 
+%  \begin{comment}
+\DeclareOption{plainexamples}{\AtEndOfPackage{%
+	\let\Thm@example@in\Thm@PlainQed@in
+	\let\Thm@example@out\Thm@PlainQed@out
+}}
+\DeclareOption{plainremarks}{\AtEndOfPackage{%
+	\let\Thm@remark@in\Thm@PlainQed@in
+	\let\Thm@remark@out\Thm@PlainQed@out
+}}
+\DeclareOption{plainproofs}{\AtEndOfPackage{%
+	\let\Thm@proof@in\Thm@PlainProof@in
+	\let\Thm@proof@out\Thm@PlainProof@out
+}}
+\ExecuteOptions{plainexamples}
+\ExecuteOptions{plainremarks}
+\ExecuteOptions{plainproofs}
+%  \end{comment}
+% 
+%  \item[|fancydefs|] \NEWfeature{1998/05/22} Definition environments use
+%  an unusual roman font and are ended by a box (see explanation on
+%  page~\pageref{desc:fancydefs}).
+% 
+%  \begin{comment}
+\DeclareOption{fancydefs}{\AtEndOfPackage{%
+	\let\Thm@definition@in\Thm@PlainQed@in
+	\let\Thm@definition@out\Thm@PlainQed@out
+}}
+%  \end{comment}
+% 
+%  \item[|fancyexamples|, |fancyremarks|, |fancyproofs|] Example, Remark
+%  and Proof environments have an unusual style.  Two lines delimit the
+%  environment body.  See \smartref{ex:explain}.
+% 
+%  \begin{comment}
+\DeclareOption{fancyexamples}{\AtEndOfPackage{%
+	\let\Thm@example@in\Thm@shape@FancyRm@in
+	\let\Thm@example@out\Thm@shape@FancyRm@out
+}}
+\DeclareOption{fancyremarks}{\AtEndOfPackage{%
+	\let\Thm@remark@in\Thm@shape@FancyRm@in
+	\let\Thm@remark@out\Thm@shape@FancyRm@out
+}}
+\DeclareOption{fancyproofs}{\AtEndOfPackage{%
+	\let\Thm@proof@in\Thm@FancyProof@in
+	\let\Thm@proof@out\Thm@FancyProof@out
+}}
+%  \end{comment}
+%  
+%  \item[|normalversion| (default)]
+%  \NEWfeature{2011/07/15}Extended/noextended version mode is
+%  active/inactive depending on |draft| option (see |extended|/|noextended|
+%  environments explanation on page~\pageref{desc:extended}).
+% 
+%  \begin{comment}
+\DeclareOption{normalversion}{\ThmExtendedOnfalse\ThmNoExtendedOnfalse}
+\ExecuteOptions{normalversion}
+%  \end{comment}
+% 
+%   \item[|extended|] \NEWfeature{2011/07/15}Extended version mode is
+%   active (independently opon |draft| option)
+% 
+%  \begin{comment}
+\DeclareOption{extended}{\ThmExtendedOntrue
+\ifThmNoExtendedOn
+	\PackageWarningNoLine{theorems}{Strange you also specified `noextended' option}
+	\ThmNoExtendedOnfalse
+\fi
+}
+%  \end{comment}
+% 
+%   \item[|noextended|] \NEWfeature{2011/11/16}Extended version mode is
+%   inactive (independently opon |draft| option)
+% 
+%  \begin{comment}
+\DeclareOption{noextended}{\ThmNoExtendedOntrue
+\ifThmExtendedOn
+	\PackageWarningNoLine{theorems}{Strange you also specified `extended' option}
+	\ThmExtendedOnfalse
+\fi
+}
+%  \end{comment}
+% 
+%   \item[|smallproofs|] \NEWfeature{2000/05/09}Proof environments have an
+%   unusual size: small.
+% 
+%  \begin{comment}
+\DeclareOption{smallproofs}{\AtEndOfPackage{%
+	\let\Thm@proof@in\Thm@smallProof@in
+	\let\Thm@proof@out\Thm@smallProof@out
+}}
+%  \end{comment}
+% 
+%  \item[|plainmathop| (default)] The |\mathoper| command uses the default
+%  latex font (see command explanation on page~\pageref{desc:mathoper}).
+% 
+%  \begin{comment}
+\DeclareOption{plainmathop}{\let\Thm@mathoperfont\operator@font}
+\ExecuteOptions{plainmathop}
+%  \end{comment}
+% 
+%  \item[|itmathop|] The |\mathoper| command uses the \textit{italic} font
+%  (see command explanation on page~\pageref{desc:mathoper}).
+% 
+%  \begin{comment}
+\DeclareOption{itmathop}{\let\Thm@mathoperfont\mathit}
+%  \end{comment}
+% 
+%  \item[|rmmathop|] The |\mathoper| command uses the \textrm{roman} font
+%  (see command explanation on page~\pageref{desc:mathoper}).
+% 
+%  \begin{comment}
+\DeclareOption{rmmathop}{\let\Thm@mathoperfont\mathrm}
+%  \end{comment}
+% 
+%  \item[|sfmathop|] \NEWfeature{2000/03/03}The |\mathoper| command uses
+%  the \textrm{sans serif} font (see command explanation on
+%  page~\pageref{desc:mathoper}).
+% 
+%  \begin{comment}
+\DeclareOption{sfmathop}{\let\Thm@mathoperfont\mathsf}
+%  \end{comment}
+% 
+%   \item[|draft|] The package |showkeys| is called to show labels.
+%   Moreover the |\official| command suppresses its input (see command
+%   explanation on page~\pageref{desc:official}).
+% 
+%  \begin{comment}
+\DeclareOption{draft}{\ThmDraftOntrue\Thm@holestrue}
+%  \end{comment}
+% 
+%  \item[|final| (default)] opposed to |draft|, no other package is called.
+%  Moreover the |\draft| command suppresses its input (see command
+%  explanation on page~\pageref{desc:draft}).
+% 
+%  \begin{comment}
+\DeclareOption{final}{\ThmDraftOnfalse\Thm@holesfalse}
+\ExecuteOptions{final}
+%  \end{comment}
+% 
+%   \item[|english| (default)] Captions are in British English.
+% 
+%  \begin{comment}
+%** 
+%%% Flag Thm@langdef
+%** 
+\newif\if@Thm@langdef\@Thm@langdeffalse
+\DeclareOption{english}{\@Thm@langdeftrue\AtEndOfPackage{
+	\Thm@setcaptions{english}{\Thm@captions@english}
+	\PackageInfo{theorems}{Adding British English Captions}
+}}
+%  \end{comment}
+% 
+%  \item[|american|] Captions are in American English.
+% 
+%  \begin{comment}
+\DeclareOption{american}{\@Thm@langdeftrue\AtEndOfPackage{
+	\Thm@setcaptions{american}{\Thm@captions@american}
+	\PackageInfo{theorems}{Adding American English Captions}
+}}
+%  \end{comment}
+% 
+%   \item[|italian|] Captions are in Italian.
+% 
+%  \begin{comment}
+\DeclareOption{italian}{\@Thm@langdeftrue\AtEndOfPackage{
+	\Thm@setcaptions{italian}{\Thm@captions@italian}
+	\PackageInfo{theorems}{Adding Italian Captions}
+}}
+%  \end{comment}
+%  
+%   \item[|spanish|] \NEWfeature{2003/04/22}Captions are in Spanish.
+% 
+%  \begin{comment}
+\DeclareOption{spanish}{\@Thm@langdeftrue\AtEndOfPackage{
+	\Thm@setcaptions{spanish}{\Thm@captions@spanish}
+	\PackageInfo{theorems}{Adding Spanish Captions}
+}}
+%  \end{comment}
+% 
+%  \item[|keep| (default)] if the names of the environments which has to be
+%  defined clashes with others defined before the package was loaded, the
+%  previous definitions are saved.
+% 
+%  \begin{comment}
+\DeclareOption{keep}{\Thm@keeptrue}
+\ExecuteOptions{keep}
+%  \end{comment}
+% 
+%  \item[|redefine|] if the names of the environments which has to be
+%  defined clashes with others defined before the package was loaded, the
+%  previous definitions are eliminated.
+% 
+%  \begin{comment}
+\DeclareOption{redefine}{\Thm@keepfalse}
+%  \end{comment}
+% 
+%  \item[|globalproofs| (default)] The equations in proofs environments are
+%  numbered globally (as usual).
+% 
+%  \begin{comment}
+\DeclareOption{globalproofs}{\AtEndOfPackage{%
+	\let\Thm@PrfLocEqn@i\relax
+	\let\Thm@PrfLocEqn@o\relax
+}}
+\ExecuteOptions{globalproofs}
+%  \end{comment}
+% 
+%  \item[|localproofs|] The equations in proofs environments are numbered
+%  locally, i.e., (1), (2), \ldots independently upon the equations out of
+%  the environment.
+% 
+%  \begin{comment}
+\DeclareOption{localproofs}{\AtEndOfPackage{%
+	\let\Thm@PrfLocEqn@i\Thm@localEqnProof@i
+	\let\Thm@PrfLocEqn@o\Thm@localEqnProof@o
+}}
+%  \end{comment}
+%   
+%   For example,
+%   \begin{proof}[to show the |localproofs| option]
+%    The first equation.
+%    \begin{equation}
+%     f(x) = g(x) \label{eq:1loc}
+%    \end{equation}
+%    The second equation.
+%    \begin{equation}
+%     f(x) = g(x) \label{eq:2loc}
+%    \end{equation}
+%    Look at the following equation, numbered \eqref{eq:2} instead of
+%    (3).
+%   \end{proof}
+%   Since the previous equation (outside the proof) is \eqref{eq:seceqn},
+%   the following equation will be numbered \eqref{eq:2}.
+%   \begin{equation}
+%    f(x) = g(x) \label{eq:2}
+%   \end{equation}
+%   
+%   \item[|notagproofs| (default)]
+%   
+%  \begin{comment}
+\DeclareOption{notagproofs}{\def\Thm@PrfLocEqnTag#1{#1}}
+\ExecuteOptions{notagproofs}
+%  \end{comment}
+% 
+%  \item[|tagproofs|] The equations tags in proofs environments are
+%  `|Prf|.Number'.
+% 
+%  \begin{comment}
+\DeclareOption{tagproofs}{\def\Thm@PrfLocEqnTag#1{Prf.#1}}
+%  \end{comment}
+% 
+%  \item[|seccnt| (default)] all the environments are numbered with the
+%  section number dot a progressive number
+% 
+%  \begin{comment}
+\DeclareOption{seccnt}{\Thm@seccnttrue}
+\ExecuteOptions{seccnt}
+%  \end{comment}
+% 
+%  \item[|plaincnt|] all the environments are numbered simply with a
+%  progressive number
+% 
+%  \begin{comment}
+\DeclareOption{plaincnt}{\Thm@seccntfalse}
+%  \end{comment}
+% 
+%  \item[|bolditemtag| (default)] the |\itemtag| command uses a right-brace
+%  in the end of the label (see command explanation on
+%  page~\pageref{item:itemtag}).
+% 
+%  \begin{comment}
+\DeclareOption{bolditemtag}{\AtEndOfPackage{%
+	\let\Thm@itemtag@shp\Thm@BoldItem
+}}
+\ExecuteOptions{bolditemtag}
+%  \end{comment}
+% 
+%  \item[|squareitemtag|] the |\itemtag| command uses a squared delimiter
+%  around the label (see command explanation on
+%  page~\pageref{item:itemtag}).
+% 
+%  \begin{comment}
+\DeclareOption{squareitemtag}{\AtEndOfPackage{%
+	\let\Thm@itemtag@shp\Thm@SquareItem
+}}
+%  \end{comment}
+% 
+%   \item[|floatholes|] \NEWfeature{1998/03/06} the |\hole| command
+%   ``floats'' to a separate page to preserve the page layout.
+% 
+%  \begin{comment}
+\DeclareOption{floatholes}{\Thm@holesfloattrue}
+%  \end{comment}
+% 
+%   \item[|nofloatholes| (default)] \NEWfeature{1998/03/06} the |\hole|
+%   command produces a frame with text inplace.
+% 
+%  \begin{comment}
+\DeclareOption{nofloatholes}{\Thm@holesfloatfalse}
+\ExecuteOptions{nofloatholes}
+%  \end{comment}
+% 
+%   \item[|killcites| (default)] \NEWfeature{2010/11/01} all |\cite| commands
+%   within a |\hole| command do not generate a citation but just print
+%   the keykord(s).
+% 
+%  \begin{comment}
+\DeclareOption{killcites}{\Thm@holeskillcitestrue}
+\ExecuteOptions{killcites}
+%  \end{comment}
+% 
+%   \item[|keepcites|] \NEWfeature{2010/11/01} all |\cite| commands
+%   within a |\hole| command behaves normally.
+% 
+%  \begin{comment}
+\DeclareOption{keepcites}{\Thm@holeskillcitesfalse}
+%  \end{comment}
+% 
+%  \item[|blackqed| (default)] \NEWfeature{2000/05/09} the qed symbol is a
+%  black box \ldots
+% 
+%  \begin{comment}
+\DeclareOption{blackqed}{
+	\def\Thm@qedSymb{\vrule	height.5em width.5em\Thm@holesfloatfalse}
+}
+\ExecuteOptions{blackqed}
+%  \end{comment}
+% 
+%   \item[|blankqed|] the qed symbol is a blank box \ldots
+% 
+%  \begin{comment}
+\DeclareOption{blankqed}{
+	\AtBeginDocument{\RequirePackage{latexsym}}
+	\def\Thm@qedSymb{\ensuremath{\Box}}
+}
+%  \end{comment}
+% 
+%   \item[|myhyphen| (default)] \NEWfeature{2008/01/02} the
+%   \verb|\-| command is patched in order to be used \emph{just}
+%   after a dash, in order to enable the ordinary hyphenation
+%   algorithm.  Try what happens for something like
+%   \verb|semi-denotational| and \verb|semi-\-denotational| with
+%   option on or off.
+% 
+%  \begin{comment}
+\DeclareOption{myhyphen}{
+	\Thm@myhyphentrue
+}
+\ExecuteOptions{myhyphen}
+\AtBeginDocument{
+	\ifThm@myhyphen
+%   \typeout{***DEBUG*** myhyphen}
+	\def\-{\penalty	10000\hskip	0pt	\discretionary{}{}{}\penalty 10000\hskip 0pt}
+	\fi
+}
+%  \end{comment}
+% 
+%   \item[|normhyphen|] \NEWfeature{2008/01/02} the \verb|\-|
+%   command is \emph{not} patched.
+% 
+%  \begin{comment}
+\DeclareOption{normhyphen}{
+	\Thm@myhyphenfalse
+}
+%  \end{comment}
+%  \end{description}
+% 
+%  \begin{comment}
+%** 
+%%% begin Undocumented options
+%** 
+\DeclareOption{buchi}{\Thm@holestrue}
+\DeclareOption{nobuchi}{\Thm@holesfalse}
+%** 
+%%% end Undocumented options
+%** 
+\DeclareOption*{\PackageWarningNoLine{theorems}{Unknown	option `\CurrentOption'}}
+%** 
+%** Source local configuration file
+%** 
+\InputIfFileExists{theorems.cfg}{}{\PackageWarningNoLine{theorems}%
+	{No	preferences	file}}
+\ProcessOptions\relax
+%** now that options have been processed...
+% \ifThmDraftOn
+% 	\ifThmNoExtendedOn\else\ThmExtendedOnONtrue\fi
+% \else
+% 	\ifThmExtendedOn\ThmExtendedOnONtrue\fi
+% \fi
+\if@Thm@langdef\else
+	\PackageWarningNoLine{theorems}{no language	has	been specified,
+	English	will be	used}
+	\AtEndOfPackage{
+		\Thm@setcaptions{english}{\Thm@captions@english}
+		\PackageInfo{theorems}{Adding British English Captions}
+	}
+\fi
+%%%%%%%%%%%%%%%%%
+%%              %
+%% Package Code %
+%%              %
+%%%%%%%%%%%%%%%%%
+\ifThm@useadjustbox
+	\IfFileExists{adjustbox.sty}{\AtBeginDocument{\RequirePackage{adjustbox}}}
+	{\Thm@useadjustboxfalse}
+\fi
+\ifThm@useadjustbox\else
+% internal simulation of adjustbox
+\newsavebox{\Thm@tempbox}
+\newenvironment*{adjustbox}[1]{
+	\vrule width 1pt\,\vrule width 1pt%\,
+	\ifThm@usecolors\begin{lrbox}{\Thm@tempbox}\else\,\fi%
+	\begin{minipage}{0.95\columnwidth}
+}{%
+	\end{minipage}%
+	\ifThm@usecolors\end{lrbox}%
+	\colorbox{lightyellow}{\usebox{\Thm@tempbox}}\fi%
+	\,\vrule width 1pt\,\vrule width 1pt%
+	\ignorespacesafterend%
+}
+\fi
+\if@compatibility
+	\let\Thm@replace=\@gobbletwo
+\else
+%** Warn only once, then always use replace command
+	\def\Thm@replace#1#2{\PackageWarning{theorems}{No \protect#1 command, using	
+	 \protect#2	instead.}\gdef#1{#2}#1}
+\fi
+\ifThm@usecolors
+	\AtBeginDocument{
+	\RequirePackage{color}
+	\definecolor{lightyellow}{RGB}{255,255,230}
+	\definecolor{lightblue}{RGB}{240,250,255}
+	\definecolor{lightgreen}{RGB}{245,255,245}
+	\definecolor{darkgreen}{RGB}{0,100,0}
+	\definecolor{darkyellow}{RGB}{200,200,0}
+	\def\Thm@bgcolorext{lightgreen}
+	\def\Thm@frcolorext{darkgreen}
+	\def\Thm@bgcolorplnote{lightblue}
+	\def\Thm@frcolorplnote{blue}
+	\def\Thm@bgcolordrftplnote{lightyellow}
+	\def\Thm@frcolordrftplnote{darkyellow}
+	\def\Thm@bgcolorhole{lightyellow}
+	}
+\fi
+\def\Thm@declare@robustcommand#1{%
+	\ifx#1\@undefined
+	% \typeout{***DEBUG*** declare \noexpand#1: 1}
+	\PackageInfo{theorems}{NO previous `\noexpand#1' command definition}
+	\else\ifx#1\relax
+	% \typout{***DEBUG*** declare \noexpand#1: 2}
+	\PackageWarningNoLine{theorems}{EMPTY previous `\noexpand#1' command definition}
+	% \typout{***DEBUG*** declare \noexpand#1: 2'}
+	\else
+	% \@latex@info{Redefining \string#1}%
+	% \typeout{***DEBUG*** declare \noexpand#1: 3}
+	\PackageWarningNoLine{theorems}{REDEFINED previous `\noexpand#1' command}
+	% \typeout{***DEBUG*** declare \noexpand#1: 3'}
+	\fi\fi
+	\def\Thm@tmp{\declare@robustcommand#1}
+	\Thm@tmp
+}
+\def\Thm@provide@robustcommand#1{%
+	\ifx#1\@undefined
+%   \typeout{***DEBUG*** provide \noexpand#1: 1}
+		\PackageInfo{theorems}{NO previous `\noexpand#1' command definition}
+		\def\Thm@tmp{\declare@robustcommand#1}
+%   \typeout{***DEBUG*** provide \noexpand#1: 1'}
+	\else\ifx#1\relax
+%   \typout{***DEBUG*** provide \noexpand#1: 2}
+		\PackageInfo{theorems}{EMPTY previous `\noexpand#1' command definition}
+		\def\Thm@tmp{\declare@robustcommand#1}
+%   \typout{***DEBUG*** provide \noexpand#1: 2'}
+	\else
+%    \@latex@info{Redefining \string#1}%
+%   \typeout{***DEBUG*** provide \noexpand#1: 3}
+		\PackageWarningNoLine{theorems}{KEEPED previous `\noexpand#1' command definition}
+		\def\Thm@tmp{\declare@robustcommand\Thm@dummy}
+%   \typeout{***DEBUG*** provide \noexpand#1: 3'}
+	\fi\fi
+	\Thm@tmp
+}
+\new@environment{Thm@dummy}{\relax}{\relax}
+\def\Thm@provide@environment#1{%
+	\@ifundefined{#1}{%
+		\PackageInfo{theorems}{NO previous `\noexpand#1' environment definition}
+		\def\Thm@tmp{\new@environment{#1}}
+	}{
+		\PackageWarningNoLine{theorems}{KEEPED previous `\noexpand#1' environment definition}
+		\def\Thm@tmp{\renew@environment{Thm@dummy}}
+	}
+	\Thm@tmp
+}
+%  \end{comment}
+%  
+% \section{Conditionals}
+% 
+% \NEWfeature{2013/06/13}
+% \DescribeMacro{\ifThmExtendedOn}\DescribeMacro{\ifThmNoExtendedOn}\DescribeMacro{\ifThmDraftOn}
+% There is conditional |\ifThmExtendedOn| \ldots |\else| \ldots |\fi|,
+% where the |\else| branch is optional, which typesets according to the
+% value of flag |extended|.  Analogously with |\ifThmNoExtendedOn| and
+% |\ifThmDraftOn| for |noextended| and |draft| flags.
+% 
+% 
+% \section{Environments}
+% 
+% This package takes this name from its original version which was intended
+% to provide several theorem-like environments.  Now, besides the several
+% predefined ones, new theorem-like environments can be added with the
+% \DescribeMacro{\newdefinition}|\newdefinition| \NEWfeature{2011/06/25}
+% command, which is similar to the |\newtheorem| command of AmSLaTeX and
+% others.  
+% \begin{decl}
+% 
+%     |\newdefinition|\m{env-name}\m{caption}\oarg{within} \\\qquad new
+%     counter numbering within \m{within} (section, chapter, \ldots)\\
+%     
+%     |\newdefinition|\m{env-name}\oarg{numbered-like}\m{caption} \\\qquad
+%     using the same counter of \m{numbered-like} \\
+%     
+%     |\newdefinition*|\m{env-name}\m{caption} \\\qquad gives a theorem
+%     without number.  
+%     
+% \end{decl} 
+%  \begin{comment}
+\Thm@provide@robustcommand{\newdefinition}{\Thm@deftheo}
+%** 
+%** Personal version of  to the newtheorem command  
+%**  definition of the "\Thm@deftheo" command. Usage now:
+%** 
+%**  \Thm@deftheo{env_nam}{caption}[within]
+%**  \Thm@deftheo{env_nam}[numbered_like]{caption}
+%**  \Thm@deftheo*{env_nam}{caption} gives a theorem without number.
+%** 
+\expandafter\@ifdefinable\csname Thm@reserved\endcsname
+	{\@definecounter{Thm@reserved}%
+	\expandafter\xdef\csname theThm@reserved\endcsname{\@thmcounter{Thm@reserved}}%
+	\global\@namedef{Thm@reserved}{\@thm{Thm@reserved}{Package `theorem.sty'}}%
+	\global\@namedef{endThm@reserved}{\@endtheorem}}
+\def\Thm@deftheo{\@ifstar{\Thm@Newtheo}{\Thm@newtheo}}
+\def\Thm@Newtheo#1{\Thm@chkth\Thm@Nthm{#1}}
+\def\Thm@newtheo#1{\@ifnextchar[{\Thm@chkth\Thm@othm{#1}}{\Thm@chkth\Thm@nthm{#1}}}
+\ifThm@keep
+	\def\Thm@chkth#1#2{
+		\@ifundefined{#2}{%
+			\PackageInfo{theorems}{NO Previous `#2' environment definition}%
+			\def\Thm@reserved{#1{#2}}
+		}{%
+		\PackageWarningNoLine{theorems}{Previous `#2' environment definition SAVED}%
+		\def\Thm@reserved{%
+			\let\Thm@reserved\relax
+			\let\endThm@reserved\relax
+			#1{Thm@reserved}}
+		}%
+		\Thm@reserved}%
+\else
+	\def\Thm@chkth#1#2{
+		\@ifundefined{#2}{%
+			\PackageInfo{theorems}{NO Previous `#2' environment definition}%
+		}{%
+		\PackageWarningNoLine{theorems}{Previous `#2' environment definition KILLED}%
+		}%
+		\expandafter\let\csname	#2\endcsname\relax
+		\expandafter\let\csname	end#2\endcsname\relax
+		#1{#2}}
+\fi
+\def\Thm@nthm#1#2{\@ifnextchar[{\Thm@xnthm{#1}{#2}}{\Thm@ynthm{#1}{#2}}}
+\def\Thm@xnthm#1#2[#3]{%
+	\expandafter\@ifdefinable\csname #1\endcsname
+		{\@definecounter{#1}\@newctr{#1}[#3]%
+		\expandafter\xdef\csname the#1\endcsname{%
+			\expandafter\noexpand\csname the#3\endcsname\@thmcountersep
+			\@thmcounter{#1}}%
+		\global\@namedef{#1}{\Thm@thm{#1}{#2}{#1}}%
+		\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+		\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+		\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@ynthm#1#2{%
+	\expandafter\@ifdefinable\csname #1\endcsname
+		{\@definecounter{#1}%
+		\expandafter\xdef\csname the#1\endcsname{\@thmcounter{#1}}%
+		\global\@namedef{#1}{\Thm@thm{#1}{#2}{#1}}%
+		\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+		\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+		\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@othm#1[#2]#3{%
+	\@ifundefined{c@#2}{%\@nocounterr{#2}
+	\PackageWarningNoLine{theorems}{Counter #2 undefined, skipping definiton of environment #1.}%
+	}%
+	{\expandafter\@ifdefinable\csname #1\endcsname
+		{\global\@namedef{the#1}{\@nameuse{the#2}}%
+		\global\@namedef{#1}{\Thm@thm{#2}{#3}{#1}}%
+		\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+		\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+		\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}}
+\def\Thm@thm#1#2#3{\refstepcounter{#1}\@ifnextchar[{\Thm@ythm{#1}{#2}{#3}}%
+	{\Thm@xthm{#1}{#2}{#3}}}
+\def\Thm@xthm#1#2#3{\@nameuse{Thm@#3@in}{#2\ \@nameuse{the#1}}\ignorespaces}
+\def\Thm@ythm#1#2#3[#4]{\@nameuse{Thm@#3@in}{#2\ \@nameuse{the#1}\ (#4)}\ignorespaces}
+\def\Thm@Nthm#1#2{\Thm@Ynthm{#1}{#2}}
+\def\Thm@Ynthm#1#2{%
+	\expandafter\@ifdefinable\csname #1\endcsname
+		{\global\@namedef{#1}{\Thm@Thm{#1}{#2}{#1}}%
+		\global\@namedef{end#1}{\@nameuse{Thm@#1@out}}
+		\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+		\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@Thm#1#2#3{\@ifnextchar[{\Thm@Ythm{#1}{#2}{#3}}
+	{\Thm@Xthm{#1}{#2}{#3}}}
+\def\Thm@Xthm#1#2#3{\@nameuse{Thm@#3@in}{#2}\ignorespaces}
+\def\Thm@Ythm#1#2#3[#4]{\@nameuse{Thm@#3@in}{#2\ #4}\ignorespaces}
+%  \end{comment}
+% 
+% There is, however, a significative difference.  Styles can be changed by
+% the command
+% \DescribeMacro{\definitionstyle}|\definitionstyle|\m{env-name}\m{style}
+% \NEWfeature{2011/06/25} where style can be |PlainIt|, |PlainRm|,
+% |FancyRm|, |SquareRm|.
+%
+% 
+%  \begin{comment}
+%** 
+%** shapes support
+%** 
+\Thm@provide@robustcommand{\definitionstyle}[2]{%
+\expandafter\def\csname Thm@#1@in\endcsname{\csname Thm@shape@#2@in\endcsname}
+\expandafter\def\csname Thm@#1@out\endcsname{\csname Thm@shape@#2@out\endcsname}
+\expandafter\providecommand\csname Thm@shape@#2@in\endcsname{%
+	\PackageError{theorems}{SHAPE \string#2 is not defined!}%
+	{Use admissible shapes in \string\definitionstyle command}
+	\Thm@shape@PlainIt@in}
+\expandafter\providecommand\csname Thm@shape@#2@out\endcsname{\Thm@shape@PlainIt@out}
+}
+\def\Thm@shape@PlainIt@in#1{\trivlist\Thm@PlainItem{\hskip\labelsep{\scshape\bfseries{#1}}}\itshape}
+\def\Thm@shape@PlainIt@out{\endtrivlist}
+\def\Thm@shape@PlainRm@in#1{\trivlist\Thm@PlainItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@PlainRm@out{\endtrivlist}
+\def\Thm@shape@FancyRm@in#1{\trivlist\Thm@FancyItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@FancyRm@out{\vskip-\lastskip%kill previous vskips
+\nobreak\smallskip\hrule width \columnwidth\endtrivlist}
+\def\Thm@shape@SquareRm@in#1{\trivlist\Thm@SquareItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@SquareRm@out{\endtrivlist}
+%** special for proof
+\def\Thm@FancyQed@in#1{%
+	\global\Thm@noqedfalse
+	\normalfont\topsep6\p@\@plus6\p@
+	\Thm@shape@FancyRm@in{#1}%
+}
+\def\Thm@FancyQed@out{%
+	\Thm@shape@FancyRm@out
+	\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse
+}
+\def\Thm@FancyProof@in#1{%
+	\global\Thm@noqedfalse\Thm@PrfLocEqn@i
+	\normalfont\topsep6\p@\@plus6\p@
+	\Thm@shape@FancyRm@in{#1\@addpunct{.}}
+}
+\def\Thm@FancyProof@out{%
+	\Thm@PrfLocEqn@o\Thm@shape@FancyRm@out
+	\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse
+}
+\def\Thm@PlainQed@in#1{
+	\global\Thm@noqedtrue
+	\normalfont\topsep6\p@\@plus6\p@
+	\Thm@shape@PlainRm@in{#1}
+}
+\def\Thm@PlainQed@out{%
+	\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@shape@PlainRm@out
+}
+\def\Thm@PlainProof@in#1{%
+	\global\Thm@noqedtrue\Thm@PrfLocEqn@i
+	\normalfont\topsep6\p@\@plus6\p@
+	\Thm@shape@PlainRm@in{#1\@addpunct{.}}
+}
+\def\Thm@PlainProof@out{%
+	\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@PrfLocEqn@o\Thm@shape@PlainRm@out
+}
+\def\Thm@smallProof@in#1{%
+	\global\Thm@noqedtrue\Thm@PrfLocEqn@i
+	\normalfont\small\topsep6\p@\@plus6\p@
+	\Thm@shape@PlainRm@in{#1\@addpunct{.}}
+}
+\def\Thm@smallProof@out{%
+	\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@PrfLocEqn@o\Thm@shape@PlainRm@out
+}
+\newcounter{Thm@store@equation}
+\def\Thm@localEqnProof@i{
+	\setcounter{Thm@store@equation}{\value{equation}}
+	\let\Thm@theequation\theequation
+	\setcounter{equation}{0}
+	\renewcommand*\theequation{\Thm@PrfLocEqnTag{\@arabic\c@equation}}
+}
+\def\Thm@localEqnProof@o{
+	\setcounter{equation}{\value{Thm@store@equation}}
+	\let\theequation\Thm@theequation
+}
+\def\Thm@FancyItem#1{\item[{#1}]\mbox{}\hrulefill%\hrulefill\mbox{}
+\par\nobreak\@nobreaktrue\everypar{%
+\if@nobreak
+	\@nobreakfalse
+	\clubpenalty \@M
+	\if@afterindent	\else
+		{\setbox\z@\lastbox}%
+	\fi
+\else
+	\clubpenalty \@clubpenalty
+	\everypar{}%
+\fi}}
+\def\Thm@PlainItem#1{\item[{#1}]}
+\def\Thm@BoldItem#1{\item[\textbf{\boldmath{{#1}}}]}%\big)
+\def\Thm@SquareItem#1{\item[\leavevmode\hbox{\hskip-\@wholewidth%
+	\vbox{\hbox{\,\textbf{\boldmath #1}\,\vrule\@height.2ex\@depth.7ex\@width.7pt}%\@width\@wholewidth
+	\hrule\@height.7pt\vskip-\@wholewidth}\hskip-\@wholewidth}]}%\@height\@wholewidth
+\Thm@provide@robustcommand{\@addpunct}[1]{\ifnum\spacefactor>\@m \else#1\fi}
+\def\Thm@makeqed#1{
+	\ifmmode % if math mode, assume	display: omit penalty etc.
+	\else \leavevmode\unskip\penalty9999 \mbox{}\nobreak\hfill
+	\fi
+	\quad\hbox{#1}}
+\def\Thm@qed{\Thm@makeqed{%\leavevmode
+	 \hbox to.77778em{%
+	 \hfil\Thm@qedSymb%
+	 \hfil}}}
+%  \end{comment}
+%  
+% \subsection{Predefined theorem-like environments}
+% 
+%  \begin{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                %
+%% Standard layout theorem-like environments, ... %
+%%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifThm@seccnt
+\@ifundefined{c@section}{%
+		\PackageWarningNoLine{theorems}{No section counter for environments}
+		\Thm@deftheo{theorem}{\theoremname}
+	}{%
+	\Thm@deftheo{theorem}{\theoremname}[section]}
+\else
+	\Thm@deftheo{theorem}{\theoremname}
+\fi
+%  \end{comment}
+% 
+%  The package defines (according to keep/redefine options) the following
+%  environments:
+%  \DescribeEnv{lemma}\DescribeEnv{theorem}\DescribeEnv{\ldots}
+%  \begin{sloppypar}
+%   |answer|, |application|, |assumption|, |claim|, |conjecture|,
+%   |construction|, |corollary|, |counterexample|, |criterion|,
+%   |exercise|, |fact|, |lemma|, |notation|, |note|, |observation|,
+%   |problem|, |property|, |proposal|, |proposition|, |question|,
+%   |result|, |solution|, |theorem|, |thesis|, |warning|,
+%  \end{sloppypar}
+% 
+%  \begin{comment}
+\Thm@deftheo{answer}[theorem]{\answername}
+\Thm@deftheo{application}[theorem]{\applicationname}
+\Thm@deftheo{assumption}[theorem]{\assumptionname}
+\Thm@deftheo{claim}[theorem]{\claimname}
+\Thm@deftheo{conjecture}[theorem]{\conjecturename}
+\Thm@deftheo{construction}[theorem]{\constructionname}
+\Thm@deftheo{corollary}[theorem]{\corollaryname}
+\Thm@deftheo{counterexample}[theorem]{\counterexamplename}
+\Thm@deftheo{criterion}[theorem]{\criterionname}
+\Thm@deftheo{exercise}[theorem]{\exercisename}
+\Thm@deftheo{fact}[theorem]{\factname}
+\Thm@deftheo{lemma}[theorem]{\lemmaname}
+\Thm@deftheo{notation}[theorem]{\notationname}
+\Thm@deftheo{note}[theorem]{\notename}
+\Thm@deftheo{observation}[theorem]{\observationname}
+\Thm@deftheo{problem}[theorem]{\problemname}
+\Thm@deftheo{property}[theorem]{\propertyname}
+\Thm@deftheo{proposal}[theorem]{\proposalname}
+\Thm@deftheo{proposition}[theorem]{\propositionname}
+\Thm@deftheo{question}[theorem]{\questionname}
+\Thm@deftheo{result}[theorem]{\resultname}
+\Thm@deftheo{solution}[theorem]{\solutionname}
+\Thm@deftheo{thesis}[theorem]{\thesisname}
+\Thm@deftheo{warning}[theorem]{\warningname}
+%  \end{comment}
+%  which should be used following the usual syntax:
+%  \begin{decl}
+%   |\begin|\m{environment-name}||\oarg{optional-name} \\
+%   \quad\m{text} \\
+%   |\end|\m{environment-name}||
+%  \end{decl}
+%  The text is typeset in italic font while the optional name is
+%  typeset in bold font.  The optional name extends the base one and is
+%  surrounded by parenthesis.
+% 
+%  The package also defines the
+%  \DescribeEnv{definition}|definition|\label{desc:fancydefs},
+%  environment\NEWdescription{1998/05/22}, where text is typeset in
+%  italic or roman font depending on the options |fancydefs| while the
+%  optional name is typeset in bold font.  As before, the optional name
+%  extends the base one and is surrounded by parenthesis.
+% 
+%  \begin{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                    %
+%% Non-standard layout theorem-like environments, ... %
+%%                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%** 
+%** the plain shape of this environments is superseeded at EndOfPackage by 
+%** options
+%** 
+\Thm@deftheo{definition}[theorem]{\definitionname}
+%  \end{comment}
+% 
+%  The package also defines the \DescribeEnv{example}|example|,
+%  \DescribeEnv{notethat}|notethat|, \DescribeEnv{remark}|remark| and
+%  \DescribeEnv{proof}|proof| environments, where text is typeset in
+%  roman font while the optional name is typeset in bold font.  As
+%  before, the optional name extends the base one and is surrounded by
+%  parenthesis (except for the |proof| environment).
+% 
+%  \begin{comment}
+\Thm@deftheo{example}[theorem]{\examplename}
+\Thm@deftheo{notethat}[theorem]{\notethatname}
+\Thm@deftheo{remark}[theorem]{\remarkname}
+%**
+%** proof-like environments, ...
+%** 
+\Thm@deftheo*{apndxproof}{\proofname}
+\Thm@deftheo*{proof}{\proofname}
+%  \end{comment}
+%   
+%  The environment \DescribeEnv{keywords}|keywords| \NEWfeature{2001/08/28}
+%  is used to generate the `Key Words' of an article
+%   
+%  \begin{comment}
+\Thm@provide@environment{keywords}[1][\keywordsenvname]{\quotation
+	{\bfseries #1:}	%\vspace{-.5em}\vspace{\z@}
+}{\endquotation}
+%  \end{comment}
+%  
+%   
+%  The environment \DescribeEnv{terms}|terms| \NEWfeature{2013/06/24}
+%  is used to generate the `Terms' of an article
+%   
+%  \begin{comment}
+\Thm@provide@environment{terms}[1][\termsenvname]{\quotation
+	{\bfseries #1:}	%\vspace{-.5em}\vspace{\z@}
+}{\endquotation}
+%  \end{comment}
+%  
+%   
+% \subsection{Miscellaneous environments}
+%   
+%  \DescribeEnv{pleasenote}|pleasenote| is used to emphasize a paragraph of
+%  text with a marginal note and two vertical delimiters on both sides.
+% 
+%  \begin{comment}
+%** 
+%** miscellaneus environments...
+%** 
+\newenvironment*{pleasenote}[1][\pleasenotename]
+{\begin{Thm@noteblock}{#1}{\Thm@frcolorplnote}{\Thm@bgcolorplnote}}
+{\end{Thm@noteblock}}
+\newenvironment*{Thm@noteblock}[3]{
+	%\smallskip\par\noindent%
+	\Thm@alter@float@cmds%
+	%\marginpar{#1}%
+	\begin{adjustbox}{minipage=[b]{\columnwidth-17pt},%
+		cframe={#2} 1pt 3pt,%margin=1ex,
+		bgcolor=#3,env=center}
+	\Thm@margin@put{#1}\vskip-\lastskip\ignorespaces%
+}{
+	\end{adjustbox}
+	\par\smallskip\noindent%
+	\Thm@restore@float@cmds%
+	\ignorespacesafterend%
+}
+\def\Thm@margin@put#1{%\leavevmode 
+	\vbox to 0pt{%\@bsphack 
+		\strut\vadjust{%
+			\rlap{\kern-\parindent
+			\@tempdimc\columnwidth
+			\advance\@tempdimc\marginparsep
+			\kern\@tempdimc
+			\setbox0=\vtop to 0pt{%
+			\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}{%
+			\parbox[t]{1.3\marginparwidth}{\raggedright#1}
+			}\vss}%
+			\vtop to 0pt{\kern 0pt
+			\kern-\dp\strutbox
+			\kern-\ht0
+			\box0 \vss}}%
+		}%\@esphack
+}}
+%  \end{comment}
+%  For example the code
+%  \begin{verbatim}
+%   \begin{pleasenote}[Pay attention]
+%    This is an example of the |pleasenote| environment.
+% 
+%    More than one paragraph may be highlighted.
+%   \end{pleasenote}
+%  \end{verbatim}
+%  produces
+%  \begin{pleasenote}[Pay attention]
+%   This is an example of the |pleasenote| environment.
+% 
+%   More than one paragraph may be highlighted.
+%  \end{pleasenote}
+%   
+%  \DescribeEnv{pleasenote*}|pleasenote*| \NEWfeature{2004/07/20} is used
+%  to emphasize lot's of paragraphs of text which can break along pages.
+%  It puts two horizontal delimiters on both top and bottom plus the usual
+%  marginal note with the comment.
+%  
+%  \begin{comment}
+\newenvironment*{pleasenote*}[1][\pleasenotename]
+{\begin{Thm@noteblock*}{#1}}
+{\end{Thm@noteblock*}}
+\newenvironment*{Thm@noteblock*}[1]{
+	\def\Thm@notestar@tag##1{\Thm@margin@put{##1 #1}}%
+	\nobreak\bigskip\hrule width \columnwidth\Thm@notestar@tag{$\downarrow$}
+	\nobreak\smallskip\hrule width \columnwidth%
+	\nobreak\ignorespaces%
+}{%
+	\nobreak\bigskip\hrule width \columnwidth\Thm@notestar@tag{$\uparrow$}
+	\nobreak\smallskip\hrule width \columnwidth\bigskip%
+	\nobreak\ignorespacesafterend%
+}
+%  \end{comment}
+%  
+%  \NEWfeature{2011/08/14} There are the variants
+%  \DescribeEnv{draftpleasenote}|draftpleasenote| and
+%  \DescribeEnv{draftpleasenote*}|draftpleasenote*| which disappears when
+%  in |final| mode.  \NEWdescription{2015/04/01}The coloring of
+%  |draftpleasenote| is no longer equal to that of |pleasenote| for better
+%  visibility.
+%   
+%  \begin{comment}
+\newenvironment{draftpleasenote}[1][draft]{%
+	\ifThmDraftOn
+	\begin{Thm@noteblock}{#1}{\Thm@frcolordrftplnote}{\Thm@bgcolordrftplnote}
+	\else\Thm@kill@bgroup\fi%
+}{%
+	\ifThmDraftOn\end{Thm@noteblock}%
+	\else\Thm@kill@egroup\fi%
+	\ignorespacesafterend%
+}
+\newenvironment{draftpleasenote*}[1][draft]{%
+	\ifThmDraftOn\begin{Thm@noteblock*}{#1}%
+	\else\Thm@kill@bgroup\fi%
+}{%
+	\ifThmDraftOn\end{Thm@noteblock*}%
+	\else\Thm@kill@egroup\fi%
+	\ignorespacesafterend%
+}
+%  \end{comment}
+%  
+%  \NEWfeature{2012/06/04}Note that figure and table floats are not
+%  processed in the usual way, but just typeset inline.
+%   
+%  \NEWfeature{2013/04/12} note that starting from now also section number 
+%  is restored 
+%  \begin{comment}
+\newcounter{Thm@store@section}
+\newcounter{Thm@store@subsection}
+\newcounter{Thm@store@subsubsection}
+\newcounter{Thm@store@theorem}
+\def\Thm@kill@bgroup{%
+	\setcounter{Thm@store@equation}{\value{equation}}%
+	\setcounter{Thm@store@section}{\value{section}}%
+	\setcounter{Thm@store@subsection}{\value{subsection}}%
+	\setcounter{Thm@store@subsubsection}{\value{subsubsection}}%
+	\setcounter{Thm@store@theorem}{\value{theorem}}%
+	% \let\Thm@theequation\theequation
+	% \let\Thm@thetheorem\thetheorem
+	% \let\holecite\Thm@save@cite
+	% \ifThm@holeskillcites
+	%     \let\cite\Thm@citeinhole
+	% \fi
+	\let\label\Thm@labelinhole
+	\Thm@alter@float@cmds%
+	\setbox0=\vbox\bgroup
+}
+\def\Thm@kill@egroup{%
+	\egroup%
+	\let\label\Thm@save@label
+	% \let\holecite\Thm@holecite
+	% \let\cite\Thm@save@cite
+	\setcounter{equation}{\value{Thm@store@equation}}%
+	\setcounter{section}{\value{Thm@store@section}}%
+	\setcounter{subsection}{\value{Thm@store@subsection}}%
+	\setcounter{subsubsection}{\value{Thm@store@subsubsection}}%
+	\setcounter{theorem}{\value{Thm@store@theorem}}%
+	% \let\theequation\Thm@theequation
+	% \let\thetheorem\Thm@thetheorem
+	\Thm@restore@float@cmds\ignorespacesafterend%
+}
+% \newsavebox{\Thm@tempboxB}
+\newenvironment{Thm@nofloat}[1]{%
+	\gdef\Thm@captionname{#1}
+	\ifvmode\smallskip\par\noindent\else\\[0.5ex]\fi
+	\begin{adjustbox}{minipage=[b]{\columnwidth-30pt},%
+		cframe=blue 1pt 3pt,bgcolor=yellow,env=center}
+}{
+	\end{adjustbox}
+	\par\smallskip\noindent\ignorespacesafterend%
+}
+\newcounter{Thm@hidden@floats}
+\setcounter{Thm@hidden@floats}{-1000}
+\newcounter{Thm@altered@float@cnt}
+% \typeout{****** DEBUG float level init to \theThm@altered@float@cnt}
+\def\Thm@alter@float@cmds{%
+	\let\holecite\Thm@holeciteIN
+	\ifThm@holeskillcites
+		\let\@citex\Thm@citexinhole
+	\fi
+	\global\advance \c@Thm@altered@float@cnt 1
+	% \typeout{****** DEBUG float level set to \theThm@altered@float@cnt}
+	\ifnum \c@Thm@altered@float@cnt > 1
+		\PackageWarning{theorems}{\theThm@altered@float@cnt-Nested float-hiding block}
+	\else
+		\renewcommand*{\caption}[2][]{\refstepcounter{Thm@hidden@floats}%
+			\par\smallskip\Thm@captionname~\theThm@hidden@floats: ##2.\\
+			\smallskip}%
+		\let\label\Thm@labelinhole
+		\renewenvironment{figure}[1][]{\begin{Thm@nofloat}{\figurename}}{\end{Thm@nofloat}}%
+		\renewenvironment{table}[1][]{\begin{Thm@nofloat}{\tablename}}{\end{Thm@nofloat}}%
+		\renewenvironment{figure*}[1][]{\begin{Thm@nofloat}{\figurename*}}{\end{Thm@nofloat}}%
+		\renewenvironment{table*}[1][]{\begin{Thm@nofloat}{\tablename*}}{\end{Thm@nofloat}}%
+	\fi
+	\Thm@alter@footnote
+}
+\def\Thm@restore@float@cmds{%
+	\let\holecite\Thm@holeciteOUT
+	\let\@citex\Thm@save@citeX
+	\global\advance \c@Thm@altered@float@cnt -1
+	% \typeout{****** DEBUG float level set to \theThm@altered@float@cnt}
+	\ifnum \c@Thm@altered@float@cnt = 0
+		\let\caption\Thm@save@caption%
+		\let\label\Thm@save@label%
+		\let\beginfigure\Thm@save@beginfigure%
+		\let\endfigure\Thm@save@endfigure%
+		\let\begintable\Thm@save@begintable%
+		\let\endtable\Thm@save@endtable%
+		\expandafter\let\csname beginfigure*\endcsname\Thm@save@beginfigurestar%
+		\expandafter\let\csname endfigure*\endcsname\Thm@save@endfigurestar%
+		\expandafter\let\csname begintable*\endcsname\Thm@save@begintablestar%
+		\expandafter\let\csname endtable*\endcsname\Thm@save@endtablestar%
+	\fi
+	\Thm@restore@footnote
+}
+\newcounter{Thm@altered@footnote@cnt}
+% \typeout{****** DEBUG footnote level init to \theThm@altered@footnote@cnt}
+\def\Thm@alter@footnote{%
+	\global\advance \c@Thm@altered@footnote@cnt 1
+	% \typeout{****** DEBUG footnote level set to \theThm@altered@footnote@cnt}
+	\ifnum \c@Thm@altered@footnote@cnt > 1
+		\PackageWarning{theorems}{\theThm@altered@footnote@cnt-Nested footnote-hiding block}
+	\else
+		\let\footnote\Thm@footnoteinhole%
+		\let\marginpar\Thm@marginparinhole%
+		\global\let\Thm@endholehook\@empty
+	\fi
+}
+\def\Thm@restore@footnote{%
+	\global\advance \c@Thm@altered@footnote@cnt -1
+	% \typeout{****** DEBUG footnote level set to \theThm@altered@footnote@cnt}
+	\ifnum \c@Thm@altered@footnote@cnt = 0
+		\let\footnote\Thm@save@footnote%
+		\let\marginpar\Thm@save@marginpar%
+		\Thm@endholehook\global\let\Thm@endholehook\@empty
+	\fi
+}
+\DeclareRobustCommand{\Thm@footnoteinhole}[1]{\footnotemark
+% \typeout{****** DEBUG footnote level \theThm@altered@footnote@cnt}
+\g@addto@macro\Thm@endholehook{\footnotetext{#1}}}
+\DeclareRobustCommand{\Thm@marginparinhole}[1]{%
+\PackageWarning{theorems}{\noexpand\marginpar moved to end of hole}
+\g@addto@macro\Thm@endholehook{\Thm@save@marginpar{#1}}}
+%  \end{comment}
+%  
+%  \label{desc:extended} Environments \NEWdescription{2013/03/30}
+%  \DescribeEnv{extendedvers}|extendedvers|,
+%  \DescribeEnv{extendedvers*}|extendedvers*|\NEWfeature{2011/08/14},
+%  \DescribeEnv{noextendedvers}|noextendedvers| and
+%  \DescribeEnv{noextendedvers*}|noextendedvers*| \NEWfeature{2011/12/19}
+%  are meant to provide standard and extended versions of a document by
+%  sharing the same source and just toggling the |extended| or |noextended|
+%  options.
+%  
+%  When |extended| and |noextended| are not specified, if |draft| is off
+%  extended environments/commands suppress their contents and
+%  \emph{no}extended ones retain their contents (typeset as normal
+%  text); while if |draft| is on \emph{all} them will be highlighted in a
+%  colored box (so it can be easily seen all the material that is going to
+%  disappear).
+%  When one of |extended| or |noextended| is specified then only the
+%  corresponding environments/commands will retain their contents, and
+%  |draft| will affect just their printout (thus the dual
+%  environments/commands will be discarded).
+%   
+%  \begin{comment}
+\def\Thm@extended@switch#1#2#3{%
+	\ifThmNoExtendedOn%
+		#3%
+	\else%
+		\ifThmDraftOn%
+			#1%
+		\else
+			\ifThmExtendedOn%
+				#2%
+			\else
+				#3%
+			\fi%
+		\fi%
+	\fi}
+\def\Thm@noextndd@switch#1#2#3{%
+	\ifThmExtendedOn%
+		#3%
+	\else
+		\ifThmDraftOn%
+			#1%
+		\else%
+			#2%
+		\fi%
+	\fi}
+\def\Thm@extvers@switch@in#1#2#3#4#5{#1%
+	{\begin{#2}{\fcolorbox{black}{\ifThm@usecolors \Thm@bgcolorext\else white\fi}{#3} #4}#5
+	\Thm@alter@float@cmds\ignorespaces}
+	{\ignorespaces}{\Thm@kill@bgroup}
+	}
+\def\Thm@extvers@switch@out#1#2{#1{\end{#2}\Thm@restore@float@cmds\ignorespacesafterend}{\ignorespacesafterend}{\Thm@kill@egroup}}
+\def\Thm@extendedvers@in#1#2#3{\Thm@extvers@switch@in{\Thm@extended@switch}{#1}{extnd}{#2}{#3}}
+\def\Thm@noextnddvers@in#1#2#3{\Thm@extvers@switch@in{\Thm@noextndd@switch}{#1}{NOext}{#2}{#3}}
+\def\Thm@extendedvers@out#1{\Thm@extvers@switch@out{\Thm@extended@switch}{#1}}
+\def\Thm@noextnddvers@out#1{\Thm@extvers@switch@out{\Thm@noextndd@switch}{#1}}
+\newenvironment{extendedvers}[1][]
+	{\Thm@extendedvers@in{Thm@noteblock}{#1}{{\Thm@frcolorext}{\Thm@bgcolorext}}}
+    {\Thm@extendedvers@out{Thm@noteblock}\ignorespacesafterend}
+\newenvironment{extendedvers*}[1][]
+	{\Thm@extendedvers@in{Thm@noteblock*}{#1}{}}
+    {\Thm@extendedvers@out{Thm@noteblock*}\ignorespacesafterend}
+\newenvironment{noextendedvers}[1][]
+	{\Thm@noextnddvers@in{Thm@noteblock}{#1}{{\Thm@frcolorext}{\Thm@bgcolorext}}}
+    {\Thm@noextnddvers@out{Thm@noteblock}\ignorespacesafterend}
+\newenvironment{noextendedvers*}[1][]
+	{\Thm@noextnddvers@in{Thm@noteblock*}{#1}{}}
+	{\Thm@noextnddvers@out{Thm@noteblock*}\ignorespacesafterend}
+\newenvironment{extendedversion}[1][]{\begin{extendedvers}[#1]}{\end{extendedvers}\ignorespacesafterend}
+\newenvironment{extendedversion*}[1][]{\begin{extendedvers*}[#1]}{\end{extendedvers*}\ignorespacesafterend}
+%  \end{comment}
+%  
+%  
+% \section{Commands}
+% 
+%  \begin{comment}
+%%%%%%%%%%%%%%%%%%%%%
+%%                  %
+%% Package Commands %
+%%                  %
+%%%%%%%%%%%%%%%%%%%%%
+%  \end{comment}
+% \subsection{Extension commands}
+% 
+%  The command \DescribeMacro{\binom}|\binom|\marg{n}\marg{d} is used to
+%  produce the binomial operator.  For example, |\binom{n}{d}| produces
+%  $\binom{n}{d}$.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\binom}[2] 	{{{#1}\choose{#2}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\itemtag}|\itemtag|\oarg{label} is
+%  \NEWdescription{2013/04/16}intended to use to instead of any
+%  |\item|\oarg{label} to produce a bold label (also for mathematical
+%  formulas) with a option-specified shape, according to the
+%  |bolditemtag|/|squareitemtag| options.  For example
+%  \begin{description}
+%   
+%   \itemtag[if~$n=0$] is what |\itemtag[if~$n=0$]| produces and
+%   
+%   \itemlabel[if~$n=0$]\label{item:itemtag} is what |\item[if~$n=0$]|
+%   produces.
+%  \end{description}
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\itemtag}[1][$\bullet$]{\Thm@itemtag@shp{#1}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\bolditem}|\bolditem|\oarg{label}
+%  \NEWfeature{2013/04/16}\emph{always} produces a bold label.  Is intended
+%  to be used for small delimiters, like $\implies$ and $\subseteq$.
+%  \begin{comment}
+\Thm@declare@robustcommand{\bolditem}[1][$\bullet$]{\Thm@BoldItem{#1}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\mathoper}|\mathoper|\marg{operator-name}
+%  \label{desc:mathoper} is used to produce a mathematical operator (like
+%  $\lim$, $\sin$) with a font according to options (|plainmathop|,
+%  |itmathop|, |rmmathop|).  The default font is the current latex default
+%  for mathematical operators.  For example |\mathoper{preds}(P)| produces
+%  $\mathoper{preds}(P)$.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\mathoper}[1]{\mathop{\Thm@mathoperfont{#1}}\nolimits}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\qed}|\qed| is used to produce the ``end of
+%  proof'' symbol.  Normally it is not needed, because it is automatically
+%  provided by environments.  It is intended for finer control and inhibits
+%  (only within the current environment) the automatically provided one.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\qed}{\ifThm@noqed\Thm@qed\else\PackageWarning{theorems}%
+	{`\protect\qed'\space command supressed}\fi\global\Thm@noqedfalse}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\starred}|\starred|\oarg{symbol}\marg{arrow}
+%  is used to produce a star (or in general a `symbol') at the right upper
+%  position for arrow relations.  Compare |\xrightarrow{P}^{*}|
+%  ($\xrightarrow{P}^{*}$) with |\starred{\xrightarrow{P}}|
+%  ($\starred{\xrightarrow{P}}$).  The command
+%  \DescribeMacro{\Starred}|\Starred|\oarg{symbol}\marg{arrow} is used to
+%  produce a star (or in general a `symbol') at the right lower position
+%  for arrow relations.  Compare |\xrightarrow[P]{}_{*}|
+%  ($\xrightarrow[P]{}_{*}$) with |\Starred{\xrightarrow[P]{}}|
+%  ($\Starred{\xrightarrow[P]{}}$).
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\starred}[2][*] {\mathrel{\mathord{#2}{}^{#1}}}
+\Thm@declare@robustcommand{\Starred}[2][*] {\mathrel{\mathord{#2}{}_{#1}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\tildeop}|\tildeop|\marg{operator}
+%  \NEWfeature{1998/02/23} is used to produce a unary mathematical operator
+%  with a tilde symbol at the top.  For example |\tildeop{\sum}| produces
+%  $\tildeop{\sum}$.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\tildeop}[1]		{\mathop{\tilde{#1}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\widetildeop}|\widetildeop|\marg{operator}
+%  \NEWfeature{1998/02/23} is used to produce a unary mathematical operator
+%  with an extensible tilde symbol at the top.  For example
+%  |\widetildeop{\sum}| produces $\widetildeop{\sum}$.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\widetildeop}[1]	{\mathop{\widetilde{#1}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\tildebin}|\tildebin|\marg{operator} is used
+%  to produce a binary mathematical operator with a tilde symbol at the
+%  top.  For example |\tildebin{\otimes}| produces $\tildebin{\otimes}$.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\tildebin}[1]	{\mathbin{\tilde{#1}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\widetildebin}|\widetildebin|\marg{operator}
+%  is used to produce a binary mathematical operator with an extensible
+%  tilde symbol at the top.  For example |\widetildebin{\otimes}| produces
+%  $\widetildebin{\otimes}$.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\widetildebin}[1]	{\mathbin{\widetilde{#1}}}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\qqquad}|\qqquad| \NEWfeature{2001/08/28} is
+%  used to produce a double |\qquad|.
+% 
+%  \begin{comment}
+\Thm@provide@robustcommand{\qqquad}{\qquad\qquad}
+%  \end{comment}
+% 
+%  The command
+%  \DescribeMacro{\explain}|\explain|\oarg{space}\marg{explanation} is used
+%  within proofs (into an |array| or |align*| environment) to produce a
+%  margin explanation of the passage.  The upper-case version
+%  \DescribeMacro{\Explain}|\Explain|\oarg{space}\marg{explanation}
+%  produces the explanation in the next line.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\Explain}[2][\qquad]	{\\* & #1
+	\textstyle{\text{\normalsize\textbf{[}\,{#2}\,\textbf{]}}}\notag}
+\Thm@declare@robustcommand{\explain}[2][\,]	{& #1 &	
+	\textstyle{\text{\normalsize [\,{#2}\,]}}\notag}
+%  \end{comment}
+%  \begin{example}\label{ex:explain}
+%   The code (with the |amsmath| package)
+%   \begin{verbatim}
+%   \begin{align*}
+%    & \alpha( x ) \leq \explain{since $x \leq \gamma(x)$} 
+%    \\
+%    & z.
+%   \end{align*}
+%   \end{verbatim}
+%   produces
+%   \begin{align*}
+%    & \alpha( x ) \leq \explain{since $x \leq \gamma(x)$} 
+%    \\
+%    & z.
+%   \end{align*}
+%   and if we replace the |\explain| command with the 
+%   |\Explain| one we obtain
+%   \begin{align*}
+%    & \alpha( x ) \leq \Explain{since $x \leq \gamma(x)$} 
+%    \\
+%    & z.
+%   \end{align*}
+%  \end{example}
+%   
+% \subsection{Support commands}
+%   
+%  The command \DescribeMacro{\smartref}|\smartref|\marg{prefix:refname}
+%  \NEWfeature{1997/12/24} provides additional functionality to \LaTeX2e{}
+%  label--reference mechanism.  It allows the author to ``preformat'' all
+%  types of labels.  Labels in the document must be of the form
+%  |prefix:refname| where the string |prefix| is used to determine the
+%  format.  |\smartref| uses the \LaTeX{} macro |\ref| to access the
+%  |\newlabel| data structure.  Hopefully this makes the package robust
+%  enough to use with various other packges.  |\smartref| is robust enough
+%  to be used within |\caption| and in |theorem| optional arguments.  If
+%  multiple labels with the same prefix have to be referred to at the same
+%  time the command
+%  \DescribeMacro{\smartrefs}|\smartrefs|\marg{prefix:refname$_{1}$,
+%  \ldots, prefix:refname$_{N}$} \NEWfeature{1998/03/06} is provided.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\smartref}[1]{\Thm@smartref#1\@@}
+\def\Thm@smartref#1:#2\@@{%
+	\expandafter\ifx\csname	Thm@smrt@#1\endcsname\relax%
+		\PackageWarning{theorems}{Sorry, smartref-prefix `#1' unknown,
+		please supply it with \newsmartprefix}%
+		UNKNOWNPREFIX~\ref{#1:#2}%
+	\else%
+		\csname Thm@smrt@#1\endcsname~%
+		\csname Thm@smrtpre@#1\endcsname%
+		\ref{#1:#2}%
+		\csname Thm@smrtpost@#1\endcsname%
+	\fi%
+}
+% 
+\Thm@declare@robustcommand{\smartrefs}[1]{\Thm@refs#1\@@}%\expandafter
+\def\Thm@refs#1:#2\@@{%
+	\expandafter\Thm@Rlist#1:#2,\@nil:\@nil,\@nil:\@nil,\@nil:\@nil\@@\Thm@tB{\Thm@tC}}
+\long\def\Thm@Rlist#1:#2,#3:#4,#5\@@#6#7{%
+	\def#6{#3}%
+	\ifx #6\@nnil%
+		\smartref{#1:#2}\PackageWarning{theorems}
+		{ONLY Reference	`#1:#2'	in list}
+	\else%
+		\expandafter\ifx\csname	Thm@Msmrt@#1\endcsname\relax%
+			\PackageWarning{theorems}{Sorry, smartrefs-prefix `#1' unknown,	
+			please supply it with \newsmartsprefix,	prefix `#1'	unknown}%
+			\def\Thm@tA{UNKNOWNPREFIX\ }%
+		\else%
+			\def\Thm@tA{\csname Thm@Msmrt@#1\endcsname\ }%
+		\fi%
+		\def\Thm@tC{#1}\Thm@Rloop#1:#2,#3:#4,#5\@@#6{#7}%
+	\fi}
+\long\def\Thm@Rloop#1:#2,#3:#4,#5\@@#6#7{%
+	\def#6{#1}\ifx #6\@nnil\else%
+	\def#6{#3}\ifx #6\@nnil\def\Thm@tA{	\andname~}\fi%
+	\Thm@tA%
+	\csname Thm@Msmrtpre@#1\endcsname%
+	\ref{#1:#2}%
+	\csname Thm@Msmrtpost@#1\endcsname%
+	\def#6{#1}\ifx #6#7\else??\PackageWarning{theorems}{Reference `#1:#2' not
+	correct	for	list}\fi%
+	\def\Thm@tA{,\penalty\@m\ }%
+	\Thm@Rloop#3:#4,#5\@@#6{#7}\fi}
+%  \end{comment}
+%     
+%  The command \DescribeMacro{\pointref}|\pointref|\marg{pt:$n$:pref:refnm}
+%  \NEWfeature{1998/03/06} provides additional functionality to \LaTeX2e{}
+%  label--reference mechanism for numbered list points in theorem-like
+%  environments.  It acts as
+%   \begin{quote}
+%    |\smartref{pt:|$n$|:pref:refnm} of \smartref{pref:refnm}|
+%   \end{quote}
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\pointref}[1]{\Thm@pointref#1\@@}
+\def\Thm@pointref pt:#1:#2:#3\@@{%
+	\pointname~\ref{pt:#1:#2:#3} of	\smartref{#2:#3}}
+%  \end{comment}
+%     
+%  The \NEWfeature{2007/01/12}formats \NEWdescription{2012/01/26}for
+%  |\smartref| smart references for the following prefixes are supplied.
+%   \begin{sloppypar}
+%         |ans| (\answername),
+%         |appndx| (\appendixname),
+%         |appl| (\applicationname),
+%         |ass| (\assumptionname),
+%         |ch| (\chaptername),
+%         |clm| (\claimname),
+%         |cnj| (\conjecturename),
+%         |cntex| (\counterexamplename),
+%         |const| (\constructionname),
+%         |cor| (\corollaryname),
+%         |crt| (\criterionname),
+%         |def| (\definitionname),
+%         |eq| (\equationname),
+%         |exr| (\exercisename),
+%         |ex| (\examplename),
+%         |fct| (\factname),
+%         |fig| (\figurename),
+%         |lem| (\lemmaname),
+%         |notation| (\notationname),
+%         |ntth| (\notethatname),
+%         |nt| (\notename),
+%         |obs| (\observationname),
+%         |part| (\partname),
+%         |pb| (\problemname),
+%         |proposal| (\proposalname),
+%         |prop| (\propertyname),
+%         |prp| (\propositionname),
+%         |pt| (\pointname),
+%         |qst| (\questionname),
+%         |rem| (\remarkname),
+%         |res| (\resultname),
+%         |sec| (\sectionname),
+%         |sol| (\solutionname),
+%         |subsec| (\subsectionname),
+%         |tab| (\tablename),
+%         |tbl| (\tablename),
+%         |thesis| (\thesisname),
+%         |th| (\theoremname),
+%         |warn| (\warningname),
+%   \end{sloppypar}
+%  New formats for the |\smartref| smart references can be added with the
+%  command
+%  \DescribeMacro{\newsmartprefix}|\newsmartprefix|\marg{prefix}\marg{text}.
+%  \NEWfeature{1998/03/06} The |prefix| argument is the name of the
+%  reference type.  The |text| argument is interpreted as the replacement
+%  text.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\newsmartprefix}[2]{\@namedef{Thm@smrt@#1}{#2}}
+\newsmartprefix{ans}{\answername}
+\newsmartprefix{appndx}{\appendixname}
+\newsmartprefix{appl}{\applicationname}
+\newsmartprefix{ass}{\assumptionname}
+\newsmartprefix{ch}{\chaptername}
+\newsmartprefix{clm}{\claimname}
+\newsmartprefix{cnj}{\conjecturename}
+\newsmartprefix{cntex}{\counterexamplename}
+\newsmartprefix{const}{\constructionname}
+\newsmartprefix{cor}{\corollaryname}
+\newsmartprefix{crt}{\criterionname}
+\newsmartprefix{def}{\definitionname}
+\newsmartprefix{exr}{\exercisename}
+\newsmartprefix{ex}{\examplename}
+\newsmartprefix{fct}{\factname}
+\newsmartprefix{fig}{\figurename}
+\newsmartprefix{lem}{\lemmaname}
+\newsmartprefix{notation}{\notationname}
+\newsmartprefix{ntth}{\notethatname}
+\newsmartprefix{nt}{\notename}
+\newsmartprefix{obs}{\observationname}
+\newsmartprefix{part}{\partname}
+\newsmartprefix{pb}{\problemname}
+\newsmartprefix{proposal}{\proposalname}
+\newsmartprefix{prop}{\propertyname}
+\newsmartprefix{prp}{\propositionname}
+\newsmartprefix{pt}{\pointname}
+\newsmartprefix{qst}{\questionname}
+\newsmartprefix{rem}{\remarkname}
+\newsmartprefix{res}{\resultname}
+\newsmartprefix{sec}{\sectionname}
+\newsmartprefix{sol}{\solutionname}
+\newsmartprefix{subsec}{\subsectionname}
+\newsmartprefix{tab}{\tablename}
+\newsmartprefix{tbl}{\tablename}
+\newsmartprefix{thesis}{\thesisname}
+\newsmartprefix{th}{\theoremname}
+\newsmartprefix{warn}{\warningname}
+%  \end{comment}
+%  \begin{comment}
+%** 
+%%% begin Undocumented commands
+%** 
+\Thm@declare@robustcommand{\newsmartprefixextended}[4]{%
+	\@namedef{Thm@smrt@#1}{#2}
+	\@namedef{Thm@smrtpre@#1}{#3}
+	\@namedef{Thm@smrtpost@#1}{#4}
+}
+%** 
+%%% end Undocumented commands
+%** 
+\newsmartprefixextended{eq}{\equationname}{(}{)}
+%
+%  \end{comment}
+%  The formats for |\smartrefs| smart references for the following prefixes
+%  are supplied.\NEWfeature{2010/10/30}
+%   \begin{sloppypar}
+%         |ch| (\chaptersname),
+%         |clm| (\claimsname),
+%         |cnj| (\conjecturesname),
+%         |cntex| (\counterexamplesname),
+%         |cor| (\corollariesname),
+%         |crt| (\criterionsname),
+%         |def| (\definitionsname),
+%         |eq| (\equationsname),
+%         |exr| (\exercisesname),
+%         |ex| (\examplesname),
+%         |fct| (\factsname),
+%         |fig| (\figuresname),
+%         |lem| (\lemmasname),
+%         |nt| (\notesname),
+%         |obs| (\observationsname),
+%         |pb| (\problemsname),
+%         |proposal| (\proposalsname),
+%         |prop| (\propertysname),
+%         |prp| (\propositionsname),
+%         |pt| (\pointsname),
+%         |qst| (\questionsname),
+%         |rem| (\remarksname),
+%         |sec| (\sectionsname),
+%         |subsec| (\sectionsname),
+%         |tab| (\tablesname),
+%         |th| (\theoremsname),
+%   \end{sloppypar}
+%   New formats can be added with the command
+%   \DescribeMacro{\newsmartsprefix}|\newsmartsprefix|\marg{prefix}\marg{text}.
+%   \NEWfeature{1998/03/06} The |prefix| argument is the name of the
+%   reference type.  The |text| argument is interpreted as the replacement
+%   text.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\newsmartsprefix}[2]{\@namedef{Thm@Msmrt@#1}{#2}}
+\newsmartsprefix{ch}{\chaptersname}
+\newsmartsprefix{clm}{\claimsname}
+\newsmartsprefix{cnj}{\conjecturesname}
+\newsmartsprefix{cntex}{\counterexamplesname}
+\newsmartsprefix{cor}{\corollariesname}
+\newsmartsprefix{crt}{\criterionsname}
+\newsmartsprefix{def}{\definitionsname}
+\newsmartsprefix{exr}{\exercisesname}
+\newsmartsprefix{ex}{\examplesname}
+\newsmartsprefix{fct}{\factsname}
+\newsmartsprefix{fig}{\figuresname}
+\newsmartsprefix{lem}{\lemmasname}
+\newsmartsprefix{nt}{\notesname}
+\newsmartsprefix{obs}{\observationsname}
+\newsmartsprefix{pb}{\problemsname}
+\newsmartsprefix{proposal}{\proposalsname}
+\newsmartsprefix{prop}{\propertysname}
+\newsmartsprefix{prp}{\propositionsname}
+\newsmartsprefix{pt}{\pointsname}
+\newsmartsprefix{qst}{\questionsname}
+\newsmartsprefix{rem}{\remarksname}
+\newsmartsprefix{sec}{\sectionsname}
+\newsmartsprefix{subsec}{\sectionsname}
+\newsmartsprefix{tab}{\tablesname}
+\newsmartsprefix{tbl}{\tablesname}
+\newsmartsprefix{th}{\theoremsname}
+%  \end{comment}
+%  \begin{comment}
+%** 
+%%% begin Undocumented commands
+%** 
+\Thm@declare@robustcommand{\newsmartsprefixextended}[4]{%
+	\@namedef{Thm@Msmrt@#1}{#2}
+	\@namedef{Thm@Msmrtpre@#1}{#3}
+	\@namedef{Thm@Msmrtpost@#1}{#4}
+}
+%** 
+%%% end Undocumented commands
+%** 
+\newsmartsprefixextended{eq}{\equationsname}{(}{)}
+%  \end{comment}
+% 
+%   The command \DescribeMacro{\itemlabel}|\itemlabel|\oarg{text} acts as
+%   any |\item|\oarg{text} command, but any next |\label|\marg{label} will
+%   assume \emph{text} as its value, so that any |\ref|\marg{label} command
+%   will produce \emph{text}.  This is needed since the pair of commands
+%   |\item|\oarg{text} |\label|\marg{label} will not produce the desired
+%   effect.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\itemlabel}[1][$\bullet$]{\item[#1]\def\@currentlabel{#1}}
+%  \end{comment}
+% 
+%   The command \DescribeMacro{\setlabel}|\setlabel|\marg{text}
+%   \NEWfeature{2011/06/25} used before a |\label| sets the label to the
+%   specified text.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\setlabel}[1]{\def\@currentlabel{#1}}
+%  \end{comment}
+% \iffalse
+%     
+%  The command \DescribeMacro{\hidelabel}|\hidelabel|\marg{label} can be
+%  used to ``hide'', i.e., suppress, any label, without.
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\hidelabel}[1]{}
+%  \end{comment}
+% \fi
+% 
+% 
+%  The command \DescribeMacro{\marginnote}|\marginnote|\marg{text}
+%  \NEWfeature{2013/01/15}produces a marginpar with background color (if
+%  |colors| is active).
+% 
+%  \begin{comment}
+\Thm@declare@robustcommand{\marginnote}[1]{\marginpar{%
+	\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}{%
+	\parbox[t]{1.4\marginparwidth}{#1}}
+}}
+%  \end{comment}
+% 
+% 
+%  The command
+%  \DescribeMacro{\draftmarginnote}|\draftmarginnote|\marg{text}
+%  \NEWfeature{2013/10/20}produces a |\marginnote| only if the |draft|
+%  option is active.
+% 
+%  The command \DescribeMacro{\draft}|\draft|\marg{text} \label{desc:draft}
+%  produces the text only if the |draft| option is active.  For example
+%  |You\draft{And}Me| produces You\draft{And}Me.
+% 
+%  \begin{comment}
+\ifThmDraftOn
+	\Thm@declare@robustcommand{\draftmarginnote}{\marginnote}
+	\RequirePackage[notref,notcite]{showkeys}[1995/11/22]
+	\DeclareRobustCommand{\draft}[1]{#1}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\official}|\official|\marg{text}
+%  \label{desc:official} produces the text only if the |final| option is
+%  active (the |draft| option is not active).  For example
+%  |You\official{And}Me| produces You\official{And}Me.
+% 
+%  \begin{comment}
+	\DeclareRobustCommand{\official}[1]{}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\annote}|\annote|\marg{text}
+%  \NEWfeature{2013/01/08}produces the text only if the |draft| option is
+%  active (the |final| option is not active).
+% 
+%  \begin{comment}
+	\Thm@declare@robustcommand{\annote}[1]
+		{\leavevmode\vbox to\z@{%
+		\vss %\SK@refcolor
+		\rlap{\vrule\raise .75em%
+		\hbox{\underbar{\colorbox{yellow}
+			{\normalfont\footnotesize\ttfamily#1}}}}}} %
+\else
+	\DeclareRobustCommand{\draftmarginnote}[1]{}
+	\DeclareRobustCommand{\draft}[1]{}
+	\DeclareRobustCommand{\official}[1]{#1}
+	\Thm@declare@robustcommand{\annote}[1]{}
+\fi
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\extended}|\extended|\marg{text}
+%  \NEWfeature{2011/11/18}produces the text only if the \emph{extended
+%  version mode} is active (see |extendedvers| environment explanation on
+%  page~\pageref{desc:extended}).  The command
+%  \DescribeMacro{\noextended}|\noextended|\marg{text} if it is inactive.
+% 
+%  \begin{comment}
+\Thm@extended@switch{
+	\DeclareRobustCommand{\extended}[1]{\Thm@alter@footnote%
+		\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorext\else white\fi}{#1}%
+		\Thm@restore@footnote}
+}{
+	\DeclareRobustCommand{\extended}[1]{#1}
+}{
+	\DeclareRobustCommand{\extended}[1]{}
+}
+\Thm@noextndd@switch{
+	\DeclareRobustCommand{\noextended}[1]{\Thm@alter@footnote%
+		\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorext\else white\fi}{#1}%
+		\Thm@restore@footnote}
+}{
+	\DeclareRobustCommand{\noextended}[1]{#1}
+}{
+	\DeclareRobustCommand{\noextended}[1]{}
+}
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\hole}|\hole|\marg{text}
+%  \NEWfeature{1998/03/06}\NEWdescription{1998/07/03} makes a box in the
+%  middle of the page with the desired text to annotate something.  The
+%  command is suppressed if the |draft| option is not active and the user
+%  is warned at the end of typesetting about the total number of commands
+%  suppressed.  Detailed information is stored in the \verb|.log| file.
+%  
+%  \NEWfeature{2010/11/01}In order to avoid generation of ``inexistent''
+%  citations |\cite| commands, depending on |keepcites|/|killcites|
+%  options, inside holes print the key instead of the citation.
+%  \NEWdescription{2015/03/21}If one wants to generate cites anyway,
+%  disregarding of options, the command
+%  \DescribeMacro{\holecite}|\holecite|\oarg{text}\marg{text} can be used,
+%  with the same syntax of |\cite|.
+% 
+%  \begin{comment}
+\DeclareRobustCommand\Thm@holeciteIN{%
+  \@ifnextchar [{\@tempswatrue\Thm@save@citeX}{\@tempswafalse\Thm@save@citeX[]}}
+\DeclareRobustCommand{\Thm@holeciteOUT}[2][]{\PackageError{theorems}%
+	{Attention, this command cannot be used outside a `\protect\hole'\space command}%
+	{No more to say}
+}
+\let\holecite\Thm@holeciteOUT
+\def\Thm@citexinhole[#1]#2{\leavevmode[\texttt{#2}\if@tempswa , #1\fi]%
+	\PackageInfo{theorems}{citation	`#2' supressed}}
+\AtBeginDocument{ % collect \cite when all packages has been loaded
+	\let\Thm@save@citeX\@citex
+	\let\Thm@save@caption\caption
+	\let\Thm@save@beginfigure\beginfigure
+	\let\Thm@save@endfigure\endfigure
+	\let\Thm@save@begintable\begintable
+	\let\Thm@save@endtable\endtable
+	\def\Thm@save@beginfigurestaraux{\csname beginfigure*\endcsname}%
+	\let\Thm@save@beginfigurestar\Thm@save@beginfigurestaraux
+	\def\Thm@save@endfigurestaraux{\csname endfigure*\endcsname}%
+	\let\Thm@save@endfigurestar\Thm@save@endfigurestaraux
+	\def\Thm@save@begintablestaraux{\csname	begintable*\endcsname}%
+	\let\Thm@save@begintablestar\Thm@save@begintablestaraux
+	\def\Thm@save@endtablestaraux{\csname endtable*\endcsname}%
+	\let\Thm@save@endtablestar\Thm@save@endtablestaraux
+	\let\Thm@save@footnote\footnote
+	\let\Thm@save@marginpar\marginpar
+}
+%  \end{comment}
+%   
+%  \NEWfeature{2011/02/13}In order to highlight the use of virtually
+%  ``inexistent'' references |\label| commands inside holes generate an
+%  annotated reference (when holes disappear refs will be broken).
+% 
+%  \begin{comment}
+\DeclareRobustCommand{\Thm@labelinhole}[1]{%
+	\PackageWarning{theorems}{Beware of	references to label	`#1'}
+	\let\Thm@tmp\@currentlabel%
+	\ifThmDraftOn
+		\def\@currentlabel{\fbox{\Thm@tmp\,\fbox{IN HOLE}}}%
+	\fi
+	% \typeout{*** debug `\@currentlabel'}
+	\Thm@save@label{#1}}
+\AtBeginDocument{\let\Thm@save@label\label} % collect \label when all packages has been loaded
+\ifThm@holes
+	\ifThm@holesfloat
+		\DeclareRobustCommand{\hole}[1]{%
+			\Thm@alter@footnote
+			\let\holecite\Thm@holeciteIN
+			\ifThm@holeskillcites
+				\let\@citex\Thm@citexinhole
+			\fi
+			\let\label\Thm@labelinhole
+			\marginnote{moved hole}%\framebox[.9\marginparwidth]{}
+			\begin{figure}[p]
+				\@tempdima \floatpagefraction\textheight%
+				\@tempdima.53\@tempdima%
+				\vrule height\@tempdima	depth\@tempdima	width2pt\,%
+				\parbox{.9\columnwidth}{\textbf{page \thepage:}	#1}
+			\end{figure}
+			\Thm@restore@footnote
+			\let\label\Thm@save@label
+			\let\holecite\Thm@holeciteOUT
+			\let\@citex\Thm@save@citeX}
+	\else
+		\DeclareRobustCommand{\hole}[1]{%
+			\Thm@alter@footnote
+			\let\holecite\Thm@holeciteIN
+			\ifThm@holeskillcites
+				\let\@citex\Thm@citexinhole
+			\fi
+			\let\label\Thm@labelinhole
+			\begin{center}
+			\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}%\fbox%
+			{ \rule {.25cm}{0cm}
+			\rule[-.1cm]{0cm}{.4cm}	\parbox{.83\columnwidth}{\begin{center}	
+			#1\end{center}}	\rule {.25cm}{0cm}}\end{center}
+			\Thm@restore@footnote
+			\let\label\Thm@save@label
+			\let\holecite\Thm@holeciteOUT
+			\let\@citex\Thm@save@citeX}
+	\fi
+\else
+	\newcounter{Thm@holes}
+	\DeclareRobustCommand{\hole}[1]{\PackageInfo{theorems}
+		{final document	version. `\protect\hole'\space command
+		supressed}\addtocounter{Thm@holes}{1}\ignorespaces}
+	\AtEndDocument{\ifnum\c@Thm@holes>0
+		\PackageWarningNoLine{theorems}{\theThm@holes\space% 
+		`\protect\hole'\space command(s) supressed}\fi}
+\fi
+%  \end{comment}
+% 
+% \subsection{The commands for compatibility}
+%    
+%  The package introduces also the following commands \emph{if they are not
+%  already defined} by other packages (like |amsmath| for example).
+% 
+%  The command
+%  \DescribeMacro{\numberwithin}|\numberwithin|\marg{cnt1}\marg{cnt2} is
+%  used to reset the \emph{cnt1} counter every time that the \emph{cnt2}
+%  counter changes.  To have an equation numbering dependent upon section
+%  numbering use |\numberwithin{equation}{section}|.  As already said this
+%  is the main default functionality of this package.
+% 
+%  \begin{comment}
+%** 
+%** Modifications to the equation environment  
+%** Need to import minor amsmath features
+%** 
+\ifThm@seceqn
+	\Thm@provide@robustcommand{\numberwithin}[2]{%	
+		\@ifundefined{c@#1}{\@nocounterr{#1}}{%
+		\@ifundefined{c@#2}{\@nocnterr{#2}}{%
+			\@addtoreset{#1}{#2}%
+			\toks@\expandafter\expandafter\expandafter{\csname the#1\endcsname}%
+			\expandafter\xdef\csname the#1\endcsname
+			{\expandafter\noexpand\csname the#2\endcsname.\the\toks@}}}}
+%** PATCH: \numberwithin BUG!? uses theequation instead of 
+%** equation counter directly 
+	\renewcommand*\theequation{\@arabic\c@equation}
+%** Equations are numbered by section or slide   
+	\numberwithin{equation}{section}
+%** \else
+\fi
+%  \end{comment}
+% 
+%  The command \DescribeMacro{\boldsymbol}|\boldsymbol|\marg{symbol} is
+%  provided by the |amsmath| package to produce bold-italic mathematical
+%  characters.  For example |\boldsymbol{R}| produces $\boldsymbol{R}$.
+% 
+%  The command \DescribeMacro{\eqref}|\eqref|\marg{label} is used to
+%  produce references to equations.  For example |\eqref{eq:2}| produces
+%  \eqref{eq:2}.
+% 
+%  The command \DescribeMacro{\mathbb}|\mathbb|\marg{symbol} is provided by
+%  the |amsfonts| package to produce mathematical characters in Black Board
+%  Bold font.  Here produces only bold characters.  For example
+%  |\mathbb{R}| produces $\mathbb{R}$.
+% 
+%  The command \DescribeMacro{\notag}|\notag| is used to avoid numbering in
+%  any environments like |equationarray|.
+%   
+%  The package supplies all the captions used for any of the supported
+%  languages listed in the options.  The way of supplying names is fully
+%  compatible with the |babel| package and takes advantage of its features.
+%  It is higly reccomended to load this package.  If not, in case of
+%  multiple language options the only caption definitions to be available
+%  will be the ones of the last language specified.  Note that if you use a
+%  non-supported language all the names which are not provided by |babel|
+%  will be expressed in the last supported language used (english by
+%  default).
+% 
+%  \begin{comment}
+%** 
+%** misc providecommands ...
+%** 
+\AtBeginDocument{
+	\Thm@provide@robustcommand{\allowdisplaybreaks}[1][x]{}
+	\Thm@provide@robustcommand{\boldsymbol}{\Thm@replace\boldsymbol\mathbf}
+	\Thm@provide@robustcommand{\eqref}[1]{\textup{(\ref{#1})}}
+	\Thm@provide@robustcommand{\mathbb}{\Thm@replace\mathbb\mathbf}
+	\Thm@provide@robustcommand{\notag}{\nonumber}
+	\allowdisplaybreaks
+}
+%** 
+%** theorems, lemmas, proofs captions supplies: 
+%**  italian or american english (default) supported.
+%** 
+\AtBeginDocument{\@ifpackageloaded{babel}{}{
+\PackageWarningNoLine{theorems}{The	package	babel is not loaded}
+}}
+\def\Thm@setcaptions#1#2{%
+	\@ifpackageloaded{babel}{%
+		\expandafter\addto\csname captions#1\expandafter\endcsname
+		\expandafter{#2}%
+	}{#2}%
+}
+\def\Thm@captions@american{%
+	\def\andname{and}%
+	\def\answername{Answer}%
+	\def\applicationname{Application}%
+	\def\assumptionname{Assumption}%
+	\def\chaptername{Chapter}%
+	\def\chaptersname{Chapters}%
+	\def\claimname{Claim}%
+	\def\claimsname{Claims}%
+	\def\conjecturename{Conjecture}%
+	\def\conjecturesname{Conjectures}%
+	\def\constructionname{Construction}%
+	\def\corollariesname{Corollaries}%
+	\def\corollaryname{Corollary}%
+	\def\counterexamplename{Counterexample}%
+	\def\counterexamplesname{Counterexamples}%
+	\def\criterionname{Criterion}%
+	\def\criterionsname{Criterions}%
+	\def\definitionname{Definition}%
+	\def\definitionsname{Definitions}%
+	\def\equationname{Equation}%
+	\def\equationsname{Equations}%
+	\def\examplename{Example}%
+	\def\examplesname{Examples}%
+	\def\exercisename{Exercise}%
+	\def\exercisesname{Exercises}%
+	\def\factname{Fact}%
+	\def\factsname{Facts}%
+	\def\figuresname{Figures}%
+	\def\keywordsenvname{Key Words}%
+	\def\lemmaname{Lemma}%
+	\def\lemmasname{Lemmata}%
+	\def\notationname{Notation}%
+	\def\notename{Note}%
+	\def\notesname{Notes}%
+	\def\notethatname{Note}%
+	\def\observationname{Observation}%
+	\def\observationsname{Observations}%
+	\def\pleasenotename{Attention!}%
+	\def\pointname{Point}%
+	\def\pointsname{Points}%
+	\def\problemname{Problem}%
+	\def\problemsname{Problems}%
+	\def\proofname{Proof}%
+	\def\proofofname{of}%
+	\def\propertyname{Property}%
+	\def\propertysname{Properties}%
+	\def\proposalname{Proposal}%
+	\def\proposalsname{Proposals}%
+	\def\propositionname{Proposition}%
+	\def\propositionsname{Propositions}%
+	\def\questionname{Question}%
+	\def\questionsname{Questions}%
+	\def\remarkname{Remark}%
+	\def\remarksname{Remarks}%
+	\def\resultname{Result}%
+	\def\sectionname{Section}%
+	\def\sectionsname{Sections}%
+	\def\solutionname{Solution}%
+	\def\subsectionname{Subsection}%
+	\def\subsectionsname{Subsections}%
+	\def\tablesname{Tables}%
+	\def\termsenvname{General Terms}%
+	\def\theoremname{Theorem}%
+	\def\theoremsname{Theorems}%
+	\def\thesisname{Thesis}%
+	\def\warningname{Warning}%
+}
+% 	\def\figurename{Figure}%
+% 	\def\partname{Part}%
+% 	\def\tablename{Table}%
+\let\Thm@captions@english\Thm@captions@american
+\def\Thm@captions@italian{%
+	\def\andname{e}%
+	\def\answername{Risposta}%
+	\def\applicationname{Applicazione}%
+	\def\assumptionname{Assunzione}%
+	\def\chaptername{Capitolo}%
+	\def\chaptersname{Capitoli}%
+	\def\claimname{Asserzione}%
+	\def\claimsname{Asserzioni}%
+	\def\conjecturename{Congettura}%
+	\def\conjecturesname{Congetture}%
+	\def\constructionname{Costruzione}%
+	\def\corollariesname{Corollari}%
+	\def\corollaryname{Corollario}%
+	\def\counterexamplename{Controesempio}%
+	\def\counterexamplesname{Controesempi}%
+	\def\criterionname{Criterio}%
+	\def\criterionsname{Criteri}%
+	\def\definitionname{Definizione}%
+	\def\definitionsname{Definizioni}%
+	\def\equationname{Equazione}%
+	\def\equationsname{Equazioni}%
+	\def\examplename{Esempio}%
+	\def\examplesname{Esempi}%
+	\def\exercisename{Esercizio}%
+	\def\exercisesname{Esercizi}%
+	\def\factname{Fatto}%
+	\def\factsname{Fatti}%
+	\def\figuresname{Figure}%
+	\def\keywordsenvname{Parole Chiave}%
+	\def\lemmaname{Lemma}%
+	\def\lemmasname{Lemmi}%
+	\def\notationname{Notazione}%
+	\def\notename{Nota}%
+	\def\notesname{Note}%
+	\def\notethatname{Notare}%
+	\def\observationname{Osservazione}%
+	\def\observationsname{Osservazioni}%
+	\def\pleasenotename{Attenzione!}%
+	\def\pointname{Punto}%
+	\def\pointsname{Punti}%
+	\def\problemname{Problema}%
+	\def\problemsname{Problemi}%
+	\def\proofname{Dimostrazione}%
+	\def\proofofname{del}%
+	\def\propertyname{Propriet\`a}%
+	\def\propertysname{Propriet\`a}%
+	\def\proposalname{Proposta}%
+	\def\proposalsname{Proposte}%
+	\def\propositionname{Proposizione}%
+	\def\propositionsname{Proposizione}%
+	\def\questionname{Domanda}%
+	\def\questionsname{Domande}%
+	\def\remarkname{Osservazione}%
+	\def\remarksname{Osservazioni}%
+	\def\resultname{Risultato}%
+	\def\sectionname{Sezione}%
+	\def\sectionsname{Sezioni}%
+	\def\solutionname{Soluzione}%
+	\def\subsectionname{Sottosezione}%
+	\def\subsectionsname{Sottosezioni}%
+	\def\tablesname{Tabelle}%
+	\def\termsenvname{Termini Generali}%
+	\def\theoremname{Teorema}%
+	\def\theoremsname{Teoremi}%
+	\def\thesisname{Tesi}%
+	\def\warningname{Avvertimento}%
+}
+% 	\def\figurename{Figura}%
+% 	\def\partname{Parte}%
+% 	\def\tablename{Tabella}%
+\def\Thm@captions@spanish{%
+	\def\andname{y}%
+	\def\answername{Respuesta}%
+	\def\applicationname{Aplicaci\'on}%
+	\def\assumptionname{Suposici\'on}%
+	\def\chaptername{Cap\'{\i}tulo}%
+	\def\chaptersname{Cap\'{\i}tulos}%
+	\def\claimname{Afirmaci\'on}%
+	\def\claimsname{Afirmaciones}%
+	\def\conjecturename{Conjetura}%
+	\def\conjecturesname{Conjeturas}%
+	\def\constructionname{Construcci\'on}%
+	\def\corollariesname{Corolarios}%
+	\def\corollaryname{Corolario}%
+	\def\counterexamplename{Contraejemplo}%
+	\def\counterexamplesname{Contraejemplos}%
+	\def\criterionname{Requisito}%
+	\def\criterionsname{Requisitos}%
+	\def\definitionname{Definici\'on}%
+	\def\definitionsname{Definiciones}%
+	\def\equationname{Ecuaci\'on}%
+	\def\equationsname{Ecuaciones}%
+	\def\examplename{Ejemplo}%
+	\def\examplesname{Ejemplos}%
+	\def\exercisename{Ejercicio}%
+	\def\exercisesname{Ejercicios}%
+	\def\factname{Hecho}%
+	\def\factsname{Hechos}%
+	\def\figuresname{Figuras}%
+	\def\keywordsenvname{Palabras Clave}%
+	\def\lemmaname{Lema}%
+	\def\lemmasname{Lemas}%
+	\def\notationname{Notaci\'on}%
+	\def\notename{Nota}%
+	\def\notesname{Notas}%
+	\def\notethatname{Nota}%
+	\def\observationname{Observaci\'on}%
+	\def\observationsname{Observaciones}%
+	\def\pleasenotename{Atenci\'on!}%
+	\def\pointname{Punto}%
+	\def\pointsname{Puntos}%
+	\def\problemname{Problema}%
+	\def\problemsname{Problemas}%
+	\def\proofname{Demostraci\'on}%
+	\def\proofofname{de}%
+	\def\propertyname{Propiedad}%
+	\def\propertysname{Propiedades}%
+	\def\proposalname{Propuesta}%
+	\def\proposalsname{Propuestas}%
+	\def\propositionname{Proposici\'on}%
+	\def\propositionsname{Proposiciones}%
+	\def\questionname{Pregunta}%
+	\def\questionsname{Preguntas}%
+	\def\remarkname{Observaci\'on}%
+	\def\remarksname{Observaciones}%
+	\def\resultname{Resultado}%
+	\def\sectionname{Secci\'on}%
+	\def\sectionsname{Secciones}%
+	\def\solutionname{Soluci\'on}%
+	\def\subsectionname{Subsecci\'on}%
+	\def\subsectionsname{Subsecciones}%
+	\def\tablesname{Tablas}%
+	\def\termsenvname{T\'erminos Generales}%
+	\def\theoremname{Teorema}%
+	\def\theoremsname{Teoremas}%
+	\def\thesisname{Tesis}%
+	\def\warningname{Advertencia}%
+}
+% 	\def\figurename{Figura}%
+% 	\def\partname{Parte}%
+% 	\def\tablename{Tabla}%
+%  \end{comment}
+% \section*{Acknowledgments}
+% 
+%  I thank my ``beta testers'' --- Luca~Torella, Marco~A.~Feli\'u,
+%  Laura~Titolo, Chiara~Molaro, Giovanni~Bacci, Alicia~Villanueva,
+%  Francesca~Scozzari, Corrado~Lattanzio, Bruno~Rubino, Domenico~Tripepi
+%  and Chiara~Meo --- that (even not wanting to) have contributed to
+%  improve my work and especially had to fight against all my changes
+%  (improvements?)  of the code day by day.
+% 
+%   \typeout{Produce index with^^J%
+%   makeindex -s theorems.ist theorems}
+% \endinput
+\endinput
+%</package>
+
+cose ANCORA da fare:
+
+* fancy e plain con lista, come in stmaryrd
+
+* automatizzare la sincronizzazione fra il versione+data con la stampa del
+version number
+

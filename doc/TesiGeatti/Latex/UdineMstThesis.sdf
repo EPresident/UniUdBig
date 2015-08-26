@@ -1,0 +1,221 @@
+%%
+%% This is file `UdineMstThesis.sdf',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% PhdThesis.dtx  (with options: `sdf,Udine,Mst')
+%% 
+%% Copyright (C) 1995-2015 Marco Comini <comini@dimi.uniud.it>.
+%% 
+%% This class is the Phd Thesis format of the Computer Science Deartment of
+%% the Pisa and Udine Universities -- Italy.
+%% 
+%% This class is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%% Direct use of code from this class in another class which is either sold
+%% for profit, or not made freely available, is explicitly forbidden by the
+%% author.
+%% 
+\typeout{Class PhdThesis: UdineMstThesis.sdf 2010/10/30.}
+%%% Defines page shape
+\ifcase\@ptsize% mods for 10 pt
+\ClassWarningNoLine{PhdThesis}
+{You should use 11pt option instead of 10pt}
+\setlength\textheight{53\baselineskip}
+\or% mods for 11 pt
+\textheight 46\baselineskip
+\or% mods for 12 pt
+\ClassWarningNoLine{PhdThesis}
+{You should use 11pt option instead of 12pt}
+\setlength\textheight{42\baselineskip}
+\fi
+\advance\textheight by \topskip
+\setlength\headsep{10mm}
+\setlength\topmargin{3mm}
+\setlength\evensidemargin{5mm}
+\setlength\oddsidemargin{15mm}
+\setlength\textwidth{140mm}
+\setlength\parskip {0.2em plus 1pt minus 1pt}
+\AtBeginDocument{
+\setlength\baselineskip {1.3125\baselineskip}
+}
+%%% Provides strings required by maketitlepage (and patched maketitle)
+\def\@phd@address{%
+Dipartimento di Matematica e Informatica\\
+Universit\`a degli Studi di Udine\\
+Via delle Scienze, 206\\
+33100 Udine\\
+Italia
+}
+\gdef\@phd@topfront{%
+\@phd@institution%
+\\[0.5em]
+\@phd@division%
+\\[0.5em]
+\@phd@studycourse%
+}
+\gdef\@phd@institution{%
+Universit\`a degli Studi di Udine}
+\gdef\@phd@division{%
+Dipartimento di Matematica e Informatica}
+\gdef\@phd@studycourse{%
+Corso di Laurea Magistrale in Informatica}
+%%% Redefines maketitle
+\AtBeginDocument{
+\RequirePackage{graphicx}
+\RequirePackage{calc}
+}
+\newsavebox{\@phd@titlebox}
+\newsavebox{\@phd@tmpbox}
+\renewcommand*{\maketitle}{
+\begin{titlepage}%
+\begin{lrbox}{\@phd@titlebox}
+\begin{minipage}[b][.8\paperheight][s]{.7\paperwidth}
+\let\footnotesize\small
+\let\footnoterule\relax
+\null%\vfil%
+\noindent{\Large\textsc{\@phd@topfront}}
+\normalsize
+\vfill
+\begin{center}%
+{\large\textsc{\thesisname\ifx\@phd@number\@empty\else: \@phd@number\fi}\par}
+\vskip 4em
+{\huge\bfseries\@title\par}\vskip 5em%
+\vfill
+{\large%
+\def\@phd@varname{\candidatename}
+\def\and{\\[0.2ex] %
+ \gdef\@phd@varname{\candidatesname}}
+\begin{lrbox}{\@phd@tmpbox}
+ \parbox[t]{0.40\textwidth}{\@author}
+\end{lrbox}
+\parbox[t]{0.40\textwidth}{
+ \textsc{\@phd@varname:}\\[1ex]
+ \usebox{\@phd@tmpbox}
+}
+~~
+\parbox[t]{0.40\textwidth}{
+\ifx\@phd@supervisor\@empty\relax
+\else
+ \def\@phd@varname{\supervisorname}
+ \def\and{\\[0.2ex] %
+  \gdef\@phd@varname{\supervisorsname}}
+ \begin{lrbox}{\@phd@tmpbox}
+  \parbox[t]{0.40\textwidth}{\@phd@supervisor}
+ \end{lrbox}
+ \textsc{\@phd@varname:}\\[1ex]
+ \usebox{\@phd@tmpbox}\\[2em]
+ % \vskip 2em
+\fi
+\ifx\@phd@cosupervisor\@empty\relax
+\else
+ \def\@phd@varname{\cosupervisorname}
+ \def\and{\\[0.2ex] %
+  \gdef\@phd@varname{\cosupervisorsname}}
+ \begin{lrbox}{\@phd@tmpbox}
+  \parbox[t]{0.40\textwidth}{\@phd@cosupervisor}
+ \end{lrbox}
+ \textsc{\@phd@varname:}\\[1ex]
+ \usebox{\@phd@tmpbox}\\[2em]
+ % \vskip 2em
+\fi
+\ifx\@phd@tutor\@empty\relax
+\else
+ \def\@phd@varname{\tutorname}
+ \def\and{\\[0.2ex] %
+  \gdef\@phd@varname{\tutorsname}}
+ \begin{lrbox}{\@phd@tmpbox}
+  \parbox[t]{0.40\textwidth}{\@phd@tutor}
+ \end{lrbox}
+ \textsc{\@phd@varname:}\\[1ex]
+ \usebox{\@phd@tmpbox}\\[2em]
+ % \vskip 2em
+\fi
+\ifx\@phd@referee\@empty\relax
+\else
+ \def\@phd@varname{\refereename}
+ \def\and{\\[0.2ex] %
+  \gdef\@phd@varname{\refereesname}}
+ \begin{lrbox}{\@phd@tmpbox}
+  \parbox[t]{0.40\textwidth}{\@phd@referee}
+ \end{lrbox}
+ \textsc{\@phd@varname:}\\[1ex]
+ \usebox{\@phd@tmpbox}\\[2em]
+ % \vskip 2em
+\fi
+\ifx\@phd@chair\@empty\relax
+\else
+ \textsc{\chairname:}\\[1ex]
+ \@phd@chair\\
+\fi
+%
+}}\par
+\vskip 1em\vfill
+{\large\ifx\undefined\datename\else\datename~{}\fi\@date}\par% Set date in \large size.
+\end{center}%\par
+\ifx\@thanks\@empty\else
+\par\vfil%
+\@thanks
+\fi%
+\ifx\@phd@address\@empty\else
+\par\vfil\begin{center}
+\@phd@address
+\end{center}
+\fi%
+\null
+\end{minipage}
+\end{lrbox}
+\sbox{\@phd@tmpbox}{%
+\includegraphics[height=.75\paperheight,bb=180 0 405 405, clip]{UdineLogo}%
+}
+\newlength{\@phd@tmplen}
+\setlength{\@phd@tmplen}{\heightof{\usebox{\@phd@tmpbox}}}
+\enlargethispage*{70pt}
+\begin{sloppypar}
+\hspace*{-\oddsidemargin}\hspace*{-.35in}\usebox{\@phd@tmpbox}
+\vspace*{-\@phd@tmplen}\vspace*{-\topmargin}\vspace*{-\headheight}
+\hspace*{-\oddsidemargin}\usebox{\@phd@titlebox}
+\end{sloppypar}
+\end{titlepage}%
+\thispagestyle{empty}
+\setcounter{footnote}{0}%
+\let\thanks\relax\let\maketitle\relax%
+}% end \maketitle
+%%% Adds captions used by maketitle
+\addto\phd@captions@italian{%
+\def\addressname{Indirizzo dell'autore}%
+\def\candidatename{Candidato}%
+\def\candidatesname{Candidati}%
+\def\datename{Anno Accademico}%
+\def\emailname{Posta elettronica dell'autore}%
+\def\homepagename{Pagina Web dell'autore}%
+\def\phonename{Numero telefonico dell'autore}%
+\def\thesisname{Tesi di Laurea Magistrale}%
+}
+\addto\phd@captions@spanish{%
+\def\addressname{Direcci\'on del autor}%
+\def\candidatename{Candidato}%
+\def\candidatesname{Candidatos}%
+\def\datename{A\~no Acad\'emico}%
+\def\emailname{Correo Electr\'onico del autor}%
+\def\homepagename{P\'agina Web del autor}%
+\def\phonename{N\'umero telef\'onico del autor}%
+\def\thesisname{Tesis de M\'aster}%
+}
+\addto\phd@captions@american{%
+\def\addressname{Author's address}%
+\def\candidatename{Candidate}%
+\def\candidatesname{Candidates}%
+\def\emailname{Author's e-mail}%
+\def\homepagename{Author's Web Page}%
+\def\phonename{Author's telephone number}%
+\def\datename{Academic Year}%
+\def\thesisname{Master Thesis}%
+}
+\let\phd@captions@english\phd@captions@american
+\endinput
+%%
+%% End of file `UdineMstThesis.sdf'.

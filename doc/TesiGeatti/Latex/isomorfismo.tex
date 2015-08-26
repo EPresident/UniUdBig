@@ -1,0 +1,250 @@
+\chapter{Isomorfismo tra bigrafi}
+Si è visto nel precedente capitolo come un bigrafo sia capace di evolversi all'interno di un BRS. In alcune situazioni, si vuole evitare evoluzioni infinite di un bigrafo, perchè
+per esempio porterebbero sempre a stati uguali fra di loro.\\
+Per tenere traccia all'istante $t_k$ di tutti gli stati precedentemente assunti ($t_0 \dots t_{k-1}$) da un BRS, si è costruita una struttura dati a grafo, dove ogni nodo
+è uno stato, cioè un bigrafo: si chiamerà questo grafo  ``\emph{grafo degli stati}". Se un BRS parte dallo stato $S_0$, è possibile che dopo $K$ regole di reazione lo stato $S_k$ sia uguale allo stato iniziale $S_0$. 
+Questo significa che $S_0$ e $S_k$ hanno la stessa \emph{semantica}, cioè rappresentano lo stesso stato del sistema. Per cui, nel grafo degli stati, essi dovranno essere
+lo stesso medesimo nodo. \\
+Questo è equivalente a scrivere: ``se lo stato $S_{k}$ è stato ottenuto da $S_{k-1}$ tramite la regola $R$ e $S_k$ e $S_0$ sono isomorfi, allora da $S_{k-1}$ si ottiene
+$S_0$"
+\begin{center}
+se $S_{k-1}\stackrel{R}{\longrightarrow}S_{k}$ allora $S_{k-1}\stackrel{R}{\longrightarrow}S_{0}$
+\end{center}
+Capire quando due bigrafi sono isomorfi e quindi \emph{semanticamente equivalenti} è di fondamentale importanza se si vogliono evitare i così detti \emph{loop} fra regole: per evitare che fra $S_{i}$ e $S_{i+1}$ si continuino ad applicare sempre le due stesse regole $R_1$ e $R_2$ all'infinito, devo capire che:
+\begin{itemize} 
+	\item
+	da $S_{i}$, tramite la regola $R_1$, ottengo un bigrafo isomorfo a $S_{i+1}$
+	\item
+	da $S_{i+1}$, tramite la regola $R_2$, ottengo un bigrafo isomorfo a $S_{i}$
+\end{itemize}
+Questo concetto verrà chiarito con gli esempi sottostanti.
+
+\subsection{Esempio:}
+Si prenda l'esempio di una rete modellata tramite un bigrafo: si vuole fare in modo che, dato un pacchetto iniziale che ha
+come mittente l'host A, esso arrivi al destinatario B. Ci saranno quindi delle regole di reazione per i router, che permetteranno di inoltrare i pacchetti verso le sue interfacce
+di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di reazione per modellare il fatto che se il destinario è X allora l'interfaccia di uscita del pacchetto è la numero N,  si può pensare di inoltrare il pacchetto verso tutte le uscite in modo non deterministico. Così facendo, il pacchetto arriverà sicuramente al destinatario.
+I problemi sono ora due:
+\begin{itemize}
+	\item
+	il pacchetto arriverà a destinatari non corretti. Si può introdurre una regola di reazione che elimini dall'host ogni pacchetto che non ha l'host stesso come destinatario.
+	\item
+	se prendiamo il $k-esimo$ router $R_k$, allora il pacchetto ritornerà al $k-1 esimo$ router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
+	anche nuovamente verso $R_{k}$. Si ha così un ciclo infinito di pacchetti tra $R_k$ e $R_{k-1}$.
+\end{itemize}
+
+In questa sede si tratterà il secondo di questi problemi, che ha un'apparentemente semplice soluzione: capire quando due bigrafi sono uguali. In questo esempio, è 
+facile capire che per risolvere il problema basta verificare se gli stati $S_{k+i}$ e $S_{k-1}$ sono uguali: se $S_{k}$ è il bigrafo in cui il pacchetto è nel router $R_{k}$, allora
+si applica la regola di inoltro e si generano tanti stati ($S_{k+1} \dots S_{k+j}$) quanti sono i router vicini a $R_k$; tra di questi ci sara anche $R_{k-1}$. Quindi, se supponiamo
+che nello stato $S_{k+i}$ il pacchetto torni indietro al router $R_{k-1}$, allora il problema è capire che $S_{k+i}$ è uguale $S_{k-1}$, cioè verificare che i due bigrafi siano
+isomorfi. In questo modo si sa che dallo stato $S_{k-1}$ non si dovrà più applicare la regola di inoltro verso $S_{k}$, perchè questo causerebbe un ciclo infinito.
+
+\section{Formulazione del problema}
+Si è visto che il termine isomorfismo ci aiuta a capire quando due bigrafi sono uguali. Riportiamo di nuovo la sua definizione formale (\ref{def:iso}):
+\begin{define}[Isomorfismo]
+Due bigrafi F e G si dicono isomorfi se e solo se esiste una traduzione di supporto tra F e G, cioè se e solo se F e G sono \emph{support equivalent} ($F \bumpeq G$).
+\end{define}
+
+Il problema consiste quindi nel trovare un funzione biettiva che ha come dominio i nodi e gli archi del primo bigrafo, come codominio quelli del secondo bigrafo e che ne rispetti
+la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione di supporto}.\\
+Si noti come la traduzione di supporto consenta di ritenere isomorfi due bigrafi che sono uguali \emph{modulo permutazione}: tale funzione può infatti operare una permutazione sui nomi dei nodi e degli archi, così come sugli inner names e outer names. In altre parole, non c'è nessun vincolo sui nomi, ma solo sulla struttura del bigrafo. Si capirà meglio questo concetto negli esempi che seguiranno.
+
+\section{Strategia di soluzione}
+Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica può essere espressa come
+il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione 
+dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per modellare il problema.
+
+Si è scelto di trattare questo problema tramite la programmazione a vincoli. Questo paradigma permette di rappresentare al calcolatore un sistema di equazioni, che esso
+risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari,
+con la conseguenza che si avrà un sistema lineare: questo permette di abbassare la complessità dell'algoritmo.\\
+Si è usata la libreria Java \emph{Choco vs 3.3.1} per esprimere tutti i vincoli.\\
+
+Si è precedentemente visto che ogni bigrafo è formato da due strutture ortogonali e totalmente indipendenti, il place graph ed il link graph. Il problema dell'isomorfismo verrà quindi trattato
+separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).\\
+
+La definizione di isomorfismo vista precedentemente può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda anche la semantica: due bigrafi strutturalmente uguali sono due bigrafi che hanno la stessa semantica (figura \ref{fig:bigMulIso}).
+
+\subsection{Esempi}
+Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quindi alcuni esempi per acquisire familiarità con questo concetto. 
+
+Il primo riprende il bigrafo di figura \ref{fig:bigMul} per la moltiplicazione tra numeri naturali. Si vuole mostrare che, semanticamente, l'operazione $2*4$ è equivalente
+all'operazione $4*2$. In altre parole, non importa l'ordine dei nodi.
+
+Incominciamo notando che i due link graph sono isomorfi, perchè non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, può sembrare ovvio che i due place graph siano uguali (e lo sono) perchè i nodi interni non sono ordinati, ma il fatto di dimostrare che i due bigrafi sono isomorfi e semanticamente equivalenti, dimostra che la proprietà commutativa della moltiplicazione vale anche nella sua versione bigrafica.\\
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%Root
+\draw[rounded corners=4mm,dotted, thick] (1.0,0.0) rectangle (7.0,5.0);
+\node[below right] at (1.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (1.5,0.5) rectangle (6.5,4.5);%mul
+\node[below right] at (1.5,4.5) {mul};
+\draw[thick] (2.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (2.6,3.9) {num};
+\draw[thick] (2.0,3.0) rectangle (2.4,3.4);%one
+\node[above right] at (2.0,2.95) {1};
+\draw[thick] (2.8,3.0) rectangle (3.2,3.4);%one
+\node[above right] at (2.8,2.95) {1};
+\draw[thick] (2.0,2.4) rectangle (2.4,2.8);%one
+\node[above right] at (2.0,2.35) {1};
+\draw[thick] (2.8,2.4) rectangle (3.2,2.8);%one
+\node[above right] at (2.8,2.35) {1};
+\draw[thick] (5.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (5.2,3.9) {num};
+\draw[thick] (4.6,3.0) rectangle (5.0,3.4);%one
+\node[above right] at (4.6,2.95) {1};
+\draw[thick] (5.4,3.0) rectangle (5.8,3.4);%one
+\node[above right] at (5.4,2.95) {1};
+
+%Root
+\draw[rounded corners=4mm,dotted, thick] (8.0,0.0) rectangle (14.0,5.0);
+\node[below right] at (8.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (8.5,0.5) rectangle (13.5,4.5);%mul
+\node[below right] at (8.5,4.5) {mul};
+\draw[thick] (9.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (9.6,3.9) {num};
+\draw[thick] (9.0,3.0) rectangle (9.4,3.4);%one
+\node[above right] at (9.0,2.95) {1};
+\draw[thick] (9.8,3.0) rectangle (10.2,3.4);%one
+\node[above right] at (9.8,2.95) {1};
+\draw[thick] (12.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (12.2,3.9) {num};
+\draw[thick] (11.6,3.0) rectangle (12.0,3.4);%one
+\node[above right] at (11.6,2.95) {1};
+\draw[thick] (12.4,3.0) rectangle (12.8,3.4);%one
+\node[above right] at (12.4,2.95) {1};
+\draw[thick] (11.6,2.4) rectangle (12.0,2.8);%one
+\node[above right] at (11.6,2.35) {1};
+\draw[thick] (12.4,2.4) rectangle (12.8,2.8);%one
+\node[above right] at (12.4,2.35) {1};
+
+\end{tikzpicture}
+\caption{Bigrafi Isomorfi: $(4*2) = (2*4)$ \label{fig:bigMulIso}}
+\end{figure}
+
+
+Presentiamo un altro esempio, questa volta su un caso negativo. Si è specificato che per risolvere il problema si trattano separatamente i casi del place graph e del link graph: questo approccio però necessita di avere dei vincoli di "coerenza" che uniscano le due soluzioni. Senza questi vincoli, si può incorrere nel seguente problema.
+
+Si considerino i due bigrafi di figura \ref{fig:falseIso} e i loro relativi place graph e link graph (figura \ref{fig:falsoIsoDecap}). Si nota subito che i due bigrafi \emph{non} sono isomorfi. Prendendo però i due place graph ci si accerta che essi lo sono. Lo stesso vale per i due link graph: sono entrambi formati da tre nodi, in cui c'è solamente un edge che collega il cerchio ad un quadrato.
+
+I casi separati del link graph e del place graph sembrano quindi suggerire che i due bigrafi siano isomorfi, mentre si vede subito che non è così. Quello che non abbiamo considerato sono appunto i \emph{vincoli di coerenza}, che informalmente dicono che il quadrato collegato al cerchio (nel primo link graph) deve essere quello che contiene un altro quadrato (nel primo place graph). Aggiunta questa condizione, si nota che le due soluzioni sono \emph{incompatibili}, avendo quindi che i due bigrafi \emph{non} sono isomorfi.
+
+
+
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Bigraph   %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (6.0,4.0);
+\node[below right] at (0.0,4.0) {0};
+%Nodes
+\draw[rounded corners=3mm, thick] (0.5,0.5) rectangle (3.0,3.0);
+\node[above right] at (0.5,3.0) {$Q_1$};
+\draw[thick] (4.5,1.5) circle [radius=1.0];
+\node[above] at (4.5,2.5) {$C_1$};
+\draw[rounded corners=2mm, thick] (1.0,1.0) rectangle (2.0,2.0);
+\node[above right] at (1.0,2.0) {$Q_2$};
+%Edges
+\draw[myGreen, thick] (2.0,3.0) to [out=90,in=90] (4.0,2.35);
+\draw[fill=black] (2.0,3.0) circle [radius=0.05];
+\draw[fill=black] (4.0,2.35) circle [radius=0.05];
+
+
+%%%   First Bigraph   %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (7.0,0.0) rectangle (13.0,4.0);
+\node[below right] at (7.0,4.0) {0};
+%Nodes
+\draw[rounded corners=3mm, thick] (7.5,0.5) rectangle (10.0,3.0);
+\node[above right] at (7.5,3.0) {$Q_1$};
+\draw[thick] (11.5,1.5) circle [radius=1.0];
+\node[above] at (11.5,2.5) {$C_1$};
+\draw[rounded corners=2mm, thick] (8.0,1.0) rectangle (9.0,2.0);
+\node[above right] at (8.0,2.0) {$Q_2$};
+%Edges
+\draw[myGreen, thick] (8.7,2.0) to [out=90,in=90] (11.0,2.35);
+\draw[fill=black] (8.7,2.0) circle [radius=0.05];
+\draw[fill=black] (11.0,2.35) circle [radius=0.05];
+
+
+\end{tikzpicture}
+\caption{Bigrafi non Isomorfi\label{fig:falseIso}}
+\end{figure}
+
+
+
+
+\begin{figure}[!h]
+\centering
+\subfigure[Place Graph isomorfi]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Place Graph   %%%
+%Root
+\node at (2.5,4.5){0};
+%Nodes
+\node at (1.5,3.5){$Q_1$};
+\node at (3.5,3.5){$C_1$};
+\node at (1.5,1.5){$Q_2$};
+%Edges
+\draw (2.5,4.2) -- (1.5,3.7);
+\draw (2.5,4.2) -- (3.5,3.7);
+\draw (1.5,3.2) -- (1.5,1.7);
+
+%%%   Second Place Graph   %%%
+%Root
+\node at (11.5,4.5){0};
+%Nodes
+\node at (10.5,3.5){$Q_1$};
+\node at (12.5,3.5){$C_1$};
+\node at (10.5,1.5){$Q_2$};
+%Edges
+\draw (11.5,4.2) -- (10.5,3.7);
+\draw (11.5,4.2) -- (12.5,3.7);
+\draw (10.5,3.2) -- (10.5,1.7);
+
+\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Link Graph isomorfi]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Link Graph   %%%
+\draw[thick] (1.0,2.0) circle [radius=0.2];
+\node[above left] at (1.0,2.0) {$Q_1$};
+\draw[thick] (2.0,4.0) circle [radius=0.2];
+\node[above left] at (2.0,4.0) {$C_1$};
+\draw[thick] (4.0,2.0) circle [radius=0.2];
+\node[above right] at (4.0,2.0) {$Q_2$};
+\draw[myGreen,thick] (1.0,2.2) to [out=90,in=270] (2.0,3.8);
+
+%%%   Second Link Graph   %%%
+\draw[thick] (10.0,2.0) circle [radius=0.2];
+\node[above left] at (10.0,2.0) {$Q_2$};
+\draw[thick] (11.0,4.0) circle [radius=0.2];
+\node[above left] at (11.0,4.0) {$C_1$};
+\draw[thick] (13.0,2.0) circle [radius=0.2];
+\node[above right] at (13.0,2.0) {$Q_1$};
+\draw[myGreen,thick] (10.0,2.2) to [out=90,in=270] (11.0,3.8);
+
+\end{tikzpicture}
+}
+\caption{Place Graph e Link Graph del bigrafo \ref{fig:falseIso}\label{fig:falsoIsoDecap}}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+

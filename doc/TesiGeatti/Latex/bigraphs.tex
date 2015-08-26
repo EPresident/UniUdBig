@@ -1,0 +1,1600 @@
+\chapter{Bigrafi e BRS}\label{ch:bigraphs}
+
+In questo capitolo vengono presentate le descrizioni formali di bigrafo e di Sistema Reattivo Bigrafico. Si vedrà come l'importanza dei bigrafi risieda nel fatto di rappresentare
+contemporaneamente i concetti di \emph{località} e \emph{connessione}. 
+
+L'algebra dei bigrafi è stata per gran parte costruita sulla base della Teoria delle Categorie, che in questa sede non verrà introdotta. Le definizioni ed i teoremi sono stati presi da \cite{DBLP:books/daglib/0022395}, a cui si rimanda per i dettagli sulla Teoria delle Categorie.
+Infine si rimanda all'Appendice A per la descrizione della terminologia usata.
+
+
+\section{Definizione informale di Bigrafo}
+L'idea fondamentale alla base della loro teoria, è che ogni bigrafo sia composto da due strutture del tutto \emph{indipendenti} sullo \emph{stesso} insieme di nodi.
+Queste due strutture si chiamano \emph{Place Graph} e \emph{Link Graph} e modellano rispettivamente la località e la connessione. 
+
+Nell' introduzione, si è accennato al fatto che i bigrafi sono flessibili e adatti a rappresentare ogni dominio. Questo è possibile grazie al concetto di 
+\emph{segnatura}, che è l'analogo ad una grammatica per un linguaggio.
+
+\begin{define}[Segnatura e Controllo]
+Una segnatura è una coppia $(K , ar)$, dove $K$ è un insieme di tipi di nodi chiamati \emph{controlli}, e $ar: K \to \mathbb{N}$ è una mappa che associa ad ogni tipo
+di nodo (cioè ad ogni controllo) un numero naturale chiamato arietà.
+\end{define}
+
+Quindi, dare una segnatura ad un bigrafo significa associare ad ogni nodo sia un tipo sia il suo numero di porte. L'equivalente grafico consiste nel disegnare nodi diversi con
+simboli diversi.
+
+\begin{notaz}[Segnatura]\label{def:sign}
+Da qui in avanti, una segnatura $(K, ar)$ verrà indicata nel seguente modo: \\
+\begin{center}
+$K = \{K_1:a_1, \dots, K_n:a_n\}$
+\end{center}
+dove ogni nodo di tipo (controllo) $K_i$ ha arietà $a_i$.
+\end{notaz}
+
+
+\subsection{Esempio}\label{sub:esempioInit}
+Diamo un primo esempio informale di bigrafo. 
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+%nodes
+%\draw[help lines] (0,0) grid (8,5);
+\draw[thick] (2.5,1.5) ellipse (2.5 and 1.5);%v0
+\node[left] at (1.0,3.0) {$v_0$};
+\draw[thick] (1.5,1.5) ellipse (0.5 and 0.5);%v1
+\node[left] at (1.0,1.5) {$v_1$};
+\draw[thick] (3.5,1.5) ellipse (1.0 and 1.0);%v2
+\node[left] at (3.0,2.5) {$v_2$};
+\draw[thick] (3.7,1.7) ellipse (0.3 and 0.3);%v3
+\node[below right] at (3.5,1.5) {$v_3$};
+\draw[thick] (6.5,3.0) ellipse (1.5 and 1.0);%v4
+\node[above right] at (6.5,4.0) {$v_4$};
+\draw[thick] (6.0,3.0) ellipse (0.5 and 0.5);%v5
+\node[above right] at (6.5,3.0) {$v_5$};
+%links
+\draw [myGreen, thick] (1.5,1.0) to [out=320,in=230] (3.5,1.5);
+\draw [fill] (1.5,1.0) circle [radius=0.05];
+\draw [fill] (3.5,1.5) circle [radius=0.05];
+\draw [myGreen, thick] (4.0,1.7) to [out=320,in=270] (5.6,2.7);
+\draw [fill] (4.0,1.7) circle [radius=0.05];
+\draw [fill] (5.6,2.7) circle [radius=0.05];
+\draw [myGreen, thick] (5.0,3.0) to [out=270,in=180] (5.3,2.0);
+\draw [fill] (5.0,3.0) circle [radius=0.05];
+
+\draw [myGreen, thick] (1.5,2.0) to [out=90,in=230] (4.0,5.0);
+\draw [fill] (1.5,2.0) circle [radius=0.05];
+\draw [myGreen, thick] (3.0,3.0) to [out=90,in=230] (4.0,5.0);
+\draw [fill] (3.0,3.0) circle [radius=0.05];
+\draw [myGreen, thick] (6.0,4.0) to [out=90,in=230] (4.0,5.0);
+\draw [fill] (6.0,4.0) circle [radius=0.05];
+
+\end{tikzpicture}
+\caption{Un semplice bigrafo.\label{fig:simpleBig}}
+\end{figure}
+
+In figura \ref{fig:simpleBig} vediamo un bigrafo B, con una data segnatura. Si vede subito come ci siano dei controlli diversi. Per esempio, il nodo $v_0$ ha una sola porta
+mentre il nodo $v_1$ ne ha due. L'informazione che quest'ultimo sia contenuto in $v_0$ è rappresentata nel place graph di figura \ref{fig:placeLink}.a. Le interconnessioni dei vari nodi sono invece riportate nel rispettivo link graph di figura \ref{fig:placeLink}.b.\\
+
+\begin{figure}[h]
+ \centering
+ \subfigure[Place Graph]
+ {
+   	\begin{tikzpicture}
+	%nodes
+	\draw [thick] (1.5,4.5) circle [radius=0.2];%v0
+	\node[above right] at (1.5,4.5) {$v_0$};
+	\draw  [thick] (0.5,3.5) circle [radius=0.2];%v1
+	\node[above right] at (0.5,3.5) {$v_1$};
+	\draw [thick]  (2.5,3.5) circle [radius=0.2];%v2
+	\node[above right] at (2.5,3.5) {$v_2$};
+	\draw  [thick] (2.5,1.5) circle [radius=0.2];%v3
+	\node[above right] at (2.5,1.5) {$v_3$};
+	\draw  [thick] (4.5,4.5) circle [radius=0.2];%v4
+	\node[above right] at (4.5,4.5) {$v_4$};
+	\draw  [thick] (4.5,2.5) circle [radius=0.2];%v5
+	\node[above right] at (4.5,2.5) {$v_5$};
+
+	%links
+	\draw (1.3,4.5) -- (0.5,3.7);
+	\draw (1.7,4.5) -- (2.5,3.7);
+	\draw (2.5,3.3) -- (2.5,1.7);
+	\draw (4.5,4.3) -- (4.5,2.7);
+
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Link Graph]
+{
+  	\begin{tikzpicture}
+	%nodes
+	\draw[thick] (2.0,0.2) circle [radius=0.2];%v3
+	\node[above left] at (2.0,0.2) {$v_3$};
+	\draw[thick] (1.0,3.0) circle [radius=0.2];%v1
+	\node[above left] at (1.0,3.0) {$v_1$};
+	\draw[thick] (3.0,3.5) circle [radius=0.2];%v0
+	\node[above right] at (3.0,3.5) {$v_0$};
+	\draw[thick] (3.0,2.0) circle [radius=0.2];%v2
+	\node[above left] at (3.0,2.0) {$v_2$};
+	\draw[thick] (4.0,0.2) circle [radius=0.2];%v5
+	\node[above right] at (4.0,0.2) {$v_5$};
+	\draw[thick] (4.5,2.0) circle [radius=0.2];%v4
+	\node[above right] at (4.5,2.0) {$v_4$};
+	
+	%links
+	\draw [myGreen, thick] (4.3,2.0) to [out=180,in=0] (2.0,3.12);
+	\draw [myGreen, thick] (1.0,2.8) to [out=270,in=90] (2.0,0.4);
+	\draw [fill] (1.0,2.8) circle [radius=0.05];
+	\draw [fill] (2.0,0.4) circle [radius=0.05];
+	\draw [myGreen, thick] (1.2,3.0) to [out=0,in=180] (3.0,3.3);
+	\draw [fill] (1.2,3.0) circle [radius=0.05];
+	\draw [fill] (3.0,3.3) circle [radius=0.05];
+	\draw [myGreen, thick] (2.2,0.2) to [out=0,in=180] (4.5,1.8);
+	\draw [fill] (2.2,0.2) circle [radius=0.05];
+	\draw [fill] (4.3,2.0) circle [radius=0.05];
+	\draw [myGreen, thick] (4.0,0.4) to [out=90,in=0] (3.35,1.0);
+	\draw [fill] (4.0,0.4) circle [radius=0.05];
+	\draw [fill] (4.5,1.8) circle [radius=0.05];	
+	
+	\end{tikzpicture}
+}
+ \caption{Le due strutture ortogonali del bigrafo B.\label{fig:placeLink}}
+ \end{figure}
+
+
+Un'importante caratteristica dei bigrafi e della loro algebra è la possibilità di essere composti, cioè di formare un nuovo bigrafo da due bigrafi di partenza. Questo è equivalente
+al problema di considerare un bigrafo \emph{parte} di un altro. Si vedrà che questa operazione va sotto il nome di \emph{composizione}. Se prendiamo il bigrafo B di cui sopra,
+allora è possibile scrivere un'equazione di questo tipo:
+
+$\qquad \qquad {  B = A \circ C  }$
+
+Per renderla possibile dobbiamo aggiungere struttura ai bigrafi. Si introducono quindi le interfacce interne ed esterne, sia per il place graph sia per il link graph:
+\begin{itemize}
+	\item
+	L'interfaccia esterna ed interna del place graph sono un numero naturale \emph{n} che possiamo trattare come un ordinale: l'interfaccia $n$ indica l'insieme\\
+	$\{0, \dots, n-1 \}$. Se l'interfaccia esterna è $k$, allora si dice che ci sono \emph{k radici}. Se l'interfaccia interna è $h$, allora si dice che ci sono 
+	\emph{h siti}.
+	
+	\item
+	Per il link graph, invece, le interfaccie sono \emph{insiemi} di nomi, come per esempio $\{x,y\}$. Se un link graph ha un interfaccia esterna del tipo $\{a,b,c\}$, allora
+	diciamo che ci sono tre \emph{outername} chiamati \emph{a,b} e \emph{c}. Se l'interfaccia interna è del tipo $\{x,y\}$, allora diciamo che il bigrafo ha due 
+	\emph{innername} chiamati \emph{x e y}.
+\end{itemize}
+
+Il concetto fondamentale delle interfacce è che servono per l'unione dei due bigrafi. Per esempio, prendendo il place graph, nell'operazione di composizione $A \circ C$,
+i siti di A dovranno \emph{concordare} (vedremo una descrizione formale di questo concetto) con le radici di C. Per il link graph il concetto è lo stesso: gli innername di A dovranno
+unirsi con gli outername di C.\\
+
+Si consideri per esempio il bigrafo della figura \ref{fig:simpleBig}. Se vogliamo trovare due bigrafi A e C tali che $B = A \circ C$, allora dobbiamo rispettare le condizioni con cui
+si può effettuare l'operazione di composizione. Le figure \ref{fig:bigC} e \ref{fig:bigA} rappresentano rispettivamente i due bigrafi C ed A. 
+Si noti ancora una volta che le radici di C si \emph{uniscono} ai siti di A, e gli outername di C fanno lo stesso con gli innername di A. \newpage
+
+%%%%%% BIGRAFO C
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+%nodes
+%\draw[help lines] (0,0) grid (8,5);
+\draw[thick] (1.5,1.5) ellipse (0.5 and 0.5);%v1
+\node[left] at (1.0,1.5) {$v_1$};
+\draw[thick] (3.7,1.7) ellipse (0.3 and 0.3);%v3
+\node[below right] at (3.5,1.5) {$v_3$};
+\draw[thick] (6.5,3.0) ellipse (1.5 and 1.0);%v4
+\node[above right] at (6.5,4.0) {$v_4$};
+\draw[thick] (6.0,3.0) ellipse (0.5 and 0.5);%v5
+\node[above right] at (6.5,3.0) {$v_5$};
+%roots
+\draw [rounded corners=5mm,dotted, thick] (0.0,0.0) rectangle (2.5,5.0);
+\node [below right] at (0.0,5.0) {0};
+\draw [rounded corners=5mm,dotted, thick] (2.7,0.0) rectangle (4.5,5.0);
+\node [below right] at (2.7,5.0) {1};
+\draw [rounded corners=5mm,dotted, thick] (4.7,0.0) rectangle (8.0,5.0);
+\node [below right] at (4.7,5.0) {2};
+
+	
+%links
+\draw [myGreen, thick] (1.5,1.0) to [out=320,in=230] (3.5,1.5);
+\draw [fill] (1.5,1.0) circle [radius=0.05];
+\draw [fill] (3.5,1.5) circle [radius=0.05];
+\draw [myGreen, thick] (4.0,1.7) to [out=320,in=270] (5.6,2.7);
+\draw [fill] (4.0,1.7) circle [radius=0.05];
+\draw [fill] (5.6,2.7) circle [radius=0.05];
+\draw [myGreen, thick] (5.0,3.0) to [out=270,in=180] (5.3,2.0);
+\draw [fill] (5.0,3.0) circle [radius=0.05];
+
+\draw [myGreen, thick] (1.5,2.0) to [out=90,in=230] (1.5,5.0);
+\draw [fill] (1.5,5.0) circle [radius=0.05];
+\draw [fill] (1.5,2.0) circle [radius=0.05];
+\node [above] at (1.5,5.0) {x};
+\draw [myGreen, thick] (6.0,4.0) to [out=90,in=230] (6.0,5.0);
+\draw [fill] (6.0,4.0) circle [radius=0.05];
+\draw [fill] (6.0,5.0) circle [radius=0.05];
+\node [above] at (6.0,5.0) {y};
+
+
+\end{tikzpicture}
+\caption{Il bigrafo C.\label{fig:bigC}}
+\end{figure}
+
+
+\begin{figure}[h]
+ \centering
+ \subfigure[Place Graph di C]
+ {
+   	\begin{tikzpicture}
+	%nodes
+	\node at (1.0,4.0) {$0$};%0
+	\draw [thick] (1.0,2.0) circle [radius=0.2];%v1
+	\node[above right] at (1.0,2.0) {$v1$};
+	
+	\node at (2.0,4.0) {$1$};%1
+	\draw [thick] (2.0,2.0) circle [radius=0.2];%v3
+	\node[above right] at (2.0,2.0) {$v3$};
+	
+	\node at (3.0,4.0) {$2$};%2
+	\draw [thick] (3.0,3.0) circle [radius=0.2];%v4
+	\node[above right] at (3.0,3.0) {$v4$};
+	\draw [thick] (3.0,2.0) circle [radius=0.2];%v5
+	\node[above right] at (3.0,2.0) {$v5$};
+	
+	
+	%links
+	\draw (1.0,3.8) -- (1.0,2.2);% 0 - v1
+	\draw (2.0,3.8) -- (2.0,2.2);% 1 - v3
+	\draw (3.0,3.8) -- (3.0,3.2);% 2 - v4	
+	\draw (3.0,2.8) -- (3.0,2.2);% v4 - v5
+
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Link Graph di C]
+{
+  	\begin{tikzpicture}
+	%nodes
+	\draw[thick] (2.0,0.2) circle [radius=0.2];%v3
+	\node[above left] at (2.0,0.2) {$v_3$};
+	\draw[thick] (1.0,3.0) circle [radius=0.2];%v1
+	\node[above left] at (1.0,3.0) {$v_1$};
+	\draw[thick] (4.0,0.2) circle [radius=0.2];%v5
+	\node[above right] at (4.0,0.2) {$v_5$};
+	\draw[thick] (4.5,2.0) circle [radius=0.2];%v4
+	\node[above right] at (4.5,2.0) {$v_4$};
+	
+	%links
+	\draw [myGreen, thick] (1.0,2.8) to [out=270,in=90] (2.0,0.4);
+	\draw [fill] (1.0,2.8) circle [radius=0.05];
+	\draw [fill] (2.0,0.4) circle [radius=0.05];
+	\draw [myGreen, thick] (1.2,3.0) to [out=0,in=180] (1.5,3.5);
+	\draw [fill] (1.5,3.5) circle [radius=0.05];
+	\node[above] at (1.5,3.5) {x};
+	\draw [fill] (1.2,3.0) circle [radius=0.05];
+	\draw [myGreen, thick] (2.2,0.2) to [out=0,in=180] (4.3,2.0);
+	\draw [fill] (2.2,0.2) circle [radius=0.05];
+	\draw [fill] (4.3,2.0) circle [radius=0.05];
+	\draw [myGreen, thick] (4.0,0.4) to [out=90,in=0] (3.2,1.0);
+	\draw [fill] (4.0,0.4) circle [radius=0.05];
+	\draw [myGreen, thick] (4.5,2.2) to [out=180,in=0] (4.3,3.5);
+	\draw [fill] (4.5,2.2) circle [radius=0.05];
+	\draw [fill] (4.3,3.5) circle [radius=0.05];
+	\node[above] at (4.3,3.5) {y};
+	
+	\end{tikzpicture}
+}
+ \caption{Bigrafo C.\label{fig:bigCdecap}}
+ \end{figure}
+ 
+ 
+ 
+ 
+%%%%%%%%%%%BIGRAFO A
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+
+%nodes
+%\draw[help lines] (0,0) grid (8,5);
+\draw[thick] (2.5,1.5) ellipse (2.5 and 1.5);%v0
+\node[left] at (1.0,3.0) {$v_0$};
+\draw[thick] (3.5,1.5) ellipse (1.0 and 1.0);%v2
+\node[left] at (3.0,2.5) {$v_2$};
+%roots
+\draw[rounded corners=5mm,dotted, thick](0.0,0.0) rectangle (5.0,4.0);
+\node [below right] at (0.0,4.0) {0};
+\draw[rounded corners=5mm,dotted, thick] (5.3,0.0) rectangle (8.0,4.0);
+\node [below right] at (5.3,4.0) {1};
+%sites
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey](1.0,1.0) rectangle (2.0,2.0);
+\node [below right] at (1.0,2.0) {0};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (3.0,1.0) rectangle (4.0,2.0);
+\node [below right] at (3.0,2.0) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (6.0,1.0) rectangle (7.0,2.0);
+\node [below right] at (6.0,2.0) {2};
+%links
+\draw [myGreen, thick] (3.0,3.0) -- (3.0,3.35);
+\draw [fill] (3.0,3.0) circle [radius=0.05];
+\draw[myGreen, thick] (1.0,0.0) arc (190:-10:3.0);
+\node [below] at (1.0,0.0) {x};
+\node [below] at (7.0,0.0) {y};
+
+\end{tikzpicture}
+\caption{Un semplice bigrafo.\label{fig:bigA}}
+\end{figure}
+
+\newpage
+
+
+
+\begin{figure}[h]
+ \centering
+ \subfigure[Place Graph di A]
+ {
+   	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,5);
+	%nodes
+	\node at (2.0,4.0) {$0$};%0
+	\draw [thick] (2.0,3.0) circle [radius=0.2];%v0
+	\node[above right] at (2.0,3.0) {$v0$};
+	\draw [thick] (3.0,2.0) circle [radius=0.2];%v2
+	\node[above right] at (3.0,2.0) {$v2$};
+	\node at (1.0,1.0) {$0$};%0
+	\node at (3.0,1.0) {$1$};%1
+	
+	\node at (4.0,4.0) {$1$};%1
+	\node at (4.0,1.0) {$2$};%2	
+	
+	%links
+	\draw (2.0,3.8) -- (2.0,3.2);% 0 - v0
+	\draw (2.0,2.8) -- (3.0,2.2);% v0 - v2
+	\draw (3.0,1.8) -- (3.0,1.2);% v2 - 1	
+	\draw (2.0,2.8) -- (1.0,1.2);% v0 - 0
+	\draw (4.0,3.8) -- (4.0,1.2);% 1 - 2
+
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Link Graph di A]
+{
+  	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,5);
+	%nodes
+	\draw[thick] (1.0,1.0) circle [radius=0.2];%v0
+	\node[above left] at (1.0,1.0) {$v_0$};
+	\draw[thick] (3.0,1.0) circle [radius=0.2];%v2
+	\node[above right] at (3.0,1.0) {$v_2$};
+	%links
+	\draw[myGreen, thick] (0.0,0.0) arc (190:-10:2.0);
+	\node [below] at (0.0,0.0) {x};
+	\node [below] at (4.0,0.0) {y};
+	\draw [fill] (1.0,1.2) circle [radius=0.05];
+	\draw [myGreen, thick] (1.0,1.2) to [out=90,in=200] (1.5,2.3);
+	
+	
+	\end{tikzpicture}
+}
+ \caption{Bigrafo A.\label{fig:bigAdecap}}
+ \end{figure}
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Definizione formale di Bigrafo}\label{sec:formalBigraphs}
+Siamo ora pronti per definire separatamente i concetti di \emph{Place Graph} e \emph{Link Graph}. Quelli descritti, che noi chiameremo semplicemente bigrafi, in realtà
+si chiamano \emph{concrete bigraphs}, per distinguerli da quelli astratti. In questa sede si tratterà solo di bigrafi concreti.\\
+Si rimanda all'appendice \ref{ch:appA} per la notazione usata.
+
+%PlaceGraph
+\subsection{Place Graph}
+Il place graph è una delle due strutture fondamentali di ogni bigrafo. E' una \emph{foresta} e rappresenta l'informazione di \emph{nesting}, ovvero quali nodi si trovano
+all'interno di altri. Come già notato in figura \ref{fig:placeLink}.a, le radici ed i siti sono \emph{ordinati}, essendo essi rappresentati da un ordinale. In definitiva, quindi,
+il place graph è una foresta ordinata, in cui solo le radici ed i siti sono ordinati.
+
+\begin{define}[Place Graph]
+Un place graph 
+\begin{center}
+$F=(V_F,ctrl_F,prnt_F) : m\to n$
+\end{center}
+è una tripla avente un' interfaccia interna $m$ ed un' interfaccia esterna $n$, entrambe ordinali finiti.Queste indicano rispettivamente i \emph{siti} e le \emph{radici} del
+place graph. F ha un insieme finito $V_F$ di \emph{nodi}, una \emph{control map} $ctrl:V_F \to K$, e una \emph{parent map}
+\begin{center}
+$prnt:m \uplus V_F \to V_F \uplus n$
+\end{center}
+che è aciclica, cioè se $prnt_{F}^{i}(v)=v$ allora $i=0$.
+\end{define}
+
+Questa definizione formale ricalca ciò che è già stato notato nell' esempio della sottosezione \ref{sub:esempioInit}. Infatti, si noti che il place graph $F$ ha $m$ siti
+ed $n$ radici, entrambi ordinati, che costituiscono rispettivamente la sua interfaccia interna ed esterna.\\
+La funzione $ctrl_F$ associa ad ogni nodo un controllo, cioè un nome. Come già notato, l'equivalente grafico sta nel disegnare con simboli diversi nodi con controllo diverso.
+Infine, la funzione $prnt_F$ associa ad ogni nodo interno o sito il suo genitore, che può essere a sua volta un altro nodo interno o una radice.\\
+Questa funzione è di fondamentale importanza, in quanto è il cuore del place graph: rappresenta l'informazione di quali nodi si trovano all'interno di altri. E' \emph{aciclica},
+nel senso che $n$ sue \emph{composizioni} non porteranno mai al nodo di partenza. In formule: 
+\begin{center}
+$prnt_F \circ prnt_F \circ \dots \circ prnt_F(v) \ne v$
+\end{center}
+Questo è equivalente a dire che la struttura dati rappresentata dal place graph è una \emph{foresta}.
+
+
+%Link Graph
+\subsection{Link Graph}
+La seconda struttura dati fondamentale è il link graph. Esso rappresenta l'informazione di \emph{connessione} tra i nodi del bigrafo. E' un \emph{ipergrafo}, infatti
+un arco può collegare due o più nodi.
+
+\begin{define}[Link Graph]
+Un link graph
+\begin{center}
+$F=(V_F,E_F,ctrl_F,link_F):X \to Y$
+\end{center}
+è una quadrupla avente un' interfaccia interna $X$ ed una interfaccia esterna $Y$, chiamate rispettivamente gli \emph{inner names} e \emph{outer names} del link graph.
+F ha un insieme finito $V_F$ di nodi e $E_F$ di archi (\emph{edges}), una \emph{control map} $ctrl:V_F \to K$, e una \emph{link map}:
+\begin{center}
+$link_F: X \uplus P_F \to E_F \uplus Y$
+\end{center}
+dove $P_F=\left \{(v,i) \mid v \in V_F \land i \in ar(ctrl_F(v)) \right \}$ è l'insieme delle \emph{porte} di F. Quindi, $(v,i)$ è l' i-esima porta del nodo v. Chiamiamo $X \uplus P_F$ i
+\emph{punti} di F, mentre $E_F \uplus Y$ i suoi \emph{link}.
+\end{define}
+
+Notiamo subito come alcune nozioni rimangono invariate dal place graph. Per esempio, $V_F$ e $ctrl_F$ non cambiano. Si aggiungono però due concetti:
+\begin{itemize}
+	\item
+	$E_F$: è l'insieme di archi del link graph F. Sono oggetti del tutto indipendenti dai nodi.
+	\item
+	$link_F$: è la funzione che consente di creare l'\emph{ipergrafo}. 
+\end{itemize}
+
+Dalla definizione \ref{def:sign}, sappiamo che un dato controllo ha un ben preciso numero di porte. La funzione $ar:K \to \mathbb{N}$ consente di calcolare
+il numero di porte di un dato controllo: $ar(ctrl_F(v)$ restituisce un numero naturale, che è il  numero di porte del controllo del nodo v. 
+Grazie alla funzione \emph{ar}, nel link graph ci sleghiamo totalmente dal concetto di \emph{nodo}, e siamo in grado di sostituirlo con il concetto di \emph{porta}.\\
+
+Introduciamo ora due concetti:
+\begin{itemize}
+	\item
+	l'insieme dei \emph{punti} di F è l'insieme che comprende tutte le sue porte ($P_F$) e tutti i suoi inner names (X).
+	\item
+	l'insieme dei \emph{link} di F è l'insieme che comprende tutti i suoi archi (edges) e tutti i suoi outer names (Y).
+\end{itemize}
+
+La funzione $link_F$ avrà come dominio l'insieme dei punti e come codominio l'insieme dei link. Possiamo quindi pensarla come è raffigurata in figura \ref{fig:linkDecomp}.b.
+La funzione $link_F$ è perciò quella che crea il vero e proprio ipergrafo: associa ad ogni punto \emph{uno ed un solo} link. Sfruttando la \emph{non-iniettività} della
+funzione possiamo creare l'ipergrafo.\\
+
+\begin{figure}[h]
+ \centering
+ \subfigure[Notazione grafica]
+{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,5);
+	%nodes
+	\draw[thick] (1.0,1.0) circle [radius=0.2];%v0
+	\node[left] at (0.8,1.0) {$v_0$};
+	\draw[thick] (3.0,1.0) circle [radius=0.2];%v2
+	\node[above right] at (3.0,1.0) {$v_2$};
+	%links
+	\draw[myGreen, thick] (0.0,0.0) arc (190:-10:2.0);
+	\node [below] at (0.0,0.0) {x};
+	\node [below] at (4.0,0.0) {y};
+	\draw [fill] (1.0,1.2) circle [radius=0.05];
+	\node [above right] at (1.0,1.2) {$p_0$};
+	\draw [myGreen, thick] (1.0,1.2) to [out=90,in=200] (1.5,2.3);
+	\node at (2.0,2.0) {$e_1$};
+	
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Notazione funzionale]
+{
+  	\begin{tikzpicture}
+	%Points
+	\draw [fill] (1.0,4.0) circle [radius=0.05];
+	\node [left] at (1.0,4.0) {$P_0$};
+	\draw [fill] (1.0,2.0) circle [radius=0.05];
+	\node [left] at (1.0,2.0) {x};
+	\draw [fill] (1.0,0.0) circle [radius=0.05];
+	\node [left] at (1.0,0.0) {y};
+	%Links
+	\draw [fill] (4.0,2.0) circle [radius=0.05];
+	\node [right] at (4.0,2.0) {$e_1$};
+	%Points-Links
+	\draw [thick] (1.0,4.0) to [out=0,in=180] (4.0,2.0);
+	\draw [thick] (1.0,2.0) to [out=0,in=180] (4.0,2.0);
+	\draw [thick] (1.0,0.0) to [out=0,in=180] (4.0,2.0);
+	\end{tikzpicture}
+	
+}
+ \caption{Link Graph decomposto.\label{fig:linkDecomp}}
+ \end{figure}
+
+In figura \ref{fig:linkDecomp}.a si vede il link graph nella sua notazione usuale, cioè con anche i nodi disegnati. Invece, in \ref{fig:linkDecomp}.b si vede la notazione sotto
+forma di funzione, dove si specifica dominio ($p_0$, $x$ e $y$) e codominio ($e_1$).
+
+
+
+
+%Bigraph
+\subsection{Bigrafo}
+Un bigrafo è semplicemente l'unione del place graph e del link graph. E' importante notare che esse condividono lo \emph{stesso} insieme di nodi.
+\begin{define}[Bigrafo]
+Un bigrafo
+\begin{center}
+$F=(V_F, E_F, ctrl_F, prnt_F, link_F): \left \langle n , X \right \rangle \to \left \langle m , Y \right \rangle $
+\end{center}
+consiste in un place graph $F^P = (V_F, ctrl_f, prnt_F): n \to m$ e in un link graph $F^L=(V_F, E_F, ctrl_F, link_F):X \to Y$.
+\end{define}
+
+\begin{notaz}[Bigrafo]
+Un bigrafo F viene spesso indicato tramite le sue interfacce:
+\begin{center}
+$F = \langle n, X \rangle \to \langle m, Y \rangle$
+\end{center}
+stando ad indicare che F ha $n$ siti, $X$ inner names, $m$ radici e $Y$ outer names.
+\end{notaz}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+%nodes
+%\draw[help lines] (0,0) grid (8,5);
+\draw[thick] (1.5,1.5) ellipse (0.5 and 0.5);%v1
+\node[left] at (1.0,1.5) {$v_1$};
+\draw[thick] (3.7,1.7) ellipse (0.3 and 0.3);%v3
+\node[below right] at (3.5,1.5) {$v_3$};
+\draw[thick] (6.5,3.0) ellipse (1.5 and 1.0);%v4
+\node[above right] at (6.5,4.0) {$v_4$};
+\draw[thick] (6.0,3.0) ellipse (0.5 and 0.5);%v5
+\node[above right] at (6.5,3.0) {$v_5$};
+%roots
+\draw [rounded corners=5mm,dotted, thick] (0.0,0.0) rectangle (2.5,5.0);
+\node [below right] at (0.0,5.0) {0};
+\draw [rounded corners=5mm,dotted, thick] (2.7,0.0) rectangle (4.5,5.0);
+\node [below right] at (2.7,5.0) {1};
+\draw [rounded corners=5mm,dotted, thick] (4.7,0.0) rectangle (8.0,5.0);
+\node [below right] at (4.7,5.0) {2};
+
+	
+%links
+\draw [myGreen, thick] (1.5,1.0) to [out=320,in=230] (3.5,1.5);
+\draw [fill] (1.5,1.0) circle [radius=0.05];
+\draw [fill] (3.5,1.5) circle [radius=0.05];
+\draw [myGreen, thick] (4.0,1.7) to [out=320,in=270] (5.6,2.7);
+\draw [fill] (4.0,1.7) circle [radius=0.05];
+\draw [fill] (5.6,2.7) circle [radius=0.05];
+\draw [myGreen, thick] (5.0,3.0) to [out=270,in=180] (5.3,2.0);
+\draw [fill] (5.0,3.0) circle [radius=0.05];
+
+\draw [myGreen, thick] (1.5,2.0) to [out=90,in=230] (1.5,5.0);
+\draw [fill] (1.5,5.0) circle [radius=0.05];
+\draw [fill] (1.5,2.0) circle [radius=0.05];
+\node [above] at (1.5,5.0) {x};
+\draw [myGreen, thick] (6.0,4.0) to [out=90,in=230] (6.0,5.0);
+\draw [fill] (6.0,4.0) circle [radius=0.05];
+\draw [fill] (6.0,5.0) circle [radius=0.05];
+\node [above] at (6.0,5.0) {y};
+
+
+\end{tikzpicture}
+\caption{Esempio di bigrafo.\label{fig:innerOuterBig}}
+\end{figure}
+
+Il bigrafo della figura \ref{fig:innerOuterBig}, rispettando la notazione, è scritto in questo modo: $F = \langle 0, \emptyset  \rangle \to \langle 3, \{x,y\} \rangle$
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Operazioni sui bigrafi
+\section{Operazioni sui Bigrafi}\label{sec:operations}
+Nelle sezioni precedenti, si è definita formalmente la nozione di bigrafo. Ora, si studiano le varie operazioni possibili, ovvero come ottenere un nuovo bigrafo da
+due bigrafi di partenza. Queste operazioni saranno utili per la prossima sezione, che tratterà dell' algebra dei bigrafi.
+
+\subsection{Traduzione di Supporto}
+La prima operazione tratta di come si può ottenere un nuovo bigrafo avendo a disposizione un solo bigrafo base e una funzione biettiva. Si dimostra che applicando
+tale biiezione ai nodi e archi del bigrafo di partenza si determina \emph{unicamente} il bigrafo risultante.
+
+\begin{define}[Traduzione di Supporto]
+Per ogni place graph, link graph e per ogni bigrafo è assegnato un insieme finito $|F|$, il suo \emph{supporto}. Per un place graph, definiamo $|F| = V_F$, mentre per
+un link graph o un bigrafo definiamo $|F| = V_F \uplus E_F$.
+Per due bigrafi F e G, una \emph{traduzione di supporto}  $p: |F| \to |G|$ da F a G consiste in due biiezioni $p_V: V_F \to V_G$ and $p_E: E_F \to E_G$ che rispettano la
+struttura, nel seguente senso:
+\begin{itemize}
+	\item
+	$p$ preserva i controlli, cioè: $ctrl_G \circ p_V = ctrl_F$. Ne segue che $p$ induce una biiezione sulle porte $p_P: P_F \to P_G$, definita da 
+	$p_P((v, i)) = (p_V(v), i)$.
+	\item
+	$p$ modifica le mappe sulla struttura ($prnt$ e $link$) in questo modo:
+	\begin{center}
+	$prnt_G \circ (id_m \uplus p_V) = (id_n \uplus p_V) \circ prnt_F$ \\
+	$link_G \circ (id_X \uplus p_P) = (id_Y \uplus p_E) \circ link_F$
+	\end{center}
+\end{itemize}
+\end{define}
+
+Come detto prima, data la biiezione $p$ e il bigrafo $F$, queste condizioni determinano unicamente G, che denotiamo con $p \cdot F$ e chiamiamo \emph{traduzione
+di supporto di F tramite p}. Chiamiamo $F$ e $G$ \emph{support equivalent} ($F \bumpeq G$) se esiste una tale traduzione di supporto.\\
+
+Dati due bigrafi, il problema di trovare una traduzione di supporto tra i due è equivalente al problema di stabilire quando essi sono uguali. Per cui, da qui in seguito 
+si userà il termine \emph{traduzione di supporto} come sinonimo di \emph{isomorfismo}.\\
+
+\begin{define}[Isomorfismo]\label{def:iso}
+Due bigrafi F e G si dicono isomorfi se e solo se esiste una traduzione di supporto tra F e G, cioè se e solo se F e G sono \emph{support equivalent} ($F \bumpeq G$).
+\end{define}
+
+
+
+
+
+\subsection{Composizione}
+L'operazione di \emph{composizione} è denotata dal simbolo $\circ$ e permette di scrivere equazioni del tipo $B = A \circ C$, come nell'esempio
+\ref{sub:esempioInit}. La composizione necessita del concetto di interfaccia: come già notato, l'interfaccia interna di A deve concordare con l'interfaccia esterna di C.
+Con una prima approssimazione, possiamo dire che C deve essere incluso \emph{dentro} A. 
+
+\begin{define}[Composizione]
+Si trattano separatamente i casi del place graph e del link graph:
+\begin{itemize}
+	\item
+	\emph{Place Graph}: Se $F: k \to m$ e $G: m \to n$ sono due place graph con supporti disgiunti ( $|F|  \#  |G| $), la loro composizione 
+		\begin{center}
+		$G \circ F = (V, ctrl, prnt): k \to n$
+		\end{center}
+	ha i nodi $V = V_F \uplus V_G$ e la control map $ctrl = ctrl_F \uplus ctrl_G$. La sua parent map $prnt$ è definita come segue: se $w \in k \uplus V_F \uplus V_G$
+	è un sito o un nodo di $G \circ F$, allora :
+		\begin{center}
+		$prnt(w) \stackrel{def}{=}
+			\begin{cases} 
+			prnt_F(w), & \mbox{se }w \in k \uplus V_F \ \land \ prnt_F(w) \in V_F \\ 
+			prnt_G(j), & \mbox{se }w \in k \uplus V_F \ \land \ prnt_F(w) = j \in m \\ 
+			prnt_G(w), & \mbox{se }w \in V_G 
+			\end{cases}
+		$
+		\end{center}
+		Il place graph \emph{identità} su $m$ è $id_m \stackrel{def}{=} (\emptyset, \emptyset, id_m): m \to m$
+		
+	Si noti come l'unione delle due interfacce (quella esterna di A e quella interna di B) sia modellata dalla seconda riga. In particolare, $prnt_F(w) = j$ sta ad indicare che
+	$j$ è una radice di $F$ e $w$ è uno dei suoi figli. Dato che $j$ è una radice, essa sarà un intero nell'insieme $\{0, \dots, m-1\}$, e dovrà quindi appartenere anche 
+	all'interfaccia interna di $G$, dove $j$ sarà un sito. La parent map di $G \circ F$su $w$ sarà quella di G sul suo sito $j$.
+	Quindi la seconda riga modella la seguente azione: mantengo la parent map per tutti i nodi interni dei due bigrafi, e
+	al momento dell'unione delle due interfacce unisco la radice i-esima di F con il sito i-esimo di G, per ogni $i \in \{0, \dots, m-1\}$.
+	\item
+	\emph{Link Graph}: Se $F: X \to Y$ e $G: Y \to Z$ sono due link graph con supporti disgiunti ( $|F|  \#  |G| $), la loro composizione
+		\begin{center}
+		$G \circ F = (V, E, ctrl, link): X \to Z$
+		\end{center}
+	ha $V = V_F \uplus V_G$, $E = E_F \uplus E_G$, $ctrl = ctrl_F \uplus ctrl_G$ e la sua link map $link$ è definita come segue: se $q \in X \uplus P_F \uplus P_G$
+	è un punto di $G \circ F$, allora
+		\begin{center}
+		$link(q) \stackrel{def}{=}
+				\begin{cases} 
+				link_F(q), & \mbox{se }q \in X \uplus P_F \ \land \ link_F(q) \in E_F \\ 
+				link_G(y), & \mbox{se }q \in X \uplus P_F \ \land \ link_F(q) = y \in Y \\ 
+				link_G(q), & \mbox{se }q \in P_G 
+				\end{cases}
+		$
+		\end{center}
+	Il link graph \emph{identità} su $X$ è $id_X \stackrel{def}{=} (\emptyset, \emptyset, \emptyset, id_X): X \to X$
+	Anche qui, si noti come la seconda riga modelli l'unione tra le interfacce. In particolare, se $link_F(q) = y$ e $y \in Y$, si ha che il punto $q$ del bigrafo F è collegato
+	al suo outer name y. Dato che $Y$ è anche l'interfaccia interna di G, si ha che y è un inner name di G. La seconda riga quindi rappresenta l'unione tra gli outername
+	di F e gli inner name di G che hanno lo stesso nome.
+	\item
+	\emph{Bigrafo}: Se $F: I \to J$ e $G: J \to K$ sono due bigrafi con supporti disgiunti ( $|F|  \#  |G| $), la loro composizione
+		\begin{center}
+		$G \circ F \stackrel{def}{=} \langle G_P \circ F_P, G_L \circ F_L \rangle : I \to K$
+		\end{center}
+	ed il bigrafo \emph{identità} su $I=\langle m, X \rangle$ è $\langle id_m, id_x \rangle$. 
+\end{itemize}
+\end{define}
+
+
+Si noti come l'operazione di composizione \emph{unisca} le interfacce dei due bigrafi, creando un unico bigrafo risultato, cioè un' unica funzione $prnt$ ed un' unica 
+funzione $link$. \\
+
+\subsection{Giustapposizione}
+Si definisce ora un' altra operazione per creare un bigrafo da altri due base. Si chiama \emph{giustapposizione} e consiste nell'affiancare un bigrafo ad un altro. Questa 
+operazione è possibile solo se i due bigrafi sono \emph{disgiunti}. Spesso viene anche chiamata \emph{prodotto}.
+
+\begin{define}[Bigrafi disgiunti]
+Due place graphs $F_i (i= 0, 1)$ sono disgiunti se $|F_0| \# |F_1|$. Due link graph $F_i: X_i \to Y_i$ sono \emph{disgiunti} se $X_0 \# X_1$, $Y_0 \# Y_1$ e $|F_0| \# |F_1|$.
+Due bigrafi $F_i (i=0, 1)$ sono \emph{disgiunti} se $F_0^P \# F_1^P$ e $F_1^L \# F_1^L$.
+\end{define}
+
+L'operazione di giustapposizione è monoidale, cioè è associativa ed ha un unità. Si definiranno quindi le proprietà dell'operazione e le sue unità.
+
+\begin{define}[Giustapposizione]
+Definiamo separatamente i casi del place graph e del link graph:
+\begin{itemize}
+	\item
+	\emph{Place Graph}: la giustapposizione di due interfacce $m_i (i = 0, 1)$ è $m_0 + m_1$ e l'unità è 0. Se $F_i = (V_i, ctrl_i, prnt_i): m_i \to n_i$ sono place graphs
+	disgiunti (i= 0, 1), la loro giustapposizione $F_0 \otimes F_1: m_0 + m_1 \to n_0 + n_1$ è data da: 
+		\begin{center}
+		$F_0 \otimes F_1 = (V_0 \uplus V_1, ctrl_0 \uplus ctrl_1, prnt_0 \uplus prnt_1^{'})$,
+		\end{center}
+	dove $prnt_1^{'}(m_0 + i) = n_0 + j$  ogni volta che  $prnt_1(i) = j$. \\
+	Informalmente, affianco due place graph avendo come risultato una foresta. Le radici aumenteranno quindi di numero. Per questo motivo è necessaria la funzione
+	$prnt_1^{'}$: supponiamo che $F_0$ abbia due radici e $F_1$ una sola.
+	I nodi figli diretti di $F_1$ non possono più puntare alle loro vecchie radici, per esempio la radice 0, perchè ora essa è la radice di $F_0$. La parent map di $F_1$ dovrà
+	quindi venire traslata in questo modo: tutti i nodi di $F_1$ che puntano alla sua radice 0, ora punteranno alla nuova radice $0+2 = 2$. Questo è quello che fa la funzione
+	$prnt_1^{'}$.
+	\item
+	\emph{Link Graph}: la giustapposizione di due interfaccie disgiunte di due link graph è $X_0 \uplus X_1$ e l'unità è $\emptyset$. Se 
+	$F_i = (V_i, E_i, ctrl_i, link_i): X_i \to Y_i$ sono due link graph disgiunti ($i= 0, 1$), la loro giustapposizione $F_0 \otimes F_1: X_0 \uplus X_1 \to Y_0 \uplus Y_1$
+	è data da
+	\begin{center}
+	$F_0 \otimes F_1 = (V_0 \uplus V_1, E_0 \uplus E_1, ctrl_0 \uplus ctrl_1, link_0 \uplus link_1)$
+	\end{center}
+	
+	\item
+	\emph{Bigrafi}: la giustapposizione di due interfacce disgiunte $I_i = \langle m_i, X_i \rangle (i= 0, 1)$ è $\langle m_0+m_1, X_0 \uplus X_1 \rangle$ e l'unità
+	è $\varepsilon = \langle 0, \emptyset \rangle$. Se $F_i: I_i \to J_i$ sono bigrafi disgiunti ($i= 0, 1$), la loro giustapposizione 
+	$F_0 \otimes F_1: I_0 \otimes I_1 \to J_0 \uplus J_1$ è data da:
+	\begin{center}
+	$F_0 \otimes F_1 = \langle F_0^P \otimes F_1^P, F_0^L \otimes F_1^L \rangle$
+	\end{center}
+\end{itemize}
+\end{define}
+
+Tutte queste tre operazioni saranno utili per definire l'algebra dei bigrafi della prossima sezione.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Algebra
+\section{L' algebra dei bigrafi}\label{sec:algebra}
+In questa sezione verrà illustrato come poter ottenere nuovi bigrafi da bigrafi base tramite le operazioni di composizione, identità e prodotto (giustapposizione). Si definisce
+quindi una vera e propria \emph{algebra} per la teoria dei bigrafi, in cui si dimostra che ogni bigrafo può essere derivato da alcuni bigrafi base. Si incomincia nelle prime
+tre sezioni ad illustrare i bigrafi base su cui si appoggerà l'algebra, ovvero placing, linking e ioni.Infine, si enuncia un importante risultato che è la decomponibilità di
+ogni bigrafo in una sua forma normale.\\
+Si rimanda all' appendice \ref{ch:appA} per i dettagli sulla notazione usata.
+
+\subsection{Placing elementari}
+\begin{define}[Placing, Permutazioni, Merge]
+Un bigrafo senza nodi e senza link viene detto \emph{placing} ($\varnothing$). Un placing che è biiettivo dai siti alle radici è detto \emph{permutazione} ($\pi$). Un placing
+sono una radice e $n$ siti è denotata da $merge_n$.
+\end{define}
+
+
+\begin{figure}[h]
+ \centering
+ \subfigure[$\gamma_{1,1}: 2 \to 2$]
+{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (3,3);
+	%Roots
+	\draw[rounded corners=2mm,dotted, thick] (0.0,0.0) rectangle (1.4,2.0);
+	\node[below right] at (0.0,2.0) {0};
+	\draw[rounded corners=2mm,dotted, thick] (1.6,0.0) rectangle (3.0,2.0);
+	\node[below right] at (1.6,2.0) {1};
+	%Sites
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (0.2,0.5) rectangle (1.0,1.2);
+	\node[below right] at (0.2,1.2) {1};
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (2.0,0.5) rectangle (2.8,1.2);
+	\node[below right] at (2.0,1.2) {0};
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[$1: 0 \to 1$]
+{
+  	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (3,3);
+	%Roots
+	\draw[rounded corners=2mm,dotted, thick] (0.5,0.0) rectangle (2.5,2.0);
+	\node[below right] at (0.5,2.0) {0};
+	\end{tikzpicture}
+	
+}
+\hspace{5mm}
+\subfigure[$join: 2 \to 1$]
+{
+  	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (3,3);
+	%Roots
+	\draw[rounded corners=2mm,dotted, thick] (0.0,0.0) rectangle (3.0,2.0);
+	\node[below right] at (0.0,2.0) {0};
+	%Sites
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (0.5,0.5) rectangle (1.4,1.5);
+	\node[below right] at (0.5,1.5) {0};
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (1.6,0.5) rectangle (2.4,1.5);
+	\node[below right] at (1.6,1.5) {1};
+	\end{tikzpicture}
+	
+}
+ \caption{Placing elementari.\label{fig:placingElementari}}
+ \end{figure}
+
+Un placing ha quindi solo siti e radici.\\
+Il risultato importante è che si può ottenere qualsiasi \emph{placing} dai tre \emph{placing elementari} di figura \ref{fig:placingElementari}, tramite le operazioni di 
+composizione, identità e prodotto. In particolare:
+\begin{itemize}
+	\item
+	ogni permutazione $\pi$ può essere ottenuta dalla simmetria elementare $\gamma_{1,1}$. Per esempio, se si vuole ottenere la permutazione di ordine 3 ($\pi_3$),
+	allora si può scrivere la seguente equazione: $\pi_3 = (\gamma_{1,1} \circ \gamma_{1,1}) \otimes id_1$.
+	\item
+	ogni placing $\varnothing$ (e quindi anche ogni merge) può essere ottenuto dai tre placing elementari $\gamma_{1,1}, 1$ e $join$. Per esempio: $merge_0 = 1$ e 
+	$merge_{n+1} = join \circ (id_1 \otimes merge_n)$.
+\end{itemize}
+
+
+
+ 
+\subsection{Linking elementari}
+\begin{define}[Linking, Sostituzioni, Chiusure]
+Un bigrafo senza nodi e senza places è detto \emph{linking} ($\delta$). Una \emph{sostituzione} ($\sigma$) è il prodotto tra sostituzioni elementari (\ref{}).
+Una sostituzione biiettiva è detta \emph{rinomina} ($\alpha$).
+Una \emph{chiusura} è il prodotto tra chiusure elementari(\ref{}).
+\end{define}
+
+
+\begin{figure}[h]
+ \centering
+ \subfigure[$^y / X: X \to y$]
+{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,4);
+	%Inners
+	\draw [fill] (1.0,1.0) circle [radius=0.05];
+	\node [below left] at (1.0,1.0) {$x_0$};
+	\draw [fill] (2.0,1.0) circle [radius=0.05];
+	\draw [fill] (3.0,1.0) circle [radius=0.05];
+	\draw [fill] (4.0,1.0) circle [radius=0.05];
+	\node [below right] at (4.0,1.0) {$x_n$};
+	\node [below] at (2.5,1.0) {$\dots$};
+	%Outers
+	\draw [fill] (2.5,4.0) circle [radius=0.05];
+	\node [above right] at (2.5,4.0) {$y$};
+	\draw [myGreen, thick] (2.5,4.0) to [out=250,in=90] (1.0,1.0);% y - x1
+	\draw [myGreen, thick] (2.5,4.0) to [out=260,in=90] (2.0,1.0);% y - x2
+	\draw [myGreen, thick] (2.5,4.0) to [out=270,in=90] (3.0,1.0);% y - x3
+	\draw [myGreen, thick] (2.5,4.0) to [out=280,in=90] (4.0,1.0);% y - xn
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[$/x: x \to \varepsilon$]
+{
+  	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,4);
+	%Inners
+	\draw [fill] (3.0,1.0) circle [radius=0.05];
+	\node [below] at (3.0,1.0) {$x$};
+	\draw [myGreen, thick] (3.0,1.0) to [out=90,in=270] (3.0,2.0);
+	\draw [myGreen, thick] (2.8,2.0) to [out=0,in=180] (3.2,2.0);
+	%Spaces
+	\draw [white] (0.0,0.0) to [out=0,in=180] (0.0,0.1);
+	\draw [white] (4.8,0.0) to [out=0,in=180] (5.0,0.0);
+	\end{tikzpicture}
+	
+}
+ \caption{Linking elementari.\label{fig:linkingElementari}}
+ \end{figure}
+
+Un linking ha solo inner names e outer names.\\
+Il risultato importante è che ogni \emph{linking} può essere generato tramite composizione, prodotto e identità a partire dai due \emph{linking elementari} di figura \ref{}:
+sostituzioni elementari $^y / X$ e chiusure elementari $/x: x \to \varepsilon$.
+
+
+
+\subsection{Ioni}
+Si descrive un altro tipo di bigrafo base: questa volta esso contiene nodi, a differenza dei placing e dei linking. 
+
+\begin{define}[Ione]
+Per ogni controllo $K:n$, il bigrafo $K_{\vec x}: 1 \to \langle 1, \{ \vec x \} \rangle$ avente un singolo nodo di tipo $K$ le cui porte sono collegate biiettivamente con $n$
+distinti nomi $\vec x$, è chiamato un \emph{ione discreto}.
+\end{define}
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (5,4);
+%Roots
+\draw[rounded corners=2mm,dotted, thick] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (2.0,1.5) ellipse ( 1.5 and 0.8);%K
+\node[above right] at (3.0,2.0) {K};
+%Sites
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey]  (1.5,1.0) rectangle (3.0,2.0);
+%Outers
+\draw [fill] (1.5,2.25) circle [radius=0.05];
+\draw [fill] (2.0,2.3) circle [radius=0.05];
+\draw [fill] (2.5,2.25) circle [radius=0.05];
+\draw [myGreen, thick] (1.5,2.25) to [out=90,in=270] (1.0,3.5);
+\node[above ] at (1.0,3.5) {$x_1$};
+\draw [myGreen, thick] (2.0,2.3) to [out=90,in=270] (2.0,3.5);
+\node[above ] at (2.0,3.5) {$\dots$};
+\node[above right] at (2.0,2.3) {$\dots$};
+\draw [myGreen, thick] (2.5,2.25) to [out=90,in=270] (3.0,3.5);
+\node[above ] at (3.0,3.5) {$x_n$};
+
+\end{tikzpicture}
+\caption{$K_{\vec x}$.\label{fig:ione}}
+\end{figure}
+
+
+Riassumendo, i tre tipi di \emph{bigrafi elementari} sono i placing, i linking e gli ioni. Tramite questi possiamo esprimere algebricamente ogni bigrafo in termini di composizione,
+prodotto e identità. Per esempio: 
+\begin{itemize}
+	\item
+	per formare un atomo (vedi definizione \ref{def:atomo}) usiamo la composizione tra un ione ed un placing (\ref{fig:atomoMolecola}.a).
+	\item
+	per formare una molecola (vedi definizione \ref{def:molecola}) usiamo anche qui la composizione tra un ione e un bigrafo discreto, ottenuto a sua volta ricorsivamente
+	usando solo placing, linking e ioni (\ref{fig:atomoMolecola}.b).
+\end{itemize}	
+
+\begin{define}[Bigrafo Discreto]\label{def:bigrafoDiscreto}
+Un bigrafo si dice discreto se non ha link chiusi e la sua link map è biiettiva.
+\end{define}
+
+\begin{define}[Atomo]\label{def:atomo}
+Se il sito di un K-ione viene riempito dal placing $1: 1 \to 0$ (vedi \ref{fig:placingElementari}.b), il risultato è un \emph{atomo discreto} $K_{\vec x} \circ 1$.
+\end{define}
+
+\begin{define}[Molecola]\label{def:molecola}
+Se il sito di un K-ione viene riempito da un bigrafo discreto $G: I \to \langle 1, Y \rangle$, il risultato è una \emph{molecola discreta} 
+$(K_{\vec x} \otimes id_Y) \circ G$.
+\end{define}
+
+
+\begin{figure}[h]
+ \centering
+ \subfigure[$A_{pq} \circ 1$]
+{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (4,4);
+	%Roots
+	\draw[rounded corners=2mm,dotted, thick] (0.0,0.0) rectangle (3.0,2.5);
+	%Nodes
+	\draw[thick] (1.5,1.5) ellipse ( 1.0 and 0.6);%A
+	\node[above right] at (1.0,1.0) {A};
+	%Outers
+	\draw [myGreen, thick] (1.0,2.0) to [out=120,in=230] (1.0,3.5);
+	\node[above ] at (1.0,3.5) {$p$};
+	\draw [myGreen, thick] (2.0,2.0) to [out=60,in=310] (2.0,3.5);
+	\node[above ] at (2.0,3.5) {$q$};
+	\draw [fill] (1.0,2.0) circle [radius=0.05];
+	\draw [fill] (2.0,2.0) circle [radius=0.05];
+	
+	\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[$(K_{xyz} \otimes id_{pq}) \circ L_{pq}$]
+{
+  	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (5,4);
+	%Roots
+	\draw[rounded corners=5mm,dotted, thick] (0.0,0.0) rectangle (5.0,3.0);
+	%Nodes
+	\draw[thick] (2.5,1.5) ellipse ( 2.0 and 1.3);%K
+	\node[above left] at (1.0,2.2) {K};
+	\draw[thick] (2.5,1.5) ellipse ( 1.0 and 0.6);%L
+	\node[above right] at (1.0,1.0) {L};
+	%Sites
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey]  (2.0,1.2) rectangle (3.0,1.8);
+	%Outers
+	\draw [myGreen, thick] (1.0,2.35) to [out=120,in=230] (1.0,3.5);
+	\draw [myGreen, thick] (2.0,2.75) to [out=100,in=250] (2.0,3.5);
+	\draw [myGreen, thick] (4.0,2.35) to [out=60,in=310] (4.0,3.5);
+	\draw [myGreen, thick] (2.0,2.0) to [out=120,in=240] (1.5,3.5);
+	\draw [myGreen, thick] (3.0,2.0) to [out=60,in=300] (2.5,3.5);
+	\draw [fill] (1.0,2.35) circle [radius=0.05];
+	\node[above] at (1.0,3.5) {x};
+	\draw [fill] (2.0,2.75) circle [radius=0.05];
+	\node[above] at (2.0,3.5) {y};
+	\draw [fill] (4.0,2.35) circle [radius=0.05];
+	\node[above] at (4.0,3.5) {z};
+	\draw [fill] (2.0,2.0) circle [radius=0.05];
+	\node[above] at (1.5,3.5) {p};
+	\draw [fill] (3.0,2.0) circle [radius=0.05];
+	\node[above] at (2.5,3.5) {q};
+	\end{tikzpicture}
+}
+ \caption{Atomo e molecola discreti.\label{fig:atomoMolecola}}
+ \end{figure}
+
+\begin{teor}
+Ogni bigrafo può essere costruito a partire da placing elementari, linking elementari e ioni tramite le tre operazioni di composizione, identità e giustapposizione.
+\end{teor}
+
+
+\subsection{Forma normale discreta}
+Si è ora arrivati al risultato principale: la decomponibilità di ogni bigrafo in più bigrafi base. Per descrivere questo enunciato, sono necessarie le definizioni di 
+\emph{bigrafo discreto} (definizione \ref{def:bigrafoDiscreto}) e di \emph{bigrafo primo}.
+
+\begin{define}[Bigrafo primo]
+Un bigrafo si dice \emph{primo} se non ha inner names ed ha un' interfaccia esterna unaria. Esso prende la segue forma: $m \to \langle X \rangle$.
+\end{define}
+
+Un importante esempio di bigrafo primo è $merge_n: n \to 1$, dove $n \ge 0$. L'assenza di inner names nei bigrafi primi è fondamentale: essa assicura che ci sia una
+ed una sola decomposizione di ogni bigrafo in linking e primi discreti, come segue:
+
+\begin{prop}[Forma normale discreta]\label{prop:fnd}
+Ogni bigrafo $G: \langle m, X \rangle \to \langle n, Z \rangle$ può essere espresso univocamente, con al più una rinomina su Y, come:
+	\begin{center}
+	$G = (id_n \otimes \lambda) \circ D$ 
+	\end{center}
+dove $\lambda: Y \to Z$ è un linking e $D:\langle m, X \rangle \to \langle n, Y \rangle$ è un bigrafo discreto. Inoltre, ogni bigrafo discreto D può essere fattorizzato 
+univocamente, con al più una permutazione dei siti di ogni fattore, come
+	\begin{center}
+	$D = \alpha \otimes ((P_0 \otimes \dots \otimes P_{n-1}) \circ \pi)$
+	\end{center}
+dove $\alpha$ è una rinomina, ogni $P_i$ è primo e discreto, e $\pi$ è una permutazione di tutti i siti.
+\end{prop}
+
+Questa proposizione è cruciale per dimostrare la completezza della teoria algebrica dei bigrafi, che risulta quindi sia corretta che completa. 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section{Operazioni Derivate}
+%Il fatto che ogni bigrafo si possa ottenere a partire da altri bigrafi base secondo l' equazione \ref{prop:fnd} spesso non aiuta il progettista a disegnare il sistema
+%distribuito voluto. Il problema è che la scomposizione in parti non è il modo migliore per costruire un bigrafo. In questa sezione si introducono quindi alcune 
+%operazioni derivate, con lo scopo di semplificare il lavoro del progettista nella costruzione del bigrafo.
+%
+%La prima operazione che si prende in esame è il \emph{prodotto parallelo} $\rVert$, che generalizza l' operazione di prodotto $\otimes$.
+%\begin{define}[Prodotto parallelo]
+%Il prodotto parallelo sulle interfacce è dato da:
+%\begin{center}
+%$\langle m, X \rangle \rVert \langle n, Y \rangle = \langle m + n, X \cup Y \rangle$
+%\end{center}
+%Siano ora $G_i: I_i \to J_i (i=0, 1)$ due bigrafi con supporti disgiunti. 
+%\end{define}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bigraphical Reactive Systems}
+Uno degli aspetti fondamentali di un bigrafo è la sua capacità di evolversi sulla base di regole ben precise. Un BRS (Bigraphical Reactive System) consente di fare
+evolvere lo stato di un sistema (bigrafo iniziale) e di dedurre nuove informazioni con specifiche regole di reazione. Un BRS costituisce quindi la \emph{dinamica} dei
+bigrafi.\\
+
+La definizione di un BRS richiede prima la definizione di altri concetti, come quello delle \emph{occorrenza} e di \emph{regola di reazione parametrica}.
+
+\begin{define}[Occorrenza]\label{def:occorrenza}
+Un bigrafo F occorre in un bigrafo G se l'equazione $G = C_1 \circ (F \otimes id_I) \circ C_0$ esiste per qualche interfaccia I e per qualche bigrafo $C_0$ e $C_1$.
+\end{define}
+
+L' identità $id_I$ è importante: consente a $C_1$ di avere figli in $C_0$ e in $F$, e consente a $C_0$ e $C_1$ di condividere link che non riguardano $F$.
+
+Il secondo concetto importante è quello di \emph{regola di reazione}. 
+
+\begin{define}[Regola di reazione]
+Una regola di reazione è della forma
+	\begin{center}
+	$R \to R'$
+	\end{center}
+dove $R$ si dice essere il \emph{redex} della regola, cioè il pattern da trovare e cambiare nel bigrafo a cui si applica la regola, e $R'$ è il \emph{reactum}, cioè il pattern
+che andrà a sostituire il redex.
+\end{define}
+
+Redex e reactum sono entrambi bigrafi, e possono occorrere (secondo la definizione \ref{def:occorrenza}) nel bigrafo a cui si applica la regola di reazione. Le regole di 
+reazione possono coinvolgere sia il link graph sia il place graph, come si può vedere da questo esempio.
+
+
+\subsection{Esempio}\label{sub:esempioBuilding}
+Nella figura \ref{fig:buildings} , è rappresentato un bigrafo che indica lo stato di un ambiente. Esso è formato da due costruzioni B (buildings), da quattro stanze R (rooms), da
+cinque agenti A e da quattro computer C. Il bigrafo ha le seguente segnatura: $K = \{A:2, B:1, C:2, R:0\}$.
+
+Il bigrafo rappresenta lo stato dell' ambiente, in cui i cinque agenti A stanno tenendo una video conferenza: gli agenti che stanno partecipando sono collegati dal link $e_0$. 
+Ogni agente che vuole partecipare deve essere collegato ad un computer. A sua volta i vari computer di una stessa costruzione sono collegati insieme, formando una LAN.\\
+
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (12,6);
+%Buildings
+\draw[thick] (3.0,2.5) ellipse ( 2.5 and 2.0);%B1
+\node[above left] at (5.3,4.0) {$B_1$};
+\draw[thick] (9.0,2.5) ellipse ( 2.5 and 2.0);%B2
+\node[above right] at (11.0,4.0) {$B_2$};
+%Rooms
+\draw[thick] (2.0,2.5) ellipse ( 0.8 and 1.5);%R1
+\draw[thick] (4.5,2.5) ellipse ( 0.8 and 1.2);%R2
+\draw[thick] (8.5,2.0) ellipse (  0.8 and 1.2);%R3
+\draw[thick] (10.4,2.5) ellipse ( 0.8 and 1.5);%R4
+%Agents
+\draw[very thick] (1.7,3.0) -- (2.3,3.0) -- (2.0,3.8) -- (1.7,3.0);%A1
+\draw[very thick] (3.0,3.0) -- (3.5,3.0) -- (3.25,4.0) -- (3.0,3.0);%A2 
+\draw[very thick] (4.2,2.5) -- (4.8,2.5) -- (4.5,3.5) -- (4.2,2.5);%A3 
+\draw[very thick] (7.0,2.5) -- (7.5,2.5) -- (7.25,3.5) -- (7.0,2.5);%A4 
+\draw[very thick] (10.0,2.5) -- (10.5,2.5) -- (10.25,3.5) -- (10.0,2.5);%A5 
+%Computers
+\draw[very thick] (1.8,2.0) rectangle (2.2,2.2);%C1
+\draw[very thick] (4.3,1.8) rectangle (4.8,2.0);%C2
+\draw[very thick] (8.3,1.5) rectangle (8.8,1.8);%C3
+\draw[very thick] (10.0,1.5) rectangle (10.5,1.8);%C4
+%Edges
+\node[below] at (4.0,5.0) {$e_0$};
+\draw [myGreen, thick] (2.0,3.8) to [out=90,in=180] (3.0,5.0) -- (9.0,5.0) to [out=0,in=90] (10.25,3.5);
+\draw [myGreen, thick] (3.25,4.0) to [out=90,in=180] (4.0,5.0);
+\draw [myGreen, thick] (4.5,3.5) to [out=90,in=180] (5.5,5.0);
+\draw [myGreen, thick] (7.25,3.5) to [out=90,in=0] (6.5,5.0);
+%Edges Agent Computer
+\draw [myGreen, thick] (2.0,3.0) -- (2.0,2.2);%A1-C1
+\draw [myGreen, thick] (3.25,3.0) -- (3.25,2.7);%A2 -
+\draw [myGreen, thick] (4.5,2.5) -- (4.5,2.0);%A3-C2
+\draw [myGreen, thick] (7.25,2.5) -- (7.25,2.25);%A4-
+\draw [myGreen, thick] (8.5,1.8) -- (8.5,2.1);%C3-
+\draw [myGreen, thick] (10.25,2.5) -- (10.25,1.8);%A5-C4
+%Edges Computer Building
+\draw [myGreen, thick] (2.0,2.0) to [out=270,in=90] (3.0,0.5);%C1
+\draw [myGreen, thick] (4.5,1.8) to [out=270,in=90] (3.0,0.5);%C2
+\draw [myGreen, thick] (8.5,1.5) to [out=270,in=90] (9.0,0.5);%C3
+\draw [myGreen, thick] (10.25,1.5) to [out=270,in=90] (9.0,0.5);%C4
+
+\end{tikzpicture}
+\caption{Esempio.\label{fig:buildings}}
+\end{figure}
+
+
+Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsReactions1}, \ref{fig:buildingsReactions2}, \ref{fig:buildingsReactions3}. Esse agiscono sul bigrafo di partenza (figura \ref{fig:buildings}) e sono così definite:
+
+\begin{itemize}
+	\item
+	La prima è la più semplice: un agente può lasciare la video chiamata. Il redex è la parte a sinistra della regola e può matchare qualsiasi agent. I due outername del redex
+	indicano che le porte dell' agent devono essere collegate (prima dello scatto della regola) a zero o più porte. Se l'agent è collegato ad altri in una videochiamata, egli
+	verrà disconnesso, mantenendo però attivo il collegamento al computer: questa informazione è espressa dal reactum, la parte destra della regola.
+	
+	\begin{figure}[!htbp]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,4);
+	%Redex
+	\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (3.0,4.0);
+	\draw[very thick] (1.0,1.0) -- (2.0,1.0) -- (1.5,3.0) -- (1.0,1.0);
+	\draw [myGreen, thick] (1.5,1.0) to [out=270, in=180] (2.0,0.5) to [out=0, in=270] (2.5,4.0);
+	\draw [myGreen, thick] (1.5,3.0) to [out=90, in=270] (1.5,4.0);
+		
+	\draw[->, very thick, red] (3.5,2.0) -- (4.5,2.0);
+
+	%Reactum
+	\draw[rounded corners=4mm,dotted, thick] (5.0,0.0) rectangle (8.0,4.0);
+	\draw[very thick] (6.0,1.0) -- (7.0,1.0) -- (6.5,3.0) -- (6.0,1.0);
+	\draw [myGreen, thick] (6.5,1.0) to [out=270, in=180] (7.0,0.5) to [out=0, in=270] (7.5,4.0);
+	\draw [myGreen, thick] (6.5,3.0) to [out=90, in=270] (6.7,3.5);
+	\draw [myGreen, thick] (6.3,3.5) to [out=90, in=270] (6.5,4.0);
+	\end{tikzpicture}
+	\caption{Prima regola di reazione\label{fig:buildingsReactions1}}
+	\end{figure}
+	
+	\item
+	La seconda regola prevede di matchare solo gli agent che non sono collegati a nessun computer e che si trova nella loro stessa stanza. Il reactum prevede che 
+	l'agent si ricolleghi a un tale computer. Se ci sono più computer nella stanza, la regola non si esprime su quale computer l' agent si debba ricollegare. Si noti un' 
+	importante dettaglio: agent e computer si trovano sotto la stessa radice, e quindi la regola scatta solo se essi si trovano dentro la stessa stanza, o dentro entrambi 
+	dentro lo stesso building.
+	
+	
+	\begin{figure}[!htbp]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,4);
+	%Redex
+	\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (3.0,4.0);
+	%Redex Agent
+	\draw[very thick] (1.2,2.0) -- (1.8,2.0) -- (1.5,3.0) -- (1.2,2.0);
+	%Redex Computer
+	\draw[very thick] (1.2,0.8) rectangle (1.8,1.0);
+	%Redex Edges
+	\draw [myGreen, thick] (1.8,0.9) to [out=0, in=270] (2.5,4.0);
+	\draw [myGreen, thick] (1.5,3.0) to [out=90, in=270] (1.5,4.0);
+	\draw [myGreen, thick] (1.3,1.5) to [out=90, in=270] (1.5,2.0);
+	\draw [myGreen, thick] (1.5,1.0) to [out=90, in=270] (1.7,1.5);
+	
+	\draw[->, very thick, red] (3.5,2.0) -- (4.5,2.0);
+
+	%Reactum
+	\draw[rounded corners=4mm,dotted, thick] (5.0,0.0) rectangle (8.0,4.0);
+	%Reactum Agent
+	\draw[very thick] (6.2,2.0) -- (6.8,2.0) -- (6.5,3.0) -- (6.2,2.0);
+	%Reactum Computer
+	\draw[very thick] (6.2,0.8) rectangle (6.8,1.0);
+	%Reactum Edges
+	\draw [myGreen, thick] (6.8,0.9) to [out=0, in=270] (7.5,4.0);
+	\draw [myGreen, thick] (6.5,3.0) to [out=90, in=270] (6.5,4.0);
+	\draw [myGreen, thick] (6.5,1.0) to [out=90, in=270] (6.5,2.0);
+	
+	\end{tikzpicture}
+	\caption{Seconda regola di reazione\label{fig:buildingsReactions2}}
+	\end{figure}
+		
+	\item
+	Mentre le prime due regole modificavano solamente il link graph, questa terza regola agisce anche sul place graph. Essa prevede lo spostamento di un agent in
+	una stanza. Si noti ancora una volta che l' agent e la stanza si trovano sotto la stessa radice. Questo implica che se assumiamo che ogni stanza sia dentro una
+	costruzione (building), allora questa regola scatta se e solo se l'agent si trova nella stesso building della stanza. In altre parole, non è possibile che un agent fuori
+	da un building entri direttamente in una stanza. Infine, si noti il sito presente sia nel redex che nel reactum: esso rappresenta i parametri della regola. Dentro questo
+	sito ci possono essere altri computer o altri agent. Se si togliesse tale sito dal redex, allora la regola scatterebbe solo se in tale stanza non ci fossero nè computer
+	nè agenti, cioè solo se fosse vuota.
+	
+	
+	\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,4);
+	%Redex
+	\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (3.0,4.0);
+	\draw[thick] (2.0,1.5) ellipse (1.0 and 1.5);
+	\draw[very thick] (0.0,2.0) -- (0.5,2.0) -- (0.25,3.0) -- (0.0,2.0);
+	\draw [myGreen, thick] (0.25,2.0) to [out=270, in=180] (0.5,1.8) to [out=0, in=270] (0.5,4.0);
+	\draw [myGreen, thick] (0.25,3.0) to [out=90, in=270] (0.25,4.0);
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey](1.5,0.7) rectangle (2.5, 1.2);
+	
+	\draw[->, very thick, red] (3.5,2.0) -- (4.5,2.0);
+	
+	%Reactum
+	\draw[rounded corners=4mm,dotted, thick] (5.0,0.0) rectangle (8.0,4.0);
+	\draw[thick] (7.0,1.5) ellipse (1.0 and 1.5);
+	\draw[very thick] (7.0,1.5) -- (7.5,1.5) -- (7.25,2.5) -- (7.0,1.5);
+	\draw [myGreen, thick] (7.25,1.5) to [out=270, in=180] (7.5,1.3) to [out=0, in=270] (7.5,4.0);
+	\draw [myGreen, thick] (7.25,2.5) to [out=90, in=270] (7.25,4.0);
+	\draw[rounded corners=1mm,dotted, thick, fill=myGrey](6.5,0.7) rectangle (7.5, 1.2);%Site
+	
+	\end{tikzpicture}
+	\caption{Terza regola di reazione\label{fig:buildingsReactions3}}
+	\end{figure}	
+\end{itemize}
+
+
+
+\subsection{Regole di reazione parametriche}
+
+\begin{define}[Matching]
+Il problema di trovare una o più occorrenze di un \emph{redex R} all'interno di un bigrafo B si chiama \emph{matching}. Nel caso in cui un \emph{match} venga trovato,
+esso viene denotato tramite la seguente equazione:
+\begin{center}
+$B = C \circ (R \otimes id_I) \circ D$
+\end{center}
+dove C è detto il \emph{contesto} e D sono i \emph{parametri} del match.
+\end{define}
+
+I bigrafi e la loro teoria ereditano ed estendono molte caratteristiche del CCS (\emph{Calculus of Communicating Systems}). Una di queste è la possibilità di isolare
+le zone che possono evolversi, cioè determinare quali nodi del bigrafo possono essere soggetti al processo di matching. Introduciamo quindi la nozione di 
+\emph{segnatura dinamica}.
+
+\begin{define}[Segnatura dinamica]
+Una segnatura è \emph{dinamica} se assegna ad ogni controllo $K$ uno stato nell'insieme $\{attivo, passivo \}$. Diciamo che un K-nodo è \emph{attivo}
+se il suo controllo è assegnato allo stato attivo; lo stesso vale per lo stato passivo.
+
+Un bigrafo $G: \left <m, X \right > \to \left <n, Y \right >$ è attivo su $i \in m$ se ogni nodo antenato del sito $i$ è attivo. Un bigrafo G si dice attivo, se è attivo su ogni
+sito.
+\end{define}
+
+Prima di scattare, una regola di reazione necessita del processo di matching, che trova l'occorrenza del redex della regola nel bigrafo. L'occorrenza sarà della forma 
+$B = C \circ (R \otimes id_I) \circ D$. Se il contesto C è attivo, allora la regola scatta, sostituendo l'occorrenza del redex con il reactum. Altrimenti, la regola non scatta.
+In questo senso si riesce ad isolare parti del sistema che non si vogliono fare evolvere.\\
+
+Si fornisce ora una definizione precisa di \emph{regola di reazione}. Si tenga a mente l'esempio \ref{sub:esempioBuilding}, in cui si presta particolare attenzione alla
+sostituzione del redex con il reactum.
+
+\begin{define}[Regola di reazione]
+Una regola di reazione $R \to R'$, dove il redex $R$ e il reactum $R'$ hanno la stessa interfaccia, è una trasformazione che, se applicata al bigrafo $B$, produce un nuovo
+bigrafo $B'$ secondo questa relazione:
+\begin{center}
+$B: C \circ (R \otimes id_I) \circ D \qquad \to \qquad B': C \circ (R' \otimes id_I) \circ D $
+\end{center}
+dove il contesto C è attivo.
+\end{define}
+
+Si noti che questa definizione richiede che $R$ e $R'$ abbiano la stessa interfaccia. Questo è in genere un vincolo troppo forte, che obbliga il progettista a scrivere regole
+di reazione limitative. Per esempio, non potrei copiare il contenuto, perchè i siti del reactum sarebbero uno in più di quelli del redex, rendendo la loro interfaccia interna
+diversa. Per indebolire questo vincolo, introduciamo il concetto di \emph{mappa di istanziazione} che porterà al concetto di \emph{regole di reazione parametriche}.
+
+\begin{define}[Mappa di istanziazione]
+Siano $\left <m, X \right >$ e $\left <m', X \right >$ le interfacce interne rispettivamente di $R$ e $R'$. Una \emph{mappa di istanzazione} è una funzione $\eta: m \to m'$
+che mappa siti di $R'$ in siti di $R$.
+\end{define}
+
+\begin{define}[Regola di riscrittura parametrica]
+Una regola di reazione parametrica è una tripla della forma:
+\begin{center}
+$(R: m \to I , R': m' \to I , \eta)$
+\end{center}
+dove $R$ e $R'$ sono rispettivamente il redex e il reactum della regola. Questa volta devono concordare solo sull'interfaccia esterna e sugli inner names.
+
+La regola di reazione parametrica, se applicata al bigrafo B, produce la reazione:
+\begin{center}
+$B = C \circ (R \otimes id_I) \circ D \qquad \to \qquad B' = C \circ (R' \otimes id_I) \circ \overline{\eta}(D)$
+\end{center}
+in cui la funzione $\overline{\eta}$ è definita come segue: 
+
+sia $g: \left <m, X \right >$ un bigrafo la cui FND è $g = \lambda \circ (d_0 \otimes \dots \otimes d_{m-1})$, allora
+\begin{center}
+$\overline{\eta}(g) = \lambda \circ (d'_0 || \dots || d'_{m-1})$
+\end{center}
+dove $d'_i \bumpeq d_{\eta(i)}$
+\end{define}
+
+
+\subsection{BRS}
+Si sono date tutte le nozioni necessarie per definire formalmente la dinamica di un bigrafo. Essa è costituita da un BRS (\emph{bigraphical reactive system}), che fa evolvere
+il bigrafo di partenza sulla base di regole ben precise, contenute al suo interno. Ogni BRS è costituito da una segnatura e da un insieme di regole: risulta quindi essere
+un sistema deduttivo, perchè composto rispettivamente da sintassi e semantica. 
+
+\begin{define}[BRS]
+Un sistema reattivo bigrafico (BRS) è definito attraverso una coppia $(K, R)$, dove $K$ è una segnatura e $R$ è un insieme di regole di reazione, e si indica con
+$BG(K, R)$. \\
+L'insieme delle regole $R$ è chiuso rispetto all'\emph{equivalenza sul supporto}: se $R \bumpeq S$ e $R' \bumpeq S'$ e $(R, R', \eta) \in R$ per un certo $\eta$, allora
+$(S, S', \eta) \in R$.
+\end{define}
+
+Si indichi ora con $B \to* B'$ il fatto che il bigrafo B' sia raggiungibile da B con zero o più regole di reazione. Si dimostra che, dato un bigrafo B la cui segnatura è K, il BRS
+denotato da $BG(K, R)$ computa ogni bigrafo B' tale che $B \to* B'$. Se si considerano quindi tutti i possibili B', si ha l'insieme di tutti i possibili stati in cui il sistema B può
+evolversi secondo le regole R.
+
+
+
+\subsection{Esempio}
+Vediamo ora un ultimo esempio, in cui si useranno le regole di reazione parametriche. Si vuole rappresentare l'operazione di moltiplicazione tramite i bigrafi. Incominciamo con la segnatura: ci sono tre controlli
+\begin{itemize}
+	\item
+	Mul, che rappresenta l'operazione di moltiplicazione. Ha arietà 0. Attivo.
+	\item
+	Num, che rappresenta il numero, anch'esso 0 porte. Passivo.
+	\item
+	One, rappresenta l'unità, con arietà 0. Passivo.
+\end{itemize}
+
+L'idea principale è che il nodo \emph{mul} contiene due numeri, cioè due nodi \emph{num}, che saranno quelli che dovranno essere moltiplicati. Si può anche optare per una versione ricorsiva, permettendo al nodo \emph{mul} di contenere anche altri nodi \emph{mul}. Infine, ogni numero è rappresentato come unione di varie unità. Per esempio, il numero 4 verrà rappresentano tramite il nodo \emph{num} contenente quattro nodi \emph{one}.
+
+Se vogliamo operare la moltiplicazione fra 4 e 2, allora il bigrafo equivalente sarà quello di figura \ref{fig:bigMul}.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (8,5);
+%Root
+\draw[rounded corners=4mm,dotted, thick] (1.0,0.0) rectangle (7.0,5.0);
+\node[below right] at (1.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (1.5,0.5) rectangle (6.5,4.5);%mul
+\node[below right] at (1.5,4.5) {mul};
+\draw[thick] (2.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (2.6,3.9) {num};
+\draw[thick] (2.0,3.0) rectangle (2.4,3.4);%one
+\node[above right] at (2.0,2.95) {1};
+\draw[thick] (2.8,3.0) rectangle (3.2,3.4);%one
+\node[above right] at (2.8,2.95) {1};
+\draw[thick] (2.0,2.4) rectangle (2.4,2.8);%one
+\node[above right] at (2.0,2.35) {1};
+\draw[thick] (2.8,2.4) rectangle (3.2,2.8);%one
+\node[above right] at (2.8,2.35) {1};
+\draw[thick] (5.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (5.2,3.9) {num};
+\draw[thick] (4.6,3.0) rectangle (5.0,3.4);%one
+\node[above right] at (4.6,2.95) {1};
+\draw[thick] (5.4,3.0) rectangle (5.8,3.4);%one
+\node[above right] at (5.4,2.95) {1};
+
+\end{tikzpicture}
+\caption{Moltiplicazione tramite bigrafi \label{fig:bigMul}}
+\end{figure}
+
+Per eseguire la moltiplicazione si usano solamente due regole di reazione, ma in maniera \emph{ricorsiva}. Esse ricalcano nel formalismo dei bigrafi questa semplice operazione: $a*b = (a-1)*b+b$. Distinguiamo quindi fra caso ricorsivo e caso base.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%%% REDEX %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (6.0,5.0);
+\node[below right] at (0.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (0.5,0.5) rectangle (5.5,4.5);%mul
+\node[below right] at (0.5,4.5) {mul};
+\draw[thick] (1.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (1.6,3.9) {num};
+\draw[thick] (1.0,3.0) rectangle (1.4,3.4);%one
+\node[above right] at (1.0,2.95) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (1.0,2.5) rectangle (2.1,2.9) ;%site 0
+\node[above] at (1.5,2.45) {0};
+\draw[thick] (4.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (4.2,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (3.5,3.0) rectangle (5.0,3.5) ;%site 1
+\node[above] at (4.3,3.0) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (2.0,1.0) rectangle (4.0,1.5) ;%site 2
+\node[above] at (3.0,1.0) {2};
+
+\draw[->, very thick, red] (6.1,2.5) -- (6.9,2.5);
+
+%%% REACTUM %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (7.0,0.0) rectangle (13.0,5.0);
+\node[below right] at (7.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (7.5,0.5) rectangle (12.5,4.5);%mul
+\node[below right] at (7.5,4.5) {mul};
+\draw[thick] (8.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (8.6,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (8.0,2.5) rectangle (9.1,2.9) ;%site 0
+\node[above] at (8.5,2.45) {0};
+\draw[thick] (11.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (11.2,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (10.5,3.0) rectangle (12.0,3.5) ;%site 1
+\node[above] at (11.3,3.0) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (8.0,1.0) rectangle (10.0,1.5) ;%site 2
+\node[above] at (9.0,1.0) {2};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (11.0,1.0) rectangle (12.0,1.5) ;%site 3
+\node[above] at (11.5,1.0) {3};
+
+%%% ARCHI PARAMETRICI %%%
+\draw[dashed, blue, very thick] (8.5,1.2) to [out=270,in=0] (3.7,1.2); % 2-2
+\draw[dashed, blue, very thick] (8.2,2.7) to [out=90,in=90] (2.0,2.7); % 0-0
+\draw[dashed, blue, very thick] (11.2,1.3) to [out=120,in=270] (4.8,3.3); % 3-1
+\draw[dashed, blue, very thick] (10.8,3.3) to [out=90,in=90] (4.0,3.3); % 1-1
+
+\end{tikzpicture}
+\caption{Caso ricorsivo \label{fig:bigMulRicorsive}}
+\end{figure}
+
+La regola del caso ricorsivo mette bene in evidenza l'importanza delle regole parametriche. Un sito del redex (1) viene copiato in una regione diversa, cioè dentro \emph{mul}. Questo ci consente di \emph{copiare} tutto il contenuto del secondo nodo \emph{num} dentro il nodo \emph{mul}. Infatti, il contenuto di \emph{mul} al di fuori dei nodi \emph{num} rappresenta la somma ($+b$) dell'uguaglianza $a*b = (a-1)*b + b$.\\
+Si noti che questa regola va applicata ricorsivamente fino a quando il primo nodo \emph{num} ha contenuto vuoto, cioè fino a quando il caso base è applicabile.
+
+
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%%% REDEX %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (6.0,5.0);
+\node[below right] at (0.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (0.5,0.5) rectangle (5.5,4.5);%mul
+\node[below right] at (0.5,4.5) {mul};
+\draw[thick] (1.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (1.6,3.9) {num};
+\draw[thick] (4.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (4.2,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (3.5,3.0) rectangle (5.0,3.5) ;%site 0
+\node[above] at (4.3,3.0) {0};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (2.0,1.0) rectangle (4.0,1.5) ;%site 1
+\node[above] at (3.0,1.0) {1};
+
+\draw[->, very thick, red] (6.1,2.5) -- (6.9,2.5);
+
+%%% REACTUM %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (7.0,0.0) rectangle (10.0,5.0);
+\node[below right] at (7.0,5.0) {0};
+%Nodes
+\draw[thick] (8.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (8.6,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (8.0,2.5) rectangle (9.1,2.9) ;%site 0
+\node[above] at (8.5,2.45) {0};
+
+%%% ARCHI PARAMETRICI %%%
+\draw[dashed, blue, very thick] (8.6,2.5) to [out=270,in=0] (3.7,1.2); % 0-1
+
+\end{tikzpicture}
+\caption{Caso Base \label{fig:bigMulBase}}
+\end{figure}
+
+
+Il caso base copia il contenuto di \emph{mul} dentro un nuovo nodo \emph{num}, che rappresenta il risultato della moltiplicazione. Nell'aritmetica classica, per risolvere ricorsivamente la moltiplicazione $2*4$ si operano questi passi:
+\begin{center}
+$result = 4*2 = (4-1)*2+2 = 3*2+2 \qquad$ (caso ricorsivo)
+$3*2 = (3-1)*2+2 = 2*2 +2  \qquad$ (caso ricorsivo)
+$2*2 = (2-1)*2+2 = 1*2 + 2 \qquad$ (caso ricorsivo)
+$1*2 = (1-1)*2+2 = 0*2+2 = 2 \qquad$ (caso base)
+\end{center}
+Seguendo la catena di uguaglianze, si trova che il risultato finale della moltiplicazione è: 
+\begin{center}
+$result = 4*2 = (((0*2+2)+2)+2)+2 = 2 + 2 + 2 + 2 = 8$.
+\end{center}
+
+
+
+Vediamo ora l'applicazione della prima regola ricorsiva sul bigrafo di partenza (figura \ref{fig:bigMul}). La prima operazione da eseguire è trovare l'occorrenza del redex nel
+bigrafo, che formalmente significa rispettare l'equazione $B = C \circ (R \otimes id_I) \circ D$, dove C è il contesto, R è il redex e D sono i parametri. Dato che tutti e tre sono
+bigrafi, possiamo disegnarli, come è stato fatto in figura \ref{fig:bigMulMatch}.
+
+\newpage
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,6);
+%%%   Contesto   %%%
+\node[above] at (1.5,5.5) {Contesto};
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (3.0,5.0);
+\node[below right] at (0.0,5.0) {0};
+%Site
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (1.0,1.0) rectangle (2.0,4.0) ;%site 0
+\node at (1.5,2.0) {0};
+
+%%%   Redex   %%%
+\node[above] at (7.0,5.5) {Redex};
+%Root
+\draw[rounded corners=4mm,dotted, thick] (4.0,0.0) rectangle (10.0,5.0);
+\node[below right] at (4.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (4.5,0.5) rectangle (9.5,4.5);%mul
+\node[below right] at (4.5,4.5) {mul};
+\draw[thick] (5.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (5.6,3.9) {num};
+\draw[thick] (5.0,3.0) rectangle (5.4,3.4);%one
+\node[above right] at (5.0,2.95) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (5.0,2.5) rectangle (6.1,2.9) ;%site 0
+\node[above] at (5.5,2.45) {0};
+\draw[thick] (8.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (8.2,3.9) {num};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (7.5,3.0) rectangle (9.0,3.5) ;%site 1
+\node[above] at (8.3,3.0) {1};
+\draw[rounded corners=1mm,dotted, thick, fill=myGrey] (6.0,1.0) rectangle (8.0,1.5) ;%site 2
+\node[above] at (7.0,1.0) {2};
+
+%%%   Parametri   %%%
+\node[above] at (12.5,5.5) {Parametri};
+\draw[rounded corners=4mm,dotted, thick] (10.8,0.0) rectangle (13.9,1.4);
+\node[below right] at (10.9,1.4) {0};
+\draw[thick] (11.0,0.5) rectangle (11.4,0.9);%one
+\node[above right] at (11.0,0.45) {1};
+\draw[thick] (12.0,0.5) rectangle (12.4,0.9);%one
+\node[above right] at (12.0,0.45) {1};
+\draw[thick] (13.0,0.5) rectangle (13.4,0.9);%one
+\node[above right] at (13.0,0.45) {1};
+
+\draw[rounded corners=4mm,dotted, thick] (10.8,1.6) rectangle (13.9,3.0);
+\node[below right] at (10.9,3.0) {1};
+\draw[thick] (12.0,2.0) rectangle (12.4,2.4);%one
+\node[above right] at (12.0,1.95) {1};
+\draw[thick] (13.0,2.0) rectangle (13.4,2.4);%one
+\node[above right] at (13.0,1.95) {1};
+\draw[rounded corners=4mm,dotted, thick] (10.8,3.2) rectangle (13.9,4.6);
+\node[below right] at (10.9,4.6) {2};
+
+
+\end{tikzpicture}
+\caption{Match decomposto \label{fig:bigMulMatch}}
+\end{figure}
+
+
+Il bigrafo finale, dopo 3 applicazioni della regola ricorsiva ed una della regola base, sarà quello di figura \ref{fig:bigMulFinal}.
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (6,5);
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (5.0,5.0);
+\node[below right] at (0.0,5.0) {0};
+%Nodes
+\draw[thick] (2.5,2.5) circle [radius=2.0];
+\node[above] at (2.5,4.0) {num};
+\draw[thick] (1.0,3.0) rectangle (1.4,3.4);%one
+\node[above right] at (1.0,2.95) {1};
+\draw[thick] (2.0,3.0) rectangle (2.4,3.4);%one
+\node[above right] at (2.0,2.95) {1};
+\draw[thick] (3.0,3.0) rectangle (3.4,3.4);%one
+\node[above right] at (3.0,2.95) {1};
+\draw[thick] (1.0,2.0) rectangle (1.4,2.4);%one
+\node[above right] at (1.0,1.95) {1};
+\draw[thick] (2.0,2.0) rectangle (2.4,2.4);%one
+\node[above right] at (2.0,1.95) {1};
+\draw[thick] (3.0,2.0) rectangle (3.4,2.4);%one
+\node[above right] at (3.0,1.95) {1};
+\draw[thick] (2.0,1.0) rectangle (2.4,1.4);%one
+\node[above right] at (2.0,0.95) {1};
+\draw[thick] (3.0,1.0) rectangle (3.4,1.4);%one
+\node[above right] at (3.0,0.95) {1};
+
+\end{tikzpicture}
+\caption{Bigrafo finale \label{fig:bigMulFinal}}
+\end{figure}
+
+L'implementazione di questo esempio si può trovare in \ref{}.
+
+Questo esempio mostra bene come le regole di reazione che formano il BRS rappresentano la semantica del sistema. Per evitare di sprecare memoria sul calcolatore, è necessario progettare con cura la segnature e l'insieme di regole del BRS. Nell'esempio di cui sopra, le regole erano soltanto due e potevano essere applicate ricorsivamente. Questo è preferibile ad avere $k$ regole e applicarle una dopo l'altra, appunto a causa dello spreco di memoria che si otterrebbe.
+
+
+
+
+
+
+

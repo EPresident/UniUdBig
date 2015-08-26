@@ -240,11 +240,16 @@ public class Isomorphism{
 		for(Integer h : aNodesHeight.keySet()){
 			for(PlaceEntity aNode : aNodesHeight.get(h)){
 				for(PlaceEntity bNode : bNodesHeight.get(h)){
-					//Property check
 					if(aNode.isNode() && bNode.isNode()){
 						Node aaNode = (Node) aNode;
 						Node bbNode = (Node) bNode;
+						//Property check
 						if(!matcher.areMatchable(a, aaNode, b, bbNode)){
+							BoolVar propVar = placeVars.get(h).get(aNode).get(bNode);
+							solver.post(ICF.arithm(propVar, "=", zeroVar));
+						}
+						//Control check
+						if(!aaNode.getControl().equals(bbNode.getControl())){
 							BoolVar propVar = placeVars.get(h).get(aNode).get(bNode);
 							solver.post(ICF.arithm(propVar, "=", zeroVar));
 						}
@@ -323,7 +328,7 @@ public class Isomorphism{
 						if(aN.getPorts().size() == bN.getPorts().size()){
 							for(int i=0; i<aN.getPorts().size(); i++){
 								Port aP = aN.getPort(i);
-								Port bP = aN.getPort(i);
+								Port bP = bN.getPort(i);
 								BoolVar pVar = pointVars.get(aP).get(bP);
 								BoolVar nVar = placeVars.get(h).get(aN).get(bN);
 								solver.post(ICF.arithm(pVar, "=", nVar));

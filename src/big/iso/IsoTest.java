@@ -18,7 +18,7 @@ import it.uniud.mads.jlibbig.core.std.Signature;
 public class IsoTest{
 	
 	public static void main(String[] args){
-		Bigraph[] exe1 = getExample2();
+		Bigraph[] exe1 = getExample3();
 		
 		Bigraph b1 = exe1[0];
 		Bigraph b2 = exe1[1];
@@ -110,4 +110,44 @@ public class IsoTest{
 	
 	
 	
+	private static Bigraph[] getExample3(){
+		Bigraph[] bigArray = new Bigraph[2];
+		
+		Control quad_ctrl = new Control("quadrato",true,1);
+		Control trian_ctrl = new Control("triangolo",true,1);
+		Control cerchio_ctrl = new Control("cerchio",true,1);
+		Signature signature = new Signature(quad_ctrl, trian_ctrl, cerchio_ctrl);
+		//First Bigraph
+		BigraphBuilder builder = new BigraphBuilder(signature);
+		Root root = builder.addRoot();
+		Node q1 = builder.addNode("quadrato",root);
+		Node t1 = builder.addNode("triangolo",q1);
+		Node c1 = builder.addNode("cerchio", root);
+		builder.relink(q1.getPort(0), c1.getPort(0));
+		bigArray[0] = builder.makeBigraph();
+		
+		//Second Bigraph
+		builder = new BigraphBuilder(signature);
+		root = builder.addRoot();
+		c1 = builder.addNode("cerchio", root);
+		q1 = builder.addNode("quadrato",root);
+		t1 = builder.addNode("triangolo",q1);
+		builder.relink(c1.getPort(0), t1.getPort(0));
+		bigArray[1] = builder.makeBigraph();
+		
+		return bigArray;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+

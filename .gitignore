@@ -25,6 +25,7 @@ lib/
 ##########################
 .project
 .classpath
+.settings
 
 # OS generated files #
 ######################

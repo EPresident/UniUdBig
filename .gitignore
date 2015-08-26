@@ -24,6 +24,7 @@ lib/
 # Eclipse Project Files #
 ##########################
 .project
+.classpath
 
 # OS generated files #
 ######################

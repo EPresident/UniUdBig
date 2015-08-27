@@ -31,7 +31,6 @@ public class TestMC {
         System.out.println(pp.prettyPrint(net, "Bigrafo iniziale"));
 
         RewritingRule[] rules = Utils.getNetFWRules();
-        BRS brs = new BRS(new BreadthFirstStrat(), rules);
 
         //Make attention to ALL the properties, both names and values.
         Bigraph aim = Utils.getAimHttpPayload();

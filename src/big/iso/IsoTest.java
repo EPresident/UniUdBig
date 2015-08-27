@@ -1,6 +1,5 @@
 package big.iso;
 
-import big.match.PropertyMatcher;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.Control;
@@ -23,8 +22,7 @@ public class IsoTest{
 		Bigraph b1 = exe1[0];
 		Bigraph b2 = exe1[1];
 		
-		PropertyMatcher matcher = new PropertyMatcher();
-		Isomorphism iso = new Isomorphism(matcher);
+		Isomorphism iso = new Isomorphism();
 		
 		System.out.println(iso.areIsomorph(b1, b2));
 		

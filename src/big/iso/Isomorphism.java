@@ -21,8 +21,6 @@ import org.chocosolver.solver.constraints.ICF;
 import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.VF;
 
-import big.match.OpenMatcher;
-
 /**
  * Class that checks if two bigraphs are isomorph.
  * Here the term "isomorph" takes this meaning: two bigraphs A and B are isomorph if and only if 
@@ -35,11 +33,7 @@ import big.match.OpenMatcher;
  */
 public class Isomorphism{
 	
-	private OpenMatcher matcher;
-	
-	public Isomorphism(OpenMatcher matcher){
-		this.matcher = matcher;
-	}
+	public Isomorphism(){}
 	
 	public boolean areIsomorph(Bigraph a, Bigraph b){
 		Solver solver = new Solver("Bigraph Isomorphism");
@@ -244,7 +238,7 @@ public class Isomorphism{
 						Node aaNode = (Node) aNode;
 						Node bbNode = (Node) bNode;
 						//Property check
-						if(!matcher.areMatchable(a, aaNode, b, bbNode)){
+						if(!areMatchable(a, aaNode, b, bbNode)){
 							BoolVar propVar = placeVars.get(h).get(aNode).get(bNode);
 							solver.post(ICF.arithm(propVar, "=", zeroVar));
 						}
@@ -342,6 +336,23 @@ public class Isomorphism{
 		
 		
 		return solver.findSolution();
+	}
+	
+	
+	
+	/**
+	 * Checks is two nodes, the first of "a" and the second of "b", are matchable. The default version
+	 * checks only if the two controls are equals. At any time, you can extend this class and override
+	 * this method to specify the way in which the two nodes are matchable.
+	 * 
+	 * @param a first bigraph
+	 * @param aNode node of the first bigraph
+	 * @param b second bigraph
+	 * @param bNode node of the first bigraph
+	 * @return
+	 */
+	protected boolean areMatchable(Bigraph a, Node aNode, Bigraph b, Node bNode){
+		 return aNode.getControl().equals(bNode.getControl());
 	}
 	
 }

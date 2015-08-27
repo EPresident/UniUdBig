@@ -54,17 +54,17 @@ public class BigStateGraph {
             PLACELINK_HASH = new PlaceLinkBHF();
     private Isomorphism iso;
 
-    public BigStateGraph(Bigraph big, BigHashFunction bhf) {
+    public BigStateGraph(Bigraph big, BigHashFunction bhf, Isomorphism isomorphism) {
         hashFunc = bhf;
         root = new BSGNode(big, hashFunc);
         nodes = new LinkedList<>();
         nodes.add(root);
         current = root;
-        this.iso = new Isomorphism(new PropertyMatcher());
+        this.iso = isomorphism;
     }
 
     public BigStateGraph(Bigraph big) {
-        this(big, PLACELINK_HASH);
+        this(big, PLACELINK_HASH, new Isomorphism());
     }
 
     /**

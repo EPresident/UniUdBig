@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  25 AUG 2015 20:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  27 AUG 2015 18:12
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -728,11 +728,8 @@ File: tikzlibrarymatrix.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.4)
 \c@define=\count152
 \c@prop=\count153
 \c@corol=\count154
- (./tesi.aux (./introduction.aux) (./bigraphs.aux) (./isomorfismo.aux
-
-LaTeX Warning: Label `fig:falseIso' multiply defined.
-
-) (./conclusions.aux) (./appendix.aux))
+ (./tesi.aux (./introduction.aux) (./bigraphs.aux) (./isomorfismo.aux) (./concl
+usions.aux) (./appendix.aux))
 \openout1 = `tesi.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
@@ -867,25 +864,22 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 
 LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
- line 34.
+ line 37.
 
 )
 \tf@toc=\write4
 \openout4 = `tesi.toc'.
 
- [2] (./tesi.lof)
+ [2] (./tesi.lof [3
+
+])
 \tf@lof=\write5
 \openout5 = `tesi.lof'.
 
- [3
-
-]
+ [4]
 \openout2 = `introduction.aux'.
 
- (./introduction.tex [4
-
-
-]
+ (./introduction.tex
 Introduzione.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--5
@@ -907,7 +901,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--22
 
  []
 
-[5]
+[5
+
+
+]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 28.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
@@ -1074,15 +1071,50 @@ Underfull \hbox (badness 10000) in paragraph at lines 61--63
  []
 
 [27]
-Underfull \hbox (badness 10000) in paragraph at lines 72--73
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+ []
+
+[28]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [29]
+[30] [31]
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
 
  []
 
 
-LaTeX Warning: Reference `fig:falsoIsoDecap' on page 28 undefined on input line
- 131.
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
 
-[28]) [29] [30
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 452--454
+
+ []
+
+[32]
+Underfull \hbox (badness 10000) in paragraph at lines 607--609
+
+ []
+
+[33] [34]) [35] [36
 
 
 ]
@@ -1090,26 +1122,26 @@ LaTeX Warning: Reference `fig:falsoIsoDecap' on page 28 undefined on input line
 
  (./conclusions.tex
 Conclusioni.
-) [31
+) [37
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [32
+ (./appendix.tex [38
 
 
 
 ]
 Appendice A.
-[33]
+[39]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 34 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 40 undefined on input
  line 28.
 
-) [34] (./tesi.bbl
+) [40] (./tesi.bbl
 Bibliografia.
-) [35
+) [41
 
 
 
@@ -1118,18 +1150,15 @@ Bibliografia.
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 17702 strings out of 493117
- 359860 string characters out of 6135433
- 444826 words of memory out of 5000000
- 20724 multiletter control sequences out of 15000+600000
+ 17773 strings out of 493117
+ 361234 string characters out of 6135433
+ 444890 words of memory out of 5000000
+ 20795 multiletter control sequences out of 15000+600000
  15348 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,10n,82p,789b,713s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,11n,82p,789b,713s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
@@ -1152,10 +1181,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (47 pages, 479208 bytes).
+Output written on tesi.pdf (53 pages, 502813 bytes).
 PDF statistics:
- 277 PDF objects out of 1000 (max. 8388607)
- 186 compressed objects within 2 object streams
+ 296 PDF objects out of 1000 (max. 8388607)
+ 199 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

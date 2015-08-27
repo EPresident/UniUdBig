@@ -43,4 +43,11 @@
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Place Graph e Link Graph del bigrafo \ref {fig:falseIso}}}{29}
 \contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph isomorfi}}}{29}
 \contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph isomorfi}}}{29}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Rete di flusso per l'isomorfismo tra place graphs. }}{30}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Soluzione della rete di flusso }}{31}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Esempio per il primo vincolo }}{32}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Esempio per il secondo vincolo }}{33}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Esempio per il vincolo sul flusso in uscita }}{33}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Esempio per il vincolo sul flusso in entrata }}{34}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Esempio di rete di flusso per il problema di isomorfismo tra link graphs. }}{35}
 \addvspace {10\p@ }

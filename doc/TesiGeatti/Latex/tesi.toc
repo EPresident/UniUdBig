@@ -27,9 +27,12 @@
 \contentsline {section}{\numberline {2.1}Formulazione del problema}{26}
 \contentsline {section}{\numberline {2.2}Strategia di soluzione}{27}
 \contentsline {subsection}{\numberline {2.2.1}Esempi}{28}
-\contentsline {chapter}{\numberline {}Conclusioni}{31}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{33}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{33}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{33}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{34}
-\contentsline {chapter}{\numberline {}Bibliografia}{35}
+\contentsline {section}{\numberline {2.3}Vincoli}{30}
+\contentsline {subsection}{\numberline {2.3.1}Vincoli per il place graph}{30}
+\contentsline {subsection}{\numberline {2.3.2}Vincoli per il link graph}{34}
+\contentsline {chapter}{\numberline {}Conclusioni}{37}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{39}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{39}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{39}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{40}
+\contentsline {chapter}{\numberline {}Bibliografia}{41}

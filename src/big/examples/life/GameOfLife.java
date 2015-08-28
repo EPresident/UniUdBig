@@ -18,7 +18,10 @@
 package big.examples.life;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.Control;
+import it.uniud.mads.jlibbig.core.std.Node;
+import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
 import java.util.LinkedList;
 import java.util.Random;
@@ -43,16 +46,120 @@ public class GameOfLife {
         this.rows = rows;
         columns = cols;
         Random randGen = new Random(seed);
-        int cells = rows * columns;
-        int liveCells;
+        int liveCellsN;
         do {
-            liveCells= randGen.nextInt();
-        }while(liveCells / cells < minDensity);
+            liveCellsN = randGen.nextInt(rows * cols);
+        } while (liveCellsN / (rows * cols) < minDensity);
         // TODO: Generate Bigraph...
+
+        //<editor-fold desc="Build Bigraph">
+        BigraphBuilder builder = new BigraphBuilder(SIGNATURE);
+        Root root = builder.addRoot();
+        // Add state nodes
+        builder.addNode("computeNextStates", root);
+        builder.addNode("update", root);
+        Node U = builder.addNode("nextStateUncomputed", root);
+        builder.addNode("nextStateLive", root);
+        builder.addNode("nextStateDead", root);
+        
+        Node[][] cells = new Node[rows][columns];
+        // Generate live cells at random
+        int liveCellsI[] = new int[liveCellsN],
+                liveCellsJ[] = new int[liveCellsN];
+        // Generate live cells coords
+        for (int i = 0; i < liveCellsN; i++) {
+            liveCellsI[i] = randGen.nextInt(cols);
+            liveCellsJ[i] = randGen.nextInt(rows);
+        }
+        // Create live cells
+        for (int i = 0; i < liveCellsN; i++) {
+            if (cells[liveCellsI[i]][liveCellsJ[i]] == null) {
+                cells[liveCellsI[i]][liveCellsJ[i]] = 
+                        builder.addNode("deadCell", root, null, U.getPort(0).getHandle());
+            }
+        }
+        // Create dead cells
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (cells[i][j] == null) {
+                    cells[i][j] = builder.addNode("deadCell", root,null, U.getPort(0).getHandle());
+                }
+            }
+        }
+        // Create links
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (wrapAround) {
+                    // north
+                    Node linkN = builder.addNode("link", cells[i][j],
+                            cells[i][(j + 1) % rows].getPort(0).getHandle());
+                    builder.addNode("north", linkN);
+                    // north-east
+                    Node linkNE = builder.addNode("link", cells[i][j],
+                            cells[(i + 1) % columns][(j + 1) % rows].getPort(0).getHandle());
+                    builder.addNode("northEast", linkNE);
+                    // east
+                    Node linkE = builder.addNode("link", cells[i][j],
+                            cells[(i + 1) % columns][j].getPort(0).getHandle());
+                    builder.addNode("east", linkE);
+                    // south-east
+                    Node linkSE = builder.addNode("link", cells[i][j],
+                            cells[(i + 1) % columns][(j - 1) % rows].getPort(0).getHandle());
+                    builder.addNode("southEast", linkSE);
+                    // south
+                    Node linkS = builder.addNode("link", cells[i][j],
+                            cells[i][(j - 1) % rows].getPort(0).getHandle());
+                    builder.addNode("south", linkS);
+                    // south-west
+                    Node linkSW = builder.addNode("link", cells[i][j],
+                            cells[(i - 1) % columns][(j - 1) % rows].getPort(0).getHandle());
+                    builder.addNode("southWest", linkSW);
+                    // west
+                    Node linkW = builder.addNode("link", cells[i][j],
+                            cells[(i - 1) % columns][j].getPort(0).getHandle());
+                    builder.addNode("west", linkW);
+                    // north-west
+                    Node linkNW = builder.addNode("link", cells[i][j],
+                            cells[(i - 1) % columns][(j + 1) % rows].getPort(0).getHandle());
+                    builder.addNode("northEast", linkNW);
+
+                } else {
+                    // north
+                    Node linkN = builder.addNode("link", cells[i][j]);
+                    builder.addNode("north", linkN);
+                    // north-east
+                    Node linkNE = builder.addNode("link", cells[i][j]);
+                    builder.addNode("northEast", linkNE);
+                    // east
+                    Node linkE = builder.addNode("link", cells[i][j]);
+                    builder.addNode("east", linkE);
+                    // south-east
+                    Node linkSE = builder.addNode("link", cells[i][j]);
+                    builder.addNode("southEast", linkSE);
+                    // south
+                    Node linkS = builder.addNode("link", cells[i][j]);
+                    builder.addNode("south", linkS);
+                    // south-west
+                    Node linkSW = builder.addNode("link", cells[i][j]);
+                    builder.addNode("southWest", linkSW);
+                    // west
+                    Node linkW = builder.addNode("link", cells[i][j]);
+                    builder.addNode("west", linkW);
+                    // north-west
+                    Node linkNW = builder.addNode("link", cells[i][j]);
+                    builder.addNode("northEast", linkNW);
+                }
+            }
+        }        
+        //</editor-fold>
+        gol = builder.makeBigraph();
     }
 
     public static void main(String[] args) {
 
+    }
+
+    private void generateRandomGoL() {
     }
 
     private static Signature generateSignature() {

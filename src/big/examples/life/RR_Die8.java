@@ -32,7 +32,7 @@ import it.uniud.mads.jlibbig.core.std.OuterName;
  * Rewriting Rule for cell death
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class RR_Die1 extends RewRuleWProps {
+public class RR_Die8 extends RewRuleWProps {
 
     private static final Bigraph redex, reactum;
     private static final InstantiationMap map;
@@ -67,7 +67,7 @@ public class RR_Die1 extends RewRuleWProps {
         builder.addSite(subject);
 
         // Neighbors
-        Node[] neighbors = addNeighbors(1, subject, (Node) r, builder);
+        Node[] neighbors = addNeighbors(8, subject, (Node) r, builder);
 
         return builder.makeBigraph();
     }
@@ -90,12 +90,12 @@ public class RR_Die1 extends RewRuleWProps {
         builder.addSite(subject);
 
         // Neighbors
-        Node[] neighbors = addNeighbors(1, subject, (Node) r, builder);
+        Node[] neighbors = addNeighbors(8, subject, (Node) r, builder);
 
         return builder.makeBigraph();
     }
 
-    public RR_Die1() {
+    public RR_Die8() {
         super(redex, reactum, map);
     }
 

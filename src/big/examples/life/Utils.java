@@ -47,7 +47,8 @@ public final class Utils {
                 out[i] = builder.addNode("deadCell", root, link, state);
             }
             builder.addSite(out[i]);
-            builder.addNode("link", out[i], subject.getPort(0).getHandle());
+            Node l = builder.addNode("link", out[i], subject.getPort(0).getHandle());
+            builder.addSite(l);
         }
         return out;
     }

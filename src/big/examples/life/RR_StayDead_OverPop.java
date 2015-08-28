@@ -58,8 +58,6 @@ public class RR_StayDead_OverPop extends RewRuleWProps {
         Node alpha = builder.addNode("computeNextStates", r);
         OuterName linkU = builder.addOuterName("linkU");
         Node u = builder.addNode("nextStateUncomputed", r, linkU);
-        OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateLive", r, linkL);
         OuterName linkD = builder.addOuterName("linkD");
         Node D = builder.addNode("nextStateDead", r, linkD);
 
@@ -89,8 +87,6 @@ public class RR_StayDead_OverPop extends RewRuleWProps {
         Node alpha = builder.addNode("computeNextStates", r);
         OuterName linkU = builder.addOuterName("linkU");
         Node u = builder.addNode("nextStateUncomputed", r, linkU);
-        OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateLive", r, linkL);
         OuterName linkD = builder.addOuterName("linkD");
         Node D = builder.addNode("nextStateDead", r, linkD);
 

@@ -59,8 +59,6 @@ public class RR_Live3 extends RewRuleWProps {
         Node u = builder.addNode("nextStateUncomputed", r, linkU);
         OuterName linkL = builder.addOuterName("linkL");
         Node L = builder.addNode("nextStateLive", r, linkL);
-        OuterName linkD = builder.addOuterName("linkD");
-        Node D = builder.addNode("nextStateDead", r, linkD);
 
         // Subject
         Node subject = builder.addNode("liveCell", r, null, linkU);
@@ -82,8 +80,6 @@ public class RR_Live3 extends RewRuleWProps {
         Node u = builder.addNode("nextStateUncomputed", r, linkU);
         OuterName linkL = builder.addOuterName("linkL");
         Node L = builder.addNode("nextStateLive", r, linkL);
-        OuterName linkD = builder.addOuterName("linkD");
-        Node D = builder.addNode("nextStateDead", r, linkD);
 
         // Subject
         Node subject = builder.addNode("liveCell", r, null, linkL);

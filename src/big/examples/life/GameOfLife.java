@@ -39,7 +39,7 @@ public class GameOfLife {
     private Bigraph gol;
     private final ControlHierarchy ctrlH = new ControlHierarchy();
 
-    public GameOfLife(int rows, int cols, long seed, double minDensity) {
+    public GameOfLife(int rows, int cols, long seed, double minDensity, boolean wrapAround) {
         this.rows = rows;
         columns = cols;
         Random randGen = new Random(seed);

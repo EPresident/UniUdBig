@@ -38,10 +38,12 @@ public class PropertyMatcher extends Matcher implements MultiMatcher{
 	}
 
     @Override
-    public Iterable<Iterable<? extends Match>> match(Bigraph agent, Bigraph... redexes) {
-        LinkedList<Iterable<? extends Match>> out = new LinkedList<>();
+    public Iterable<? extends Match> match(Bigraph agent, Bigraph... redexes) {
+        LinkedList<Match> out = new LinkedList<>();
         for(Bigraph redex : redexes){
-            out.add(match(agent, redex));
+            for(Match m : match(agent,redex)){
+                out.add(m);
+            }
         }
         return out;
     }

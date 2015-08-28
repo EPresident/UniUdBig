@@ -53,4 +53,32 @@ public final class Utils {
         return out;
     }
 
+    public static Node[] addDeadNeighbors(int num, Node subject, Node root, BigraphBuilder builder) {
+        Node[] out = new Node[num];
+
+        for (int i = 0; i < num; i++) {
+            OuterName link = builder.addOuterName("linkN" + i),
+                    state = builder.addOuterName("stateN" + i);
+            out[i] = builder.addNode("deadCell", root, link, state);
+            builder.addSite(out[i]);
+            Node l = builder.addNode("link", out[i], subject.getPort(0).getHandle());
+            builder.addSite(l);
+        }
+        return out;
+    }
+
+    public static Node[] addLiveNeighbors(int num, Node subject, Node root, BigraphBuilder builder) {
+        Node[] out = new Node[num];
+
+        for (int i = 0; i < num; i++) {
+            OuterName link = builder.addOuterName("linkN" + i),
+                    state = builder.addOuterName("stateN" + i);
+            out[i] = builder.addNode("liveCell", root, link, state);
+            builder.addSite(out[i]);
+            Node l = builder.addNode("link", out[i], subject.getPort(0).getHandle());
+            builder.addSite(l);
+        }
+        return out;
+    }
+
 }

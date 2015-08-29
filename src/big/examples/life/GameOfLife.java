@@ -17,6 +17,10 @@
  */
 package big.examples.life;
 
+import big.prprint.BigPPrinterVeryPretty;
+import big.prprint.DotLangPrinter;
+import it.uniud.mads.jlibbig.core.attachedProperties.SharedProperty;
+import it.uniud.mads.jlibbig.core.attachedProperties.SimpleProperty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.Control;
@@ -43,25 +47,41 @@ public class GameOfLife {
     private final ControlHierarchy ctrlH = new ControlHierarchy();
 
     public GameOfLife(int rows, int cols, long seed, double minDensity, boolean wrapAround) {
+        System.out.println("Creating GoL");
+        System.out.println("rows: " + rows + "; cols: " + cols);
         this.rows = rows;
         columns = cols;
         Random randGen = new Random(seed);
         int liveCellsN;
         do {
             liveCellsN = randGen.nextInt(rows * cols);
-        } while (liveCellsN / (rows * cols) < minDensity);
+        } while ((double) liveCellsN / ((double) rows * (double) cols) < minDensity);
         // TODO: Generate Bigraph...
 
+        System.out.println("Building Bigraph");
         //<editor-fold desc="Build Bigraph">
         BigraphBuilder builder = new BigraphBuilder(SIGNATURE);
         Root root = builder.addRoot();
+        System.out.println("Building state");
         // Add state nodes
-        builder.addNode("computeNextStates", root);
-        builder.addNode("update", root);
+        Node alpha = builder.addNode("computeNextStates", root);
+        alpha.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("Name", "alpha")));
+
+        Node beta = builder.addNode("update", root);
+        beta.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("Name", "beta")));
         Node U = builder.addNode("nextStateUncomputed", root);
-        builder.addNode("nextStateLive", root);
-        builder.addNode("nextStateDead", root);
-        
+        U.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("Name", "u")));
+        Node L = builder.addNode("nextStateLive", root);
+        L.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("Name", "L")));
+        Node D = builder.addNode("nextStateDead", root);
+        D.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("Name", "D")));
+
+        System.out.println("building live cells");
         Node[][] cells = new Node[rows][columns];
         // Generate live cells at random
         int liveCellsI[] = new int[liveCellsN],
@@ -74,18 +94,24 @@ public class GameOfLife {
         // Create live cells
         for (int i = 0; i < liveCellsN; i++) {
             if (cells[liveCellsI[i]][liveCellsJ[i]] == null) {
-                cells[liveCellsI[i]][liveCellsJ[i]] = 
-                        builder.addNode("deadCell", root, null, U.getPort(0).getHandle());
+                cells[liveCellsI[i]][liveCellsJ[i]]
+                        = builder.addNode("liveCell", root, null, U.getPort(0).getHandle());
+                cells[liveCellsI[i]][liveCellsJ[i]].attachProperty(new SharedProperty<String>(
+                        new SimpleProperty<String>("Name", "Live_Cell")));
             }
         }
+        System.out.println("Building dead cells");
         // Create dead cells
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (cells[i][j] == null) {
-                    cells[i][j] = builder.addNode("deadCell", root,null, U.getPort(0).getHandle());
+                    cells[i][j] = builder.addNode("deadCell", root, null, U.getPort(0).getHandle());
+                    cells[i][j].attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Dead_Cell")));
                 }
             }
         }
+        System.out.println("Creating links");
         // Create links
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -93,36 +119,67 @@ public class GameOfLife {
                     // north
                     Node linkN = builder.addNode("link", cells[i][j],
                             cells[i][(j + 1) % rows].getPort(0).getHandle());
-                    builder.addNode("north", linkN);
+                    linkN.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    Node dir = builder.addNode("north", linkN);
+                    dir.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "North")));
                     // north-east
                     Node linkNE = builder.addNode("link", cells[i][j],
                             cells[(i + 1) % columns][(j + 1) % rows].getPort(0).getHandle());
-                    builder.addNode("northEast", linkNE);
+                    linkNE.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("northEast", linkNE);
+                    dir.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "NorthEast")));
                     // east
                     Node linkE = builder.addNode("link", cells[i][j],
                             cells[(i + 1) % columns][j].getPort(0).getHandle());
-                    builder.addNode("east", linkE);
+                    linkE.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("east", linkE);
+                    dir.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "East")));
                     // south-east
                     Node linkSE = builder.addNode("link", cells[i][j],
-                            cells[(i + 1) % columns][(j - 1) % rows].getPort(0).getHandle());
-                    builder.addNode("southEast", linkSE);
+                            cells[(i + 1) % columns][(j - 1 + rows) % rows].getPort(0).getHandle());
+                    linkSE.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("southEast", linkSE);
+                    dir.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "SouthEast")));
                     // south
                     Node linkS = builder.addNode("link", cells[i][j],
-                            cells[i][(j - 1) % rows].getPort(0).getHandle());
-                    builder.addNode("south", linkS);
+                            cells[i][(j - 1 + rows) % rows].getPort(0).getHandle());
+                    linkS.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("south", linkS);
+                    dir.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("Name", "South")));
                     // south-west
                     Node linkSW = builder.addNode("link", cells[i][j],
-                            cells[(i - 1) % columns][(j - 1) % rows].getPort(0).getHandle());
-                    builder.addNode("southWest", linkSW);
+                            cells[(i - 1 + columns) % columns][(j - 1 + rows) % rows].getPort(0).getHandle());
+                    linkSW.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir =builder.addNode("southWest", linkSW);
+                    dir.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("Name", "SouthWest")));
                     // west
                     Node linkW = builder.addNode("link", cells[i][j],
-                            cells[(i - 1) % columns][j].getPort(0).getHandle());
-                    builder.addNode("west", linkW);
+                            cells[(i - 1 + columns) % columns][j].getPort(0).getHandle());
+                    linkW.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("west", linkW);
+                    dir.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("Name", "West")));
                     // north-west
                     Node linkNW = builder.addNode("link", cells[i][j],
-                            cells[(i - 1) % columns][(j + 1) % rows].getPort(0).getHandle());
-                    builder.addNode("northEast", linkNW);
-
+                            cells[(i - 1 + columns) % columns][(j + 1) % rows].getPort(0).getHandle());
+                    linkNW.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link")));
+                    dir = builder.addNode("northEast", linkNW);
+                    dir.attachProperty(new SharedProperty<String>(
+				new SimpleProperty<String>("Name", "NorthWest")));
                 } else {
                     // north
                     Node linkN = builder.addNode("link", cells[i][j]);
@@ -150,13 +207,21 @@ public class GameOfLife {
                     builder.addNode("northEast", linkNW);
                 }
             }
-        }        
+        }
         //</editor-fold>
         gol = builder.makeBigraph();
     }
 
-    public static void main(String[] args) {
+    public GameOfLife() {
+        this(3, 3, 2163162267L, 0, true);
+    }
 
+    public static void main(String[] args) {
+        GameOfLife gol = new GameOfLife();
+        DotLangPrinter dlp = new DotLangPrinter();
+        BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
+        //dlp.printDotFile(gol.gol, "GameOfLife", "gol");
+        System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
     }
 
     private void generateRandomGoL() {

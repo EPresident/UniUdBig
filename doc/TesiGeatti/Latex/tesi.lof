@@ -50,4 +50,15 @@
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Esempio per il vincolo sul flusso in uscita }}{33}
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Esempio per il vincolo sul flusso in entrata }}{34}
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Esempio di rete di flusso per il problema di isomorfismo tra link graphs. }}{35}
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Esempio per il primo vincolo. }}{36}
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Esempio per il secondo vincolo. }}{37}
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Esempio per i due vincoli sul flusso in uscita. }}{37}
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Esempio per i due vincoli sul flusso in entrata. }}{38}
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Esempio di grafo degli stati. }}{40}
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Grafo degli stati infinito. }}{41}
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Regola di inoltro tra router. }}{42}
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Bigrafo di partenza }}{43}
+\contentsline {figure}{\numberline {2.19}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{44}
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Grafo degli stati infinito. }}{44}
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Grafo degli stati finito. }}{44}
 \addvspace {10\p@ }

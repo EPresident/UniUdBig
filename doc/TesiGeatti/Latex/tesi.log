@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  27 AUG 2015 18:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  29 AUG 2015 16:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -864,7 +864,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 
 LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
- line 37.
+ line 40.
 
 )
 \tf@toc=\write4
@@ -1114,34 +1114,52 @@ Underfull \hbox (badness 10000) in paragraph at lines 607--609
 
  []
 
-[33] [34]) [35] [36
+[33] [34] [35] [36] [37] [38] [39] [40]
+Underfull \hbox (badness 10000) in paragraph at lines 1165--1166
+
+ []
 
 
-]
+Underfull \hbox (badness 10000) in paragraph at lines 1165--1166
+
+ []
+
+[41] [42]
+
+LaTeX Warning: Reference `fig:forwardRuleBig' on page 43 undefined on input lin
+e 1339.
+
+
+Underfull \vbox (badness 1062) has occurred while \output is active []
+
+ [43])
+[44]
 \openout2 = `conclusions.aux'.
 
  (./conclusions.tex
 Conclusioni.
-) [37
+) [45
+
+
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [38
+ (./appendix.tex [46
 
 
 
 ]
 Appendice A.
-[39]
+[47]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 40 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 48 undefined on input
  line 28.
 
-) [40] (./tesi.bbl
+) [48] (./tesi.bbl
 Bibliografia.
-) [41
+) [49
 
 
 
@@ -1152,13 +1170,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 17773 strings out of 493117
- 361234 string characters out of 6135433
- 444890 words of memory out of 5000000
- 20795 multiletter control sequences out of 15000+600000
+ 17860 strings out of 493117
+ 363142 string characters out of 6135433
+ 445394 words of memory out of 5000000
+ 20882 multiletter control sequences out of 15000+600000
  15348 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,11n,82p,789b,713s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,11n,82p,789b,788s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
@@ -1181,10 +1199,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (53 pages, 502813 bytes).
+Output written on tesi.pdf (61 pages, 544754 bytes).
 PDF statistics:
- 296 PDF objects out of 1000 (max. 8388607)
- 199 compressed objects within 2 object streams
+ 323 PDF objects out of 1000 (max. 8388607)
+ 217 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

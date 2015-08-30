@@ -28,36 +28,68 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Builds the graph (pseudo)randomly. This strategy has no way of telling when 
- * all possible states have been generated.
+ * Choose an execution path (pseudo)randomly. This strategy has no way of 
+ * telling when all possible states have been generated. It just follows one 
+ * path until no rules can be applied (i.e. a leaf is reached in the BSG).
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class TrueRandomSim extends Sim {
 
     private final Random randomGen;
-    private final LinkedList<BSGNode> nodeQueue;
+    private BSGNode currentNode;
 
     public TrueRandomSim(Bigraph big, RewritingRule[] rwrls) {
         super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
-        nodeQueue = new LinkedList<>();
-        nodeQueue.add(bsg.getRoot());
+        currentNode = bsg.getRoot();
         randomGen = new Random();
+    }
+
+    public TrueRandomSim(Bigraph big, RewritingRule[] rwrls, long seed) {
+        super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+        currentNode = bsg.getRoot();
+        randomGen = new Random(seed);
     }
 
     @Override
     public void step() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
+        int size = ras.size();
+        if (size > 0) {
+            int rand = randomGen.nextInt(size - 1);
+            RuleApplication ra = ras.get(rand);
+            BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRuleName(), ra.getBig());
+            if (newNode != null) {
+                currentNode = newNode;
+            }
+        } else {
+            currentNode = null;
+        }
     }
 
     @Override
     public List<RuleApplication> stepAndGet() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
+        int size = ras.size();
+        if (size > 0) {
+            int rand = randomGen.nextInt(size - 1);
+            RuleApplication ra = ras.get(rand);
+            BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRuleName(), ra.getBig());
+            if (newNode != null) {
+                currentNode = newNode;
+            }
+            LinkedList<RuleApplication> ret = new LinkedList<>();
+            ret.add(ra);
+            return ret;
+        } else {
+            currentNode = null;
+            return new LinkedList<>();
+        }
     }
 
     @Override
     public boolean simOver() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return currentNode == null;
     }
 
 }

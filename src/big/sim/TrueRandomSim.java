@@ -91,5 +91,16 @@ public class TrueRandomSim extends Sim {
     public boolean simOver() {
         return currentNode == null;
     }
+    
+    /**
+     * Gets the state computed in the last step() or stepAndGet() call.
+     * @return A Bigraph representing the current state, or null.
+     */
+    public Bigraph getCurrentState(){
+        if(currentNode != null){
+            return currentNode.getState();
+        }
+        return null;
+    }
 
 }

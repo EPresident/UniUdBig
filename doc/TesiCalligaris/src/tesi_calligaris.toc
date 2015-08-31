@@ -1,0 +1,22 @@
+\select@language {italian}
+\select@language {italian}
+\contentsline {chapter}{\numberline {1}Introduzione}{1}
+\contentsline {chapter}{\numberline {2}Teoria dei bigrafi}{3}
+\contentsline {section}{\numberline {2.1}Segnatura}{3}
+\contentsline {section}{\numberline {2.2}Place graph}{3}
+\contentsline {section}{\numberline {2.3}Link graph}{3}
+\contentsline {section}{\numberline {2.4}Bigrafo}{3}
+\contentsline {section}{\numberline {2.5}Operazioni sui bigrafi}{3}
+\contentsline {chapter}{\numberline {3}Simulazione di BRS}{5}
+\contentsline {section}{\numberline {3.1}La libreria JLibBig}{5}
+\contentsline {section}{\numberline {3.2}Rappresentare i Bigrafi}{5}
+\contentsline {section}{\numberline {3.3}Rappresentare le Regole di Riscrittura}{5}
+\contentsline {section}{\numberline {3.4}Modellare il BRS}{5}
+\contentsline {paragraph}{Implementazione}{6}
+\contentsline {paragraph}{Strategie}{6}
+\contentsline {section}{\numberline {3.5}Grafo degli stati}{6}
+\contentsline {section}{\numberline {3.6}Comporre il Simulatore}{6}
+\contentsline {section}{\numberline {3.7}Visualizzare i Bigrafi}{7}
+\contentsline {section}{\numberline {3.8}Esempi e applicazioni}{7}
+\contentsline {subsection}{\numberline {3.8.1}Il Gioco della Vita di Conway}{7}
+\contentsline {section}{\numberline {3.9}Conclusioni}{8}

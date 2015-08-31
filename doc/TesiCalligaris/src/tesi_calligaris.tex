@@ -1,0 +1,99 @@
+%
+% PREAMBOLO
+%
+\RequirePackage[l2tabu, orthodox]{nag} % Pacchetto nag per controllo errori sorgente
+\documentclass[11pt,UdineBachThesis,italian]{PhdThesis}  % laurea triennale
+
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{lipsum}
+
+% Teoremi
+\newtheorem{teo}{Teorema}
+\newtheorem*{nota}{Notazione}
+\newtheorem*{term}{Terminologia}
+\newtheorem*{dimo}{Dimostrazione}
+% Traduzioni
+
+% Direttive
+\makeindex
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%			INIZIO DOC
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\title{Simulazione di Sistemi Reattivi Bigrafici}
+\author{Elia Calligaris}
+\email{eliac_mail@libero.it}
+\supervisor{Prof. Marino Miculan}
+\cosupervisor{Dott. Marco Peressotti}
+\date{2014-2015}
+
+\begin{document}
+\pagestyle{empty}
+\maketitle
+\partstyle{serifbig}
+\chaptertitlestyle{serifbig}
+\pagestyle{serif}
+\frontmatter
+\begin{dedication}
+\emph{A coloro che mi hanno donato la parola,\newline ed a coloro che mi hanno insegnato ad usarla.}
+\end{dedication}
+
+\tableofcontents
+
+%\chapter*{Prefazione}
+%\addcontentsline{toc}{chapter}{Prefazione}
+%\lipsum
+
+\mainmatter
+\chapter{Introduzione}
+%\pagestyle{empty}
+%\addcontentsline{toc}{chapter}{Introduzione}
+
+\chapter{Teoria dei bigrafi}
+\pagestyle{plain}
+\section{Segnatura}
+\section{Place graph}
+\section{Link graph}
+\section{Bigrafo}
+\section{Operazioni sui bigrafi}
+
+% % % % % % % % % % % % % % % % % % % % % % % 
+%			CAP 2							%
+% % % % % % % % % % % % % % % % % % % % % % % 
+\chapter{Simulazione di BRS}
+Si immagini di avere un sistema che si vuole rappresentare usando il formalismo dei bigrafi. Si immagini di aver definito un'adeguata segnatura, un bigrafo rappresentante lo stato iniziale, e un insieme adeguato di regole di reazione. Si vuole ora costruire un programma che permetta di \emph{simulare} l'evoluzione del sistema definito sopra.
+Innanzitutto bisogna implementare la segnatura, i bigrafi e le regole: per questo ci si appoggia alla libreria JLibBig.
+Poi si pone il problema di come far evolvere il sistema, dato che le regole di reazione vengono applicate in modo non-deterministico: non esiste un solo percorso lineare di evoluzione, bensì ve ne sono molteplici, alcuni dei quali magari non hanno senso concretamente; possono addirittura formarsi cicli nell'evoluzione degli stati, portando un eventuale processo di simulazione a non terminare. In buona sostanza, può risultare necessario tenere traccia di tutte le applicazioni delle regole di reazione e di tutti gli stati generati, in modo da poter decidere in seguito quali ci interessano e quali no. 
+
+\`E evidente che un un simulatore è un costrutto complesso: al fine di semplificarne la comprensione, nonché l'implementazione, si propone di suddividerlo in moduli, che verranno discussi uno ad uno. Saranno altre-sì discusse le basi implementative necessarie.
+
+\section{La libreria JLibBig}
+
+\section{Rappresentare i Bigrafi}
+
+\section{Rappresentare le Regole di Riscrittura}
+
+\section{Modellare il BRS}
+Il modulo BRS ha un semplice compito: dato un bigrafo ed un insieme di regole di riscrittura, esso applica queste ultime al bigrafo, producendo una lista di bigrafi che rappresentano tutti i possibili stati successivi; Non viene fatto alcun controllo di sorta sul risultato. 
+%Si tenga conto che ogni regola può essere applicata più volte, in quanto il \emph{redex} può avere più di un match: questo significa che, anche con poche regole di riscrittura, lo stato del sistema può ramificarsi significativamente.
+\paragraph{Implementazione} Nello specifico, BRS produce una lista di coppie \newline$(bigrafo,regolaRiscrittura)$, in modo che gli altri moduli del simulatore possano capire che regola ha prodotto una data evoluzione del sistema.
+\paragraph{Strategie} Il modulo BRS è stato implementato in modo da poter definire con che criterio vengono applicate le regole di reazione: per esempio, è possibile definire delle regole di riscrittura con priorità, e far sì che BRS le rispetti. Tuttavia, nella maggior parte dei casi pratici, questa versatilità ha un impatto trascurabile.
+
+
+\section{Grafo degli stati}
+\lipsum[1]
+\section{Comporre il Simulatore}
+\lipsum[1]
+\section{Visualizzare i Bigrafi}
+\lipsum[1]
+\section{Esempi e applicazioni}
+\subsection{Il Gioco della Vita di Conway}
+\lipsum[1-2]
+% altro...
+\section{Conclusioni}
+\lipsum[1-2]
+\end{document}

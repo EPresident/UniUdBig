@@ -5,6 +5,8 @@
  */
 package big.predicate;
 
+import java.util.Iterator;
+
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.Match;
 import big.match.PropertyMatcher;
@@ -36,10 +38,9 @@ public class WarioPredicate implements Predicate {
 
     @Override
     public boolean isSatisfied(Bigraph big) {
-        // return "Wario";
         for(Match m : matcher.match(big, B)){
             if(p1.isSatisfied(m.getContext()) && p2.isSatisfied(m.getRedex()) && p3.isSatisfied(m.getParam())){
-                return true;
+            	return true;
             }
         }
         return false;

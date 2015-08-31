@@ -21,8 +21,6 @@ package big.examples;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
-import it.uniud.mads.jlibbig.core.std.Control;
-import it.uniud.mads.jlibbig.core.std.InstantiationMap;
 import it.uniud.mads.jlibbig.core.std.Matcher;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
@@ -30,6 +28,8 @@ import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
 
 import java.util.Iterator;
+
+import big.prprint.BigPPrinterVeryPretty;
 
 /**
  * Esempio di moltiplicazione implementata con bigrafi.
@@ -40,22 +40,12 @@ public class Mult {
     public static Signature signature;
 
     public static void main(String[] args) {
-		Control mul_ctrl = new Control("mul", true, 0);
-		Control num_ctrl = new Control("num", false, 0);
-		Control one_ctrl = new Control("one", false, 0);
-		signature = new Signature(mul_ctrl, num_ctrl, one_ctrl);
+    	signature = Utils.getMultSignature();
+    	RewritingRule[] rules = Utils.getMultRules(signature);
 //recursive
-        Bigraph redex_recursive = makeRedexRecursive();
-        Bigraph reactum_recursive = makeReactumRecursive();
-        int[] map_r = {0, 1, 2, 1};
-        InstantiationMap map_recursive = new InstantiationMap(3, map_r);
-        RewritingRule mult_recursive = new RewritingRule(redex_recursive, reactum_recursive, map_recursive);
+		RewritingRule mult_recursive = rules[0];
 //base
-        Bigraph redex_base = makeRedexBase();
-        Bigraph reactum_base = makeReactumBase();
-        int[] map_b = {0};
-        InstantiationMap map_base = new InstantiationMap(2, map_b);
-        RewritingRule mult_base = new RewritingRule(redex_base, reactum_base, map_base);
+        RewritingRule mult_base = rules[1];
 //reality
         BigraphBuilder builder = new BigraphBuilder(signature);
         Root r1 = builder.addRoot();
@@ -72,62 +62,19 @@ public class Mult {
 //See "RewritingRule.java" line 240.
 //Iterator<Bigraph> iterator = mult_recursive.apply(bigraph).iterator();
         Matcher matcher = new Matcher();
-        while (matcher.match(bigraph, redex_recursive).iterator().hasNext()
-                && !matcher.match(bigraph, redex_base).iterator().hasNext()) {
+        while (matcher.match(bigraph, mult_recursive.getRedex()).iterator().hasNext()
+                && !matcher.match(bigraph, mult_base.getRedex()).iterator().hasNext()) {
             Iterator<Bigraph> iterator = mult_recursive.apply(bigraph).iterator();
             bigraph = iterator.next();
             System.out.println("caso ricorsivo");
         }
-        if (matcher.match(bigraph, redex_base).iterator().hasNext()) {
+        if (matcher.match(bigraph, mult_base.getRedex()).iterator().hasNext()) {
             bigraph = mult_base.apply(bigraph).iterator().next();
             System.out.println("caso base");
         }
-        System.out.println(bigraph + "\n\n ok");
+        BigPPrinterVeryPretty printer = new BigPPrinterVeryPretty();
+        System.out.println(printer.prettyPrint(bigraph, "Result"));
     }
 
-    public static Bigraph makeRedexRecursive() {
-        BigraphBuilder builder = new BigraphBuilder(signature);
-        Root r1 = builder.addRoot();
-        Node mul = builder.addNode("mul", r1);
-        Node num1 = builder.addNode("num", mul);
-        builder.addSite(num1);
-        Node one = builder.addNode("one", num1);
-        Node num2 = builder.addNode("num", mul);
-        builder.addSite(num2);
-        builder.addSite(mul);
-        return builder.makeBigraph();
-    }
-
-    public static Bigraph makeReactumRecursive() {
-        BigraphBuilder builder = new BigraphBuilder(signature);
-        Root r1 = builder.addRoot();
-        Node mul = builder.addNode("mul", r1);
-        Node num1 = builder.addNode("num", mul);
-        builder.addSite(num1);
-        Node num2 = builder.addNode("num", mul);
-        builder.addSite(num2);
-        builder.addSite(mul);
-        builder.addSite(mul);
-        return builder.makeBigraph();
-    }
-
-    public static Bigraph makeRedexBase() {
-        BigraphBuilder builder = new BigraphBuilder(signature);
-        Root r1 = builder.addRoot();
-        Node mul = builder.addNode("mul", r1);
-        Node num1 = builder.addNode("num", mul);
-        Node num2 = builder.addNode("num", mul);
-        builder.addSite(mul);
-        builder.addSite(num2);
-        return builder.makeBigraph();
-    }
-
-    public static Bigraph makeReactumBase() {
-        BigraphBuilder builder = new BigraphBuilder(signature);
-        Root r1 = builder.addRoot();
-        Node num1 = builder.addNode("num", r1);
-        builder.addSite(num1);
-        return builder.makeBigraph();
-    }
 
 }

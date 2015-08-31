@@ -1,7 +1,8 @@
 package big.mc;
 
-import big.predicate.Predicate;
 import big.brs.RuleApplication;
+import big.bsg.BigStateGraph;
+import big.predicate.Predicate;
 import big.sim.Sim;
 
 /**
@@ -61,5 +62,13 @@ public class ModelChecker {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns the entire graph computed by Sim.
+	 * @return
+	 */
+	public BigStateGraph getGraph(){
+		return sim.getGraph();
 	}
 }

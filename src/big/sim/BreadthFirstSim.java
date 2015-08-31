@@ -21,8 +21,10 @@ import big.brs.BreadthFirstStrat;
 import big.brs.RuleApplication;
 import big.bsg.BSGNode;
 import big.bsg.BigStateGraph;
+import big.prprint.BigPPrinterVeryPretty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class BreadthFirstSim extends Sim {
         Iterable<RuleApplication> ras = brs.apply_RA(node.getState());
         LinkedList<RuleApplication> lra = new LinkedList<>();
         for (RuleApplication ra : ras) {
-            BSGNode newNode = bsg.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
+        	BSGNode newNode = bsg.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
             if (newNode != null) {
                 nodeQueue.add(newNode);
             }

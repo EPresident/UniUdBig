@@ -47,10 +47,10 @@ public class GameOfLife {
         new RR_Live2(), new RR_Die2(), new RR_Reproduce3(), new RR_updateD(),
         new RR_updateL(), new RR_StartComputingStates(), new RR_StartUpdating()
     };
-    
+
     private int rows, columns;
     private Bigraph gol;
-     
+
     private final ControlHierarchy ctrlH = new ControlHierarchy();
 
     public GameOfLife(int rows, int cols, long seed, double minDensity, boolean wrapAround) {
@@ -61,10 +61,10 @@ public class GameOfLife {
         Random randGen = new Random(seed);
         int liveCellsN;
         do {
-            liveCellsN = randGen.nextInt(rows * cols);
+            liveCellsN = 1 + randGen.nextInt(rows * cols - 1);
         } while ((double) liveCellsN / ((double) rows * (double) cols) < minDensity);
         // TODO: Generate Bigraph...
-/*
+
         System.out.println("Building Bigraph");
         //<editor-fold desc="Build Bigraph">
         BigraphBuilder builder = new BigraphBuilder(SIGNATURE);
@@ -88,7 +88,6 @@ public class GameOfLife {
         D.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "D")));
 
-        System.out.println("building live cells");
         Node[][] cells = new Node[rows][columns];
         // Generate live cells at random
         int liveCellsI[] = new int[liveCellsN],
@@ -98,33 +97,40 @@ public class GameOfLife {
             liveCellsI[i] = randGen.nextInt(cols);
             liveCellsJ[i] = randGen.nextInt(rows);
         }
-        // Create live cells
-        for (int i = 0; i < liveCellsN; i++) {
-            if (cells[liveCellsI[i]][liveCellsJ[i]] == null) {
-                cells[liveCellsI[i]][liveCellsJ[i]]
-                        = builder.addNode("liveCell", root, null, U.getPort(0).getHandle());
-                cells[liveCellsI[i]][liveCellsJ[i]].attachProperty(new SharedProperty<String>(
-                        new SimpleProperty<String>("Name", "Live_Cell")));
-            }
-        }
         System.out.println("Building dead cells");
         // Create dead cells
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 if (cells[i][j] == null) {
-                    cells[i][j] = builder.addNode("deadCell", root, null, U.getPort(0).getHandle());
+                    cells[i][j] = builder.addNode("cell", root, null, U.getPort(0).getHandle());
                     cells[i][j].attachProperty(new SharedProperty<String>(
-                            new SimpleProperty<String>("Name", "Dead_Cell")));
+                            new SimpleProperty<String>("Name", "Dead Cell")));
                 }
+            }
+        }
+        System.out.println("Adding some life...");
+        // Give Gifts, Give Life
+        for (int i = 0; i < liveCellsN; i++) {
+            int m = liveCellsI[i], n = liveCellsJ[i];
+            if (cells[m][n] != null) {
+                Node life = builder.addNode("life", cells[m][n]);
+                life.attachProperty(new SharedProperty<String>(
+                        new SimpleProperty<String>("Name", "Life Token")));
+                cells[m][n].detachProperty("Name");
+                cells[m][n].attachProperty(new SharedProperty<String>(
+                        new SimpleProperty<String>("Name", "Live Cell")));
             }
         }
         System.out.println("Creating links");
         // Create links
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
+                Node lh = builder.addNode("linkHolder", cells[i][j]);
+                lh.attachProperty(new SharedProperty<String>(
+                            new SimpleProperty<String>("Name", "Link Holder")));
                 if (wrapAround) {
                     // north
-                    Node linkN = builder.addNode("link", cells[i][j],
+                    Node linkN = builder.addNode("link", lh,
                             cells[i][(j + 1) % rows].getPort(0).getHandle());
                     linkN.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
@@ -132,7 +138,7 @@ public class GameOfLife {
                     dir.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "North")));
                     // north-east
-                    Node linkNE = builder.addNode("link", cells[i][j],
+                    Node linkNE = builder.addNode("link", lh,
                             cells[(i + 1) % columns][(j + 1) % rows].getPort(0).getHandle());
                     linkNE.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
@@ -140,7 +146,7 @@ public class GameOfLife {
                     dir.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "NorthEast")));
                     // east
-                    Node linkE = builder.addNode("link", cells[i][j],
+                    Node linkE = builder.addNode("link", lh,
                             cells[(i + 1) % columns][j].getPort(0).getHandle());
                     linkE.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
@@ -148,7 +154,7 @@ public class GameOfLife {
                     dir.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "East")));
                     // south-east
-                    Node linkSE = builder.addNode("link", cells[i][j],
+                    Node linkSE = builder.addNode("link", lh,
                             cells[(i + 1) % columns][(j - 1 + rows) % rows].getPort(0).getHandle());
                     linkSE.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
@@ -156,67 +162,67 @@ public class GameOfLife {
                     dir.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "SouthEast")));
                     // south
-                    Node linkS = builder.addNode("link", cells[i][j],
+                    Node linkS = builder.addNode("link", lh,
                             cells[i][(j - 1 + rows) % rows].getPort(0).getHandle());
                     linkS.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
                     dir = builder.addNode("south", linkS);
                     dir.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("Name", "South")));
+                            new SimpleProperty<String>("Name", "South")));
                     // south-west
-                    Node linkSW = builder.addNode("link", cells[i][j],
+                    Node linkSW = builder.addNode("link", lh,
                             cells[(i - 1 + columns) % columns][(j - 1 + rows) % rows].getPort(0).getHandle());
                     linkSW.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
-                    dir =builder.addNode("southWest", linkSW);
+                    dir = builder.addNode("southWest", linkSW);
                     dir.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("Name", "SouthWest")));
+                            new SimpleProperty<String>("Name", "SouthWest")));
                     // west
-                    Node linkW = builder.addNode("link", cells[i][j],
+                    Node linkW = builder.addNode("link", lh,
                             cells[(i - 1 + columns) % columns][j].getPort(0).getHandle());
                     linkW.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
                     dir = builder.addNode("west", linkW);
                     dir.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("Name", "West")));
+                            new SimpleProperty<String>("Name", "West")));
                     // north-west
-                    Node linkNW = builder.addNode("link", cells[i][j],
+                    Node linkNW = builder.addNode("link", lh,
                             cells[(i - 1 + columns) % columns][(j + 1) % rows].getPort(0).getHandle());
                     linkNW.attachProperty(new SharedProperty<String>(
                             new SimpleProperty<String>("Name", "Link")));
                     dir = builder.addNode("northEast", linkNW);
                     dir.attachProperty(new SharedProperty<String>(
-				new SimpleProperty<String>("Name", "NorthWest")));
+                            new SimpleProperty<String>("Name", "NorthWest")));
                 } else {
                     // north
-                    Node linkN = builder.addNode("link", cells[i][j]);
+                    Node linkN = builder.addNode("link", lh);
                     builder.addNode("north", linkN);
                     // north-east
-                    Node linkNE = builder.addNode("link", cells[i][j]);
+                    Node linkNE = builder.addNode("link", lh);
                     builder.addNode("northEast", linkNE);
                     // east
-                    Node linkE = builder.addNode("link", cells[i][j]);
+                    Node linkE = builder.addNode("link", lh);
                     builder.addNode("east", linkE);
                     // south-east
-                    Node linkSE = builder.addNode("link", cells[i][j]);
+                    Node linkSE = builder.addNode("link", lh);
                     builder.addNode("southEast", linkSE);
                     // south
-                    Node linkS = builder.addNode("link", cells[i][j]);
+                    Node linkS = builder.addNode("link", lh);
                     builder.addNode("south", linkS);
                     // south-west
-                    Node linkSW = builder.addNode("link", cells[i][j]);
+                    Node linkSW = builder.addNode("link", lh);
                     builder.addNode("southWest", linkSW);
                     // west
-                    Node linkW = builder.addNode("link", cells[i][j]);
+                    Node linkW = builder.addNode("link", lh);
                     builder.addNode("west", linkW);
                     // north-west
-                    Node linkNW = builder.addNode("link", cells[i][j]);
+                    Node linkNW = builder.addNode("link", lh);
                     builder.addNode("northEast", linkNW);
                 }
             }
         }
         //</editor-fold>
-        gol = builder.makeBigraph();*/
+        gol = builder.makeBigraph();
     }
 
     public GameOfLife() {
@@ -228,17 +234,17 @@ public class GameOfLife {
         DotLangPrinter dlp = new DotLangPrinter();
         BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
         //dlp.printDotFile(gol.gol, "GameOfLife", "gol");
-/*        System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
-        
-        TrueRandomSim sim = new TrueRandomSim(gol.gol, RULES, 47L);
-        int loops = 10;
-        while(loops-->0 && !sim.simOver()){
-            sim.step();
-            Bigraph step = sim.getCurrentState();
-            if(step!=null){
-                System.out.println(pprt.prettyPrint(step, "step "+(loops+9)));
-            }
-        }*/
+        System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
+
+        /*TrueRandomSim sim = new TrueRandomSim(gol.gol, RULES, 47L);
+         int loops = 10;
+         while(loops-->0 && !sim.simOver()){
+         sim.step();
+         Bigraph step = sim.getCurrentState();
+         if(step!=null){
+         System.out.println(pprt.prettyPrint(step, "step "+(loops+9)));
+         }
+         }*/
     }
 
     private void generateRandomGoL() {
@@ -251,7 +257,7 @@ public class GameOfLife {
         controls.add(new Control("life", true, 0));
 
         // Links
-        controls.add(new Control("linkHolder",true,0));
+        controls.add(new Control("linkHolder", true, 0));
         controls.add(new Control("link", true, 1));
         controls.add(new Control("north", true, 0));
         controls.add(new Control("northEast", true, 0));

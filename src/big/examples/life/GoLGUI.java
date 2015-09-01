@@ -16,6 +16,9 @@
  */
 package big.examples.life;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 /**
  *
  * @author EPresident <prez_enquiry@hotmail.com>
@@ -56,6 +59,31 @@ public class GoLGUI extends javax.swing.JFrame {
         initComponents();
         setVisible(true);        
     }
+    
+    @Override
+    public void paint(Graphics g){
+        //super.paint(g);
+        paintComponents(g);
+        draw();
+    }
+    
+    public void draw(){
+        Graphics2D g = (Graphics2D)drawPanel.getGraphics();
+        
+        drawGrid(g);
+    }
+    
+    private void drawGrid(Graphics2D g){
+        int w = drawPanel.getWidth(),
+                h = drawPanel.getHeight();
+        int cs = Math.min(w, h)/Math.min(rows, cols); // Cell (edge) Size 
+        for (int i = 0; i <= cols; i++) {
+            g.drawLine(0, i*cs, cs*cols, i*cs);
+        }
+        for (int i = 0; i <= rows; i++) {
+            g.drawLine(i*cs, 0, i*cs, cs*rows);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -87,6 +115,8 @@ public class GoLGUI extends javax.swing.JFrame {
             .addGap(0, 500, Short.MAX_VALUE)
         );
 
+        getContentPane().add(drawPanel, java.awt.BorderLayout.CENTER);
+
         controlPanel.setBackground(new java.awt.Color(102, 102, 102));
         controlPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Controls", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 11), new java.awt.Color(255, 255, 255))); // NOI18N
         controlPanel.setPreferredSize(new java.awt.Dimension(800, 100));
@@ -102,20 +132,7 @@ public class GoLGUI extends javax.swing.JFrame {
             .addGap(0, 78, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(drawPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(drawPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        getContentPane().add(controlPanel, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

@@ -25,7 +25,6 @@ import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.Root;
 import java.util.LinkedList;
 import java.util.List;
-import static big.examples.life.Utils.*;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 
 /**

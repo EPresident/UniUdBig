@@ -43,7 +43,8 @@ import java.util.Random;
 public class GameOfLife {
 
     public static final Signature SIGNATURE = generateSignature();
-    private static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p()
+    private static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p(),
+        new RR_Live2()
     };
     
     private int rows, columns;

@@ -25,11 +25,11 @@ import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.Root;
 import java.util.LinkedList;
 import java.util.List;
-import static big.examples.life.Utils.*;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 
 /**
- * Rewriting Rule for cell staying alive
+ * Rewriting Rule for cell life when there are two live cells
+ *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
 public class RR_Live2 extends RewRuleWProps {
@@ -42,10 +42,10 @@ public class RR_Live2 extends RewRuleWProps {
         redex = generateRedex();
         reactum = generateReactum();
         int[] v = new int[17];
-        for (int i = 0; i < 17; i++) {
-            v[i]=i;
+        for (int i = 0; i < v.length; i++) {
+            v[i] = i;
         }
-        map = new InstantiationMap(17, v);
+        map = new InstantiationMap(v.length, v);
         auxProperties = new LinkedList<>();
     }
 
@@ -54,19 +54,88 @@ public class RR_Live2 extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node alpha = builder.addNode("computeNextStates", r);
+        Node alpha = builder.addNode("alpha", r);
         OuterName linkU = builder.addOuterName("linkU");
-        Node u = builder.addNode("nextStateUncomputed", r, linkU);
+        Node u = builder.addNode("u", r, linkU);
         OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateLive", r, linkL);
+        Node L = builder.addNode("L", r, linkL);
 
-        // Subject
-        Node subject = builder.addNode("liveCell", r, null, linkU);
-        builder.addSite(subject);
+        // Live Subject
+        OuterName linkS = builder.addOuterName("linkS");
+        Node subject = builder.addNode("cell", r, linkS, linkU);
+        builder.addNode("life", subject);
+        Node lhS = builder.addNode("linkHolder", subject);
+        builder.addSite(lhS);
+        
 
         // Neighbors
-        Node[] neighbors = addNeighbors(2, subject, (Node) r, builder);
-
+        // add live cell 1
+        OuterName linkN = builder.addOuterName("linkN0");
+        OuterName stateN = builder.addOuterName("stateN0");
+        Node n = builder.addNode("cell", r, linkN, stateN);
+        builder.addNode("life", n);
+        Node lh = builder.addNode("linkHolder", n);
+        Node l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add live cell 2
+        linkN = builder.addOuterName("linkN1");
+        stateN = builder.addOuterName("stateN1");
+        n = builder.addNode("cell", r, linkN, stateN);
+        builder.addNode("life", n);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 3
+        linkN = builder.addOuterName("linkN2");
+        stateN = builder.addOuterName("stateN2");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 4
+        linkN = builder.addOuterName("linkN3");
+        stateN = builder.addOuterName("stateN3");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 5
+        linkN = builder.addOuterName("linkN4");
+        stateN = builder.addOuterName("stateN4");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 6
+        linkN = builder.addOuterName("linkN5");
+        stateN = builder.addOuterName("stateN5");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 7
+        linkN = builder.addOuterName("linkN6");
+        stateN = builder.addOuterName("stateN6");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 8
+        linkN = builder.addOuterName("linkN7");
+        stateN = builder.addOuterName("stateN7");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        
         return builder.makeBigraph();
     }
 
@@ -75,19 +144,88 @@ public class RR_Live2 extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node alpha = builder.addNode("computeNextStates", r);
+        Node alpha = builder.addNode("alpha", r);
         OuterName linkU = builder.addOuterName("linkU");
-        Node u = builder.addNode("nextStateUncomputed", r, linkU);
+        Node u = builder.addNode("u", r, linkU);
         OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateLive", r, linkL);
+        Node L = builder.addNode("L", r, linkL);
 
-        // Subject
-        Node subject = builder.addNode("liveCell", r, null, linkL);
-        builder.addSite(subject);
+        // Live Subject
+        OuterName linkS = builder.addOuterName("linkS");
+        Node subject = builder.addNode("cell", r, linkS, linkL);
+        builder.addNode("life", subject);
+        Node lhS = builder.addNode("linkHolder", subject);
+        builder.addSite(lhS);
+        
 
         // Neighbors
-        Node[] neighbors = addNeighbors(2, subject, (Node) r, builder);
-
+        // add live cell 1
+        OuterName linkN = builder.addOuterName("linkN0");
+        OuterName stateN = builder.addOuterName("stateN0");
+        Node n = builder.addNode("cell", r, linkN, stateN);
+        builder.addNode("life", n);
+        Node lh = builder.addNode("linkHolder", n);
+        Node l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add live cell 2
+        linkN = builder.addOuterName("linkN1");
+        stateN = builder.addOuterName("stateN1");
+        n = builder.addNode("cell", r, linkN, stateN);
+        builder.addNode("life", n);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 3
+        linkN = builder.addOuterName("linkN2");
+        stateN = builder.addOuterName("stateN2");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 4
+        linkN = builder.addOuterName("linkN3");
+        stateN = builder.addOuterName("stateN3");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 5
+        linkN = builder.addOuterName("linkN4");
+        stateN = builder.addOuterName("stateN4");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 6
+        linkN = builder.addOuterName("linkN5");
+        stateN = builder.addOuterName("stateN5");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 7
+        linkN = builder.addOuterName("linkN6");
+        stateN = builder.addOuterName("stateN6");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        // add dead cell 8
+        linkN = builder.addOuterName("linkN7");
+        stateN = builder.addOuterName("stateN7");
+        n = builder.addNode("cell", r, linkN, stateN);
+        lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);
+        builder.addSite(lh);
+        
         return builder.makeBigraph();
     }
 

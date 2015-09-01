@@ -19,6 +19,8 @@ package big.examples.life;
 
 import big.prprint.BigPPrinterVeryPretty;
 import big.prprint.DotLangPrinter;
+import big.rules.RewRuleWProps;
+import big.sim.TrueRandomSim;
 import it.uniud.mads.jlibbig.core.attachedProperties.SharedProperty;
 import it.uniud.mads.jlibbig.core.attachedProperties.SimpleProperty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
@@ -41,9 +43,12 @@ import java.util.Random;
 public class GameOfLife {
 
     public static final Signature SIGNATURE = generateSignature();
-
+    private static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p()
+    };
+    
     private int rows, columns;
     private Bigraph gol;
+     
     private final ControlHierarchy ctrlH = new ControlHierarchy();
 
     public GameOfLife(int rows, int cols, long seed, double minDensity, boolean wrapAround) {
@@ -57,27 +62,27 @@ public class GameOfLife {
             liveCellsN = randGen.nextInt(rows * cols);
         } while ((double) liveCellsN / ((double) rows * (double) cols) < minDensity);
         // TODO: Generate Bigraph...
-
+/*
         System.out.println("Building Bigraph");
         //<editor-fold desc="Build Bigraph">
         BigraphBuilder builder = new BigraphBuilder(SIGNATURE);
         Root root = builder.addRoot();
         System.out.println("Building state");
         // Add state nodes
-        Node alpha = builder.addNode("computeNextStates", root);
+        Node alpha = builder.addNode("alpha", root);
         alpha.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "alpha")));
 
-        Node beta = builder.addNode("update", root);
+        Node beta = builder.addNode("beta", root);
         beta.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "beta")));
-        Node U = builder.addNode("nextStateUncomputed", root);
+        Node U = builder.addNode("u", root);
         U.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "u")));
-        Node L = builder.addNode("nextStateLive", root);
+        Node L = builder.addNode("L", root);
         L.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "L")));
-        Node D = builder.addNode("nextStateDead", root);
+        Node D = builder.addNode("D", root);
         D.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "D")));
 
@@ -209,7 +214,7 @@ public class GameOfLife {
             }
         }
         //</editor-fold>
-        gol = builder.makeBigraph();
+        gol = builder.makeBigraph();*/
     }
 
     public GameOfLife() {
@@ -221,7 +226,17 @@ public class GameOfLife {
         DotLangPrinter dlp = new DotLangPrinter();
         BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
         //dlp.printDotFile(gol.gol, "GameOfLife", "gol");
-        System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
+/*        System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
+        
+        TrueRandomSim sim = new TrueRandomSim(gol.gol, RULES, 47L);
+        int loops = 10;
+        while(loops-->0 && !sim.simOver()){
+            sim.step();
+            Bigraph step = sim.getCurrentState();
+            if(step!=null){
+                System.out.println(pprt.prettyPrint(step, "step "+(loops+9)));
+            }
+        }*/
     }
 
     private void generateRandomGoL() {
@@ -230,10 +245,11 @@ public class GameOfLife {
     private static Signature generateSignature() {
         LinkedList<Control> controls = new LinkedList<>();
         // Cells
-        controls.add(new Control("deadCell", true, 2));
-        controls.add(new Control("liveCell", true, 2));
+        controls.add(new Control("cell", true, 2));
+        controls.add(new Control("life", true, 0));
 
         // Links
+        controls.add(new Control("linkHolder",true,0));
         controls.add(new Control("link", true, 1));
         controls.add(new Control("north", true, 0));
         controls.add(new Control("northEast", true, 0));
@@ -245,11 +261,11 @@ public class GameOfLife {
         controls.add(new Control("northWest", true, 0));
 
         // Status controls
-        controls.add(new Control("nextStateUncomputed", true, 1));
-        controls.add(new Control("nextStateDead", true, 1));
-        controls.add(new Control("nextStateLive", true, 1));
-        controls.add(new Control("computeNextStates", true, 0)); // alpha
-        controls.add(new Control("update", true, 0)); // beta
+        controls.add(new Control("u", true, 1)); // state uncomputed
+        controls.add(new Control("D", true, 1)); // next state alive
+        controls.add(new Control("L", true, 1)); // next state dead
+        controls.add(new Control("alpha", true, 0)); // compute states phase
+        controls.add(new Control("beta", true, 0)); // update states phase
         return new Signature(controls);
     }
 

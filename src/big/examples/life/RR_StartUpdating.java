@@ -40,7 +40,7 @@ public class RR_StartUpdating extends RewRuleWProps {
     static {
         redex = generateRedex();
         reactum = generateReactum();
-        map = new InstantiationMap(1, 0);
+        map = new InstantiationMap(0);
         auxProperties = new LinkedList<>();
     }
 
@@ -49,8 +49,8 @@ public class RR_StartUpdating extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node alpha = builder.addNode("computeNextStates", r);
-        Node u = builder.addNode("nextStateUncomputed", r);
+        Node alpha = builder.addNode("alpha", r);
+        Node u = builder.addNode("u", r);
 
         return builder.makeBigraph();
     }
@@ -60,8 +60,8 @@ public class RR_StartUpdating extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node beta = builder.addNode("update", r);
-        Node u = builder.addNode("nextStateUncomputed", r);
+        Node beta = builder.addNode("beta", r);
+        Node u = builder.addNode("u", r);
         
         return builder.makeBigraph();
     }

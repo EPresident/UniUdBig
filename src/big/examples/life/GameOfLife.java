@@ -44,7 +44,8 @@ public class GameOfLife {
 
     public static final Signature SIGNATURE = generateSignature();
     private static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p(),
-        new RR_Live2(), new RR_Die2()
+        new RR_Live2(), new RR_Die2(), new RR_Reproduce3(), new RR_updateD(),
+        new RR_updateL(), new RR_StartComputingStates(), new RR_StartUpdating()
     };
     
     private int rows, columns;

@@ -28,10 +28,10 @@ import java.util.List;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 
 /**
- * Rewriting Rule for updating a cell from Live to Live
+ * Rewriting Rule for updating a cell to Live
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class RR_LtoL extends RewRuleWProps {
+public class RR_updateL extends RewRuleWProps {
 
     private static final Bigraph redex, reactum;
     private static final InstantiationMap map;
@@ -40,7 +40,7 @@ public class RR_LtoL extends RewRuleWProps {
     static {
         redex = generateRedex();
         reactum = generateReactum();
-        map = new InstantiationMap(1, 0);
+        map = new InstantiationMap(2, 1);
         auxProperties = new LinkedList<>();
     }
 
@@ -49,16 +49,18 @@ public class RR_LtoL extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node beta = builder.addNode("update", r);
+        Node beta = builder.addNode("beta", r);
         OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateDead", r, linkL);
+        Node L = builder.addNode("L", r, linkL);
         OuterName linkU = builder.addOuterName("linkU");
-        Node u = builder.addNode("nextStateUncomputed", r, linkU);
+        Node u = builder.addNode("u", r, linkU);
 
         // Subject
         OuterName neighbors = builder.addOuterName("neighbors");
-        Node subject = builder.addNode("liveCell", r, neighbors, linkL);
+        Node subject = builder.addNode("cell", r, neighbors, linkL);
         builder.addSite(subject);
+        Node lh = builder.addNode("linkHolder", subject);
+        builder.addSite(lh);
 
         return builder.makeBigraph();
     }
@@ -68,22 +70,22 @@ public class RR_LtoL extends RewRuleWProps {
         Root r = builder.addRoot();
 
         // State
-        Node beta = builder.addNode("update", r);
+        Node beta = builder.addNode("beta", r);
         OuterName linkL = builder.addOuterName("linkL");
-        Node L = builder.addNode("nextStateDead", r, linkL);
+        Node L = builder.addNode("L", r, linkL);
         OuterName linkU = builder.addOuterName("linkU");
-        Node u = builder.addNode("nextStateUncomputed", r, linkU);
+        Node u = builder.addNode("u", r, linkU);
 
-        
         // Subject
         OuterName neighbors = builder.addOuterName("neighbors");
-        Node subject = builder.addNode("liveCell", r, neighbors, linkU);
-        builder.addSite(subject);
-
+        Node subject = builder.addNode("cell", r, neighbors, linkU);
+        builder.addNode("life", subject);
+        Node lh = builder.addNode("linkHolder", subject);
+        builder.addSite(lh);
         return builder.makeBigraph();
     }
 
-    public RR_LtoL() {
+    public RR_updateL() {
         super(redex, reactum, map);
     }
 

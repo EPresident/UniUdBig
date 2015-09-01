@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  29 AUG 2015 16:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  30 AUG 2015 14:55
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1075,11 +1075,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--75
 
  []
 
-[28]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [29]
-[30] [31]
+[28] [29] [30] [31]
 Underfull \hbox (badness 10000) in paragraph at lines 452--454
 
  []
@@ -1115,51 +1111,51 @@ Underfull \hbox (badness 10000) in paragraph at lines 607--609
  []
 
 [33] [34] [35] [36] [37] [38] [39] [40]
-Underfull \hbox (badness 10000) in paragraph at lines 1165--1166
+Underfull \hbox (badness 10000) in paragraph at lines 1168--1169
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1165--1166
+Underfull \hbox (badness 10000) in paragraph at lines 1168--1169
 
  []
 
-[41] [42]
 
-LaTeX Warning: Reference `fig:forwardRuleBig' on page 43 undefined on input lin
-e 1339.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [41]
+[42] [43])
+Underfull \vbox (badness 2503) has occurred while \output is active []
+
+ [44]
+[45] [46
 
 
-Underfull \vbox (badness 1062) has occurred while \output is active []
-
- [43])
-[44]
+]
 \openout2 = `conclusions.aux'.
 
  (./conclusions.tex
 Conclusioni.
-) [45
-
-
+) [47
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [46
+ (./appendix.tex [48
 
 
 
 ]
 Appendice A.
-[47]
+[49]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 48 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 50 undefined on input
  line 28.
 
-) [48] (./tesi.bbl
+) [50] (./tesi.bbl
 Bibliografia.
-) [49
+) [51
 
 
 
@@ -1168,11 +1164,14 @@ Bibliografia.
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
  17860 strings out of 493117
- 363142 string characters out of 6135433
- 445394 words of memory out of 5000000
+ 363141 string characters out of 6135433
+ 445070 words of memory out of 5000000
  20882 multiletter control sequences out of 15000+600000
  15348 words of font info for 57 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1199,10 +1198,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (61 pages, 544754 bytes).
+Output written on tesi.pdf (63 pages, 545799 bytes).
 PDF statistics:
- 323 PDF objects out of 1000 (max. 8388607)
- 217 compressed objects within 3 object streams
+ 329 PDF objects out of 1000 (max. 8388607)
+ 221 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

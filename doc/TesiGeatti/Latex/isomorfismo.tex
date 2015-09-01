@@ -26,9 +26,9 @@ di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di rea
 I problemi sono ora due:
 \begin{itemize}
 	\item
-	il pacchetto arriverà a destinatari non corretti. Si può introdurre una regola di reazione che elimini dall'host ogni pacchetto che non ha l'host stesso come destinatario.
+	il pacchetto arriverà a destinatari non corretti. Si può introdurre una regola di reazione che elimini dall'host ogni pacchetto che non ha come destinatario l'host stesso.
 	\item
-	se prendiamo il $k-esimo$ router $R_k$, allora il pacchetto ritornerà al $k-1 esimo$ router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
+	se prendiamo il $k-esimo$ router $R_k$, allora il pacchetto ritornerà al $(k-1)-esimo$ router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
 	anche nuovamente verso $R_{k}$. Si ha così un ciclo infinito di pacchetti tra $R_k$ e $R_{k-1}$.
 \end{itemize}
 
@@ -49,9 +49,9 @@ la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione
 Si noti come la traduzione di supporto consenta di ritenere isomorfi due bigrafi che sono uguali \emph{modulo permutazione}: tale funzione può infatti operare una permutazione sui nomi dei nodi e degli archi, così come sugli inner names e outer names. In altre parole, non c'è nessun vincolo sui nomi, ma solo sulla struttura del bigrafo. Si capirà meglio questo concetto negli esempi che seguiranno.
 
 \section{Strategia di soluzione}
-Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica può essere espressa come
+Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica per esempio può essere espressa come
 il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione 
-dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per modellare il problema.
+dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per la modellizzazione.
 
 Si è scelto di trattare questo problema tramite la programmazione a vincoli. Questo paradigma permette di rappresentare al calcolatore un sistema di equazioni, che esso
 risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari,
@@ -61,7 +61,7 @@ Si è usata la libreria Java \emph{Choco vs 3.3.1} per esprimere tutti i vincoli.
 Si è precedentemente visto che ogni bigrafo è formato da due strutture ortogonali e totalmente indipendenti, il place graph ed il link graph. Il problema dell'isomorfismo verrà quindi trattato
 separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).\\
 
-La definizione di isomorfismo vista precedentemente può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda anche la semantica: due bigrafi strutturalmente uguali sono due bigrafi che hanno la stessa semantica (figura \ref{fig:bigMulIso}).
+La definizione di isomorfismo vista precedentemente può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda anche la semantica: due bigrafi strutturalmente uguali sono due bigrafi semanticamente equivalenti (figura \ref{fig:bigMulIso}).
 
 \subsection{Esempi}\label{sub:isoExamples}
 Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quindi alcuni esempi per acquisire familiarità con questo concetto. 
@@ -69,7 +69,7 @@ Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quind
 Il primo riprende il bigrafo di figura \ref{fig:bigMul} per la moltiplicazione tra numeri naturali. Si vuole mostrare che, semanticamente, l'operazione $2*4$ è equivalente
 all'operazione $4*2$. In altre parole, non importa l'ordine dei nodi.
 
-Incominciamo notando che i due link graph sono isomorfi, perchè non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, si nota subito i due place graph siano uguali perchè i nodi interni non sono ordinati.
+Incominciamo notando che i due link graph sono isomorfi, perchè non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, si nota subito come i due place graph siano uguali perchè i nodi interni non sono ordinati.
 
 Il fatto di dimostrare che i due bigrafi sono isomorfi e semanticamente equivalenti, dimostra che la proprietà commutativa della moltiplicazione vale anche nella sua versione bigrafica.\\
 
@@ -302,7 +302,7 @@ Nell'implementazione, trattata tramite la programmazione a vincoli, ogni arco ro
 \begin{center}
 $M_{d,m,n} \in \{ 0, 1\} \qquad 0 \le d \le depth \qquad$\\ $\qquad \qquad m \in P_F^d$ \\ $\qquad \qquad n \in P_G^d$
 \end{center}
-dove \emph{depth} è l'altezza massima della prima foresta, e $P_F^d$ e $P_G^d$ indicano l'insieme di nodi che si trovano all'altezza $d$ rispettivamente nel place graph $P_F$ e $P_G$.\\
+dove \emph{depth} è l'altezza massima della prima foresta, e $P_F^d$ e $P_G^d$ indicano l'insieme di nodi/radici/siti che si trovano all'altezza $d$ rispettivamente nel place graph $P_F$ e $P_G$.\\
 In altre parole, creo una variabile che può assumere valore 0 o 1 per ogni coppia di nodi $(a,b)$ che si trovano sulla stessa altezza, dove $a$ appartiene al primo place graph mentre $b$ al secondo.
 
 I vincoli dovranno essere tali che, dopo l'esecuzione del sistema sul calcolatore, le variabili che assumeranno il valore 1 saranno quelle che \emph{formeranno} la vera e propria traduzione di supporto. Ovvero: 
@@ -367,7 +367,7 @@ Nell'esempio di figura \ref{fig:placeFlow}, la soluzione esiste ed è definita co
 \caption{Soluzione della rete di flusso \label{fig:placeFlowRis}}
 \end{figure*}
 
-Riassumendo, dobbiamo tradurre in vincoli il fatto che la funzione di traduzione di supporto sia biiettiva e che conservi la struttura del place graph $P_F$. Distingueremo quindi in vincoli di flusso, che servono per il primo problema, e in vincoli strutturali, per il secondo.
+Riassumendo, dobbiamo tradurre in vincoli il fatto che la funzione di traduzione di supporto sia biiettiva e che conservi la struttura del place graph $P_F$. Distingueremo quindi in vincoli di flusso, che serviranno per il primo problema, e in vincoli strutturali, per il secondo.
 
 Incominciamo con i \textbf{vincoli strutturali}: si è adottata una versione ricorsiva per i vincoli. Distinguiamo quindi in caso base e passo ricorsivo.
 \begin{itemize}
@@ -570,7 +570,7 @@ Questi vincoli non sono però sufficienti per determinare un isomorfismo tra i du
 	\draw [fill] (8.0,2.0) circle [radius=0.1];
 	%level 1.1
 	\draw [fill] (7.0,1.0) circle [radius=0.1];
-	\node[above right] at (7.0,1.0){$n_2$};
+	\node[right] at (7.0,1.0){$n_2$};
 	\draw [fill] (9.0,1.0) circle [radius=0.1];
 	\node[above right] at (9.0,1.0){$n_3$};
 	%level 1.2
@@ -701,7 +701,7 @@ L'isomorfismo tra link graph è un isomorfismo tra ipergrafi. In questo problema,
 
 Sulla base di queste osservazioni, possiamo costruire la \emph{rete di flusso} per questo problema nel seguente modo: innanzitutto chiamiamo i due link graph rispettivamente $L_F$ e $L_G$, e le loro funzioni come $link_F$ e $link_G$ (definite dagli archi verdi di figura \ref{fig:linkFlow}). Possiamo collegare tutti gli elementi del dominio di $link_F$ a tutti gli elementi del dominio di $link_G$, creando così archi \emph{orientati}, perchè vanno da punti di $L_F$ a punti di $L_G$, e \emph{pesati}, perchè possono assumere un valore $p \in \{0, 1\}$.
 Infine, facciamo lo stesso con i loro Handle: colleghiamo tutti gli elementi del codominio di $link_F$ a tutti gli elementi del codominio di $link_G$. \\
-Si è così creata la rete di flusso in figura \ref{fig:linkFlow}, dove $D_X$ (con $X \in \{ F, G\}$) indica il dominio di $link_X$ e $C_X$ il suo codominio.\\
+Si è così creata la rete di flusso in figura \ref{fig:linkFlow}, dove $D_X$ (con $X \in \{ F, G\}$) indica il dominio di $link_X$ e $C_X$ il suo codominio. \\
 Per chiarezza visiva, si sono omessi alcuni archi rossi, ma si deve immaginare che ogni elemento di $D_F$ abbiamo tre archi verso ognuno degli elementi di $D_G$. Lo stesso vale per $C_F$.
 
 
@@ -766,10 +766,10 @@ Per chiarezza visiva, si sono omessi alcuni archi rossi, ma si deve immaginare c
 
 Incominciamo quindi con definire le variabili del sistema di equazioni:
 \begin{center}
-$x_{h,h'} \in \{0, 1\} \qquad h \in Y_1 \uplus E_1 \qquad$ \\ $\qquad \qquad \qquad \qquad h' \in Y_2 \uplus E_2 \qquad$
+$x_{h,h'} \in \{0, 1\} \qquad h \in C_F = Y_F \uplus E_F \qquad$ \\ $\qquad \qquad \qquad \qquad h' \in C_G = Y_G \uplus E_G \qquad$
 \end{center}
 \begin{center}
-$y_{p,p'} \in \{0, 1\} \qquad p \in X_1 \uplus P_1 \qquad$ \\ $\qquad \qquad \qquad \qquad p' \in X_2 \uplus P_2 \qquad$
+$y_{p,p'} \in \{0, 1\} \qquad p \in D_F = X_F \uplus P_F \qquad$ \\ $\qquad \qquad \qquad \qquad p' \in D_G = X_G \uplus P_G \qquad$
 \end{center}
 
 Si sono distinte le variabili che vanno dal dominio $D_F$ a $D_G$, che vengono chiamate $y$, da quelle che vanno dal codominio $C_F$ a $C_G$, chiamate $x$.
@@ -777,13 +777,15 @@ Le soluzioni del sistema hanno lo stesso significato che avevano nel place graph
 
 I vincoli che si devono scegliere hanno il compito di ``costituire" la funzione di traduzione di supporto, e devono quindi assicurare che essa sia biiettiva e che mantenga la struttura del primo link graph. Perciò, anche in questo caso, distinguiamo in \emph{vincoli di flusso}, per il primo problema, e in \emph{vincoli strutturali}, per il secondo.
 
-Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compito di definire una funzione che va dal primo link graph al secondo, che sia in grado di mantenere la struttura del primo. In altre parole, deve controllare se le due strutture sono \emph{compatibili}. I vincoli strutturali fanno riferimento al caso negativo, cioè descrivono nel sistema quando due punti o due handle \emph{non} possono costituire un match. Da qui i due vincoli:
+Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compito di definire una funzione che va dal primo link graph al secondo, che sia in grado di mantenere la struttura del primo. In altre parole, devono controllare che le due strutture siano \emph{compatibili}. I vincoli strutturali fanno riferimento al caso negativo, cioè descrivono nel sistema quando due punti o due handle \emph{non} possono costituire un match. Da qui i due vincoli:
 
 \begin{itemize}
 	\item
 	\emph{Primo vincolo strutturale}: due handles (il primo di $L_F$ e il secondo di $L_G$) che hanno un numero diverso di pre-immagini \emph{non} possono costituire un match. In altre parole: se l'handle $h$ è immagine di due punti ma l'handle $h'$ lo è di uno solo, allora $h$ e $h'$ non possono essere associati. In formule:
 	\begin{center}
-	$x_{h,h'} = 0 \qquad \qquad \qquad |link^{-1}_F(h)| \ne |link^{-1}_G(h')| \qquad $ \\ $\qquad \qquad h \in Y_1 \uplus E_1$ \\ $\qquad \qquad h' \in Y_2 \uplus E_2$
+	$x_{h,h'} = 0 \qquad \qquad \qquad |link^{-1}_F(h)| \ne |link^{-1}_G(h')| \qquad $ \\ 
+	$\qquad \qquad h \in C_F = Y_F \uplus E_F$ \\ 
+	$\qquad \qquad h' \in C_G = Y_G \uplus E_G$
 	\end{center}
 	In figura \ref{fig:firstLinkConstraint}, si può vedere come la variabile $x_{h_3,h_1}$ sia vincolata ad assumere il valore 0, infatti: $|link_F^{-1}(h_3)| = 0$ ma 
 	$|link_G^{-1}(h_1)| = 1$, quindi $x_{h_3,h_1} = 0$.
@@ -835,9 +837,10 @@ Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compi
 	\begin{center}
 	$x_{h,h'} = 0 \qquad \Rightarrow \qquad y_{p,p'} = 0$
 	\end{center}
-	dove $p=link^{-1}_F(h)$ e $p'=link^{-1}_G(h')$. Esso può essere tradotto tramite la seguente equazione.
+	dove $p \in link^{-1}_F(h)$ e $p' \in link^{-1}_G(h')$. Esso può essere tradotto tramite la seguente equazione.
 	\begin{center}
-	$y_{p,p'} \le x_{link_F(p),link_G(p')} \qquad \qquad \qquad p \in X_1 \uplus P_1 \qquad \qquad \qquad \qquad$ \\ $\qquad \qquad \qquad \qquad p' \in X_2 \uplus P_2$
+	$y_{p,p'} \le x_{link_F(p),link_G(p')} \qquad \qquad \qquad p \in D_F = X_F \uplus P_F \qquad \qquad \qquad \qquad$ \\ 
+	$\qquad \qquad \qquad \qquad p' \in D_G = X_G \uplus P_G$
 	\end{center}
 	Si noti che questa equazione equivale all'implicazione precedente: se $x=0$, allora deve per forza essere che anche $y=0$.
 	
@@ -892,7 +895,7 @@ Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compi
 	\end{figure*}
 	
 	In figura \ref{fig:secondLinkConstraint}, si può vedere un esempio per questo vincolo. Dal primo vincolo sappiamo che $x_{h_2,h_1} = 0$ perchè 
-	$|link_F^{-1}(h_2)| = 2$ mentre $link_G^{-1}(h_1) = 1$. Aggiungendo il vincolo appena descritto, ricaviamo quindi che $y_{p_2,p_1} = 0$ e $y_{p_3,p_1} = 0$. Infatti, si vede subito che i punti $p_2$ e $p_3$ non possono costituire un match con $p_1$.
+	$|link_F^{-1}(h_2)| = 2$ mentre $|link_G^{-1}(h_1)| = 1$. Aggiungendo il vincolo appena descritto, ricaviamo quindi che $y_{p_2,p_1} = 0$ e $y_{p_3,p_1} = 0$. Infatti, si vede subito che i punti $p_2$ e $p_3$ non possono costituire un match con $p_1$.
 \end{itemize}
 
 Descriviamo adesso i \textbf{vincoli di flusso}, che consentono di avere una funzione biiettiva. Il caso è analogo a quello per il place graph e la notazione rimane la stessa.
@@ -905,7 +908,7 @@ Descriviamo adesso i \textbf{vincoli di flusso}, che consentono di avere una fun
 			\emph{$\delta^+(p)=1$}:
 			Dobbiamo assicurare che ogni punto di $D_F$ sia associato ad uno e un solo punto di $D_G$, che si traduce in questa equazione:
 				\begin{center}
-				$\sum\limits_{p'}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_1 \uplus P_1 \qquad p' \in X_2 \uplus P_2$
+				$\sum\limits_{p'}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_F \uplus P_F \qquad p' \in X_G \uplus P_G$
 				\end{center}
 			
 									
@@ -968,7 +971,7 @@ Descriviamo adesso i \textbf{vincoli di flusso}, che consentono di avere una fun
 			\emph{$\delta^+(h)=1$}:
 			E' l'analogo del caso precedente. Ogni handle di $C_F$ deve essere associato ad uno e un solo handle di $C_G$. La rispettiva equazione è:
 				\begin{center}
-				$\sum\limits_{h'}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_1 \uplus E_1 \qquad p' \in Y_2 \uplus E_2$
+				$\sum\limits_{h'}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_F \uplus E_F \qquad p' \in Y_F \uplus E_F$
 				\end{center}
 
 			
@@ -983,14 +986,14 @@ Descriviamo adesso i \textbf{vincoli di flusso}, che consentono di avere una fun
 			\item
 			\emph{$\delta^-(p')=1$}: ogni punto di $D_G$ può essere associato ad uno e un solo punto di $D_F$. In formule:
 				\begin{center}
-				$\sum\limits_{p}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_1 \uplus P_1 \qquad p' \in X_2 \uplus P_2$
+				$\sum\limits_{p}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_F \uplus P_F \qquad p' \in X_G \uplus P_G$
 				\end{center}
 				
 			
 			\item
 			\emph{$\delta^-(h')=1$}: ogni handle di $C_G$ può essere associato ad uno e un solo handle di $C_F$. In formule:
 				\begin{center}
-				$\sum\limits_{h}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_1 \uplus E_1 \qquad p' \in Y_2 \uplus E_2$
+				$\sum\limits_{h}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_F \uplus E_F \qquad p' \in Y_G \uplus E_G$
 				\end{center}
 			La figura \ref{fig:inFlowLinkConstraint} mostra un esempio per questi due vincoli.
 			
@@ -1101,7 +1104,7 @@ Nell'esempio citato, si era già notato informalmente che il quadrato collegato a
 		\end{center}
 	
 	\item
-	\emph{Quinto vincolo di coerenza}: un nodo può costituire un match solo un altro nodo. Lo stesso vale per le radici e per i siti. Perciò, è impossibile che esista una variabile con valore 1 da una radice verso un nodo, per esempio.
+	\emph{Quinto vincolo di coerenza}: un nodo può costituire un match solo con un altro nodo. Lo stesso vale per le radici e per i siti. Perciò, è impossibile per esempio che esista una variabile con valore 1 da una radice verso un nodo. I vincoli che coprono tutti i possibili casi sono:
 		\begin{center}
 		$M_{d,a,b} = 0 \qquad \qquad$ se $ \qquad a \in n \qquad b \in V_G $\\
 		oppure se $ \qquad \qquad \qquad a \in n \qquad b \in m $\\
@@ -1158,7 +1161,7 @@ Sono stati elencati tutti i vincoli necessari per determinare l'isomorfismo tra 
 	\end{figure*}
 
 
-Come si può vedere dalla figura \ref{fig:stateGraphExe}, ogni nodo è etichettato con la stringa $S_i$, perchè si tratta di uno stato, cioè di un bigrafo. All'interno di un BRS, abbiamo visto che un bigrafo può evolversi tramite le regole di reazione, motivo per cui ogni arco orientato del grafo degli stati è etichettato con il nome della regola che ha portato dal primo stato al secondo. Nell'esempio di cui sopra, dal bigrafo iniziale $S_0$ si passa a $S_1$ tramite la regola $R_1$
+Come si può vedere dalla figura \ref{fig:stateGraphExe}, ogni nodo è etichettato con la stringa $S_i$, perchè si tratta di uno stato, cioè di un bigrafo. All'interno di un BRS, abbiamo visto che un bigrafo può evolversi tramite le regole di reazione, motivo per cui ogni arco orientato del grafo degli stati è etichettato con il nome della regola che ha portato dal primo stato al secondo. Nell'esempio di cui sopra, dal bigrafo iniziale $S_0$ si passa a $S_1$ tramite la regola $R_1$.
 
 Si noti un aspetto molto importante: da $S_0$ a $S_1$ la regola $R_1$ ha generato un solo nuovo stato. Questo vuol dire che il redex di $R_1$ ha una sola occorrenza in $S_0$, ed essa è stata sostituita dal reactum di $R_1$, creando così lo stato $S_1$. Però, se prendiamo in considerazione quest'ultimo stato, si vede che ora la regola $R_1$ porta a due nuovi stati. Questo perchè in $S_1$ ci sono due occorrenze del redex di $R_1$, che vengono sostituite dal suo reactum, creando rispettivamente i due nuovi stati $S_2$ e $S_3$. In altre parole: una regola di reazione può generare un diverso numero di stati a seconda del bigrafo a cui è applicata.
 
@@ -1326,17 +1329,17 @@ Si introduce solo la segnatura del pacchetto, del router e del dominio: $K=\{pac
 
 
 
-La regola è molto semplice. Innanzitutto, incominciamo con i vari controlli. Figli diretti delle due radici sono i due rettangoli: essi sono i domini di cui fanno parte i due router. Questi ultimi, a loro volta, sono disegnati come circonferenze con due porte: la prima collegata a ``$Link$" e la seconda a ``$Local$". Infine, il pacchetto è rappresentato da un rettangolo, anch'esso con due porte: la prima, che è quella più a sinistra, è collegata al mittente, mentre la seconda al destinatario. 
+La regola è molto semplice. Innanzitutto, incominciamo con i vari controlli. Figli diretti delle due radici sono i due rettangoli: essi sono i domini di cui fanno parte i due router. Questi ultimi, a loro volta, sono disegnati come circonferenze con due porte: la prima collegata a ``$link$" e la seconda a ``$Local$". Infine, il pacchetto è rappresentato da un rettangolo, anch'esso con due porte: la prima, che è quella più a sinistra, è collegata al mittente, mentre la seconda al destinatario. 
 
-Passiamo ora a definire il ruolo degli outername. ``$Link$" è l'outername dedicato alla connessione tra router: se un terzo router volesse collegarsi a questi due, allora dovrebbe collegare (nel vero senso della parola) la sua porta superiore con ``Link". Si ricordi quanto detto nella sottosezione \ref{sub:networkExe}: i router inoltrano non deterministicamente ogni pacchetto verso tutte le sue interfacce. Se tre router sono collegati all'outername ``Link", allora uno di questi inoltra il pacchetto verso tutti gli altri due. Per cui ``$Link$" rappresenta l'insieme di tutte le interfacce di un router.
+Passiamo ora a definire il ruolo degli outername. ``$Link$" è l'outername dedicato alla connessione tra router: se un terzo router volesse collegarsi a questi due, allora dovrebbe collegare (nel vero senso della parola) la sua porta superiore con l'outername ``$link$". Si ricordi quanto detto nella sottosezione \ref{sub:networkExe}: i router inoltrano non deterministicamente ogni pacchetto verso tutte le sue interfacce. Se tre router sono collegati all'outername ``$link$", allora uno di questi inoltra il pacchetto verso tutti gli altri due. Per cui ``$link$" rappresenta l'insieme di tutte le interfacce di un router.
 
 Gli outername ``$Local_S$" e ``$Local_R$" sono a disposizione solamente per gli host del dominio corrente. Per esempio, a ``$Local_S$" (che sta per \emph{Local Sender}) si possono collegare solo gli host del dominio in cui si trova il primo router. Nella regola di figura \ref{fig:forwardRule}, questi host vengono inglobati dal sito numero 0. Il medesimo discorso vale per ``$Local_R$".
 
 Il pacchetto è collegato a due outername. Il primo, quello più a sinistra, è ``$id_S$" (\emph{id Sender}), mentre il secondo è  ``$id_R$" (\emph{id Receiver}). Nella realtà, questi due outername saranno gli identificativi del mittente e del destinatario. Se per esempio il pacchetto in questione è IP, allora $id_S$ sarà l'indirizzo IP del mittente, mentre $id_R$ quello del destinatario.
 
-Infine, si noti anche il sito numero 2: si trova dentro il pacchetto e permette di astrarre al tipo di pacchetto. Per esempio: se è un pacchetto IP, allora è probabile che abbia incapsulato al suo interno un pacchetto TCP, che a sua volta contiene un pacchetto IP. Onde evitare di scrivere regole ad hoc per ogni tipo di pacchetto, si introduce il sito numero 2, così che la regola trovi un occorrenza (e quindi scatti) per qualsiasi tipo di pacchetto.
+Infine, si noti anche il sito numero 2: si trova dentro il pacchetto e permette di astrarre al tipo di pacchetto. Per esempio: se è un pacchetto IP, allora è probabile che abbia incapsulato al suo interno un pacchetto TCP, che a sua volta contiene un pacchetto HTTP. Onde evitare di scrivere regole ad hoc per ogni tipo di pacchetto, si introduce il sito numero 2, così che la regola trovi un occorrenza (e quindi scatti) per qualsiasi tipo di pacchetto.
 
-Vediamo ora un esempio reale, proposto in figura \ref{fig:forwardRuleBig}. Siano $D_S$ e $D_R$ i domini rispettivamente del mittente (sender) e del destinatario (receiver). Indicheremo con il triangolo il controllo per un host. Quindi $h_1$ e $h_2$ saranno rispettivamente all'interno di $D_S$ e $D_R$. Lo stesso vale per i router, cioè $R_S$ e $R_R$. Supponiamo che il pacchetto sia di tipo IP, così che $h_1$ sia collegato per esempio a $158.110.3.46$, e $h_2$ a $158.110.144.31$. Infine, alla porta inferiore di $R_S$ si collegherà $h_1$, mentre a quella di $R_R$ si collegherà $id_2$.
+Vediamo ora un esempio reale, proposto in figura \ref{fig:networkRuleExe}. Siano $D_S$ e $D_R$ i domini rispettivamente del mittente (sender) e del destinatario (receiver). Indicheremo con il triangolo il controllo per un host. Quindi $h_1$ e $h_2$ saranno rispettivamente all'interno di $D_S$ e $D_R$. Lo stesso vale per i router, cioè $R_S$ e $R_R$. Supponiamo che il pacchetto sia di tipo IP, e che $h_1$ sia collegato per esempio a $158.110.3.46$, e $h_2$ a $158.110.144.31$. Infine, per quanto detto prima a proposito di ``$Local_S$" e ``$Local_R$", alla porta inferiore di $R_S$ si collegherà $h_1$, mentre a quella di $R_R$ si collegherà $id_2$.
 
 
 	\begin{figure*}[th]
@@ -1525,6 +1528,36 @@ Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$
 	\end{tikzpicture}
 	\caption{Grafo degli stati finito. \label{fig:finiteStateGraphNetwork}}
 \end{figure*}
+
+
+
+
+\section{Complessità}:\label{sub:isoComplexity}
+Il problema, come si è visto, è stato affrontato tramite il \emph{constraint programming}. Si è scelta questa tecnica per i seguenti motivi:
+\begin{itemize}
+	\item
+	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori.
+	\item
+	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito stato soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
+	\item
+	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
+\end{itemize}
+
+Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a quella classe. Per definizione di \emph{completezza}, ogni istanza di $P_{big}$ può essere tradotta (cioè \emph{ridotta}) con complessità $C$ al problema $P_c$.
+
+L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
+
+Cerchiamo quindi di capire in che classe di complessità appartiene $P_{big}$. Per farlo, dobbiamo servirci di una riduzione, cioè ...
+
+
+
+
+
+
+
+
+
+
 
 
 

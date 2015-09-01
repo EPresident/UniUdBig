@@ -32,10 +32,11 @@
 \contentsline {subsection}{\numberline {2.3.2}Vincoli per il link graph}{34}
 \contentsline {subsection}{\numberline {2.3.3}Vincoli di coerenza}{38}
 \contentsline {section}{\numberline {2.4}Grafo degli stati}{40}
-\contentsline {subsection}{\numberline {2.4.1}Esempio}{41}
-\contentsline {chapter}{\numberline {}Conclusioni}{45}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{47}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{47}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{47}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{48}
-\contentsline {chapter}{\numberline {}Bibliografia}{49}
+\contentsline {subsection}{\numberline {2.4.1}Esempio}{42}
+\contentsline {section}{\numberline {2.5}Complessit\`a}{45}
+\contentsline {chapter}{\numberline {}Conclusioni}{47}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{49}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{49}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{49}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{50}
+\contentsline {chapter}{\numberline {}Bibliografia}{51}

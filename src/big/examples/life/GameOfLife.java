@@ -235,7 +235,7 @@ public class GameOfLife {
         BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
         //dlp.printDotFile(gol.gol, "GameOfLife", "gol");
         System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
-        new GoLGUI(3,3);
+        new GoLGUI(3,3, gol.gol);
         
         /*TrueRandomSim sim = new TrueRandomSim(gol.gol, RULES, 47L);
          int loops = 10;

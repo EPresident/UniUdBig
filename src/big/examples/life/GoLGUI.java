@@ -16,6 +16,7 @@
  */
 package big.examples.life;
 
+import it.uniud.mads.jlibbig.core.std.Bigraph;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -29,7 +30,7 @@ public class GoLGUI extends javax.swing.JFrame {
     /**
      * Creates new form GoLGUI
      */
-    public GoLGUI(int rows, int columns) {
+    public GoLGUI(int rows, int columns, Bigraph big) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

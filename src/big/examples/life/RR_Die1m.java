@@ -41,7 +41,7 @@ public class RR_Die1m extends RewRuleWProps {
     static {
         redex = generateRedex();
         reactum = generateReactum();
-        int[] v = new int[18];
+        int[] v = new int[15];
         for (int i = 0; i < v.length; i++) {
             v[i] = i;
         }
@@ -78,9 +78,9 @@ public class RR_Die1m extends RewRuleWProps {
         linkN = builder.addOuterName("linkN1");
         stateN = builder.addOuterName("stateN1");
         n = builder.addNode("cell", r, linkN, stateN);
-        l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
         lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);       
         builder.addSite(lh);
         // add dead cell 3
         linkN = builder.addOuterName("linkN2");
@@ -121,23 +121,13 @@ public class RR_Die1m extends RewRuleWProps {
         lh = builder.addNode("linkHolder", n);
         builder.addSite(lh);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
-        // add cell 8
-        linkN = builder.addOuterName("linkN7");
-        stateN = builder.addOuterName("stateN7");
-        n = builder.addNode("cell", r, linkN, stateN);       
-        lh = builder.addNode("linkHolder", n);
-        builder.addSite(lh);
-        builder.addSite(n);
-        l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
-        
+        builder.addSite(l);      
 
         return builder.makeBigraph();
     }
 
     private static Bigraph generateReactum() {
-                BigraphBuilder builder = new BigraphBuilder(GameOfLife.SIGNATURE);
+        BigraphBuilder builder = new BigraphBuilder(GameOfLife.SIGNATURE);
         Root r = builder.addRoot();
 
         // State
@@ -165,9 +155,9 @@ public class RR_Die1m extends RewRuleWProps {
         linkN = builder.addOuterName("linkN1");
         stateN = builder.addOuterName("stateN1");
         n = builder.addNode("cell", r, linkN, stateN);
-        l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
         lh = builder.addNode("linkHolder", n);
+        l = builder.addNode("link", lh, linkS);
+        builder.addSite(l);       
         builder.addSite(lh);
         // add dead cell 3
         linkN = builder.addOuterName("linkN2");
@@ -208,16 +198,7 @@ public class RR_Die1m extends RewRuleWProps {
         lh = builder.addNode("linkHolder", n);
         builder.addSite(lh);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
-        // add cell 8
-        linkN = builder.addOuterName("linkN7");
-        stateN = builder.addOuterName("stateN7");
-        n = builder.addNode("cell", r, linkN, stateN);       
-        lh = builder.addNode("linkHolder", n);
-        builder.addSite(lh);
-        builder.addSite(n);
-        l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);
+        builder.addSite(l);      
 
         return builder.makeBigraph();
     }

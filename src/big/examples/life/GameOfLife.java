@@ -43,7 +43,7 @@ import java.util.Random;
 public class GameOfLife {
 
     public static final Signature SIGNATURE = generateSignature();
-    private static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p(),
+    public static final RewRuleWProps[] RULES = {new RR_Die1m(), new RR_Die4p(),
         new RR_Live2(), new RR_Die2(), new RR_Reproduce3(), new RR_updateD(),
         new RR_updateL(), new RR_StartComputingStates(), new RR_StartUpdating()
     };
@@ -74,10 +74,6 @@ public class GameOfLife {
         Node alpha = builder.addNode("alpha", root);
         alpha.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "alpha")));
-
-        Node beta = builder.addNode("beta", root);
-        beta.attachProperty(new SharedProperty<String>(
-                new SimpleProperty<String>("Name", "beta")));
         Node U = builder.addNode("u", root);
         U.attachProperty(new SharedProperty<String>(
                 new SimpleProperty<String>("Name", "u")));
@@ -104,7 +100,7 @@ public class GameOfLife {
                 if (cells[i][j] == null) {
                     cells[i][j] = builder.addNode("cell", root, null, U.getPort(0).getHandle());
                     cells[i][j].attachProperty(new SharedProperty<String>(
-                            new SimpleProperty<String>("Name", "Dead Cell ("+i+","+j+")")));
+                            new SimpleProperty<String>("Name", "Dead Cell (" + i + "," + j + ")")));
                 }
             }
         }
@@ -118,7 +114,9 @@ public class GameOfLife {
                         new SimpleProperty<String>("Name", "Life Token")));
                 cells[m][n].detachProperty("Name");
                 cells[m][n].attachProperty(new SharedProperty<String>(
-                        new SimpleProperty<String>("Name", "Live Cell("+m+","+n+")")));
+                        new SimpleProperty<String>("Name", "Live Cell(" + m + "," + n + ")")));
+                cells[m][n].attachProperty(new SharedProperty<String>(
+                        new SimpleProperty<String>("Position", m + "," + n)));
             }
         }
         System.out.println("Creating links");
@@ -127,7 +125,7 @@ public class GameOfLife {
             for (int j = 0; j < columns; j++) {
                 Node lh = builder.addNode("linkHolder", cells[i][j]);
                 lh.attachProperty(new SharedProperty<String>(
-                            new SimpleProperty<String>("Name", "Link Holder")));
+                        new SimpleProperty<String>("Name", "Link Holder")));
                 if (wrapAround) {
                     // north
                     Node linkN = builder.addNode("link", lh,
@@ -235,8 +233,8 @@ public class GameOfLife {
         BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
         //dlp.printDotFile(gol.gol, "GameOfLife", "gol");
         System.out.println(pprt.prettyPrint(gol.gol, "GoL"));
-        new GoLGUI(3,3, gol.gol);
-        
+        new GoLGUI(3, 3, gol.gol);
+
         /*TrueRandomSim sim = new TrueRandomSim(gol.gol, RULES, 47L);
          int loops = 10;
          while(loops-->0 && !sim.simOver()){

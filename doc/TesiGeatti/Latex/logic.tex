@@ -1,0 +1,391 @@
+\chapter{Un Model Checker per i bigrafi}
+Nel capitolo precedente si è visto come il fatto di poter riconoscere quando due bigrafi sono uguali permetta di poter arrestare l'esecuzione del BRS, evitando sue evoluzioni infinite. In questo capitolo invece si vedrà l'altro principale problema: come poter verificare date proprietà sul BRS. Riprendendo l'esempio della rete, una proprietà che potremmo verificare è l'arrivo a destinazione di un pacchetto, oppure assicurarci che nessun pacchetto non autorizzato passi attraverso un firewall.
+
+Come per l'isomorfismo, anche questo problema necessita di una soluzione generale, che prescinde dal dominio che i bigrafi rappresentano. Si è creata quindi una semplice logica a predicati, con cui è possibile esprimere le proprietà che si vuole verificare. Essa andrà a formare la \emph{politica} per il Model Checker, che servirà a verificare le proprietà sul grafo degli stati visto nel capitolo precedente.
+
+
+\section{Model Checker}
+Un Model Checker (MC) è un metodo per verificare delle proprietà in un sistema formale. Nel nostro caso, si è costruito un MC basato sul grafo degli stati (come quello di figura \ref{fig:bsgExe}): il problema sarà capire se un nodo rispetti le proprietà specificate.
+
+Si è visto come nel \emph{grafo degli stati} ogni nodo sia a sua volta un bigrafo. In figura \ref{fig:bsgExe} c'è il grafo degli stati dell'esempio \ref{sub:networkExe} sullo scambio di pacchetti tra due router. Ci possiamo chiedere se in uno dei due nodi il pacchetto sia arrivato a destinazione, cioè se uno dei due stati $S_i$ ($i \in \{0, 1\}$) il pacchetto sia nello stesso dominio dell' host destinazione.
+
+\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%States
+	\draw[thick] (1.5,1.5) circle [radius=0.5];
+	\node at (1.5,1.5) {$S_0$};
+	\draw[thick] (3.5,1.5) circle [radius=0.5];
+	\node at (3.5,1.5) {$S_1$};
+	
+	%Edges
+	\draw[->, thick] (1.85,1.85) to [out=45,in=135] (3.15,1.85);%s0-s1
+	\node at (2.5,2.5) {$R_0$};
+	\draw[<-, thick] (1.85,1.15) to [out=-45,in=-135] (3.15,1.15);%s1-s0
+	\node at (2.5,0.5) {$R_0$};
+		
+	\end{tikzpicture}
+	\caption{Grafo degli stati. \label{fig:bsgExe}}
+\end{figure*}
+
+Nei MC queste proprietà sono di solito esprimibili attraverso una qualche logica, per cui possiamo esprimere formalmente cosa significa che un MC verifichi una certa proprietà.
+
+\begin{prop}
+Il problema della verifica di una proprietà da parte di un MC è esprimibile come:
+	\begin{center}
+	$MC,S_0 \models p$
+	\end{center}
+dove MC è un model checker, $S_0$ è lo stato iniziale e $p$ è una proprietà espressa in una qualche logica.
+\end{prop}
+
+Ovviamente, dallo stato $S_0$ il MC evolverà secondo precise regole per formare tutti i possibili stati $S_0 \dots S_n$: nel nostro caso, ogni arco tra due nodi del \emph{grafo degli stati} è una regola di reazione. Per cui il model checker controllerà l'intero grafo: appena trova uno stato $S_i$ che soddisfa $p$ ($MC,S_i \models p$) ritorna True, altrimenti False, nel caso in cui \emph{tutti} gli stati del grafo non rispettino la proprietà.
+
+Queste considerazioni ci portano a definire il comportamento del MC:
+
+\begin{prop}
+Il comportamento di un model checker MC è definito dalla seguente relazione:
+	\begin{center}
+	$\begin{cases}
+	return \ \ True \qquad if \ \exists S_i\in MC \ : \ MC,S_i\models p \\
+	return \ \ False \qquad otherwise \ (\forall S_i\in MC \ (MC,S_i \not\models p))
+	\end{cases}$
+	\end{center}
+\end{prop}
+
+Nell'esempio \ref{fig:bsgExe}, il problema è quindi banale: il model checker ritorna vero se e solo se è vera la formula $MC,S_0 \models p \lor MC,S_1 \models p$.
+
+\subsection{Generazione degli stati}
+Si è appena visto che in un model checker si possono esprimere delle proprietà: ogni MC ha però anche un altro grado di libertà, che riguarda la generazione degli stati. Come creare il grafo degli stati? E con che ordine?
+
+Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strategie ed ognuna è adatta per certi scopi. Vediamone alcune:
+\begin{itemize}
+	\item
+	\emph{Strategia Breadth First}: per ogni stato $S_i$ vengono generati tutti gli stati possibili adiacenti ad $S_i$. Per esempio, in figura \ref{fig:BSGen}, si mostrano i primi tre passi della strategia Breadth First. Il suo vantaggio è che non si tralascia nessuno stato, ovvero il grafo degli stati è \emph{completo}. Inoltre, se un nodo porta ad un vicolo cieco (cioè se non genera nessun bigrafo tramite nessuna regola) allora questo viene semplicemente tolto dalla coda. Lo svantaggio è che può essere molto lenta: se da ogni stato si generano k stati (con k molto alto), allora prima di verificare la proprietà potrebbero volerci molte iterazioni.
+	
+	\begin{figure*}[th]
+	\centering
+	\subfigure[Primo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw [draw=white, fill=white] (3.0,0.0) circle [radius=0.1];
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Secondo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Terzo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	\draw[thick] (4.5,3.5) circle [radius=0.5];
+	\node at (4.5,3.5) {$S_3$};
+	
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,3.5);%s1-s3
+	\node at (3.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};	
+	\end{tikzpicture}
+	}
+	\caption{Esempio di generazione Breadth First. \label{fig:BSGen}}
+	\end{figure*}
+
+	 
+	\item
+	\emph{Strategia Random}: se dallo stato $S_i$ si possono applicare k regole allora viene scelto in maniera random un numero naturale $m \in \{1 \dots k\}$ e si genera solamente lo stato $S_m$. Questo consente di non memorizzare l'intero grafo degli stati (che in certi casi può essere molto grande) e verificare al momento della generazione di $S_k$ se $MC,S_k \models p$. Lo svantaggio è quello che l'esecuzione potrebbe andare avanti all'infinito, infatti il grafo \emph{non è completo}. Per cui potenzialmente potrebbero occorrere infinite evoluzioni prima di verificare una proprietà. Un esempio di generazione con la strategia random è quello in figura \ref{fig:BSGenRandom}.
+	
+	\begin{figure*}[!h]
+	\centering
+	\subfigure[Primo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw [draw=white, fill=white] (3.0,0.0) circle [radius=0.1];
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Secondo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Terzo passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};	
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Quarto passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	\draw[thick] (6.5,2.5) circle [radius=0.5];
+	\node at (6.5,2.5) {$S_4$};
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};
+	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
+	\node at (5.5,3.5) {$R_0$};
+	\end{tikzpicture}
+	}
+	
+	\hspace{5mm}
+	
+	\subfigure[Quinto passo]{
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	\draw[thick] (6.5,2.5) circle [radius=0.5];
+	\node at (6.5,2.5) {$S_4$};
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};
+	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
+	\node at (5.5,3.5) {$R_0$};
+	\draw[->, thick] (6.5,2.0) to [out=270,in=0] (5.5,0.0) -- (3.5,0.0) to [out=180,in=270] (2.5,2.0) ;%s4-s1
+	\node[above] at (4.5,0.0) {$R_2$};
+	
+	\end{tikzpicture}
+	}
+	
+	\caption{Esempio di generazione random. \label{fig:BSGenRandom}}
+	\end{figure*}
+	
+\end{itemize}
+
+E' possibile creare altre strategie a seconda degli scopi: in questa sede, se non specificato altrimenti, si assumerà che la strategia sia sempre quella Breadth First, che consente di computare l'intero grafo degli stati.
+
+
+
+
+\section{Logica per i bigrafi}
+Nella precedente sezione si è vista la struttura base del model checker per i bigrafi ($MC_{big}$): il grafo degli stati. L'altro aspetto importante di ogni MC sono le proprietà: necessitiamo quindi di un linguaggio per esprimerle. Il primo problema riscontrato è stato quello riguardante la flessibilità: come fare ad avere un unico linguaggio che astraesse dal dominio scelto e che potesse essere adatto per qualsiasi BRS? In altre parole, è necessario scegliere un linguaggio che sia flessibile e allo stesso tempo espressivo. 
+
+La linea guida seguita per la scelta del linguaggio è stata quindi la sua \emph{universalità}. Per esempio: si prendano gli esempi \ref{sub:exeIntro} sulla moltiplicazione e \ref{sub:networkExe} sulla rete. Sia la proprietà $p_1$ definita come ``Il risultato è il numero 8". Sia la proprietà $p_2$ definita come ``Il pacchetto è arrivato a destinazione". Si noti come i domini dei due esempi siano totalmente differenti: il nostro linguaggio deve permettere di esprimere le due proprietà $p_1$ e $p_2$, senza dover ricorrere ad altri formalismi. 
+
+Si capisce bene come un tale linguaggio così generale sia molto comodo per esprimere le proprietà da fare verificare al model checker $MC_{big}$. Infatti, in questo modo si crea uno strumento generale \textbf{valido per qualsiasi BRS}.
+
+Si è scelto di usare una logica a predicati, esprimibile attraverso il linguaggio generato da una grammatica \emph{Context Free}.
+\begin{prop}
+Il linguaggio $L(G)$ per il model checker $MC_{big}$ è generato dalla grammatica $G=(V,T,P,S)$, dove:
+	\begin{itemize}
+		\item
+		$V=\{\varphi, \sigma \}$ è l'insieme di variabili
+		
+		\item
+		$U=\{T, \land, $\emph{`(', `)', `,' ,}$ \lnot, W, \pi , A \dots Z\}$ è l'insieme di simboli terminali
+		
+		\item
+		$P$ è l'insieme di \emph{produzioni}, definito dalla seguente relazione:
+		\begin{center}
+		$\varphi \rightarrow T \mid \varphi \land \varphi \mid \neg \varphi \mid W_\sigma(\varphi, \varphi, \varphi) \mid \pi_\sigma$\\
+		$\sigma \rightarrow A\sigma \mid \dots \mid Z\sigma \mid \varepsilon \qquad \qquad \qquad \quad$
+		\end{center}
+		
+		\item
+		$S=\{\varphi\}$ è il simbolo iniziale
+	\end{itemize}
+\end{prop}
+
+Il nostro linguaggio sarà quindi definito dall'insieme 
+\begin{center}
+$L(M)=\{w \in U^*\ : \ S\Rightarrow_*^G w \}$.
+\end{center}
+
+Seguendo l'usuale definizione di grammatica CF, diamo ora alcuni esempi di stringhe generabili dalla grammatica G, cioè di formule appartenenti al linguaggio L(G):
+\begin{itemize}
+	\item
+	$\varphi = W_B(T, T, T) \land \pi_C$
+	\item
+	$\varphi = W_B(\pi_X, \pi_Y, \pi_Z)$
+	\item
+	$\varphi = \lnot \pi_B \land \pi_C$
+\end{itemize}
+
+
+Definiamo ora la semantica del linguaggio, cioè specifichiamo il significato di ogni predicato:
+\begin{prop}
+Uno stato $S$ (ricordiamo che S è un bigrafo) soddisfa la proprietà $\varphi$ (in formule $S \models \varphi$) in questi casi:
+\begin{itemize}
+	\item
+	$S \models T$ sempre
+	\item
+	$S \models \varphi_1 \land \varphi_2 \quad \Leftrightarrow \quad \begin{cases} S \models \varphi_1 \\ S \models \varphi_2 \end{cases}$
+	\item
+	$S \models \lnot \varphi \quad \Leftrightarrow \quad S \not \models \varphi$
+	\item
+	$S \models W_\sigma(\varphi_1,\varphi_2,\varphi_3) \quad \Leftrightarrow  \quad  \begin{cases}\exists C,D \  : \  S=C \circ (\sigma \otimes id_I) \circ D \\
+	C\models \varphi_1 \quad B \models \varphi_2 \quad D \models \varphi_3 \end{cases}$
+	\item
+	$S \models \pi_\sigma \quad \Leftrightarrow \quad S \bumpeq \sigma$
+\end{itemize}
+\end{prop}
+
+Si dirà che la formula $\varphi$ costituisce la \emph{politica} per il model checker.
+
+Analizziamo ora i vari predicati. I primi tre consentono le usuali operazioni della logica proposizionale, mentre il terzo è un predicato ad-hoc per questa logica: $W_\sigma$ è detto ``Wario Predicate", e usa l'operazione di Match per controllare le tre proprietà che ha come argomento. Facciamo un esempio: sia $W_B(T,T,T)$ un Wario Predicate. Lo stato S soddisfa questo predicato ($S \models W_B(T,T,T)$) se e solo se esiste un match M di B nel bigrafo S tale che rispetti queste condizioni: il contesto del match M deve soddisfare $\varphi_1$, il redex di M deve soddisfare $\varphi_2$ mentre i parametri di M devono soddisfare $\varphi_3$. Poichè $\varphi_1=\varphi_2=\varphi_3=T$, si ha che $S \models W_B(T,T,T)$ se e solo se esiste un match di B in S. Il Wario Predicate consente quindi di isolare contesto, redex e parametri e verificare le proprietà in modo indipendente per ognuno di questi tre bigrafi.
+
+L'ultimo predicato, $\pi_\sigma$, controlla se esiste un isomorfismo tra due bigrafi. Per esempio, lo stato $S_i$ soddisfa il predicato $\pi_A$ (in formule $S_i \models \pi_A$) se e solo se $S_i$ è isomorfo al bigrafo $A$, cioè $S_i \bumpeq A$. Questo predicato è di particolare importanza: esso funge da simbolo di uguaglianza tra bigrafi, rendendo quindi la nostra logica una \emph{logica con uguaglianza}.
+
+Si osservino tutti e cinque i predicati: dai i primi tre è possibile derivare ogni formula della logica proposizionale. Per esempio: se si vuole esprimere la formula $\varphi_1 \lor \varphi_2$, allora si possono usare le leggi di De Morgan e scrivere $\lnot \varphi_1 \land \lnot \varphi_2$. Oppure, se si vuole esprimere il falso, basterà la formula $\lnot T$.
+Gli ultimi due predicati sono invece propri dei bigrafi. Si osservi la loro definizione: si può notare che il Wario Predicate fa riferimento alla struttura interna del bigrafo consentendo infinite scomposizioni. Tramite questo predicato posso quindi \emph{isolare} qualsiasi parte del bigrafo ed esprimere proprietà su di essa. Si può pensare alla sua funzionalità in questo modo: $W_\sigma$ permette di spostarci all'interno del bigrafo, scegliere una sua parte e verificare se essa soddisfa una certa proprietà.
+Il predicato $\pi_\sigma$, come abbiamo già notato, ci consente di avere una logica con uguaglianza, permettendo quindi di aumentare la sua espressibilità.
+
+
+
+\section{Esempi}
+Si vedranno ora degli esempi di formule e di come poterle usare con il model checker $MC_{big}$.
+
+\subsection{Moltiplicazione}
+Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali della sottosezione \ref{sub:exeIntro}. Se rappresentiamo la moltiplicazione $x*y$, ci possiamo chiedere se il BRS funzioni correttamente con le regole che abbiamo definito e verificare che il risultato sia corretto. La proprietà da verificare è quindi questa: ``Dati due numeri x e y, il risultato della loro moltiplicazione deve essere il numero $x*y$". Vediamo ora la formula corrispondente: sappiamo che con la segnatura iniziale (vedi \ref{sub:exeIntro}) un numero naturale $n$ è rappresentato un nodo di tipo $num$ che contiene $n$ nodi di tipo $1$. Per esempio, il numero 8 è il bigrafo di figura \ref{fig:big8}.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (6,5);
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (5.0,5.0);
+\node[below right] at (0.0,5.0) {0};
+%Nodes
+\draw[thick] (2.5,2.5) circle [radius=2.0];
+\node[above] at (2.5,4.0) {num};
+\draw[thick] (1.0,3.0) rectangle (1.4,3.4);%one
+\node[above right] at (1.0,2.95) {1};
+\draw[thick] (2.0,3.0) rectangle (2.4,3.4);%one
+\node[above right] at (2.0,2.95) {1};
+\draw[thick] (3.0,3.0) rectangle (3.4,3.4);%one
+\node[above right] at (3.0,2.95) {1};
+\draw[thick] (1.0,2.0) rectangle (1.4,2.4);%one
+\node[above right] at (1.0,1.95) {1};
+\draw[thick] (2.0,2.0) rectangle (2.4,2.4);%one
+\node[above right] at (2.0,1.95) {1};
+\draw[thick] (3.0,2.0) rectangle (3.4,2.4);%one
+\node[above right] at (3.0,1.95) {1};
+\draw[thick] (2.0,1.0) rectangle (2.4,1.4);%one
+\node[above right] at (2.0,0.95) {1};
+\draw[thick] (3.0,1.0) rectangle (3.4,1.4);%one
+\node[above right] at (3.0,0.95) {1};
+
+\end{tikzpicture}
+\caption{Bigrafo per il numero 8 \label{fig:big8}}
+\end{figure}
+
+Chiamiamo $B$ il bigrafo di figura \ref{fig:big8}. La proprietà di cui sopra si può esprimere con la seguente formula logica: $\varphi = \pi_B$.
+
+Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a generare il grafo degli stati con la strategia Breadth First (se non specificato altrimenti), e per ogni nuovo stato $S_i$ controllerà se $MC,S_i \models \varphi$. In questo esempio, il grafo generato sarà quello di figura \ref{fig:modelCheckerMult}. Per gli stati $S_0$,$S_1$ e $S_2$ il model checker troverà che la proprietà non è soddisfatta, perchè nessuno di questi stati è isomorfo a B. Arrivando però a $S_3$, la proprietà $\varphi$ sarà soddisfatta, ovvero $MC,S_3 \models \varphi$, e $MC_{big}$ ritornerà True.\\
+
+\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,0.5) circle [radius=0.5];
+	\node at (2.5,0.5) {$S_1$};
+	\draw[thick] (4.5,0.5) circle [radius=0.5];
+	\node at (4.5,0.5) {$S_2$};
+	\draw[thick, red] (6.5,0.5) circle [radius=0.5];
+	\node[red] at (6.5,0.5) {$S_3$};
+	
+	%Edges
+	\draw[->, thick] (1.0,0.5) -- (2.0,0.5);%s0-s1
+	\node[above] at (1.5,0.5) {$R_0$};
+	\draw[->, thick] (3.0,0.5) -- (4.0,0.5);%s1-s2
+	\node[above] at (3.5,0.5) {$R_0$};
+	\draw[->, thick] (5.0,0.5) -- (6.0,0.5);%s2-s3
+	\node[above] at (5.5,0.5) {$R_0$};
+	
+	\end{tikzpicture}
+	\caption{Model Checker. \label{fig:modelCheckerMult}}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

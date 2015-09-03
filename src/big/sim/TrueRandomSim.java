@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Choose an execution path (pseudo)randomly. This strategy has no way of 
- * telling when all possible states have been generated. It just follows one 
+ * Choose an execution path (pseudo)randomly. This strategy has no way of
+ * telling when all possible states have been generated. It just follows one
  * path until no rules can be applied (i.e. a leaf is reached in the BSG).
  *
  * @author EPresident <prez_enquiry@hotmail.com>
@@ -41,6 +41,12 @@ public class TrueRandomSim extends Sim {
 
     public TrueRandomSim(Bigraph big, RewritingRule[] rwrls) {
         super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+        currentNode = bsg.getRoot();
+        randomGen = new Random();
+    }
+    
+    public TrueRandomSim(Bigraph big, BRS brs) {
+        super(new BigStateGraph(big), brs);
         currentNode = bsg.getRoot();
         randomGen = new Random();
     }
@@ -56,7 +62,13 @@ public class TrueRandomSim extends Sim {
         List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
         int size = ras.size();
         if (size > 0) {
-            int rand = randomGen.nextInt(size - 1);
+            int rand;
+            if (size > 1) {
+                rand = randomGen.nextInt(size - 1);
+            }else{
+                // not much choice...
+                rand = 0;
+            }
             RuleApplication ra = ras.get(rand);
             BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRuleName(), ra.getBig());
             if (newNode != null) {
@@ -91,13 +103,14 @@ public class TrueRandomSim extends Sim {
     public boolean simOver() {
         return currentNode == null;
     }
-    
+
     /**
      * Gets the state computed in the last step() or stepAndGet() call.
+     *
      * @return A Bigraph representing the current state, or null.
      */
-    public Bigraph getCurrentState(){
-        if(currentNode != null){
+    public Bigraph getCurrentState() {
+        if (currentNode != null) {
             return currentNode.getState();
         }
         return null;

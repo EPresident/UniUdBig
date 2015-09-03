@@ -1149,9 +1149,9 @@ Sono stati elencati tutti i vincoli necessari per determinare l'isomorfismo tra 
 	\node at (3.5,1.5) {$R_1$};
 	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
 	\node at (3.5,3.5) {$R_1$};
-	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s2-s4
+	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s3-s4
 	\node at (5.5,1.5) {$R_0$};
-	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s3-s4
+	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
 	\node at (5.5,3.5) {$R_0$};
 	\draw[->, thick] (6.5,2.0) to [out=270,in=0] (5.5,0.0) -- (3.5,0.0) to [out=180,in=270] (2.5,2.0) ;%s4-s1
 	\node[above] at (4.5,0.0) {$R_2$};
@@ -1225,7 +1225,7 @@ Infine, si presti attenzione all'arco tra $S_4$ e $S_1$. Il significato è il seg
 
 
 
-\subsection{Esempio}
+\subsection{Esempio}\label{sub:networkExe}
 In questa sottosezione, viene fornito un esempio concreto di grafo degli stati, con particolare attenzione al problema dell'evoluzione infinita. Si riprende l'esempio della rete della sottosezione \ref{sub:networkExe}. L'implementazione la si può trovare in [...]. 
 
 Si introduce solo la segnatura del pacchetto, del router e del dominio: $K=\{pacchetto:2, \quad router:2, \quad dominio:0\}$. Chiameremo rispettivamente $Encap$ e $Decap$ le regole per l'incapsulamento e il decapsulamento dei pacchetto nei vari strati, per esempio da Http a Tcp, o da Ip a Ethernet. Ci concentriamo sulla regola di inoltro tra router, che è quella in figura \ref{fig:forwardRule}.
@@ -1532,37 +1532,58 @@ Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$
 
 
 
-\section{Complessità}:\label{sub:isoComplexity}
-Il problema, come si è visto, è stato affrontato tramite il \emph{constraint programming}. Si è scelta questa tecnica per i seguenti motivi:
+\section{Complessità}\label{sub:isoComplexity}
+Il problema dell'isomorfismo tra bigrafi, come si è visto, è stato affrontato tramite il \emph{constraint programming}. Si è scelta questa tecnica per i seguenti motivi:
 \begin{itemize}
 	\item
 	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori.
 	\item
-	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito stato soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
+	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
 	\item
 	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
 \end{itemize}
 
-Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a quella classe. Per definizione di \emph{completezza}, ogni istanza di $P_{big}$ può essere tradotta (cioè \emph{ridotta}) con complessità $C$ al problema $P_c$.
+Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
 
 L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
 
-Cerchiamo quindi di capire in che classe di complessità appartiene $P_{big}$. Per farlo, dobbiamo servirci di una riduzione, cioè ...
+Si dimostrerà il seguente risultato:
 
+\begin{teor}[Complessità di $P_{big}$]
+Il problema dell'isomorfismo tra bigrafi è GI-completo.
+\end{teor}
 
+\begin{corol}
+Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
+\end{corol}
 
+\begin{dimos}
+Per dimostrare l'equivalenza, procederemo in due direzioni: nella prima dimostreremo che esiste una riduzione in tempo polinomiale da $P_{graph}$ a $P_{big}$, cioè che ogni istanza del problema $P_{graph}$ può venire tradotta in un'istanza del problema $P_{big}$. Invece, nella seconda direzione, faremo l'inverso. Si dimostreranno quindi che esistono le seguenti riduzioni:\\
 
+$
+\begin{cases}   
+P_{graph} \le P_{big}\\
+P_{big} \le P_{graph}
+\end{cases}
+$
+\\
 
+\begin{itemize}
+	\item
+	$P_{graph} \le P_{big}$:\\
+	Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
+	
+	\item
+	$P_{big} \le P_{graph}$:\\
+	Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$. 	
+\end{itemize}
 
+Si è quindi dimostrata l'equivalenza fra il problema dell'isomorfismo tra bigrafi e quella tra grafi, concludendo quindi che il problema $P_{big}$ è equivalente al problema $P_{graph}$.
+\end{dimos}
 
+E' noto che $P_{graph}$ appartiene alla classe NP, ma non è ancora stato dimostrato che sia completo. Per qui si è creata una nuova classe di complessità, nota con il nome di GI, che raccoglie tutti i problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Quindi si ha che $P_{big} \in GI$.
 
-
-
-
-
-
-
-
+Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
 
 
 

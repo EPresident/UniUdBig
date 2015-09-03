@@ -34,9 +34,15 @@
 \contentsline {section}{\numberline {2.4}Grafo degli stati}{40}
 \contentsline {subsection}{\numberline {2.4.1}Esempio}{42}
 \contentsline {section}{\numberline {2.5}Complessit\`a}{45}
-\contentsline {chapter}{\numberline {}Conclusioni}{47}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{49}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{49}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{49}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{50}
-\contentsline {chapter}{\numberline {}Bibliografia}{51}
+\contentsline {chapter}{\numberline {3}Un Model Checker per i bigrafi}{49}
+\contentsline {section}{\numberline {3.1}Model Checker}{49}
+\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{50}
+\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{53}
+\contentsline {section}{\numberline {3.3}Esempi}{55}
+\contentsline {subsection}{\numberline {3.3.1}Moltiplicazione}{55}
+\contentsline {chapter}{\numberline {}Conclusioni}{57}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{59}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{59}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{59}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{60}
+\contentsline {chapter}{\numberline {}Bibliografia}{61}

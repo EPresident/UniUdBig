@@ -62,3 +62,17 @@
 \contentsline {figure}{\numberline {2.20}{\ignorespaces Grafo degli stati infinito. }}{44}
 \contentsline {figure}{\numberline {2.21}{\ignorespaces Grafo degli stati finito. }}{44}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{50}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{51}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{51}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{51}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{51}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{52}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{52}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{52}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{52}
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto passo}}}{52}
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{52}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Bigrafo per il numero 8 }}{56}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Model Checker. }}{56}
+\addvspace {10\p@ }

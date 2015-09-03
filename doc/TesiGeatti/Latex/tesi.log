@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  30 AUG 2015 14:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  3 SEP 2015 16:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -728,8 +728,11 @@ File: tikzlibrarymatrix.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.4)
 \c@define=\count152
 \c@prop=\count153
 \c@corol=\count154
- (./tesi.aux (./introduction.aux) (./bigraphs.aux) (./isomorfismo.aux) (./concl
-usions.aux) (./appendix.aux))
+ (./tesi.aux (./introduction.aux) (./bigraphs.aux) (./isomorfismo.aux
+
+LaTeX Warning: Label `sub:networkExe' multiply defined.
+
+) (./logic.aux) (./conclusions.aux) (./appendix.aux))
 \openout1 = `tesi.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
@@ -864,7 +867,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 
 LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
- line 40.
+ line 47.
 
 )
 \tf@toc=\write4
@@ -1124,84 +1127,122 @@ Underfull \hbox (badness 10000) in paragraph at lines 1168--1169
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [41]
-[42] [43])
+[42] [43]
 Underfull \vbox (badness 2503) has occurred while \output is active []
 
  [44]
-[45] [46
+Underfull \hbox (badness 10000) in paragraph at lines 1561--1562
+
+ []
+
+[45]
+Underfull \hbox (badness 10000) in paragraph at lines 1563--1570
+
+ []
+
+[46]) [47]
+\openout2 = `logic.aux'.
+
+ (./logic.tex [48
+
 
 
 ]
+Capitolo 3.
+[49] [50]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 2368) has occurred while \output is active []
+
+ [51]
+
+LaTeX Warning: Text page 52 contains only floats.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [52]
+[53] [54]
+Underfull \hbox (badness 10000) in paragraph at lines 349--350
+
+ []
+
+[55]) [56]
 \openout2 = `conclusions.aux'.
 
  (./conclusions.tex
 Conclusioni.
-) [47
+) [57
+
+
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [48
+ (./appendix.tex [58
 
 
 
 ]
 Appendice A.
-[49]
+[59]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 50 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 60 undefined on input
  line 28.
 
-) [50] (./tesi.bbl
+) [60] (./tesi.bbl
 Bibliografia.
-) [51
+) [61
 
 
 
 ] (./tesi.aux (./introduction.aux) (./bigraphs.aux) (./isomorfismo.aux)
-(./conclusions.aux) (./appendix.aux))
+(./logic.aux) (./conclusions.aux) (./appendix.aux))
 
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 17860 strings out of 493117
- 363141 string characters out of 6135433
- 445070 words of memory out of 5000000
- 20882 multiletter control sequences out of 15000+600000
- 15348 words of font info for 57 fonts, out of 8000000 for 9000
+ 17876 strings out of 493117
+ 363327 string characters out of 6135433
+ 447599 words of memory out of 5000000
+ 20890 multiletter control sequences out of 15000+600000
+ 15707 words of font info for 58 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,11n,82p,789b,788s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,11n,82p,949b,788s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
-/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
-usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
-r/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
-local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/lo
-cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loca
-l/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/
-texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/te
-xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texli
-ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
-2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/201
-4/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/20
-14/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
-4/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2014/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf
--dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
-exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (63 pages, 545799 bytes).
+</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb
+></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
+></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
+sr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/l
+ocal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loc
+al/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local
+/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/t
+exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texl
+ive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive
+/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/20
+14/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2
+014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
+14/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2014
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
+f-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/
+texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on tesi.pdf (73 pages, 589486 bytes).
 PDF statistics:
- 329 PDF objects out of 1000 (max. 8388607)
- 221 compressed objects within 3 object streams
+ 366 PDF objects out of 1000 (max. 8388607)
+ 247 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

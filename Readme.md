@@ -6,10 +6,16 @@ All code is licensed under the GNU GPL version 3.
 ## Package Overview
 
 - **big**
+	- **brs** : strategies for the BRS. I concerns how new nodes of the BSG are computed
+	- **bsg** : BigStateGraph is the main structure of the Model Checker
 	- **examples** : short, self-contained examples of how to use LibBig
-	- **hash** : Hash functions for JLibBig Bigraphs
+	- **iso** : algorithm for bigraph isomorphism and some examples
+	- **matcher** : multi-matcher and property-matcher
+	- **mc** : a Model Checker for BRS. It's based on BSG. Some tests are included.
 	- **net** : classes for handling bigraphic representations of computer networks
+	- **predicate** : predicates for the MC's logic
 	- **prprint** : classes for pretty printing Bigraph object from LibBig (making them more human-readable)
+	- **rules** : special classes for conserving the properties before and after the application of a rule
 	- **sim** : classes to simulate the evolution of a Bigraphic Reactive System (BRS)
 - **nmap** : modules to parse network scans made with [Nmap](https://nmap.org/)
 

@@ -1,4 +1,4 @@
-\chapter{Un Model Checker per i bigrafi}
+\chapter{Model Checker per bigrafi}
 Nel capitolo precedente si è visto come il fatto di poter riconoscere quando due bigrafi sono uguali permetta di poter arrestare l'esecuzione del BRS, evitando sue evoluzioni infinite. In questo capitolo invece si vedrà l'altro principale problema: come poter verificare date proprietà sul BRS. Riprendendo l'esempio della rete, una proprietà che potremmo verificare è l'arrivo a destinazione di un pacchetto, oppure assicurarci che nessun pacchetto non autorizzato passi attraverso un firewall.
 
 Come per l'isomorfismo, anche questo problema necessita di una soluzione generale, che prescinde dal dominio che i bigrafi rappresentano. Si è creata quindi una semplice logica a predicati, con cui è possibile esprimere le proprietà che si vuole verificare. Essa andrà a formare la \emph{politica} per il Model Checker, che servirà a verificare le proprietà sul grafo degli stati visto nel capitolo precedente.
@@ -39,7 +39,7 @@ Il problema della verifica di una proprietà da parte di un MC è esprimibile come
 dove MC è un model checker, $S_0$ è lo stato iniziale e $p$ è una proprietà espressa in una qualche logica.
 \end{prop}
 
-Ovviamente, dallo stato $S_0$ il MC evolverà secondo precise regole per formare tutti i possibili stati $S_0 \dots S_n$: nel nostro caso, ogni arco tra due nodi del \emph{grafo degli stati} è una regola di reazione. Per cui il model checker controllerà l'intero grafo: appena trova uno stato $S_i$ che soddisfa $p$ ($MC,S_i \models p$) ritorna True, altrimenti False, nel caso in cui \emph{tutti} gli stati del grafo non rispettino la proprietà.
+Ovviamente, dallo stato $S_0$ il MC evolverà secondo precise regole per formare tutti i possibili stati $S_0 \dots S_n$: nel nostro caso, ogni arco tra due nodi del \emph{grafo degli stati} è una regola di reazione. Per cui il model checker controllerà l'intero grafo: appena trova uno stato $S_i$ che soddisfa $p$ ($MC,S_i \models p$) ritorna True, altrimenti, cioè nel caso in cui \emph{tutti} gli stati del grafo non rispettino la proprietà, ritorna False.
 
 Queste considerazioni ci portano a definire il comportamento del MC:
 
@@ -61,7 +61,7 @@ Si è appena visto che in un model checker si possono esprimere delle proprietà: 
 Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strategie ed ognuna è adatta per certi scopi. Vediamone alcune:
 \begin{itemize}
 	\item
-	\emph{Strategia Breadth First}: per ogni stato $S_i$ vengono generati tutti gli stati possibili adiacenti ad $S_i$. Per esempio, in figura \ref{fig:BSGen}, si mostrano i primi tre passi della strategia Breadth First. Il suo vantaggio è che non si tralascia nessuno stato, ovvero il grafo degli stati è \emph{completo}. Inoltre, se un nodo porta ad un vicolo cieco (cioè se non genera nessun bigrafo tramite nessuna regola) allora questo viene semplicemente tolto dalla coda. Lo svantaggio è che può essere molto lenta: se da ogni stato si generano k stati (con k molto alto), allora prima di verificare la proprietà potrebbero volerci molte iterazioni.
+	\emph{Strategia Breadth First}: per ogni stato $S_i$ vengono generati tutti gli stati possibili adiacenti ad $S_i$. Per esempio, in figura \ref{fig:BSGen}, si mostrano i primi tre passi della strategia Breadth First. Il suo vantaggio è che non si tralascia nessuno stato, ottenendo un grafo degli stati \emph{completo}. Inoltre, se un nodo porta ad un vicolo cieco (cioè se non genera nessun bigrafo tramite nessuna regola) allora questo viene semplicemente tolto dalla coda. Lo svantaggio è che può essere molto lenta: se da ogni stato si generano k stati (con k molto alto), allora prima di verificare la proprietà potrebbero volerci molte iterazioni.
 	
 	\begin{figure*}[th]
 	\centering
@@ -167,7 +167,7 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
 	\node[above left] at (1.5,1.5) {$R_1$};
 	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
-	\node at (3.5,3.5) {$R_1$};	
+	\node at (3.5,2.5) {$R_1$};	
 	\end{tikzpicture}
 	}
 	
@@ -189,9 +189,9 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
 	\node[above left] at (1.5,1.5) {$R_1$};
 	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
-	\node at (3.5,3.5) {$R_1$};
+	\node at (3.5,2.5) {$R_1$};
 	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
-	\node at (5.5,3.5) {$R_0$};
+	\node at (5.5,2.5) {$R_0$};
 	\end{tikzpicture}
 	}
 	
@@ -213,9 +213,9 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
 	\node[above left] at (1.5,1.5) {$R_1$};
 	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
-	\node at (3.5,3.5) {$R_1$};
+	\node at (3.5,2.5) {$R_1$};
 	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
-	\node at (5.5,3.5) {$R_0$};
+	\node at (5.5,2.5) {$R_0$};
 	\draw[->, thick] (6.5,2.0) to [out=270,in=0] (5.5,0.0) -- (3.5,0.0) to [out=180,in=270] (2.5,2.0) ;%s4-s1
 	\node[above] at (4.5,0.0) {$R_2$};
 	
@@ -240,6 +240,9 @@ La linea guida seguita per la scelta del linguaggio è stata quindi la sua \emph{
 Si capisce bene come un tale linguaggio così generale sia molto comodo per esprimere le proprietà da fare verificare al model checker $MC_{big}$. Infatti, in questo modo si crea uno strumento generale \textbf{valido per qualsiasi BRS}.
 
 Si è scelto di usare una logica a predicati, esprimibile attraverso il linguaggio generato da una grammatica \emph{Context Free}.
+
+\subsection{Sintassi}
+Incominciamo con il descrivere la sintassi del linguaggio.
 \begin{prop}
 Il linguaggio $L(G)$ per il model checker $MC_{big}$ è generato dalla grammatica $G=(V,T,P,S)$, dove:
 	\begin{itemize}
@@ -250,7 +253,7 @@ Il linguaggio $L(G)$ per il model checker $MC_{big}$ è generato dalla grammatica
 		$U=\{T, \land, $\emph{`(', `)', `,' ,}$ \lnot, W, \pi , A \dots Z\}$ è l'insieme di simboli terminali
 		
 		\item
-		$P$ è l'insieme di \emph{produzioni}, definito dalla seguente relazione:
+		$P$ è l'insieme di \emph{produzioni}, definito dalle seguenti relazioni:
 		\begin{center}
 		$\varphi \rightarrow T \mid \varphi \land \varphi \mid \neg \varphi \mid W_\sigma(\varphi, \varphi, \varphi) \mid \pi_\sigma$\\
 		$\sigma \rightarrow A\sigma \mid \dots \mid Z\sigma \mid \varepsilon \qquad \qquad \qquad \quad$
@@ -277,9 +280,12 @@ Seguendo l'usuale definizione di grammatica CF, diamo ora alcuni esempi di strin
 \end{itemize}
 
 
-Definiamo ora la semantica del linguaggio, cioè specifichiamo il significato di ogni predicato:
+\subsection{Semantica}
+Definiamo ora la semantica del linguaggio, cioè specifichiamo il significato di ogni predicato. Si vedrà che quella presentata è una logica spaziale e non temporale. Spesso nei model checker si usano logiche temporali o spazio-temporali. Nell'implementazione, si è comunque dato spazio a tali logiche, rendendo le classi flessibili. In futuro, sarà quindi possibile aggiungere una nuova logica al $MC_{big}$.
+
+La semantica è definita come segue (ricordiamo che ogni stato $S_i$ è un bigrafo):
 \begin{prop}
-Uno stato $S$ (ricordiamo che S è un bigrafo) soddisfa la proprietà $\varphi$ (in formule $S \models \varphi$) in questi casi:
+Siano $S$ uno stato e $\varphi$ una proprietà espressa nel linguaggio L(G). La relazione $S \models \varphi$ (lo stato S soddisfa la proprietà $\varphi$) è definita per ricorsione sulla complessità di $\varphi$:
 \begin{itemize}
 	\item
 	$S \models T$ sempre
@@ -289,7 +295,7 @@ Uno stato $S$ (ricordiamo che S è un bigrafo) soddisfa la proprietà $\varphi$ (i
 	$S \models \lnot \varphi \quad \Leftrightarrow \quad S \not \models \varphi$
 	\item
 	$S \models W_\sigma(\varphi_1,\varphi_2,\varphi_3) \quad \Leftrightarrow  \quad  \begin{cases}\exists C,D \  : \  S=C \circ (\sigma \otimes id_I) \circ D \\
-	C\models \varphi_1 \quad B \models \varphi_2 \quad D \models \varphi_3 \end{cases}$
+	C\models \varphi_1 \quad \sigma \models \varphi_2 \quad D \models \varphi_3 \end{cases}$
 	\item
 	$S \models \pi_\sigma \quad \Leftrightarrow \quad S \bumpeq \sigma$
 \end{itemize}
@@ -301,9 +307,133 @@ Analizziamo ora i vari predicati. I primi tre consentono le usuali operazioni de
 
 L'ultimo predicato, $\pi_\sigma$, controlla se esiste un isomorfismo tra due bigrafi. Per esempio, lo stato $S_i$ soddisfa il predicato $\pi_A$ (in formule $S_i \models \pi_A$) se e solo se $S_i$ è isomorfo al bigrafo $A$, cioè $S_i \bumpeq A$. Questo predicato è di particolare importanza: esso funge da simbolo di uguaglianza tra bigrafi, rendendo quindi la nostra logica una \emph{logica con uguaglianza}.
 
-Si osservino tutti e cinque i predicati: dai i primi tre è possibile derivare ogni formula della logica proposizionale. Per esempio: se si vuole esprimere la formula $\varphi_1 \lor \varphi_2$, allora si possono usare le leggi di De Morgan e scrivere $\lnot \varphi_1 \land \lnot \varphi_2$. Oppure, se si vuole esprimere il falso, basterà la formula $\lnot T$.
-Gli ultimi due predicati sono invece propri dei bigrafi. Si osservi la loro definizione: si può notare che il Wario Predicate fa riferimento alla struttura interna del bigrafo consentendo infinite scomposizioni. Tramite questo predicato posso quindi \emph{isolare} qualsiasi parte del bigrafo ed esprimere proprietà su di essa. Si può pensare alla sua funzionalità in questo modo: $W_\sigma$ permette di spostarci all'interno del bigrafo, scegliere una sua parte e verificare se essa soddisfa una certa proprietà.
+Si osservino tutti e cinque i predicati: dai i primi tre è possibile derivare ogni formula della logica proposizionale. Per esempio: se si vuole esprimere la formula $\varphi_1 \lor \varphi_2$, allora si possono usare le leggi di De Morgan e scrivere $\lnot(\lnot \varphi_1 \land \lnot \varphi_2)$. Oppure, se si vuole esprimere il falso, basterà la formula $\lnot T$.
+Gli ultimi due predicati sono invece propri dei bigrafi. Si osservi la loro definizione: si può notare che il Wario Predicate fa riferimento alla struttura interna del bigrafo consentendo infinite scomposizioni. Tramite questo predicato posso quindi \emph{isolare} qualsiasi parte del bigrafo ed esprimere proprietà su di essa. Si può pensare alla sua funzionalità in questo modo: $W_\sigma$ permette di spostarci all'interno del bigrafo, scegliere una sua parte ($\sigma$) e verificare se essa soddisfa una certa proprietà.
 Il predicato $\pi_\sigma$, come abbiamo già notato, ci consente di avere una logica con uguaglianza, permettendo quindi di aumentare la sua espressibilità.
+
+
+\section{Dettagli Implementativi}
+Nel codice sorgente di questa tesi, i bigrafi e i BRS, nonchè la loro evoluzione, è stata modellata tramite \emph{JLibbig} [...], una libreria Java che tra le altre cose consente di specificare le varie regole di reazione ed eseguirle sul bigrafo. 
+
+\subsection{Property Matcher}
+\emph{JLibbig} mette a disposizione la possibilità di assegnare ad ogni nodo delle proprietà. Per esempio, ai due router dell'esempio \ref{sub:networkExe} si possono assegnare delle stringhe (in realtà qualsiasi tipo di oggetto) che descrivano il loro nome, per esempio $R_S$ (Router Sender) e $R_R$ (Router Receiver). Inoltre, è possibile estendere la classe Matcher e creare il proprio Matcher personale: in questa sede, si era interessati a definire un matcher in cui due nodi potessero \emph{costituire} un match se e solo se avessero le stesse proprietà. Per cui si è creato il \emph{Property Matcher} che svolge questo compito. Lo stesso vale per gli outernames e innernames: due outername possono costituire un match se e solo se hanno lo stesso nome.
+
+Il \emph{Property Matcher} è molto comodo per esprimere le proprietà per il model checker: per esempio, potremmo essere interessati a sapere quando il pacchetto con destinazione $158.110.144.31$ arrivi all'host con tale indirizzo IP. Quindi si potrebbe creare un Wario Predicate che consenta di capire quando il pacchetto e il destinatario sono dentro lo stesso dominio. Però, senza il \emph{Property Matcher}, la presenza di più pacchetti creerebbe confusione. Infatti non sapremmo più a quale pacchetto fare riferimento. Essendo interessati \emph{solamente} al pacchetto destinato a $158.110.144.31$, ci occorre il \emph{Property Matcher}.
+
+
+\subsection{Regole di Reazione con Proprietà}
+In \emph{JLibbig} le regole di reazione non fanno alcun riferimento alle proprietà, il che significa che dopo l'applicazione di una regola ogni nodo coinvolto (cioè attivo) perde le sue proprietà. Si è creata quindi una classe che ne consenta il \emph{mantenimento} anche dopo lo scatto della regola. Chiaramente, il modo in cui le proprietà si devono conservare è lasciato da definire all'utente, perchè è impossibile definirlo a priori. Per esempio: prendiamo la regola di figura \ref{fig:forwardRuleTemp}, che inoltra e duplica un pacchetto.
+
+
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%%%   Redex   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (2.0,0.5) rectangle (2.5,1.0);%Site 0
+	\node at (2.3,0.75) {0};
+	%Packet
+	\draw[rounded corners=1mm, thick] (0.5,1.0) rectangle (1.7,1.7);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (1.0,1.1) rectangle (1.4,1.5);%Site 2
+	\node at (1.2,1.3) {2};
+	%idS
+	\draw[myGreen, thick] (0.6,1.7) to [out=100,in=270] (0.5,4.2);
+	\draw[fill] (0.6,1.7) circle [radius=0.05];
+	\node[above] at (0.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (1.6,1.7) -- (2.0,1.9) -- (3.2,1.8) -- (5.0,1.5) -- (6.0,1.5) -- (6.0,4.2);
+	\draw[fill] (1.6,1.7) circle [radius=0.05];
+	\node[above] at (6.3,4.2) {$id_R$};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (4.0,0.5) rectangle (4.5,1.0);%Site 1
+	\node at (4.3,0.75) {1};
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (2.0,2.5) -- (2.0,2.1) -- (1.2,2.1) -- (1.2,4.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\node[above] at (1.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (4.5,2.5) -- (4.5,2.1) -- (5.3,2.1) -- (5.3,4.5);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\node[above] at (5.3,4.5) {$local_R$};
+	
+	
+	\draw[->, red, very thick] (6.8,2.0) -- (7.8,2.0);
+	
+	%%%   Reactum   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (8.3,0.3) rectangle (10.7,3.7);%Domain 1
+	\draw[thick] (10.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (10.0,0.5) rectangle (10.5,1.0);%Site 0
+	\node [below] at (10.3,1.0) {0};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (11.3, 0.0) rectangle (13.99,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (11.6,0.3) rectangle (13.6,3.7);%Domain 2
+	\draw[thick] (12.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (11.7,2.1) rectangle (12.2,2.6);%Site 1
+	\node [below] at (12.0,2.6) {1};
+	%Packet 1
+	\draw[rounded corners=1mm, thick] (12.0,1.3) rectangle (13.2,2.0);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.5,1.4) rectangle (13.0,1.9);%Site 2
+	\node at (12.7,1.7) {2};
+	%Packet 2
+	\draw[rounded corners=1mm, thick] (12.0,0.4) rectangle (13.2,1.1);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.5,0.5) rectangle (13.0,0.9);%Site 3
+	\node at (12.7,0.7) {3};
+	%idS
+	\draw[rounded corners = 5mm, myGreen, thick] (12.0,2.0) -- (11.0,1.9) -- (8.5,1.5) -- (8.5,4.2);
+	\draw[fill] (12.0,2.0) circle [radius=0.05];
+	\draw[rounded corners = 5mm, myGreen, thick] (12.0,1.1) to [out=120,in=0] (10.0,1.75);
+	\draw[fill] (12.0,1.1) circle [radius=0.05];
+	\node[above] at (8.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (13.2,2.0) to [out=60,in=270] (13.9,4.2);
+	\draw[fill] (13.2,2.0) circle [radius=0.05];
+	\draw[rounded corners = 5mm, myGreen, thick] (13.2,1.1) to [out=60,in=270] (13.4,2.35);
+	\draw[fill] (13.2,1.1) circle [radius=0.05];
+	\node[above] at (13.59,4.0) {$id_R$};
+	
+	%LinkR
+	\draw[myGreen, thick] (10.0,3.5) to [out=90,in=270] (11.15,4.5);%r1-link
+	\draw[fill] (10.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (12.5,3.5) to [out=90,in=270] (11.15,4.5);%r2-link
+	\draw[fill] (12.5,3.5) circle [radius=0.05];
+	\node[above] at (11.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (10.0,2.5) -- (10.0,2.1) -- (9.2,2.1) -- (9.2,4.5);
+	\draw[fill] (10.0,2.5) circle [radius=0.05];
+	\node[above] at (9.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (12.5,2.5) -- (12.5,2.1) -- (13.2,2.1) -- (13.2,4.5);
+	\draw[fill] (12.5,2.5) circle [radius=0.05];
+	\node[above] at (13.0,4.5) {$local_R$};
+	
+	\end{tikzpicture}
+	\caption{Regola di inoltro tra router. \label{fig:forwardRuleTemp}}
+	\end{figure*}
+
+
+Secondo la definizione di regola di reazione, il redex viene sostituito dal reactum: esso però è un \emph{nuovo} bigrafo e quindi ha nuovi nomi per tutti gli outer e inner names, e tutti i suoi nodi sono privi di proprietà. Supponiamo che prima dell'esecuzione della regola il pacchetto del redex abbia come proprietà la stringa $P_1$. Dopo l'esecuzione si vuole che il primo pacchetto del reactum abbia tutte le proprietà di $P_1$, mentre il secondo abbia la nuova proprietà $New_Packet$. E' ovvio che tale scelta è arbitraria, ed è questo il motivo per cui la definizione del modo in cui le proprietà si conservano è stata lasciata all'utente.
+
+Infine, creando delle regole di reazione che consentano il mantenimento delle proprietà, è possibile usare il \emph{Property Matcher} anche dopo l'esecuzione di varie regole: di conseguenza lo possiamo usare anche nel model checker $MC_{big}$.
+
+
 
 
 
@@ -311,7 +441,7 @@ Il predicato $\pi_\sigma$, come abbiamo già notato, ci consente di avere una log
 Si vedranno ora degli esempi di formule e di come poterle usare con il model checker $MC_{big}$.
 
 \subsection{Moltiplicazione}
-Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali della sottosezione \ref{sub:exeIntro}. Se rappresentiamo la moltiplicazione $x*y$, ci possiamo chiedere se il BRS funzioni correttamente con le regole che abbiamo definito e verificare che il risultato sia corretto. La proprietà da verificare è quindi questa: ``Dati due numeri x e y, il risultato della loro moltiplicazione deve essere il numero $x*y$". Vediamo ora la formula corrispondente: sappiamo che con la segnatura iniziale (vedi \ref{sub:exeIntro}) un numero naturale $n$ è rappresentato un nodo di tipo $num$ che contiene $n$ nodi di tipo $1$. Per esempio, il numero 8 è il bigrafo di figura \ref{fig:big8}.
+Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali della sottosezione \ref{sub:exeIntro}. Se rappresentiamo la moltiplicazione $x*y$, ci possiamo chiedere se il BRS funzioni correttamente con le regole che abbiamo definito e verificare che il risultato sia corretto. La proprietà da verificare è quindi questa: ``Dati due numeri x e y, il risultato della loro moltiplicazione deve essere il numero $x*y$". Vediamo ora la formula corrispondente: sappiamo che con la segnatura iniziale (vedi \ref{sub:exeIntro}) un numero naturale $n$ è rappresentato da un nodo di tipo $num$ che contiene $n$ nodi di tipo $1$. Per esempio, il numero 8 è il bigrafo di figura \ref{fig:big8}.
 
 \begin{figure}[!htbp]
 \centering
@@ -346,7 +476,7 @@ Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali 
 
 Chiamiamo $B$ il bigrafo di figura \ref{fig:big8}. La proprietà di cui sopra si può esprimere con la seguente formula logica: $\varphi = \pi_B$.
 
-Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a generare il grafo degli stati con la strategia Breadth First (se non specificato altrimenti), e per ogni nuovo stato $S_i$ controllerà se $MC,S_i \models \varphi$. In questo esempio, il grafo generato sarà quello di figura \ref{fig:modelCheckerMult}. Per gli stati $S_0$,$S_1$ e $S_2$ il model checker troverà che la proprietà non è soddisfatta, perchè nessuno di questi stati è isomorfo a B. Arrivando però a $S_3$, la proprietà $\varphi$ sarà soddisfatta, ovvero $MC,S_3 \models \varphi$, e $MC_{big}$ ritornerà True.\\
+Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a generare il grafo degli stati con la strategia Breadth First (se non specificato altrimenti), e per ogni nuovo stato $S_i$ controllerà se $MC,S_i \models \varphi$. In questo esempio, il grafo generato sarà quello di figura \ref{fig:modelCheckerMult}. Per gli stati $S_0$ e $S_1$ il model checker troverà che la proprietà non è soddisfatta, perchè nessuno di questi stati è isomorfo a B. Arrivando però a $S_2$, la proprietà $\varphi$ sarà soddisfatta, ovvero $MC,S_2 \models \varphi$, e $MC_{big}$ ritornerà True.\\
 
 \begin{figure*}[th]
 	\centering
@@ -357,22 +487,428 @@ Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a genera
 	\node at (0.5,0.5) {$S_0$};
 	\draw[thick] (2.5,0.5) circle [radius=0.5];
 	\node at (2.5,0.5) {$S_1$};
-	\draw[thick] (4.5,0.5) circle [radius=0.5];
-	\node at (4.5,0.5) {$S_2$};
-	\draw[thick, red] (6.5,0.5) circle [radius=0.5];
-	\node[red] at (6.5,0.5) {$S_3$};
+	\draw[thick, red] (4.5,0.5) circle [radius=0.5];
+	\node[red] at (4.5,0.5) {$S_2$};
 	
 	%Edges
 	\draw[->, thick] (1.0,0.5) -- (2.0,0.5);%s0-s1
 	\node[above] at (1.5,0.5) {$R_0$};
 	\draw[->, thick] (3.0,0.5) -- (4.0,0.5);%s1-s2
 	\node[above] at (3.5,0.5) {$R_0$};
-	\draw[->, thick] (5.0,0.5) -- (6.0,0.5);%s2-s3
-	\node[above] at (5.5,0.5) {$R_0$};
 	
 	\end{tikzpicture}
 	\caption{Model Checker. \label{fig:modelCheckerMult}}
 \end{figure*}
+
+
+
+
+
+\subsection{Router}
+Il secondo esempio riprende quello della sottosezione \ref{sub:networkExe}. Vogliamo modellare una rete con quattro domini, come quella di figura \ref{fig:moreRouters}. L'host $h_1$ vuole comunicare con $h_4$, inviando un pacchetto IP. Tra questi due host ci sono due domini, con due router ciascuno. Prendiamo in considerazione il dominio $D_2$: l'arco tra $R_{2.1}$ e $R_{2.2}$ significa che i due router sono collegati e quindi, essendo nello stesso dominio, ogni pacchetto che arriverà a $R_{2.1}$ arriverà anche a $R_{2.1}$.
+
+\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,6);
+	%%%   First and Second Domains
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\node at (2.0,4.2){$D_1$};
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\node at (2.0,3.0){$R_1$};
+	\draw[rounded corners = 1mm, thick] (0.7,0.5) -- (1.5,0.5) -- (1.1,1.2) -- (0.7,0.5);%h1
+	\node at (1.15,0.75) {$h_1$};
+	\draw[rounded corners = 1mm, thick] (4.0,0.5) -- (4.8,0.5) -- (4.4,1.2) -- (4.0,0.5);%h2
+	\node at (4.45,0.75) {$h_2$};
+	%Packet
+	\draw[rounded corners=1mm, thick] (1.4,1.0) rectangle (2.6,1.7);
+	\draw[rounded corners = 1mm, thick, fill=myGrey] (1.6,1.1) rectangle (2.4,1.5);%tcp
+	\node at (2.0,1.3) {tcp};
+	%packet - idS
+	\draw[myGreen, thick] (1.5,1.7) to [out=90,in=300] (0.93,2.5);
+	\draw[fill] (1.5,1.7) circle [radius=0.05];
+	%packet - idR
+	\draw[myGreen, thick] (2.5,1.7) to [out=10,in=230] (12.43,1.7);
+	\draw[fill] (2.5,1.7) circle [radius=0.05];
+	
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\node at (4.5,4.2){$D_2$};
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2.1
+	\node at (4.5,3.0){$R_{2.1}$};
+	\draw[thick] (5.6,3.0) circle [radius=0.5];%Router 2.2
+	\node at (5.6,3.0){$R_{2.2}$};
+	%Down R.2.1 - R.2.2 - h2
+	\draw[myGreen, thick] (4.5,2.5) to [out=270,in=270] (5.6,2.5);
+	\draw[myGreen, thick] (4.4,1.2) to [out=90,in=270] (5.0,2.2);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\draw[fill] (5.6,2.5) circle [radius=0.05];
+	\draw[fill] (4.4,1.2) circle [radius=0.05];
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%idS
+	\node[above] at (1.2,4.5) {$158.110.3.46$};
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,1.2) to [out=90,in=270] (0.6,4.5);
+	\draw[fill] (1.1,1.2) circle [radius=0.05];
+	
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,0.5) -- (1.1,0.2) --  (2.0,0.2) -- (2.0,2.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (1.1,0.5) circle [radius=0.05];
+	
+	%Link R.2.2 - R.3.1
+	\draw[myGreen, thick] (5.6,3.5) to [out=90,in=270] (6.5,4.5);
+	\draw[fill] (5.6,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (7.9,3.5) to [out=90,in=270] (6.5,4.5);
+	\draw[fill] (7.9,3.5) circle [radius=0.05];
+	\node[above] at (6.5,4.5) {link};
+	
+	
+	%%%   Third  and Fourth Domains   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (7.0,0.0) rectangle (10.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (7.3,0.3) rectangle (9.7,3.7);%Domain 3
+	\node at (8.5,4.2){$D_3$};
+	\draw[thick] (7.9,3.0) circle [radius=0.5];%Router 3.1
+	\node at (7.9,3.0){$R_{3.1}$};
+	\draw[thick] (9.0,3.0) circle [radius=0.5];%Router 3.2
+	\node at (9.0,3.0){$R_{3.2}$};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (10.3, 0.0) rectangle (13.3,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (10.6,0.3) rectangle (13.0,3.7);%Domain 4
+	\node at (11.5,4.2){$D_4$};
+	\draw[rounded corners = 1mm, thick] (12.0,0.5) -- (12.8,0.5) -- (12.4,1.3) -- (12.0,0.5);%h4
+	\node at (12.4,0.75) {$h_4$};
+	\draw[thick] (11.5,3.0) circle [radius=0.5];%Router 4
+	\node at (11.5,3.0){$R_{4}$};
+	
+	%Down R.3.1-R.3.2
+	\draw[myGreen, thick] (7.9,2.5) to [out=270,in=270] (9.0,2.5);
+	\draw[fill] (7.9,2.5) circle [radius=0.05];
+	\draw[fill] (9.0,2.5) circle [radius=0.05];
+	
+	%idR
+	\node[above] at (12.3,4.5) {$158.110.144.31$};
+	\draw[rounded corners = 3mm, myGreen, thick] (12.4,1.3) to [out=90,in=270] (13.0,4.5);
+	\draw[fill] (12.4,1.3) circle [radius=0.05];
+	
+	%LinkR
+	\draw[myGreen, thick] (9.0,3.5) to [out=90,in=270] (10.15,4.5);%r1-link
+	\draw[fill] (9.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (11.5,3.5) to [out=90,in=270] (10.15,4.5);%r2-link
+	\draw[fill] (11.5,3.5) circle [radius=0.05];
+	\node[above] at (10.15,4.5) {link};
+	
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (11.5,2.5) -- (11.5,0.2) -- (12.4,0.2) -- (12.4,0.5);
+	\draw[fill] (11.5,2.5) circle [radius=0.05];
+	\draw[fill] (12.4,0.5) circle [radius=0.05];
+	
+	\end{tikzpicture}
+	\caption{Bigrafo di partenza \label{fig:moreRouters}}
+	\end{figure*}
+
+
+
+Si ricordi che un router inoltra non deterministicamente ogni pacchetto verso tutte le uscite (interfacce). Questo permette di creare un compromesso tra numero di regole ed efficienza del BRS. Perciò, l'unica regola di cui abbiamo bisogno è quella di figura \ref{fig:forwardRuleBis} (si rimanda alla sottosezione \ref{sub:networkExe} per la sua descrizione).
+
+
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%%%   Redex   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (2.0,0.5) rectangle (2.5,1.0);%Site 0
+	\node at (2.3,0.75) {0};
+	%Packet
+	\draw[rounded corners=1mm, thick] (0.5,1.0) rectangle (1.7,1.7);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (1.0,1.1) rectangle (1.4,1.5);%Site 2
+	\node at (1.2,1.3) {2};
+	%idS
+	\draw[myGreen, thick] (0.6,1.7) to [out=100,in=270] (0.5,4.2);
+	\draw[fill] (0.6,1.7) circle [radius=0.05];
+	\node[above] at (0.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (1.6,1.7) -- (2.0,1.9) -- (3.2,1.8) -- (5.0,1.5) -- (6.0,1.5) -- (6.0,4.2);
+	\draw[fill] (1.6,1.7) circle [radius=0.05];
+	\node[above] at (6.3,4.2) {$id_R$};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (4.0,0.5) rectangle (4.5,1.0);%Site 1
+	\node at (4.3,0.75) {1};
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (2.0,2.5) -- (2.0,2.1) -- (1.2,2.1) -- (1.2,4.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\node[above] at (1.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (4.5,2.5) -- (4.5,2.1) -- (5.3,2.1) -- (5.3,4.5);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\node[above] at (5.3,4.5) {$local_R$};
+	
+	
+	\draw[->, red, very thick] (6.8,2.0) -- (7.8,2.0);
+	
+	%%%   Reactum   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (8.3,0.3) rectangle (10.7,3.7);%Domain 1
+	\draw[thick] (10.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (10.0,0.5) rectangle (10.5,1.0);%Site 0
+	\node [below] at (10.3,1.0) {0};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (11.3, 0.0) rectangle (13.99,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (11.6,0.3) rectangle (13.6,3.7);%Domain 2
+	\draw[thick] (12.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.0,0.4) rectangle (12.5,0.9);%Site 1
+	\node [below] at (12.3,0.9) {1};
+	%Packet
+	\draw[rounded corners=1mm, thick] (12.0,1.0) rectangle (13.2,1.7);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.5,1.1) rectangle (13.0,1.5);%Site 2
+	\node at (12.7,1.3) {2};
+	%idS
+	\draw[rounded corners = 5mm, myGreen, thick] (12.0,1.7) -- (11.0,1.9) -- (8.5,1.5) -- (8.5,4.2);
+	\draw[fill] (12.0,1.7) circle [radius=0.05];
+	\node[above] at (8.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (13.2,1.7) to [out=60,in=270] (13.9,4.2);
+	\draw[fill] (13.2,1.7) circle [radius=0.05];
+	\node[above] at (13.59,4.0) {$id_R$};
+	
+	%LinkR
+	\draw[myGreen, thick] (10.0,3.5) to [out=90,in=270] (11.15,4.5);%r1-link
+	\draw[fill] (10.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (12.5,3.5) to [out=90,in=270] (11.15,4.5);%r2-link
+	\draw[fill] (12.5,3.5) circle [radius=0.05];
+	\node[above] at (11.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (10.0,2.5) -- (10.0,2.1) -- (9.2,2.1) -- (9.2,4.5);
+	\draw[fill] (10.0,2.5) circle [radius=0.05];
+	\node[above] at (9.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (12.5,2.5) -- (12.5,2.1) -- (13.2,2.1) -- (13.2,4.5);
+	\draw[fill] (12.5,2.5) circle [radius=0.05];
+	\node[above] at (13.0,4.5) {$local_R$};
+	
+	\end{tikzpicture}
+	\caption{Regola di inoltro tra router. \label{fig:forwardRuleBis}}
+	\end{figure*}
+
+
+
+Ora il problema di capire quando un pacchetto è arrivato a destinazione diventa più interessante. Ci sono tre host, e bisogna prestare attenzione a quale sia il corretto destinatario. 
+
+Per esempio, non si deve fare il seguente errore: vogliamo esprimere la proprietà ``Il pacchetto è arrivato a destinazione". Nella logica descritta precedentemente, si potrebbe sbagliare e creare una formula del genere: $\varphi = W_B(T,T,T)$, dove B è il bigrafo di figura \ref{fig:wrongRightProps}.a.
+
+
+
+\begin{figure}[!h]
+\centering
+\subfigure[Predicato Sbagliato]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+	%Root
+	\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (4.0,4.0);
+	%Domain
+	\draw[rounded corners=4mm, thick] (0.3,0.3) rectangle (3.7,3.7);
+	%Router
+	\draw[thick] (2.0,3.0) circle [radius=0.5];
+	\node at (2.0,3.0) {$R$};
+	%Host
+	\draw[rounded corners=1mm, thick] (2.5,1.0) -- (3.5,1.0) -- (3.0,2.0) -- (2.5,1.0);
+	\node at (3.05,1.3) {$h_1$};
+	
+	%Link Router
+	\draw[myGreen, thick] (2.0,3.5) to [out=110,in=290] (2.0,4.5);
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\node[above] at (2.0,4.5){$link_R$};
+	%Link idR
+	\draw[rounded corners=2mm, myGreen, thick] (2.0,2.5) -- (2.0,2.2) -- (3.0,2.2) -- (3.0,4.5);
+	\draw[myGreen, thick] (3.0,2.0) to [out=110,in=290] (3.0,2.35);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (3.0,2.0) circle [radius=0.05];
+	\node[above] at (3.0,4.5){$id_H$};
+	%Packet
+	\draw[rounded corners=2mm, thick] (0.5,1.0) rectangle (2.0,1.7);
+	\draw[fill] (0.7,1.7) circle [radius=0.05];
+	\draw[fill] (1.8,1.7) circle [radius=0.05];
+	%Site in packet
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (1.0,1.1) rectangle (1.5,1.6);
+	\node at (1.25,1.35){0};
+	%idS
+	\draw[myGreen, thick] (0.7,1.75) to [out=110,in=270] (1.0,4.5);
+	\node[above] at (1.0,4.5){$id_S$};
+	%idR
+	\draw[myGreen, thick] (1.8,1.75) to [out=60,in=270] (4.0,4.5);
+	\node[above] at (4.0,4.5){$id_R$};
+	%Site in domain
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (2.5,0.4) rectangle (3.0,0.9);
+	\node at (2.75,0.70){1};
+
+\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Predicato Corretto]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+	%Root
+	\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (4.0,4.0);
+	%Domain
+	\draw[rounded corners=4mm, thick] (0.3,0.3) rectangle (3.7,3.7);
+	%Router
+	\draw[thick] (2.0,3.0) circle [radius=0.5];
+	\node at (2.0,3.0) {$R$};
+	%Host
+	\draw[rounded corners=1mm, thick] (2.5,1.0) -- (3.5,1.0) -- (3.0,2.0) -- (2.5,1.0);
+	\node at (3.05,1.3) {$h_1$};
+	
+	%Link Router
+	\draw[myGreen, thick] (2.0,3.5) to [out=110,in=290] (2.0,4.5);
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\node[above] at (2.0,4.5){$link_R$};
+	%Link idR
+	\draw[rounded corners=2mm, myGreen, thick] (2.0,2.5) -- (2.0,2.2) -- (3.0,2.2) -- (3.0,4.5);
+	\draw[myGreen, thick] (3.0,2.0) to [out=110,in=290] (3.0,2.35);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (3.0,2.0) circle [radius=0.05];
+	\node[above] at (3.0,4.5){$id_R$};
+	%Packet
+	\draw[rounded corners=2mm, thick] (0.5,1.0) rectangle (2.0,1.7);
+	\draw[fill] (0.7,1.7) circle [radius=0.05];
+	\draw[fill] (1.8,1.7) circle [radius=0.05];
+	%Site in packet
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (1.0,1.1) rectangle (1.5,1.6);
+	\node at (1.25,1.35){0};
+	%idS
+	\draw[myGreen, thick] (0.7,1.75) to [out=110,in=270] (1.0,4.5);
+	\node[above] at (1.0,4.5){$id_S$};
+	%idR
+	\draw[myGreen, thick] (1.8,1.75) to [out=60,in=270] (2.2,2.2);
+	%Site in domain
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (2.5,0.4) rectangle (3.0,0.9);
+	\node at (2.75,0.70){1};
+
+\end{tikzpicture}
+}
+\caption{Esempi di predicati\label{fig:wrongRightProps}}
+\end{figure}
+
+
+Questa proprietà \textbf{non} verifica l'arrivo a destinazione di un pacchetto, infatti è soddisfatta anche esso si trova per esempio nel dominio $D_2$. Quello che non abbiamo considerato sono gli outernames: quello del pacchetto e quello dell'host devono essere lo stesso outername; solo così il \emph{Wario Predicate} sarà soddisfatto. Il predicato corretto è quindi quello di figura \ref{fig:wrongRightProps}.a.
+
+Testiamo ora la formula $\varphi = W_B(T,T,T)$ sul bigrafo di partenza, cioè quello di figura \ref{fig:moreRouters}, che sarà chiamato $S_0$. Per prima cosa, il model checker controlla se in questo stato iniziale la formula sia soddisfatta, ovvero se $MC,S_0 \models \varphi$. Non essendo soddisfatta continua. Inizialmente la regola $R_0$ (in figura \ref{fig:forwardRuleBis}) trova un solo match, per cui il pacchetto viene inoltrato dal dominio $D_1$ a $D_2$, dando origine allo stato $S_1$. E' utile guardare il grafo degli stati di figura \ref{fig:stateGraphNetworkLoops} per tenere traccia di tutte le esecuzioni. 
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=0.5];%s0
+\node at (1.5,1.5){$S_0$};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%s1
+\node at (3.5,1.5){$S_1$};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%s2
+\node at (5.5,1.5){$S_2$};
+\draw[thick, red] (7.5,1.5) circle [radius=0.5];%s3
+\node[red] at (7.5,1.5){$S_3$};
+%Edges
+\draw[->, thick] (2.0,1.5) -- (3.0,1.5);%s0-s1
+\draw[<-, thick] (1.5,2.0) to [out=45,in=135] (3.5,2.0);%s1-s0
+\draw[->, thick] (4.0,1.5) -- (5.0,1.5);%s1-s2
+\draw[<-, thick] (3.5,1.0) to [out=-45,in=-135] (5.5,1.0);%s2-s1
+\draw[->, thick] (6.0,1.5) -- (7.0,1.5);%s2-s3
+\draw[<-, thick] (5.5,2.0) to [out=45,in=135] (7.5,2.0);%s3-s2
+
+\end{tikzpicture}
+\caption{Grafo degli stati \label{fig:stateGraphNetworkLoops}}
+\end{figure}
+
+
+In $S_1$ la formula non è soddisfatta ($MC,S_1 \not\models \varphi$), quindi $MC_{big}$ continua. Dallo stato $S_1$, la regola $R_0$ trova ora due match: il primo coinvolge il router $R_{2.2}$ e manderà il pacchetto nel dominio $D_3$, mentre il secondo riguarda il router $R_{2.1}$ e manderà il pacchetto indietro verso $D_1$. Quindi il grafo degli stati avrà rispettivamente gli archi: $S_1 \to S_2$ e $S_1 \to S_0$. Il model checker ora dovrà duplicare le computazioni, cioè seguire sia il primo che il secondo arco.
+
+Seguendo l'arco $S_1 \to S_0$, il MC trova il nodo $S_0$ grazie all'algoritmo per l'isomorfismo e riconosce che appartiene già al grafo degli stati. La computazione di questo ramo \textbf{viene interrotta} perchè il model checker capisce che continuando si causerebbe un'esecuzione infinita.
+
+Seguendo l'arco $S_1 \to S_2$, si genera invece un nuovo stato $S_2$. Il model checker cerca in tutto il grafo degli stati un nodo isomorfo a $S_2$ e, se non lo trova, capisce che esso è un \emph{nuovo} stato. Dato che $MC,S_2 \not\models \varphi$, la computazione di questo ramo quindi continua. 
+
+Applicando $R_0$ a $S_2$ il discorso è lo stesso: la computazione che segue l'arco $S_2 \to S_1$ si interrompe, mentre quella che segue $S_2 \to S_3$ continua. Si noti come la strategia \emph{Breadth First} consenta di interrompere da subito le computazioni che causano cicli infiniti: è uno dei vantaggi di questa strategia.
+
+Infine, lo stato $S_3$ è il bigrafo in cui il pacchetto è dentro il dominio $D_4$. La regola $R_0$ trova solamente un match, ed eseguendola rimanda il pacchetto indietro verso il  dominio $D_3$, creando nel grafo degli stati l'arco $S_3 \to S_2$. Questa volta però lo stato $S_3$ soddisfa la proprietà desiderata: il model checker trova che 
+\begin{center}
+$MC,S_3 \models W_B(T,T,T) \qquad$ dove B è il bigrafo di figura \ref{fig:wrongRightProps}.b
+\end{center}
+e quindi ritorna True.
+
+Un'ultima osservazione: nel caso di più pacchetti si deve prestare attenzione ad un altro dettaglio. Se siamo interessati a verificare che il pacchetto spedito da $158.110.3.46$ a $158.110.144.31$ sia arrivato a destinazione, dobbiamo usare il Property Matcher. Definiremo quindi la formula sempre come $\varphi = W_B(T,T,T)$, ma ora il bigrafo B avrà nomi specifici nei suoi outernames, come in figura \ref{fig:propertyPredicate}.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+	%Root
+	\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (4.0,4.0);
+	%Domain
+	\draw[rounded corners=4mm, thick] (0.3,0.3) rectangle (3.7,3.7);
+	%Router
+	\draw[thick] (2.0,3.0) circle [radius=0.5];
+	\node at (2.0,3.0) {$R$};
+	%Host
+	\draw[rounded corners=1mm, thick] (2.5,1.0) -- (3.5,1.0) -- (3.0,2.0) -- (2.5,1.0);
+	\node at (3.05,1.3) {$h_1$};
+	
+	%Link Router
+	\draw[myGreen, thick] (2.0,3.5) to [out=110,in=290] (2.0,4.5);
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\node[above] at (2.0,4.5){$link_R$};
+	%Link idR
+	\draw[rounded corners=2mm, myGreen, thick] (2.0,2.5) -- (2.0,2.2) -- (3.0,2.2) -- (3.0,4.5);
+	\draw[myGreen, thick] (3.0,2.0) to [out=110,in=290] (3.0,2.35);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (3.0,2.0) circle [radius=0.05];
+	%Packet
+	\draw[rounded corners=2mm, thick] (0.5,1.0) rectangle (2.0,1.7);
+	\draw[fill] (0.7,1.7) circle [radius=0.05];
+	\draw[fill] (1.8,1.7) circle [radius=0.05];
+	%Site in packet
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (1.0,1.1) rectangle (1.5,1.6);
+	\node at (1.25,1.35){0};
+	%idS
+	\draw[myGreen, thick] (0.7,1.75) to [out=110,in=270] (1.0,4.5);
+	\node[above left] at (1.0,4.5){$158.110.3.46$};
+	%idR
+	\draw[myGreen, thick] (1.8,1.75) to [out=60,in=270] (2.2,2.2);
+	\node[above right] at (3.0,4.5){$158.110.144.31$};
+	%Site in domain
+	\draw[rounded corners=1mm, fill=myGrey, dashed] (2.5,0.4) rectangle (3.0,0.9);
+	\node at (2.75,0.70){1};
+
+\end{tikzpicture}
+\caption{Predicato con proprietà \label{fig:propertyPredicate}}
+\end{figure}
 
 
 

@@ -23,26 +23,33 @@
 \contentsline {subsection}{\numberline {1.5.3}BRS}{21}
 \contentsline {subsection}{\numberline {1.5.4}Esempio}{21}
 \contentsline {chapter}{\numberline {2}Isomorfismo tra bigrafi}{25}
-\contentsline {subsection}{\numberline {2.0.5}Esempio:}{25}
-\contentsline {section}{\numberline {2.1}Formulazione del problema}{26}
-\contentsline {section}{\numberline {2.2}Strategia di soluzione}{27}
-\contentsline {subsection}{\numberline {2.2.1}Esempi}{28}
-\contentsline {section}{\numberline {2.3}Vincoli}{30}
-\contentsline {subsection}{\numberline {2.3.1}Vincoli per il place graph}{30}
-\contentsline {subsection}{\numberline {2.3.2}Vincoli per il link graph}{34}
-\contentsline {subsection}{\numberline {2.3.3}Vincoli di coerenza}{38}
-\contentsline {section}{\numberline {2.4}Grafo degli stati}{40}
-\contentsline {subsection}{\numberline {2.4.1}Esempio}{42}
-\contentsline {section}{\numberline {2.5}Complessit\`a}{45}
-\contentsline {chapter}{\numberline {3}Un Model Checker per i bigrafi}{49}
+\contentsline {section}{\numberline {2.1}Esempio:}{25}
+\contentsline {section}{\numberline {2.2}Formulazione del problema}{26}
+\contentsline {section}{\numberline {2.3}Strategia di soluzione}{27}
+\contentsline {subsection}{\numberline {2.3.1}Esempi}{28}
+\contentsline {section}{\numberline {2.4}Vincoli}{30}
+\contentsline {subsection}{\numberline {2.4.1}Vincoli per il place graph}{30}
+\contentsline {subsection}{\numberline {2.4.2}Vincoli per il link graph}{34}
+\contentsline {subsection}{\numberline {2.4.3}Vincoli di coerenza}{38}
+\contentsline {section}{\numberline {2.5}Grafo degli stati}{40}
+\contentsline {subsection}{\numberline {2.5.1}Esempio}{42}
+\contentsline {section}{\numberline {2.6}Complessit\`a}{45}
+\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{49}
 \contentsline {section}{\numberline {3.1}Model Checker}{49}
 \contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{50}
 \contentsline {section}{\numberline {3.2}Logica per i bigrafi}{53}
-\contentsline {section}{\numberline {3.3}Esempi}{55}
-\contentsline {subsection}{\numberline {3.3.1}Moltiplicazione}{55}
-\contentsline {chapter}{\numberline {}Conclusioni}{57}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{59}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{59}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{59}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{60}
-\contentsline {chapter}{\numberline {}Bibliografia}{61}
+\contentsline {subsection}{\numberline {3.2.1}Sintassi}{53}
+\contentsline {subsection}{\numberline {3.2.2}Semantica}{54}
+\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{55}
+\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{55}
+\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{56}
+\contentsline {section}{\numberline {3.4}Esempi}{57}
+\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{57}
+\contentsline {subsection}{\numberline {3.4.2}Router}{58}
+\contentsline {chapter}{\numberline {4}Esempi}{63}
+\contentsline {chapter}{\numberline {}Conclusioni}{65}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{67}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{67}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{67}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{68}
+\contentsline {chapter}{\numberline {}Bibliografia}{69}

@@ -84,4 +84,9 @@
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{60}
 \contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{61}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{63}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Bigrafo per l'automa A }}{64}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{65}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{66}
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{67}
 \addvspace {10\p@ }

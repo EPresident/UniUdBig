@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  4 SEP 2015 17:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  5 SEP 2015 18:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -732,7 +732,7 @@ File: tikzlibrarymatrix.code.tex 2013/07/12 v3.0.0 (rcs-revision 1.4)
 
 LaTeX Warning: Label `sub:networkExe' multiply defined.
 
-) (./logic.aux) (./conclusions.aux) (./appendix.aux))
+) (./logic.aux) (./examples.aux) (./conclusions.aux) (./appendix.aux))
 \openout1 = `tesi.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
@@ -867,7 +867,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 
 LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
- line 53.
+ line 55.
 
 )
 \tf@toc=\write4
@@ -879,10 +879,13 @@ LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
 \tf@lof=\write5
 \openout5 = `tesi.lof'.
 
- [4]
+ [4] [5]
 \openout2 = `introduction.aux'.
 
- (./introduction.tex
+ (./introduction.tex [6
+
+
+]
 Introduzione.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--5
@@ -904,10 +907,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--22
 
  []
 
-[5
-
-
-]
+[7]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 28.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
@@ -949,7 +949,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 52--54
 
  []
 
-[6]) [7] [8
+[8]) [9] [10
 
 
 ]
@@ -1174,7 +1174,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 479--480
 
 ]
 Capitolo 4.
-) [63] [64
+[63] [64] [65] [66]) [67] [68
 
 
 ]
@@ -1182,26 +1182,26 @@ Capitolo 4.
 
  (./conclusions.tex
 Conclusioni.
-) [65
+) [69
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [66
+ (./appendix.tex [70
 
 
 
 ]
 Appendice A.
-[67]
+[71]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 68 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 72 undefined on input
  line 28.
 
-) [68] (./tesi.bbl
+) [72] (./tesi.bbl
 Bibliografia.
-) [69
+) [73
 
 
 
@@ -1215,10 +1215,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 17942 strings out of 493117
- 364692 string characters out of 6135433
- 468245 words of memory out of 5000000
- 20951 multiletter control sequences out of 15000+600000
+ 18029 strings out of 493117
+ 366621 string characters out of 6135433
+ 468732 words of memory out of 5000000
+ 21036 multiletter control sequences out of 15000+600000
  15707 words of font info for 58 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,11n,82p,949b,788s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1245,10 +1245,10 @@ exmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/
 texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (81 pages, 619902 bytes).
+Output written on tesi.pdf (87 pages, 641935 bytes).
 PDF statistics:
- 391 PDF objects out of 1000 (max. 8388607)
- 264 compressed objects within 3 object streams
+ 410 PDF objects out of 1000 (max. 8388607)
+ 277 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

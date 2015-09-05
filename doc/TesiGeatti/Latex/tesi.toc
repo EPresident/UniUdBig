@@ -1,6 +1,6 @@
 \select@language {italian}
 \select@language {italian}
-\contentsline {chapter}{\numberline {}Introduzione}{v}
+\contentsline {chapter}{\numberline {}Introduzione}{vii}
 \contentsline {chapter}{\numberline {1}Bigrafi e BRS}{1}
 \contentsline {section}{\numberline {1.1}Definizione informale di Bigrafo}{1}
 \contentsline {subsection}{\numberline {1.1.1}Esempio}{2}
@@ -47,9 +47,10 @@
 \contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{57}
 \contentsline {subsection}{\numberline {3.4.2}Router}{58}
 \contentsline {chapter}{\numberline {4}Esempi}{63}
-\contentsline {chapter}{\numberline {}Conclusioni}{65}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{67}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{67}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{67}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{68}
-\contentsline {chapter}{\numberline {}Bibliografia}{69}
+\contentsline {section}{\numberline {4.1}NFA}{63}
+\contentsline {chapter}{\numberline {}Conclusioni}{69}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{71}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{71}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{71}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{72}
+\contentsline {chapter}{\numberline {}Bibliografia}{73}

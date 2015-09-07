@@ -281,7 +281,7 @@ Seguendo l'usuale definizione di grammatica CF, diamo ora alcuni esempi di strin
 
 
 \subsection{Semantica}
-Definiamo ora la semantica del linguaggio, cioè specifichiamo il significato di ogni predicato. Si vedrà che quella presentata è una logica spaziale e non temporale. Spesso nei model checker si usano logiche temporali o spazio-temporali. Nell'implementazione, si è comunque dato spazio a tali logiche, rendendo le classi flessibili. In futuro, sarà quindi possibile aggiungere una nuova logica a $MC_{big}$.
+Definiamo ora la semantica del linguaggio, cioè specifichiamo il significato di ogni predicato. Si vedrà che quella presentata è una logica spaziale e non temporale, motivo per cui le proprietà verranno chiamate \textbf{proprietà locali}. Spesso nei model checker si usano logiche temporali o spazio-temporali. Nell'implementazione, si è comunque dato spazio a tali logiche, rendendo le classi flessibili. In futuro, sarà quindi possibile aggiungere una nuova logica a $MC_{big}$.
 
 La semantica è definita come segue (ricordiamo che ogni stato $S_i$ è un bigrafo):
 \begin{prop}
@@ -303,6 +303,10 @@ Siano $S$ uno stato e $\varphi$ una proprietà espressa nel linguaggio L(G). La r
 
 Si dirà che la formula $\varphi$ costituisce la \emph{politica} per il model checker.
 
+\begin{prop}
+Ogni formula del linguaggio $L(G)$ viene chiamata \textbf{proprietà locale} perchè deriva da una logica spaziale e quindi può fare riferimento solamente ad aspetti spaziali/locali di un bigrafo.
+\end{prop}
+
 Analizziamo ora i vari predicati. I primi tre consentono le usuali operazioni della logica proposizionale, mentre il terzo è un predicato ad-hoc per questa logica: $W_\sigma$ è detto ``Wario Predicate", e usa l'operazione di Match per controllare le tre proprietà che ha come argomento. Facciamo un esempio: sia $W_B(T,T,T)$ un Wario Predicate. Lo stato S soddisfa questo predicato ($S \models W_B(T,T,T)$) se e solo se esiste un match M di B nel bigrafo S tale che rispetti queste condizioni: il contesto del match M deve soddisfare $\varphi_1$, il redex di M deve soddisfare $\varphi_2$ mentre i parametri di M devono soddisfare $\varphi_3$. Poichè $\varphi_1=\varphi_2=\varphi_3=T$, si ha che $S \models W_B(T,T,T)$ se e solo se esiste un match di B in S. Il Wario Predicate consente quindi di isolare contesto, redex e parametri e verificare le proprietà in modo indipendente per ognuno di questi tre bigrafi.
 
 L'ultimo predicato, $\pi_\sigma$, controlla se esiste un isomorfismo tra due bigrafi. Per esempio, lo stato $S_i$ soddisfa il predicato $\pi_A$ (in formule $S_i \models \pi_A$) se e solo se $S_i$ è isomorfo al bigrafo $A$, cioè $S_i \bumpeq A$. Questo predicato è di particolare importanza: esso funge da simbolo di uguaglianza tra bigrafi, rendendo quindi la nostra logica una \emph{logica con uguaglianza}.
@@ -316,7 +320,7 @@ Il predicato $\pi_\sigma$, come abbiamo già notato, ci consente di avere una log
 Nel codice sorgente di questa tesi, i bigrafi e i BRS, nonchè la loro evoluzione, è stata modellata tramite \emph{JLibbig} [...], una libreria Java che tra le altre cose consente di specificare le varie regole di reazione ed eseguirle sul bigrafo. 
 
 \subsection{Property Matcher}
-\emph{JLibbig} mette a disposizione la possibilità di assegnare ad ogni nodo delle proprietà. Per esempio, ai due router dell'esempio \ref{sub:networkExe} si possono assegnare delle stringhe (in realtà qualsiasi tipo di oggetto) che descrivano il loro nome, per esempio $R_S$ (Router Sender) e $R_R$ (Router Receiver). Inoltre, è possibile estendere la classe Matcher e creare il proprio Matcher personale: in questa sede, si era interessati a definire un matcher in cui due nodi potessero \emph{costituire} un match se e solo se avessero le stesse proprietà. Per cui si è creato il \emph{Property Matcher} che svolge questo compito. Lo stesso vale per gli outernames e innernames: due outername possono costituire un match se e solo se hanno lo stesso nome.
+\emph{JLibbig} mette a disposizione la possibilità di assegnare ad ogni nodo delle proprietà. Per esempio, ai due router dell'esempio \ref{sub:networkExe} si possono assegnare delle stringhe (in realtà qualsiasi tipo di oggetto) che descrivano il loro nome, per esempio $R_S$ (Router Sender) e $R_R$ (Router Receiver). Inoltre, è possibile estendere la classe Matcher e creare il proprio Matcher personale: in questa sede, si era interessati a definire un matcher in cui due nodi potessero \emph{costituire} un match se e solo se avessero le stesse proprietà. %Per cui si è creato il \emph{Property Matcher} che svolge questo compito. Lo stesso vale per gli outernames e innernames: due outername possono costituire un match se e solo se hanno lo stesso nome.
 
 Il \emph{Property Matcher} è molto comodo per esprimere le proprietà per il model checker: per esempio, potremmo essere interessati a sapere quando il pacchetto con destinazione $158.110.144.31$ arrivi all'host con tale indirizzo IP. Quindi si potrebbe creare un Wario Predicate che consenta di capire quando il pacchetto e il destinatario sono dentro lo stesso dominio. Però, senza il \emph{Property Matcher}, la presenza di più pacchetti creerebbe confusione. Infatti non sapremmo più a quale pacchetto fare riferimento. Essendo interessati \emph{solamente} al pacchetto destinato a $158.110.144.31$, ci occorre il \emph{Property Matcher}.
 
@@ -445,7 +449,7 @@ Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali 
 
 \begin{figure}[!htbp]
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.95]
 %\draw[help lines] (0,0) grid (6,5);
 %Root
 \draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (5.0,5.0);

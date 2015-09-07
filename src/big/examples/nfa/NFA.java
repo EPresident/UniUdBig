@@ -43,11 +43,11 @@ public abstract class NFA {
 	 * @return the signature of the NFA bigraphical encoding
 	 */
 	private static Signature getNFASignature(){
-		Control ctrl_state = new Control("state",true,1);
-		Control ctrl_trans = new Control("trans",true,2);
+		Control ctrl_state = new Control("state",false,1);
+		Control ctrl_trans = new Control("trans",false,2);
 		Control ctrl_active = new Control("active",true,0);
-		Control ctrl_final = new Control("final",true,0);
-		Control ctrl_str = new Control("string", true, 0);
+		Control ctrl_final = new Control("final",false,0);
+		Control ctrl_str = new Control("string", false, 0);
 		Control ctrl_input = new Control("input",true,3);
 		return new Signature(ctrl_state, ctrl_trans, ctrl_active, ctrl_final, ctrl_str, ctrl_input);
 	}

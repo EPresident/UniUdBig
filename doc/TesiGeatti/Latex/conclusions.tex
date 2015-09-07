@@ -1,6 +1,33 @@
 \conclusions\label{ch:concl}
-asd
-asd
-asd
+L'obbiettivo principale di questa tesi era la creazione di uno strumento per la verifica di proprietà all'interno di un BRS, che è stato implementato risolvendo due problemi principali: l'isomorfismo tra bigrafi e la creazioni di un model checker con una logica generale.
 
-% here ...
+Il requisito principale su questo strumento di verifica è la sua \emph{generalità}: esso deve permettere di esprimere le proprietà su qualsiasi dominio il BRS rappresenti. Questa tesi ha rispettato il requisito appena citato, grazie soprattutto alla semantica della logica creata, che risulta quindi sufficientemente generale. D'altra parte, potrebbe non risultare molto espressiva: essa è principalmente una logica spaziale, e quindi non tiene conto di fattori temporali che potrebbero aumentare la sua espressibilità. Si è però dato spazio a future logiche che potranno facilmente estendere $MC_{big}$.
+
+L'isomorfismo tra bigrafi ha permesse invece la costruzione dello scheletro per il model checker: qualsiasi strumento di verifica deve permettere di evitare esecuzioni infinite quando è possibile. L'isomorfismo ha permesso quindi il raggiungimento di questo obbiettivo. Il problema è stato risolto tramite la \emph{programmazione a vincoli}, che ha ridotto notevolmente il tempo di sviluppo dell'algoritmo ma che potrebbe non essere la soluzioni migliore in termini di complessità.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

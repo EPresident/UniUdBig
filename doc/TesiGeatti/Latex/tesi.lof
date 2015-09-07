@@ -89,4 +89,12 @@
 \contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{65}
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{66}
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{67}
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Bigrafo B }}{68}
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Grafo degli stati }}{68}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Passo}}}{70}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Passo}}}{70}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo Passo}}}{70}
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{71}
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto Passo}}}{71}
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto Passo}}}{71}
 \addvspace {10\p@ }

@@ -41,16 +41,16 @@
 \contentsline {subsection}{\numberline {3.2.1}Sintassi}{53}
 \contentsline {subsection}{\numberline {3.2.2}Semantica}{54}
 \contentsline {section}{\numberline {3.3}Dettagli Implementativi}{55}
-\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{55}
+\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{56}
 \contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{56}
 \contentsline {section}{\numberline {3.4}Esempi}{57}
 \contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{57}
 \contentsline {subsection}{\numberline {3.4.2}Router}{58}
 \contentsline {chapter}{\numberline {4}Esempi}{63}
 \contentsline {section}{\numberline {4.1}NFA}{63}
-\contentsline {chapter}{\numberline {}Conclusioni}{69}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{71}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{71}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{71}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{72}
-\contentsline {chapter}{\numberline {}Bibliografia}{73}
+\contentsline {chapter}{\numberline {}Conclusioni}{73}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{75}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{75}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{75}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{76}
+\contentsline {chapter}{\numberline {}Bibliografia}{77}

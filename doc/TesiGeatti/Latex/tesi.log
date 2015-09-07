@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  5 SEP 2015 18:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.27)  7 SEP 2015 11:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -875,11 +875,11 @@ LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
 
  [2] (./tesi.lof [3
 
-])
+] [4])
 \tf@lof=\write5
 \openout5 = `tesi.lof'.
 
- [4] [5]
+ [5]
 \openout2 = `introduction.aux'.
 
  (./introduction.tex [6
@@ -1160,12 +1160,24 @@ Underfull \vbox (badness 2368) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [52]
-[53] [54] [55] [56]
-Underfull \hbox (badness 10000) in paragraph at lines 479--480
+[53] [54]
+Underfull \vbox (badness 5161) has occurred while \output is active []
+
+ [55]
+[56] [57]
+Underfull \hbox (badness 10000) in paragraph at lines 483--484
 
  []
 
-[57] [58] [59] [60]) [61]
+
+Underfull \vbox (badness 1681) has occurred while \output is active []
+
+ [58]
+[59]
+Underfull \vbox (badness 2875) has occurred while \output is active []
+
+ [60])
+[61]
 \openout2 = `examples.aux'.
 
  (./examples.tex [62
@@ -1174,7 +1186,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 479--480
 
 ]
 Capitolo 4.
-[63] [64] [65] [66]) [67] [68
+[63] [64] [65] [66] [67]
+Underfull \hbox (badness 10000) in paragraph at lines 466--467
+
+ []
+
+[68]) [69] [70] [71] [72
 
 
 ]
@@ -1182,26 +1199,26 @@ Capitolo 4.
 
  (./conclusions.tex
 Conclusioni.
-) [69
+) [73
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [70
+ (./appendix.tex [74
 
 
 
 ]
 Appendice A.
-[71]
+[75]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 72 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 76 undefined on input
  line 28.
 
-) [72] (./tesi.bbl
+) [76] (./tesi.bbl
 Bibliografia.
-) [73
+) [77
 
 
 
@@ -1215,10 +1232,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 18029 strings out of 493117
- 366621 string characters out of 6135433
- 468732 words of memory out of 5000000
- 21036 multiletter control sequences out of 15000+600000
+ 18033 strings out of 493117
+ 366684 string characters out of 6135433
+ 485410 words of memory out of 5000000
+ 21040 multiletter control sequences out of 15000+600000
  15707 words of font info for 58 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,11n,82p,949b,788s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1245,10 +1262,10 @@ exmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/
 texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (87 pages, 641935 bytes).
+Output written on tesi.pdf (91 pages, 657528 bytes).
 PDF statistics:
- 410 PDF objects out of 1000 (max. 8388607)
- 277 compressed objects within 3 object streams
+ 423 PDF objects out of 1000 (max. 8388607)
+ 286 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

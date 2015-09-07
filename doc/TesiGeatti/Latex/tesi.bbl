@@ -1,8 +1,27 @@
 \begin{thebibliography}{1}
 
+\bibitem{Damgaard08ageneric}
+Troels~C. Damgaard e Jean Krivine.
+\newblock A generic language for biological systems based on bigraphs, 2008.
+
+\bibitem{DBLP:conf/ac/Milner03}
+Robin Milner.
+\newblock Bigraphs for petri nets.
+\newblock  In {\em Lectures on Concurrency and Petri Nets, Advances in Petri
+  Nets [This tutorial volume originates from the 4th Advanced Course on Petri
+  Nets, {ACPN} 2003, held in Eichst{\"{a}}tt, Germany in September 2003. In
+  addition to lectures given at {ACPN} 2003, additional chapters have been
+  commissioned]}, pp. 686--701, 2003.
+
 \bibitem{DBLP:books/daglib/0022395}
 Robin Milner.
 \newblock {\em The Space and Motion of Communicating Agents}.
 \newblock Cambridge University Press, 2009.
+
+\bibitem{pereiranetworked}
+Eloi Pereira, Pedro~Marques da~Silva, Clemens Krainer, Christoph~M Kirsch, Jose
+  Morgado, e Raja Sengupta.
+\newblock A networked robotic system and its use in an oil spill monitoring
+  exercise.
 
 \end{thebibliography}

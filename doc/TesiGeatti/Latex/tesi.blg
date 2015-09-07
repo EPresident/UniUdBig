@@ -3,48 +3,57 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: tesi.aux
 A level-1 auxiliary file: introduction.aux
 A level-1 auxiliary file: bigraphs.aux
+A level-1 auxiliary file: isomorfismo.aux
+A level-1 auxiliary file: logic.aux
+A level-1 auxiliary file: examples.aux
 A level-1 auxiliary file: conclusions.aux
 A level-1 auxiliary file: appendix.aux
 The style file: plain_ita.bst
 Database file #1: biblio.bib
-You've used 1 entry,
+A bad cross reference---entry "DBLP:conf/ac/Milner03"
+refers to entry "DBLP:conf/ac/2003pn", which doesn't exist
+Warning--I didn't find a database entry for "DBLP:conf/ac/2003pn"
+Warning--empty journal in pereiranetworked
+Warning--empty year in pereiranetworked
+You've used 4 entries,
             2133 wiz_defined-function locations,
-            514 strings with 4255 characters,
-and the built_in function-call counts, 237 in all, are:
-= -- 19
-> -- 7
-< -- 0
-+ -- 4
-- -- 2
-* -- 10
-:= -- 47
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 3
+            533 strings with 5047 characters,
+and the built_in function-call counts, 1248 in all, are:
+= -- 111
+> -- 60
+< -- 1
++ -- 27
+- -- 20
+* -- 72
+:= -- 206
+add.period$ -- 10
+call.type$ -- 4
+change.case$ -- 21
 chr.to.int$ -- 0
-cite$ -- 1
-duplicate$ -- 12
-empty$ -- 23
-format.name$ -- 2
-if$ -- 47
+cite$ -- 6
+duplicate$ -- 52
+empty$ -- 103
+format.name$ -- 20
+if$ -- 261
 int.to.chr$ -- 0
-int.to.str$ -- 1
-missing$ -- 2
-newline$ -- 8
-num.names$ -- 2
-pop$ -- 8
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 21
+num.names$ -- 8
+pop$ -- 38
 preamble$ -- 1
-purify$ -- 3
+purify$ -- 18
 quote$ -- 0
-skip$ -- 6
+skip$ -- 41
 stack$ -- 0
-substring$ -- 6
-swap$ -- 1
-text.length$ -- 0
+substring$ -- 55
+swap$ -- 13
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 2
-warning$ -- 0
-while$ -- 2
-width$ -- 2
-write$ -- 12
+type$ -- 14
+warning$ -- 2
+while$ -- 11
+width$ -- 5
+write$ -- 38
+(There was 1 error message)

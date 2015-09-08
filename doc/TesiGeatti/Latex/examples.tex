@@ -1,0 +1,928 @@
+\chapter{Esempi}\label{ch:examples}
+In questo capitolo vedremo degli esempi che riguarderanno principalmente il model checker $MC_{big}$ e la sua logica. Si cambierà spesso dominio, mostrando come i bigrafi siano flessibili per rappresentare vari tipi di sistema.
+
+\section{NFA}\label{sec:nfa}
+In questa sezione si propone una codifica in bigrafi degli NFA (\emph{non-deterministic finite automata}). Come noto, ogni automa A denota un linguaggio L(A). Vedremo come l'implementazione di un automa con i bigrafi consenta di avere una sorta di analizzatore lessicale il cui motore interno funziona tramite BRS. In questa sede, si è costruito un modulo che accetta dall'utente una stringa $x$ e restituisce True se $x \in L(A)$, altrimenti False.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (10,5);
+%State q0
+\draw[thick] (2.5,2.5) circle [radius=0.5];
+\draw[thick] (2.5,2.5) circle [radius=0.45];
+\node at (2.5,2.5){$q_0$};
+%State q1
+\draw[thick] (5.5,2.5) circle [radius=0.5];
+\node at (5.5,2.5){$q_1$};
+%Edges
+\draw[->,thick] (2.5,3.0) to [out=45,in=135] (5.5,3.03);%qo-q1   a
+\node at (4.0,4.0) {$a$};
+\draw[<-,thick] (2.85,2.12) to [out=-20,in=-160] (5.15,2.15); %q1-q0   a
+\node[above] at (4.0,2.0) {$a$};
+\draw[<-,thick] (2.5,1.97) to [out=-45,in=-135] (5.5,2.0); %q1-q0   b
+\node at (4.0,1.0) {$b$};
+\end{tikzpicture}
+\caption{Automa per il linguaggio $(a(a+b))^*$ \label{fig:automa1}}
+\end{figure}
+
+
+Prendiamo l'automa di figura \ref{fig:automa1}, che chiameremo A. Definiamolo formalmente:
+\begin{prop}
+L'automa A è una quintupla $(Q,\Sigma,\delta,q_0,F)$, dove:
+\begin{itemize}
+	\item
+	$Q=\{q_0,q_1\}$ è l'insieme finito di stati
+	\item
+	$\Sigma = \{a,b\}$ è l'alfabeto di input
+	\item
+	$\delta : Q \times \Sigma \to Q$ è la funzione di transizione definita come:
+		\begin{center}
+		$\delta(q_0,a)=q_1$\\
+		$\delta(q_1,a)=q_0$\\
+		$\delta(q_1,b)=q_0$
+		\end{center}
+	\item
+	$q_0$ è lo stato iniziale
+	\item
+	$F=\{q_0\}$ è l'insieme di stati finali
+\end{itemize}
+\end{prop}
+
+A riconosce il linguaggio $L(A) = (a(a+b))^*$. 
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,7);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,5.5);
+%Edges
+\node[above] at (6.5,5.5){a};
+\draw[myGreen,thick] (3.0,4.5) to [out=45,in=270] (6.5,5.5);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=135,in=270] (6.5,5.5);%q1-a-q0
+\node[above] at (11.5,5.5){b};
+\draw[myGreen,thick] (10.0,2.5) to [out=70,in=270] (11.5,5.5);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+\end{tikzpicture}
+\caption{Bigrafo per l'automa A \label{fig:bigAutomata1}}
+\end{figure}
+
+
+Trattiamo ora il problema di come rappresentare gli automi tramite i bigrafi. Per prima cosa, guardiamo la figura \ref{fig:bigAutomata1}. I due stati $q_0$ e $q_1$ sono stati modellati con dei rettangoli aventi una sola porta. Le transizioni sono i nodi di tipo T. Ogni stato $q_i$ contiene al suo interno tutte le transizioni che partono da esso: per esempio $q_0$ contiene solo un nodo T perchè la sola transizione che parte da $q_0$ è $q_0\stackrel{a}{\longrightarrow} q_1$, mentre $q_1$ contiene due nodi T, che modellano le transizioni $q_1\stackrel{a}{\longrightarrow} q_0$ e $q_1\stackrel{b}{\longrightarrow} q_0$. 
+
+Ogni transizione è quindi modellata da un nodo di controllo T con due porte: la prima è collegata al carattere che fa scattare la transizione, mentre la seconda è collegata allo stato destinazione. Nella precedente figura, si prenda in considerazione il nodo T dentro $q_0$: esso simboleggia la transizione $q_0\stackrel{a}{\longrightarrow} q_1$ perchè:
+\begin{itemize}
+	\item
+	T è dentro $q_0$
+	\item
+	la prima porta di T è collegata all'outername `a'
+	\item
+	la seconda porta di T è collegata a $q_1$
+\end{itemize}
+
+Lo stesso discorso vale per le altre transizioni. Si noti come l'alfabeto $\Sigma$ sia rappresentato tramite \emph{l'insieme degli outernames}.
+Il nodo $A$ (Active) indica che lo stato $q_i$ che lo contiene è quello attivo, ovvero: l'automa si trova nello stato $q_i$ se e solo se $q_i$ contiene il nodo $A$.
+Infine, lo stato $q_i$ è uno stato finale ($q_i \in F$) se e solo se contiene al suo interno il nodo di tipo $F$ (Final). Queste considerazioni ci portano a definire la segnatura del bigrafo:
+
+\begin{prop}[Segnature per gli NFA]
+La segnatura del bigrafo rappresentante un generico NFA è definita come segue, dove la notazione $Node:n:(active)$ significa che il nodo $Node$ ha $n$ porte ed è $attivo$, cioè può essere modificato dalle regole di reazione:
+\begin{itemize}
+	\item
+	State : 1 : passive
+	\item
+	Transition : 2 : passive
+	\item
+	ActiveState : 0 : active
+	\item
+	FinalState : 0 : passive
+	\item
+	String : 0 : passive
+	\item
+	Input : 3 : active
+\end{itemize}
+\end{prop}
+
+
+Dalla segnatura di sopra si scopre che ci sono due nuovi controlli: \emph{String} e \emph{Input}. Il nodo di tipo \emph{String} è quello che dovrà contenere la stringa che l'utente immetterà per farla riconoscere dall'automa, mentre ogni nodo di tipo \emph{Input} è un carattere della stringa. 
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,7);
+% aLinks
+\draw[myGreen, thick] (1.5,2.0) to [out=90,in=270] (3.0,4.0);
+\draw[myGreen, thick] (5.5,2.0) to [out=140,in=270] (3.0,4.0);
+\draw[myGreen, thick] (7.5,2.0) to [out=140,in=270] (3.0,4.0);
+% bLinks
+\draw[myGreen, thick] (3.5,2.0) to [out=60,in=270] (6.0,4.0);
+% Links between nodes
+\draw[myGreen, thick] (0.3,1.5) to [out=20,in=200] (1.0,1.5);% null-a
+\draw[myGreen, thick] (2.0,1.5) -- (3.0,1.5);% a-b
+\draw[myGreen, thick] (4.0,1.5) -- (5.0,1.5);% b-a
+\draw[myGreen, thick] (6.0,1.5) -- (7.0,1.5);% a-a
+\draw[myGreen, thick] (8.0,1.5) to [out=20,in=200] (8.7,1.5);% a-null
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (9.5,3.5);
+%String
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (9.0,3.0);
+%Inputs
+\draw[thick] (1.5,1.5) circle [radius=0.5];%a
+\node at (1.5,1.5){I};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%b
+\node at (3.5,1.5){I};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%a
+\node at (5.5,1.5){I};
+\draw[thick] (7.5,1.5) circle [radius=0.5];%a
+\node at (7.5,1.5){I};
+% aPorts
+\draw[fill] (1.0,1.5) circle [radius=0.05];
+\draw[fill] (2.0,1.5) circle [radius=0.05];
+\draw[fill] (1.5,2.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (3.0,1.5) circle [radius=0.05];
+\draw[fill] (4.0,1.5) circle [radius=0.05];
+\draw[fill] (3.5,2.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (5.0,1.5) circle [radius=0.05];
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\draw[fill] (5.5,2.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,1.5) circle [radius=0.05];
+\draw[fill] (8.0,1.5) circle [radius=0.05];
+\draw[fill] (7.5,2.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (3.0,4.0){a};
+\node[above] at (6.0,4.0){b};
+\end{tikzpicture}
+\caption{Bigrafo per la stringa ``abaa" \label{fig:bigString1}}
+\end{figure}
+
+Si prenda in considerazione la figura \ref{fig:bigString1}: ogni nodo di tipo $Input$ ha tre porte, numerate da sinistra verso destra con 0, 1 e 2. La porta numero 0 è collegata al carattere precedente: per esempio, il primo carattere $a$ non è collegato a nessun altro nodo. La porta numero 2 è collegata al carattere successivo. Infine la porta numero 1 è collegata alla lettera (che è un outername) che il carattere simboleggia. Così facendo si crea una \emph{lista} di caratteri che forma la vera e propria stringa. Il nodo di tipo $String$ raggruppa tutti questi caratteri al suo interno. Il bigrafo di figura \ref{fig:bigString1} rappresenta dunque la stringa ``abaa". Nell'implementazione, si è costruito un modulo che accetta dall'utente una stringa e la trasforma nel bigrafo equivalente, secondo le regole appena citate.
+
+Ora che si è definito come modellare un NFA e una sua stringa, rappresentiamo una istanza del problema. In particolare, costruiamo il bigrafo che ha come NFA l'automa di figura \ref{fig:bigAutomata1} e come stringa di input il bigrafo di figura \ref{fig:bigString1}. Il risultato è il bigrafo di figura \ref{fig:bigAutomataProblem}.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}[scale=0.7]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (3.5,8.0) to [out=90,in=270] (5.0,10.0);
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (2.3,7.5) to [out=20,in=200] (3.0,7.5);% null-a
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (3.5,7.5) circle [radius=0.5];%a
+\node at (3.5,7.5){I};
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (3.0,7.5) circle [radius=0.05];
+\draw[fill] (4.0,7.5) circle [radius=0.05];
+\draw[fill] (3.5,8.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+\caption{Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? \label{fig:bigAutomataProblem}}
+\end{figure}
+
+
+
+
+Vediamo ora come il bigrafo si può evolvere. L'idea principale è di far ``consumare" al sistema un carattere alla volta. Si veda la regola della figura \ref{fig:reactionRuleAutomata} che rappresenta la regola di reazione $R_0$: se il primo carattere della stringa è la lettera $\sigma$ e se lo stato attivo possiede una transizione tramite la lettera $\sigma$, allora si elimina tale carattere dal bigrafo e si sposta il nodo \emph{Active} nello stato destinazione.
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,8);
+%%%   Redex   %%%
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (6.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (0.2,0.2) rectangle (3.0,4.0);
+\draw[fill] (1.0,4.0) circle [radius=0.05]; % 1 port
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (0.5,0.5) rectangle (1.0,1.0);
+\node at (0.75,0.75){0};
+%Active
+\draw[thick] (2.0,1.0) circle [radius=0.5];
+\node at (2.0,1.0){A};
+%Transition
+\draw[thick] (2.0,3.0) circle [radius=0.5];
+\node at (2.0,3.0){T};
+\draw[fill] (2.0,3.5) circle [radius=0.05]; % 1 port
+\draw[fill] (2.5,3.0) circle [radius=0.05]; % 2 port
+%String
+\draw[rounded corners=2mm, thick] (2.0,4.3) rectangle (5.0,5.8);
+%Site 2
+\draw[rounded corners=1mm, fill=myGrey, dashed] (4.4,4.4) rectangle (4.9,4.9);
+\node at (4.6,4.6){2};
+%Input
+\draw[thick] (3.5,5.0) circle [radius=0.5];
+\draw[fill] (3.0,5.0) circle [radius=0.05]; % 1 port
+\draw[fill] (3.5,5.5) circle [radius=0.05]; % 2 port
+\draw[fill] (4.0,5.0) circle [radius=0.05]; % 3 port
+\node at (3.5,5.0){I};
+%State s1
+\draw[rounded corners=5mm,thick] (3.2,0.2) rectangle (5.8,4.0);
+\draw[fill] (5.0,4.0) circle [radius=0.05]; % 1 port
+%Site 1
+\draw[rounded corners=1mm, fill=myGrey, dashed] (3.5,0.5) rectangle (4.0,1.0);
+\node at (3.75,0.75){1};
+%Outers
+\node[above] at (1.0,6.5){x};
+\node[above] at (2.0,6.5){$\sigma$};
+\node[above] at (4.0,6.5){y};
+\node[above] at (5.5,6.5){z};
+%Links
+\draw[myGreen,thick] (1.0,4.0) to [out=110,in=250] (1.0,6.5);%s0-x
+\draw[myGreen,thick] (2.0,3.5) to [out=110,in=250] (2.0,6.5);%t-sigma
+\draw[myGreen,thick] (3.5,5.5) to [out=180,in=270] (1.8,5.8);%i-sigma
+\draw[myGreen,thick] (2.3,5.0) to [out=20,in=200] (3.0,5.0);%null-i
+\draw[myGreen,thick] (4.0,5.0) to [out=20,in=270] (4.0,6.5);%i-y
+\draw[myGreen,thick] (2.5,3.0) to [out=0,in=290] (5.6,5.1);%t-z
+\draw[myGreen,thick] (5.0,4.0) to [out=50,in=290] (5.5,6.5);%s1-z
+
+
+\draw[->, very thick, red] (6.2,3.0) -- (7.8,3.0);
+
+
+%%%   Reactum   %%%
+%Root
+\draw[rounded corners=5mm, dashed] (8.0,0.0) rectangle (14.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (8.2,0.2) rectangle (11.0,4.0);
+\draw[fill] (9.0,4.0) circle [radius=0.05]; % 1 port
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (8.5,0.5) rectangle (9.0,1.0);
+\node at (8.75,0.75){0};
+%State s1
+\draw[rounded corners=5mm,thick] (11.2,0.2) rectangle (13.8,4.0);
+\draw[fill] (13.0,4.0) circle [radius=0.05]; % 1 port
+%Site 1
+\draw[rounded corners=1mm, fill=myGrey, dashed] (11.5,0.5) rectangle (12.0,1.0);
+\node at (11.75,0.75){1};
+%Outers
+\node[above] at (9.0,6.5){x};
+\node[above] at (10.0,6.5){$\sigma$};
+\node[above] at (12.0,6.5){y};
+\node[above] at (13.5,6.5){z};
+%Transition
+\draw[thick] (10.0,3.0) circle [radius=0.5];
+\node at (10.0,3.0){T};
+\draw[fill] (10.0,3.5) circle [radius=0.05]; % 1 port
+\draw[fill] (10.5,3.0) circle [radius=0.05]; % 2 port
+%Active
+\draw[thick] (13.0,1.0) circle [radius=0.5];
+\node at (13.0,1.0){A};
+%String
+\draw[rounded corners=2mm, thick] (10.0,4.3) rectangle (13.0,5.8);
+%Site 2
+\draw[rounded corners=1mm, fill=myGrey, dashed] (12.4,4.4) rectangle (12.9,4.9);
+\node at (12.6,4.6){2};
+%Links
+\draw[myGreen,thick] (9.0,4.0) to [out=110,in=250] (9.0,6.5);%s0-x
+\draw[myGreen,thick] (10.0,3.5) to [out=110,in=250] (10.0,6.5);%t-sigma
+\draw[myGreen,thick] (10.5,3.0) to [out=0,in=290] (13.5,4.835);%t-z
+\draw[myGreen,thick] (13.0,4.0) to [out=50,in=290] (13.5,6.5);%s1-z
+
+\end{tikzpicture}
+\caption{Regola di reazione $R_0$ \label{fig:reactionRuleAutomata}}
+\end{figure}
+
+
+La regola $R_0$ è molto intuitiva: se per esempio prendiamo in considerazione il bigrafo di figura \ref{fig:bigAutomataProblem}, allora applicando la regola si ha che il primo carattere ($a$) viene eliminato ed il nodo $A$ passa dentro lo stato $q_1$. 
+Quindi il BRS per questo problema è definito da una sola regola ($R_0$), che itera finchè trova un match nel bigrafo, cioè si ferma solo quando il nodo di tipo $String$ \textbf{non} contiene più nessun nodo $Input$.
+
+Ora che abbiamo creato il BRS, è possibile usare il model checker $MC_{big}$ definendo la formula che esso andrà a verificare. Nella teoria degli automi, vale la seguente preposizione:
+
+\begin{prop}
+Una stringa x viene accettata se e solo se alla fine di essa l'automa si trova in uno stato finale.
+\end{prop}
+
+Nella nostra segnatura, tutti gli stati finali ($q_F \in F$) vengono distinti tramite un nodo $F$ all'interno di essi: essendo passivi, nessuna regola di reazione può modificarli. Per cui la proprietà da verificare sarà la seguente: ``Il nodo di tipo $String$ non deve contenere nessun altro nodo e il nodo $A$ e il nodo $F$ si devono trovare dentro lo stesso stato $S$". Nella logica di $MC_{big}$, questo si traduce nella formula:
+\begin{center}
+$\varphi = W_B(T,T,T)$
+\end{center}
+dove B è il bigrafo di figura \ref{fig:bigAimNFA}.
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (6.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (0.2,0.2) rectangle (3.0,4.0);
+\draw[fill] (1.0,4.0) circle [radius=0.05]; % 1 port
+\node at (3.5,0.5){State};
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (0.5,0.5) rectangle (1.0,1.0);
+\node at (0.75,0.75){0};
+%Active
+\draw[thick] (2.0,1.0) circle [radius=0.5];
+\node at (2.0,1.0){A};
+%Final
+\draw[thick] (2.0,3.0) circle [radius=0.5];
+\node at (2.0,3.0){F};
+%String
+\draw[rounded corners=2mm, thick] (2.0,4.3) rectangle (5.0,5.8);
+\node at (5.0,4.0){String};
+%Links
+\draw[myGreen,thick] (1.0,4.0) to [out=110,in=250] (1.0,6.5);%s0-x
+\node[above] at (1.0,6.5){x};
+\end{tikzpicture}
+\caption{Bigrafo B \label{fig:bigAimNFA}}
+\end{figure}
+
+
+Si noti la semplicità di quest'ultima formula: il nodo di tipo $String$ deve essere vuoto, il che significa che tutti i caratteri sono stati ``consumati" dall'automa. Inoltre, il nodo attivo e il nodo finale si devono trovare nello stesso stato, assicurando che l'automa dopo aver letto tutta la stringa è finito in uno stato finale. Quindi possiamo affermare che:
+\begin{prop}\label{prop:strWario}
+Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = W_B(T,T,T)$.
+\end{prop}
+
+
+
+Prendiamo l'istanza del problema in figura \ref{fig:bigAutomataProblem}. Seguiremo una traccia d'esecuzione, cioè faremo tutti i passi che fa $MC_{big}$ per verificare la proprietà desiderata. Vedremo come il grafo degli stati sarà molto semplice: questo spesso è un indice di buona progettazione. Vuol dire che il sistema è stato modellato correttamente, scegliendo poche regole ed evitando di costruire regole ad-hoc per casi particolari. Il nostro BRS è formato da una sola regola, il che evita per esempio che in uno stato $S_i$ venga applicata la regola sbagliata creando nodi inutili nel grafo degli stati.
+
+In figura \ref{fig:MCbigTrace}, c'è la traccia d'esecuzione di $MC_{big}$, mentre in \ref{fig:BSGAutomata} c'è il corrispondente grafo degli stati. \\
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=0.5];%s0
+\node at (1.5,1.5){$S_0$};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%s1
+\node at (3.5,1.5){$S_1$};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%s2
+\node at (5.5,1.5){$S_2$};
+\draw[thick] (7.5,1.5) circle [radius=0.5];%s3
+\node at (7.5,1.5){$S_3$};
+\draw[thick, red] (9.5,1.5) circle [radius=0.5];%s4
+\node[red] at (9.5,1.5){$S_4$};
+%Edges
+\draw[->, thick] (2.0,1.5) -- (3.0,1.5);%s0-s1
+\draw[->, thick] (4.0,1.5) -- (5.0,1.5);%s1-s2
+\draw[->, thick] (6.0,1.5) -- (7.0,1.5);%s2-s3
+\draw[->, thick] (8.0,1.5) -- (9.0,1.5);%s3-s4
+\end{tikzpicture}
+
+\caption{Grafo degli stati \label{fig:BSGAutomata}}
+\end{figure}
+
+
+
+Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perchè il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perchè il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
+
+Questo esempio è molto importante perchè mostra due aspetti fondamentali:
+\begin{itemize}
+	\item
+	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perchè significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
+	\item
+	il secondo è la generalità della logica per $MC_{big}$: si è espressa una proprietà di uno specifico dominio usando la logica generale creata per il model checker. In questo esempio si è usato il Wario Predicate, che permette di spostarsi all'interno del bigrafo e di verificare se una sua parte esiste e rispetta determinate proprietà. Nel NFA ci è bastato verificare che esistesse la parte denotata dal bigrafo B.
+\end{itemize}
+
+In questo esempio si è potuto apprezzare la comodità del model checker e della sua logica per verificare una generica proprietà, che rappresentano quindi uno strumento generale adatto per ogni BRS.
+
+
+\begin{figure*}[th]
+\centering
+\subfigure[Primo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (3.5,8.0) to [out=90,in=270] (5.0,10.0);
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (2.3,7.5) to [out=20,in=200] (3.0,7.5);% null-a
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (3.5,7.5) circle [radius=0.5];%a
+\node at (3.5,7.5){I};
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (3.0,7.5) circle [radius=0.05];
+\draw[fill] (4.0,7.5) circle [radius=0.05];
+\draw[fill] (3.5,8.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+
+\hspace{5mm}
+
+\subfigure[Secondo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (12.0,1.5) circle [radius=0.5];
+\node at (12.0,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+
+\hspace{5mm}
+
+\subfigure[Terzo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+\end{figure*}
+
+
+\begin{figure*}[th]
+\centering
+\subfigure[Quarto Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (12.0,1.5) circle [radius=0.5];
+\node at (12.0,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+
+\hspace{5mm}
+
+\subfigure[Quinto Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+\caption{Traccia d'esecuzione di $MC_{big}$ \label{fig:MCbigTrace}}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

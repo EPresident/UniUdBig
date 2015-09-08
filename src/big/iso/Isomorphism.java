@@ -22,20 +22,27 @@ import org.chocosolver.solver.variables.BoolVar;
 import org.chocosolver.solver.variables.VF;
 
 /**
- * Class that checks if two bigraphs are isomorph.
+ * Class that checks if two bigraphs are isomorphs.
  * Here the term "isomorph" takes this meaning: two bigraphs A and B are isomorph if and only if 
  * they are support equivalent.
  * 
- * The problem is treated as a flux problem.
+ * The problem is treated as a flow problem.
  * 
  * @author Luca Geatti <geatti.luca@spes.uniud.it>
  *
  */
 public class Isomorphism{
 	
-	public Isomorphism(){}
+	private final static boolean SIM = true;
+	private long startLoadingTime = 0;
+	private long endLoadingTime = 0;
+	private long startWorkingTime = 0;
+	private long endWorkingTime = 0;
+	
 	
 	public boolean areIsomorph(Bigraph a, Bigraph b){
+		if(SIM)
+			this.startLoadingTime = System.nanoTime();
 		Solver solver = new Solver("Bigraph Isomorphism");
 		//Aux Variables:
 		BoolVar zeroVar = (BoolVar) VF.fixed(0, solver);
@@ -332,10 +339,16 @@ public class Isomorphism{
 				}
 			}
 		}
+		if(SIM)
+			this.endLoadingTime = System.nanoTime();
 		
+		if(SIM)
+			this.startWorkingTime = System.nanoTime();
+		boolean result = solver.findSolution();
+		if(SIM)
+			this.endWorkingTime = System.nanoTime();
 		
-		
-		return solver.findSolution();
+		return result;
 	}
 	
 	
@@ -353,6 +366,22 @@ public class Isomorphism{
 	 */
 	protected boolean areMatchable(Bigraph a, Node aNode, Bigraph b, Node bNode){
 		 return aNode.getControl().equals(bNode.getControl());
+	}
+	
+	
+	/**
+	 * Return the loading and working time, only in the case this class is on SIM modality.
+	 * 
+	 * @return [0]--> loading time
+	 * 		   [1]--> work time
+	 */
+	public long[] getTimes(){
+		if(!SIM)
+			throw new RuntimeException("The Isomorphism class is not on SIM modality.");
+		long[] times = new long[2];
+		times[0] = endLoadingTime - startLoadingTime;
+		times[1] = endWorkingTime - startWorkingTime;
+		return times;
 	}
 	
 }

@@ -17,6 +17,7 @@
 package big.examples.life;
 
 import big.rules.RewRuleWProps;
+import it.uniud.mads.jlibbig.core.attachedProperties.Property;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.InstantiationMap;
@@ -47,6 +48,8 @@ public class RR_Die1m extends RewRuleWProps {
         }
         map = new InstantiationMap(v.length, v);
         auxProperties = new LinkedList<>();
+        /*auxProperties.add("Name");
+         auxProperties.add("Position");*/
     }
 
     private static Bigraph generateRedex() {
@@ -62,7 +65,7 @@ public class RR_Die1m extends RewRuleWProps {
 
         // Subject
         OuterName linkS = builder.addOuterName("linkS");
-        Node subject = builder.addNode("cell", r, linkS, linkU);       
+        Node subject = builder.addNode("cell", r, linkS, linkU);
         builder.addSite(subject);
 
         // Neighbors
@@ -73,14 +76,14 @@ public class RR_Die1m extends RewRuleWProps {
         Node lh = builder.addNode("linkHolder", n);
         Node l = builder.addNode("link", lh, linkS);
         builder.addSite(l);
-        builder.addSite(lh);      
+        builder.addSite(lh);
         // add dead cell 2
         linkN = builder.addOuterName("linkN1");
         stateN = builder.addOuterName("stateN1");
         n = builder.addNode("cell", r, linkN, stateN);
         lh = builder.addNode("linkHolder", n);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);       
+        builder.addSite(l);
         builder.addSite(lh);
         // add dead cell 3
         linkN = builder.addOuterName("linkN2");
@@ -121,7 +124,7 @@ public class RR_Die1m extends RewRuleWProps {
         lh = builder.addNode("linkHolder", n);
         builder.addSite(lh);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);      
+        builder.addSite(l);
 
         return builder.makeBigraph();
     }
@@ -139,7 +142,7 @@ public class RR_Die1m extends RewRuleWProps {
 
         // Subject
         OuterName linkS = builder.addOuterName("linkS");
-        Node subject = builder.addNode("cell", r, linkS, linkD);       
+        Node subject = builder.addNode("cell", r, linkS, linkD);
         builder.addSite(subject);
 
         // Neighbors
@@ -150,14 +153,14 @@ public class RR_Die1m extends RewRuleWProps {
         Node lh = builder.addNode("linkHolder", n);
         Node l = builder.addNode("link", lh, linkS);
         builder.addSite(l);
-        builder.addSite(lh);      
+        builder.addSite(lh);
         // add dead cell 2
         linkN = builder.addOuterName("linkN1");
         stateN = builder.addOuterName("stateN1");
         n = builder.addNode("cell", r, linkN, stateN);
         lh = builder.addNode("linkHolder", n);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);       
+        builder.addSite(l);
         builder.addSite(lh);
         // add dead cell 3
         linkN = builder.addOuterName("linkN2");
@@ -198,7 +201,7 @@ public class RR_Die1m extends RewRuleWProps {
         lh = builder.addNode("linkHolder", n);
         builder.addSite(lh);
         l = builder.addNode("link", lh, linkS);
-        builder.addSite(l);      
+        builder.addSite(l);
 
         return builder.makeBigraph();
     }
@@ -207,13 +210,31 @@ public class RR_Die1m extends RewRuleWProps {
         super(redex, reactum, map);
     }
 
+    @Override
     protected List<String> getAuxProperties() {
         return auxProperties;
     }
 
     @Override
     public void instantiateReactumNode(Node original, Node instance, Match match) {
-        // no implementation
+        /*for (Property p : original.getProperties()) {//Original = node of the reactum
+         Node[] array = rr.get(p.get().toString());
+         if (array != null) {
+         Node n = array[1]; //Node of the redex
+         if (n != null) {
+         Node img = match.getImage(n);//Node of the original bigraph
+         if (img != null) {
+         copyProperties(img, instance);
+         }
+         }
+         }
+         }*/
+
+        Node img = match.getPreImage(original);//Node of the original bigraph
+        if (img != null) {
+            copyProperties(img, instance);
+        }
+
     }
 
 }

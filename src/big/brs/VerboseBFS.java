@@ -16,6 +16,7 @@
  */
 package big.brs;
 
+import big.prprint.BigPPrinterVeryPretty;
 import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
@@ -72,6 +73,9 @@ public class VerboseBFS implements BRSStrategy {
                     for (Bigraph big : rrwp.apply(to)) {
                         queue.add(new RuleApplication(big, rrwp));
                         matches++;
+                        System.out.println("VerboseBFS: matches - "+matches);
+                        
+                    //    System.out.println(new BigPPrinterVeryPretty().prettyPrint(big));
                     }
                 }
                 System.out.println("VerboseDFS: Applied rule " + rrwp.getName() + ", " + matches + " matches.");

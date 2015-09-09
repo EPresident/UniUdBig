@@ -1,0 +1,181 @@
+fa4e18fd-037a-441c-9bc4-c2deb6ac7bac {D:(1,a), south:(0,a), north:(0,a), link:(1,a), cell:(2,a), L:(1,a), life:(0,a), southEast:(0,a), northWest:(0,a), east:(0,a), southWest:(0,a), linkHolder:(0,a), u:(1,a), alpha:(0,a), west:(0,a), beta:(0,a), northEast:(0,a)} :: <0,{}> -> <1,{}>
+E_488:e <- {1@N_487:cell, 1@N_48A:cell, 1@N_48E:cell, 1@N_491:cell, 1@N_494:cell, 1@N_498:cell, 1@N_49A:cell, 1@N_49C:cell, 1@N_49E:cell, 0@N_490:u}
+E_489:e <- {0@N_487:cell, 0@N_4B5:link, 0@N_4BA:link, 0@N_4C7:link, 0@N_4D0:link, 0@N_4D7:link, 0@N_4DC:link, 0@N_4E2:link, 0@N_4F1:link}
+E_48B:e <- {0@N_48A:cell, 0@N_4AF:link, 0@N_4BE:link, 0@N_4C2:link, 0@N_4CB:link, 0@N_4D8:link, 0@N_4DF:link, 0@N_4E9:link, 0@N_4EF:link}
+E_48D:e <- {0@N_48C:L}
+E_48F:e <- {0@N_48E:cell, 0@N_4AD:link, 0@N_4B7:link, 0@N_4C5:link, 0@N_4CA:link, 0@N_4D4:link, 0@N_4DA:link, 0@N_4E3:link, 0@N_4EE:link}
+E_492:e <- {0@N_491:cell, 0@N_4AA:link, 0@N_4B9:link, 0@N_4BD:link, 0@N_4CF:link, 0@N_4D5:link, 0@N_4E0:link, 0@N_4E8:link, 0@N_4EB:link}
+E_495:e <- {0@N_494:cell, 0@N_4B1:link, 0@N_4B2:link, 0@N_4C1:link, 0@N_4C8:link, 0@N_4D3:link, 0@N_4DE:link, 0@N_4E4:link, 0@N_4EC:link}
+E_497:e <- {0@N_496:D}
+E_499:e <- {0@N_498:cell, 0@N_4B0:link, 0@N_4B4:link, 0@N_4C0:link, 0@N_4C4:link, 0@N_4D1:link, 0@N_4E1:link, 0@N_4E7:link, 0@N_4EA:link}
+E_49B:e <- {0@N_49A:cell, 0@N_4AC:link, 0@N_4B3:link, 0@N_4BC:link, 0@N_4C6:link, 0@N_4CC:link, 0@N_4D2:link, 0@N_4E6:link, 0@N_4F0:link}
+E_49D:e <- {0@N_49C:cell, 0@N_4AE:link, 0@N_4B8:link, 0@N_4BB:link, 0@N_4C9:link, 0@N_4CE:link, 0@N_4D9:link, 0@N_4DB:link, 0@N_4ED:link}
+E_49F:e <- {0@N_49E:cell, 0@N_4AB:link, 0@N_4B6:link, 0@N_4BF:link, 0@N_4C3:link, 0@N_4CD:link, 0@N_4D6:link, 0@N_4DD:link, 0@N_4E5:link}
+0 <- {N_496:D, N_48C:L, N_493:alpha, N_487:cell, N_48A:cell, N_48E:cell, N_491:cell, N_494:cell, N_498:cell, N_49A:cell, N_49C:cell, N_49E:cell, N_490:u}
+N_496:D <- {}
+N_48C:L <- {}
+N_493:alpha <- {}
+N_487:cell <- {N_4A0:linkHolder}
+N_48A:cell <- {N_4A1:linkHolder}
+N_48E:cell <- {N_4A3:life, N_4A2:linkHolder}
+N_491:cell <- {N_4A4:linkHolder}
+N_494:cell <- {N_4A5:linkHolder}
+N_498:cell <- {N_4A6:linkHolder}
+N_49A:cell <- {N_4A7:linkHolder}
+N_49C:cell <- {N_4A8:linkHolder}
+N_49E:cell <- {N_4A9:linkHolder}
+N_490:u <- {}
+N_4A0:linkHolder <- {N_4AA:link, N_4AB:link, N_4AC:link, N_4AD:link, N_4AE:link, N_4AF:link, N_4B0:link, N_4B1:link}
+N_4A1:linkHolder <- {N_4B2:link, N_4B3:link, N_4B4:link, N_4B5:link, N_4B6:link, N_4B7:link, N_4B8:link, N_4B9:link}
+N_4A3:life <- {}
+N_4A2:linkHolder <- {N_4BA:link, N_4BB:link, N_4BC:link, N_4BD:link, N_4BE:link, N_4BF:link, N_4C0:link, N_4C1:link}
+N_4A4:linkHolder <- {N_4C2:link, N_4C3:link, N_4C4:link, N_4C5:link, N_4C6:link, N_4C7:link, N_4C8:link, N_4C9:link}
+N_4A5:linkHolder <- {N_4CA:link, N_4CB:link, N_4CC:link, N_4CD:link, N_4CE:link, N_4CF:link, N_4D0:link, N_4D1:link}
+N_4A6:linkHolder <- {N_4D2:link, N_4D3:link, N_4D4:link, N_4D5:link, N_4D6:link, N_4D7:link, N_4D8:link, N_4D9:link}
+N_4A7:linkHolder <- {N_4DA:link, N_4DB:link, N_4DC:link, N_4DD:link, N_4DE:link, N_4DF:link, N_4E0:link, N_4E1:link}
+N_4A8:linkHolder <- {N_4E2:link, N_4E3:link, N_4E4:link, N_4E5:link, N_4E6:link, N_4E7:link, N_4E8:link, N_4E9:link}
+N_4A9:linkHolder <- {N_4EA:link, N_4EB:link, N_4EC:link, N_4ED:link, N_4EE:link, N_4EF:link, N_4F0:link, N_4F1:link}
+N_4AA:link <- {N_4F2:south}
+N_4AB:link <- {N_4F3:southEast}
+N_4AC:link <- {N_4F4:northEast}
+N_4AD:link <- {N_4F5:east}
+N_4AE:link <- {N_4F6:west}
+N_4AF:link <- {N_4F7:northEast}
+N_4B0:link <- {N_4F8:southWest}
+N_4B1:link <- {N_4F9:north}
+N_4B2:link <- {N_4FA:west}
+N_4B3:link <- {N_4FB:east}
+N_4B4:link <- {N_4FC:northEast}
+N_4B5:link <- {N_4FD:southWest}
+N_4B6:link <- {N_4FE:north}
+N_4B7:link <- {N_4FF:south}
+N_4B8:link <- {N_500:southEast}
+N_4B9:link <- {N_501:northEast}
+N_4BA:link <- {N_502:west}
+N_4BB:link <- {N_503:east}
+N_4BC:link <- {N_504:northEast}
+N_4BD:link <- {N_505:southWest}
+N_4BE:link <- {N_506:north}
+N_4BF:link <- {N_507:south}
+N_4C0:link <- {N_508:southEast}
+N_4C1:link <- {N_509:northEast}
+N_4C2:link <- {N_50A:southEast}
+N_4C3:link <- {N_50B:east}
+N_4C4:link <- {N_50C:west}
+N_4C5:link <- {N_50D:northEast}
+N_4C6:link <- {N_50E:southWest}
+N_4C7:link <- {N_50F:north}
+N_4C8:link <- {N_510:south}
+N_4C9:link <- {N_511:northEast}
+N_4CA:link <- {N_512:southEast}
+N_4CB:link <- {N_513:east}
+N_4CC:link <- {N_514:west}
+N_4CD:link <- {N_515:northEast}
+N_4CE:link <- {N_516:southWest}
+N_4CF:link <- {N_517:north}
+N_4D0:link <- {N_518:south}
+N_4D1:link <- {N_519:northEast}
+N_4D2:link <- {N_51A:south}
+N_4D3:link <- {N_51B:southEast}
+N_4D4:link <- {N_51C:northEast}
+N_4D5:link <- {N_51D:east}
+N_4D6:link <- {N_51E:west}
+N_4D7:link <- {N_51F:northEast}
+N_4D8:link <- {N_520:southWest}
+N_4D9:link <- {N_521:north}
+N_4DA:link <- {N_522:southWest}
+N_4DB:link <- {N_523:south}
+N_4DC:link <- {N_524:southEast}
+N_4DD:link <- {N_525:northEast}
+N_4DE:link <- {N_526:east}
+N_4DF:link <- {N_527:west}
+N_4E0:link <- {N_528:northEast}
+N_4E1:link <- {N_529:north}
+N_4E2:link <- {N_52A:east}
+N_4E3:link <- {N_52B:west}
+N_4E4:link <- {N_52C:northEast}
+N_4E5:link <- {N_52D:southWest}
+N_4E6:link <- {N_52E:north}
+N_4E7:link <- {N_52F:south}
+N_4E8:link <- {N_530:southEast}
+N_4E9:link <- {N_531:northEast}
+N_4EA:link <- {N_532:east}
+N_4EB:link <- {N_533:west}
+N_4EC:link <- {N_534:southWest}
+N_4ED:link <- {N_535:northEast}
+N_4EE:link <- {N_536:north}
+N_4EF:link <- {N_537:south}
+N_4F0:link <- {N_538:southEast}
+N_4F1:link <- {N_539:northEast}
+N_4F2:south <- {}
+N_4F3:southEast <- {}
+N_4F4:northEast <- {}
+N_4F5:east <- {}
+N_4F6:west <- {}
+N_4F7:northEast <- {}
+N_4F8:southWest <- {}
+N_4F9:north <- {}
+N_4FA:west <- {}
+N_4FB:east <- {}
+N_4FC:northEast <- {}
+N_4FD:southWest <- {}
+N_4FE:north <- {}
+N_4FF:south <- {}
+N_500:southEast <- {}
+N_501:northEast <- {}
+N_502:west <- {}
+N_503:east <- {}
+N_504:northEast <- {}
+N_505:southWest <- {}
+N_506:north <- {}
+N_507:south <- {}
+N_508:southEast <- {}
+N_509:northEast <- {}
+N_50A:southEast <- {}
+N_50B:east <- {}
+N_50C:west <- {}
+N_50D:northEast <- {}
+N_50E:southWest <- {}
+N_50F:north <- {}
+N_510:south <- {}
+N_511:northEast <- {}
+N_512:southEast <- {}
+N_513:east <- {}
+N_514:west <- {}
+N_515:northEast <- {}
+N_516:southWest <- {}
+N_517:north <- {}
+N_518:south <- {}
+N_519:northEast <- {}
+N_51A:south <- {}
+N_51B:southEast <- {}
+N_51C:northEast <- {}
+N_51D:east <- {}
+N_51E:west <- {}
+N_51F:northEast <- {}
+N_520:southWest <- {}
+N_521:north <- {}
+N_522:southWest <- {}
+N_523:south <- {}
+N_524:southEast <- {}
+N_525:northEast <- {}
+N_526:east <- {}
+N_527:west <- {}
+N_528:northEast <- {}
+N_529:north <- {}
+N_52A:east <- {}
+N_52B:west <- {}
+N_52C:northEast <- {}
+N_52D:southWest <- {}
+N_52E:north <- {}
+N_52F:south <- {}
+N_530:southEast <- {}
+N_531:northEast <- {}
+N_532:east <- {}
+N_533:west <- {}
+N_534:southWest <- {}
+N_535:northEast <- {}
+N_536:north <- {}
+N_537:south <- {}
+N_538:southEast <- {}
+N_539:northEast <- {}

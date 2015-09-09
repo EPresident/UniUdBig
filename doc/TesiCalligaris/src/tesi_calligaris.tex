@@ -8,17 +8,32 @@
 \usepackage[italian]{babel}
 \usepackage{microtype}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{lipsum}
+\usepackage{listings}
+\usepackage{hyperref} % questo va per ultimo
 
 % Teoremi
 \newtheorem{teo}{Teorema}
 \newtheorem*{nota}{Notazione}
-\newtheorem*{term}{Terminologia}
 \newtheorem*{dimo}{Dimostrazione}
-% Traduzioni
+\theoremstyle{definition}
+\newtheorem{defi}{Definizione}
+\newtheorem*{term}{Terminologia}
+\newtheorem*{oss}{Osservazione}
+\theoremstyle{remark}
 
+% Comandi aggiuntivi
+\newcommand{\eqdef}{\stackrel{\text{\tiny def}}{=}} %equal con def sopra
+
+% Traduzioni
+%\newtranslation[to=italian]{Section}{Sezione}
 % Direttive
+\renewcommand{\lstlistingname}{Codice}
+\lstset{basicstyle=\small\ttfamily}
+\graphicspath{{img/}}
 \makeindex
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -55,45 +70,322 @@
 
 \chapter{Teoria dei bigrafi}
 \pagestyle{plain}
-\section{Segnatura}
-\section{Place graph}
-\section{Link graph}
-\section{Bigrafo}
+% spostare sta roba
+In questo capitolo si daranno definizioni formali dei bigrafi, delle loro componenti, e delle operazioni elementari e derivate sui bigrafi.
+Si darà la definizione di BRS (Sistema Reattivo Bigrafico)
+
+\section{Bigrafi e le loro componenti}
+
+Un \emph{bigrafo} è un tipo particolare di grafo in cui i nodi possono essere annidati l'uno dentro l'altro, e gli archi sono \emph{iper-archi}, cioè collegano un punto di partenza a più punti di arrivo. Pertanto, come la parola \emph{bi-grafo} suggerisce, siamo in presenza di una struttura composta da due grafi indipendenti, di cui uno descrive la topologia, e l'altro i collegamenti tra nodi.
+Inoltre ogni nodo ha un \emph{controllo} che ne definisce il significato: questo rende i bigrafi un \emph{meta-modello}, similmente all'XML. Di seguito si daranno definizioni formali delle componenti dei bigrafi, e poi dei bigrafi stessi.
+
+% figura bigrafo con etichette componenti
+
+\subsection{Segnature e controlli}
+
+Innanzitutto è necessario definire due nozioni fondamentali alla definizione dei bigrafi, nonché del loro significato.
+\paragraph{Controlli}
+Per \emph{controllo} si intende il tipo di un nodo; ogni nodo ha un solo controllo. La possibilità di creare ed assegnare controlli ai nodi permette di definirne il significato a piacere, garantendo una grande libertà semantica.
+\begin{defi}[Segnatura]
+Una \emph{segnatura} è una coppia $(K,ar)$, dove $K$ è un insieme di controlli e $ar$ è una funzione $K\rightarrow \mathbb{N} $, che mappa ad ogni nodo la sua arietà (numero di porte).
+\end{defi}
+\begin{nota}
+Per semplicità, le segnature possono essere descritte come segue:
+\begin{center}
+$K = \{ K_1:a_1, \dots, K_n:a_n \}$ intendendo che il controllo $K_i$ ha arietà $a_i$.
+\end{center}
+\end{nota}
+
+\subsection{\foreignlanguage{english}{Place graph}}
+Il place graph è una foresta che descrive la topologia del bigrafo; in altre parole, indica come sono annidati i nodi. Ogni albero della foresta inizia con una \emph{radice} (o \emph{regione}); ogni radice è etichettata con un numero che va da $0$ a $n-1$, dove $n$ è il numero di radici.
+Ogni nodo può contenere un \emph{sito}, che indica la possibilità che vi siano altri nodi all'interno di quel nodo.
+
+\begin{term}
+Gli elementi del place graph sono detti \emph{posti}.
+\end{term}
+
+\begin{nota}
+Con $A\uplus B$ si intende l'unione di insiemi che si sa o si assume disgiunti.
+\end{nota}
+
+\begin{defi}[Place graph]
+Un \emph{place graph} è una tripla $(V,ctrl,prnt):m\rightarrow n$ dove:
+\begin{itemize}
+\item $V$ è l'insieme dei nodi;
+\item $ctrl$ è la mappa $V\rightarrow K$ che assegna ad ogni nodo un controllo;
+\item $m$ è l'\emph{interfaccia interna} ed $n$ l'\emph{interfaccia esterna}; rappresentano rispettivamente il numero di siti e di radici, pertanto sono entrambe rappresentate da numeri finiti;
+\item $prnt$ è la mappa (aciclica) $m \uplus V \rightarrow V \uplus n$, che assegna ad ogni nodo il suo genitore (se c'è).
+\end{itemize}
+\end{defi}
+
+\subsection{Link graph}
+Il link graph è un \emph{ipergrafo} (cioè un grafo i cui archi possono connettere più nodi) non orientato che descrive il collegamento fra i vari nodi del bigrafo.
+
+% aggiungere figura
+
+\begin{defi}
+Un link graph è una tupla $(V,E,ctrl,link):X\rightarrow Y$ dove:
+\begin{itemize}
+\item $V$ ed $E$ sono, rispettivamente, gli insiemi (finiti) dei nodi e degli (iper)archi;
+\item $ctrl$ è la mappa dei controlli $V\rightarrow K$;
+\item $X$ e $Y$ sono, rispettivamente, le \emph{interfacce esterna} e \emph{interna}, composte dagli \emph{\foreignlanguage{english}{outer names}} e dagli \emph{\foreignlanguage{english}{inner names}};
+\item $link$ è la mappa $X \uplus P \rightarrow E \uplus Y$, dove $P = \{(v,i) : v \in V, i \in ar(ctrl(v)) \}$ è l'insieme delle porte.
+\end{itemize}
+\end{defi}
+
+\begin{term}[Punti e handle] \foreignlanguage{english}{Inner names} e porte vengono chiamati \emph{punti}; \foreignlanguage{english}{outer names} e archi vengono chiamati \emph{handle} (oppure \emph{link} o \emph{maniglie}).
+\end{term}
+
+\subsection{Bigrafo}
+Prima di dare la definizione formale di bigrafo è necessario definire un'ulteriore nozione intermedia.
+\begin{defi}[Interfaccia]
+Un'\emph{interfaccia} per bigrafi è una coppia $\langle m,X\rangle$, dove $m \in \mathbb{N}$ e $X$ è un insieme di nomi. $m$ è detta \emph{larghezza}.
+\end{defi}
+\begin{defi}[Bigrafo]
+Un \emph{bigrafo} è una tupla 
+\begin{center}
+$(V,E,ctrl,prnt,link):\langle m,X\rangle \rightarrow \langle n,Y\rangle$
+\end{center}
+dove $\langle m,X\rangle$ è detta \emph{interfaccia interna}, mentre $\langle n,Y\rangle$ è detta \emph{interfaccia esterna}.
+\end{defi}
+\begin{oss}
+Un bigrafo è composto da:
+\begin{itemize}
+\item un place graph $B^P=(V,ctrl,prnt):m\rightarrow n$;
+\item un link graph $B^L=(V,E,ctrl,link):X\rightarrow Y$.
+\end{itemize}
+Che sono strutture ortogonali ed indipendenti. Pertanto, un bigrafo si può definire anche come una coppia $\langle B^P,B^L\rangle$.
+\end{oss}
+\begin{term}
+Un bigrafo la cui interfaccia interna è vuota viene detto \emph{ground} o \emph{agente}. Ne viene indicata solo l'interfaccia esterna.
+\end{term}
+
+\subsection{Sorting?}
+% aggiungere sorting?
+
 \section{Operazioni sui bigrafi}
+bla bla bla
+
+\subsection{Operazioni di base}
+bla bla
+
+\begin{nota}
+Con $Id_I$ si indica la funzione identità sull'insieme $I$.
+\end{nota}
+
+\begin{defi}[Supporto] % spostare in Bigrafo? anche no
+Ad ogni link graph, place graph, o bigrafo $B$ viene assegnato un insieme finito $|B|$ detto \emph{supporto}.
+Per un place graph $|B|=V$, mentre per link graphs e bigrafi $|B|=V\uplus E$.
+\end{defi}
+\begin{defi}[Traduzione di supporto] % biezione? biiezione?
+Per due bigrafi $F$ e $G$, una \emph{traduzione di supporto} $\rho: |F|\rightarrow |G|$ è una coppia di biiezioni $\rho_V:V_F\rightarrow V_G$ e $\rho_E:E_F\rightarrow E_G$ che ne rispetta la struttura, ovvero:
+\begin{itemize}
+\item $\rho$ preserva i controlli, cioè $ctrl_G \circ \rho_V = ctrl_F$; ne consegue che $\rho$ induce una biiezione $\rho_P:P_F \to P_G$ sulle porte, definita da $\rho_P((v,i)) \eqdef (\rho_V(v),i)$. 
+\item $\rho$ commuta con le mappe strutturali come segue:
+ \subitem per i posti: $prnt_G \circ \left( id_m \uplus \rho_V \right) = \left( id_n \uplus \rho_V \right) \circ prnt_F$
+ \subitem per punti e link: $link_G \circ \left( id_X \uplus \rho_P \right) = \left( id_Y \uplus \rho_E \right) \circ link_F$
+\end{itemize}
+Dati $F$ e la biiezione $\rho$, sotto queste condizioni è possibile determinare univocamente $G$; pertanto si dice che $G=\rho \cdot F$ è la traduzione di supporto di $F$ per $\rho$.
+\end{defi}
+
+\begin{defi}[Equivalenza sul supporto]
+Diremo che $F$ e $G$ sono \emph{support equivalent} (hanno supporti equivalenti) e si scriverà $F \bumpeq G$,
+se e solo se esiste una traduzione di supporto tra $F$ e $G$.
+\end{defi}
+
+\subsection{Operazioni di costruzione}
+Verranno ora illustrate le principali operazioni di costruzione di bigrafi.
+
+\begin{defi}[Composizione]
+Dati due bigrafi con supporti disgiunti
+\begin{center}
+ $F:\left<m,X\right> \to \left<k,Z\right>$ , $G:\left<k,Z\right> \to \left<n,Y\right>$
+\end{center}
+la composizione $H = G \circ F : \left<m,X\right> \to \left<n,Y\right>$ è il bigrafo
+\begin{center}
+ $H = G \circ F = (V_F \uplus V_G , E_F \uplus E_G , ctrl_F \uplus ctrl_G , prnt_H , link_H )$
+\end{center}
+dove:
+\begin{center}
+$prnt_H(w) = 
+\begin{cases}
+ prnt_F(w) & \text{se } w \in m \uplus V_F \wedge prnt_F(w) \in V_F\\
+ prnt_G(j) & \text{se } w \in m \uplus V_F \wedge prnt_F(w) = j \in k\\
+ prnt_G(w) & \text{se } w \in V_G
+\end{cases}$\\
+$link_H(q) =
+\begin{cases}
+ link_F(q) & \text{se } q \in X \uplus P_F \wedge link_F(q) \in E_F\\
+ link_G(z) & \text{se } q \in X \uplus P_F \wedge link_F(q) = z \in Z\\
+ link_G(q) & \text{se } q \in P_G
+\end{cases}$\\
+\end{center}
+con $P_F$ e $P_G$ insiemi delle porte, come definiti nella sezione del link graph.
+\end{defi}
+
+\begin{oss}
+La composizione richiede che l'interfaccia esterna di $F$ sia uguale a quella interna di $G$.
+\end{oss}
+
+\begin{term}[Contesto]
+Un bigrafo composto con un agente viene detto \emph{contesto}.
+\end{term}
+
+\begin{defi}[Bigrafo identità]
+Il \emph{bigrafo identità} su $\left<m,X\right>$ è \begin{center}
+$id_{\left<m,X\right>} = (\emptyset , \emptyset, \emptyset_K , id_m , id_X)$.
+\end{center}
+\end{defi}
+
+\begin{defi}[Bigrafi disgiunti]
+Due bigrafi $F_i:\langle m_i,X_i\rangle \to \langle n_i,Y_i\rangle $ ($i=0,1$) sono \emph{disgiunti} se $|F_i|$,$X_i$ e $Y_i$ sono (rispettivamente) fra loro disgiunti.
+\end{defi}
+
+\begin{defi}[Giustapposizione]
+Dati due bigrafi disgiunti:
+\begin{center}
+$F:\left<m_F,X_F\right> \to \left<n_F,Y_F\right>$ , $G:\left<m_G,X_G\right> \to \left<n_G,Y_G\right>$
+\end{center}
+la loro giustapposizione $F \otimes G:\left<m_F+m_G , X_F \uplus X_G\right> \to \left<n_F+n_G , Y_F \uplus Y_G\right>$ è il bigrafo
+\begin{center}
+ $F \otimes G = (V_F \uplus V_G ,\ E_F \uplus E_G ,\ ctrl_F \uplus ctrl_G ,\ prnt_F \uplus prnt^\prime_G ,\ link_F \uplus link_G)$
+\end{center}
+dove $prnt^\prime_G(m_F+i) = n_F + j$ ogni qualvolta $print_G(i) = j$.
+\end{defi}
+
+\begin{oss}
+Nella giustapposizione tra bigrafi l'interfaccia unità è $\epsilon = \langle 0,\emptyset \rangle$.
+\end{oss}
+
+\subsection{Algebra dei bigrafi}
+
+\subsection{Operazioni derivate}
+
+\section{BRS - Sistemi Reattivi Bigrafici}
+
+
 
 % % % % % % % % % % % % % % % % % % % % % % % 
 %			CAP 2							%
 % % % % % % % % % % % % % % % % % % % % % % % 
+
+
 \chapter{Simulazione di BRS}
-Si immagini di avere un sistema che si vuole rappresentare usando il formalismo dei bigrafi. Si immagini di aver definito un'adeguata segnatura, un bigrafo rappresentante lo stato iniziale, e un insieme adeguato di regole di reazione. Si vuole ora costruire un programma che permetta di \emph{simulare} l'evoluzione del sistema definito sopra.
+Si immagini di avere un sistema che si vuole rappresentare usando il formalismo dei bigrafi. Si immagini di aver definito (su carta) un'adeguata segnatura, un bigrafo rappresentante lo stato iniziale, e un insieme adeguato di regole di reazione. Si vuole ora costruire un programma che permetta di \emph{simulare} l'evoluzione del sistema definito sopra.
 Innanzitutto bisogna implementare la segnatura, i bigrafi e le regole: per questo ci si appoggia alla libreria JLibBig.
 Poi si pone il problema di come far evolvere il sistema, dato che le regole di reazione vengono applicate in modo non-deterministico: non esiste un solo percorso lineare di evoluzione, bensì ve ne sono molteplici, alcuni dei quali magari non hanno senso concretamente; possono addirittura formarsi cicli nell'evoluzione degli stati, portando un eventuale processo di simulazione a non terminare. In buona sostanza, può risultare necessario tenere traccia di tutte le applicazioni delle regole di reazione e di tutti gli stati generati, in modo da poter decidere in seguito quali ci interessano e quali no. 
 
 \`E evidente che un un simulatore è un costrutto complesso: al fine di semplificarne la comprensione, nonché l'implementazione, si propone di suddividerlo in moduli, che verranno discussi uno ad uno. Saranno altre-sì discusse le basi implementative necessarie.
 
 \section{La libreria JLibBig}
+JLibBig è una libreria in Java per modellare i bigrafi, reperibile \href{}{dal sito del MADS} dell'Università di Udine. Essa fornisce la base solida su cui si appoggia la parte implementativa di questo lavoro di tesi. Un breve elenco delle \emph{feature} più utili:
+\begin{itemize}
+\item Permette di modellare segnature e controlli;
+\item Permette di modellare bigrafi ed entità associate (p.e. nodi, punti, \emph{handle,...});
+\item Permette di agganciare delle proprietà (ovvero coppie $(chiave,valore)$ ) ai nodi dei bigrafi;
+\item Implementa le regole di riscrittura e il relativo matching.
+\end{itemize}
+\paragraph{Cosa non fornisce} La libreria non dà strumenti per gestire l'evoluzione di un sistema reattivo bigrafico nel suo insieme: in particolare non permette di tenere traccia di tutti gli stati generati e di visualizzare i bigrafi. Ci si propone quindi di costruire delle classi che rendano la simulazione dei BRS un'operazione di alto livello, cioè non rendendo necessario occuparsi dei dettagli che essa comporta.
 
 \section{Rappresentare i Bigrafi}
+JLibBig fornisce la classe \texttt{Bigraph}, che permette di definire i bigrafi aggiungendo i vari elementi ad un \texttt{BigraphBuilder}, ovvero una \emph{classe factory}. Nella libreria i bigrafi sono oggetti immutabili, quindi ogni volta che vengono modificati dall'applicazione delle regole di riscrittura, in realtà viene generato un nuovo oggetto.
+
+\paragraph{Proprietà} Come anticipato, la libreria permette anche di assegnare ai nodi dei bigrafi delle proprietà, cioè coppie nome-valore; per esempio, si può assegnare dei nomi ai nodi. Questo permette anche di rappresentare informazioni che altrimenti andrebbero codificate nei bigrafi stessi con dei controlli appositi. 
+
 
 \section{Rappresentare le Regole di Riscrittura}
+Anche le regole di riscrittura sono già pronte all'uso in JLibBig, grazie alla classe \texttt{RewritingRule}: si definiscono \emph{redex} e \emph{reactum}, la mappa d'istanziazione e, successivamente, si può applicare la regola chiamando \texttt{apply(Bigraph)}.
+\paragraph{Matcher} Per trovare le occorrenze del \emph{redex} nel bigrafo agente si fa affidamento alla classe \texttt{Matcher}, che modella il problema in un \emph{embedding} (un problema di flusso), e lo risolve con tecniche di programmazione a vincoli (appoggiandosi alla libreria \emph{CHOCO Solver}). % Aggiungere qualcosa su embedding? - link a CHOCO
+
+% paragrafo su RewRuleWProps
 
 \section{Modellare il BRS}
-Il modulo BRS ha un semplice compito: dato un bigrafo ed un insieme di regole di riscrittura, esso applica queste ultime al bigrafo, producendo una lista di bigrafi che rappresentano tutti i possibili stati successivi; Non viene fatto alcun controllo di sorta sul risultato. 
+Per modellare il BRS viene fornita l'omonima classe, che ha un semplice compito: essa incapsula le regole di riscrittura del sistema e la ``strategia" con cui esse vengono applicate (per esempio, in che ordine); passando un bigrafo al BRS, si ottiene la lista degli stati ottenuti applicandovi le regole.
+
 %Si tenga conto che ogni regola può essere applicata più volte, in quanto il \emph{redex} può avere più di un match: questo significa che, anche con poche regole di riscrittura, lo stato del sistema può ramificarsi significativamente.
-\paragraph{Implementazione} Nello specifico, BRS produce una lista di coppie \newline$(bigrafo,regolaRiscrittura)$, in modo che gli altri moduli del simulatore possano capire che regola ha prodotto una data evoluzione del sistema.
-\paragraph{Strategie} Il modulo BRS è stato implementato in modo da poter definire con che criterio vengono applicate le regole di reazione: per esempio, è possibile definire delle regole di riscrittura con priorità, e far sì che BRS le rispetti. Tuttavia, nella maggior parte dei casi pratici, questa versatilità ha un impatto trascurabile.
+\paragraph{Implementazione} Nello specifico, BRS produce una lista di bigrafi o, in alternativa, di coppie $(bigrafo,regolaRiscrittura)$ dette \emph{RuleApplications}, in modo che gli altri moduli del simulatore possano capire che regola ha prodotto una data evoluzione del sistema. Ciò si ottiene chiamando, rispettivamente, i metodi \texttt{apply(Bigraph)} o \texttt{apply\_RA(Bigraph)} (dove \emph{``RA"} sta per \emph{RuleApplication}).
+\paragraph{Strategie} Il modulo BRS è stato implementato in modo da poter definire con che criterio vengono applicate le regole di reazione: per esempio, è possibile definire delle regole di riscrittura con priorità, in modo da controllare l'ordine di applicazione. L'implementazione standard usa una strategia stile \emph{``breadth first"}, cioè applica le regole nell'ordine in cui sono date, esplorando gli stati successivi del sistema ``in larghezza".
 
 
 \section{Grafo degli stati}
-\lipsum[1]
+Com'è noto, dato uno stato del sistema (un bigrafo), in generale è possibile applicarvi più di una regola di riscrittura (non-deterministicamente); inoltre, una regola può essere applicata in più punti di ogni bigrafo, generando evoluzioni diverse del sistema.
+Per questo motivo si propone di costruire un \emph{grafo degli stati}, che è un grafo orientato in cui:
+\begin{itemize}
+\item i nodi rappresentano stati del sistema, cioè bigrafi;
+\item gli archi indicano le transizioni da uno stato al successivo, e la regola che l'ha prodotta.
+\end{itemize}
+Questa struttura dati permette di analizzare tutta la storia dell'evoluzione del sistema, e persino di generare tutti gli stati possibili (cosa che può essere sfruttata nel model checking).
+
+\paragraph{Problematiche} Dato che si vuole tenere traccia di tutti gli stati generati, si pone la problematica di come gestire i cicli nel grafo: ovvero come riconoscere, e gestire, la situazione in cui l'applicazione di una regola di riscrittura genera uno stato già presente nel grafo? Nell'implementazione standard è stato deciso di \emph{non} introdurre cicli nel grafo, per facilitarne la visita; pertanto, ogni volta che si vuole aggiungere uno stato al grafo, si controlla se ne esiste già uno \emph{isomorfo}: in tal caso, il nuovo stato non viene aggiunto. Va da sé che così si perdono delle informazioni, che tuttavia sono risultate trascurabili nel presente lavoro di tesi, e si è ottenuta una notevole semplificazione in altri moduli che visitano il grafo.
+
+\paragraph{Implementazione} Il grafo degli stati è implementato dalla classe \texttt{BigStateGraph}, i nodi da \texttt{BSGNode} e gli archi da \texttt{BSGLink} (dove \emph{``BSG"} sta per \emph{BigStateGraph}). Il grafo viene inizializzato con un singolo nodo, che rappresenta lo stato iniziale del sistema. I nodi sono mantenuti in una tabella di hash; la funzione di hash viene fornita dall'interfaccia \texttt{BigHashFunction}, la cui implementazione standard (\texttt{PlaceLinkHash}) genera un numero intero in base alla struttura del \emph{place graph} e \emph{link graph} del bigrafo.
+Per aggiungere un nodo si usa il metodo \texttt{applyRewritingRule(BSGNode node, String name, Bigraph state)}, che aggiunge un nuovo nodo figlio di \texttt{node}, con stato \texttt{state}, prodotto applicando la regola di nome \texttt{name} a \texttt{node}.
+Per verificare se ci sono nodi duplicati si svolge una ricerca in due fasi:
+\begin{itemize}
+\item Si verifica se c'è una collisione nella tabella di hash tra il nodo che si vuole aggiungere ed uno esistente;
+\item Se è così, si controlla se i due stati sono isomorfi sfruttando la classe \texttt{Isomorphism}, ed in particolare il suo metodo \texttt{areIsomorph(Bigraph,Bigraph)}.
+\end{itemize}
+\paragraph{Nota}L'implementazione della classe \texttt{Isomorphism} non è oggetto di questa tesi; ci si limita a specificare che essa modella il problema dell'isomorfismo tra bigrafi come un'eguaglianza di flusso, risolto con tecniche di programmazione a vincoli.
+% riferimento a luca e/o paper di miculan-peressotti?
+
+
 \section{Comporre il Simulatore}
-\lipsum[1]
+A questo punto si dispone di tutti i moduli necessari a costruire un simulatore di sistemi bigrafici:
+\begin{itemize}
+\item \texttt{BRS} permette di gestire l'applicazione delle regole come si ritiene opportuno;
+\item \texttt{BigStateGraph} permette tenere traccia dell'evoluzione del sistema e di ``ramificare" la simulazione in più percorsi;
+\end{itemize}
+Si definisce pertanto il modulo \texttt{Sim}, che sfrutta entrambi in maniera trasparente, fornendo un'interfaccia di più alto livello per simulare sistemi bigrafici. \`E implementato come una \emph{classe astratta} (non istanziabile), che fornisce la API di base, e che va estesa in base alle necessità dell'utente. In particolare tale API prevede la possibilità di fare un ``passo" avanti nella simulazione (cioè applicare le regole ad uno o più stati raggiunti in base alle logiche definite dal programmatore), e di sapere se sono stati esplorati tutti gli stati possibili del sistema.
+Di seguito vengono descritte alcune implementazioni già definite di \texttt{Sim}.
+\subsection{BreadthFirstSim}
+\texttt{BreadthFirstSim} è un simulatore che segue una logica \emph{``breadth-first"}, ovvero ad ogni passo applica tutte le regole del BRS (anch'esso con strategia \emph{breadth-first}) a tutti i nodi ``foglia" del grafo. Per far ciò mantiene una coda, in cui inizialmente è presente solo lo stato iniziale; una volta applicate le regole a tale stato, mette gli stati generati in fondo alla coda; ciò viene ripetuto per ogni nodo nella coda, finché essa rimane vuota: a questo punto tutti gli stati possibili sono stati generati.
+%\subsection{RandomSim}
+\subsection{TrueRandomSim} 
+\texttt{TrueRandomSim} è un simulatore che segue un singolo ``ramo" di evoluzione del sistema: per far ciò, ogni volta che vengono generati degli stati applicando le regole di riscrittura, ne viene scelto uno \emph{pseudo}-casualmente e gli altri vengono scartati; in tal modo, il grafo degli stati si riduce ad una catena lineare di nodi con un solo figlio (eccetto l'ultimo nodo). Non è possibile sapere quando si sono esplorati tutti gli stati possibili.
+
 \section{Visualizzare i Bigrafi}
-\lipsum[1]
+Ora che si dispone di un simulatore, sarebbe interessante poter visualizzare i risultati ottenuti nel modo migliore possibile. Tuttavia generare in modo automatico una rappresentazione grafica di bigrafi è un problema complicato, che non è stato ancora risolto. Pertanto, come punto di partenza, si vuole ottenere una rappresentazione testuale; in seguito, si indicherà come produrre una rappresentazione grafica molto semplificata.
+
+\subsection{Rappresentazione testuale}
+JLibBig fornisce già un metodo per tradurre un bigrafo in testo, ovvero \texttt{Bigraph.toString()}; tuttavia il formato è poco leggibile, perciò si propone di migliorare questo risultato andando a definire una classe \emph{pretty-printer}: tale classe legge l'oggetto \texttt{Bigraph}, costruendone una sua rappresentazione interna (ad albero), e lo stampa visualizzando le proprietà dei nodi (in particolare le propietà con nome del tipo \emph{``*Name"}).
+
+\lstinputlisting[breaklines,frame=single,caption=Un estratto di \emph{pretty-print} di un bigrafo,firstline=14, lastline=38]{lst/prettyprint.txt}
+
+\lstinputlisting[breaklines,frame=single,caption=Un estratto di \texttt{Bigraph.toString} sullo stesso bigrafo,firstline=14, lastline=38]{lst/bigraphToString.txt}
+
+In particolare si noti che il \emph{pretty-printer}:
+\begin{itemize}
+\item indenta il testo per visualizzare la gerarchia dei nodi;
+\item identifica le entità del bigrafo come nodi, radici, nomi esterni...
+\item permette di visualizzare sia il nome del nodo (se fornito dall'utente) che l'ID usato da JLibBig;
+\item identifica e numera esplicitamente le porte dei nodi, ove presenti.
+\end{itemize}
+
+\subsection{Rappresentazione grafica}
+Come anticipato, non esiste un algoritmo preciso ed affidabile per generare automaticamente la rappresentazione grafica dei bigrafi; al contrario, il campo della visualizzazione dei grafi è stato soggetto ad estesa ricerca, e sono disponibili linguaggi e programmi già pronti. Pertanto si è deciso di fornire una rappresentazione semplificata dei bigrafi in questo modo:
+\begin{itemize}
+\item[1.] un parser trasforma il bigrafo in un grafo orientato, rappresentato in \emph{DOT Language};
+\item[2.] si usa \emph{GraphViz} per trasformare il file \emph{dot} in un'immagine vettoriale \emph{svg};
+\item[3.] a questo punto si può visualizzare l'immagine con un \emph{browser}, o un visualizzatore che ne supporta il formato.
+\end{itemize}
+\paragraph{Gli strumenti} Il \emph{parser} citato al punto 1 è implementato dalla classe \texttt{DotLangPrinter}, che internamente funziona similarmente al \emph{pretty-printer}. Il \emph{DOT Language} è un formalismo nato per rappresentare grafi orientati e non orientati, permettendo di specificare proprietà per i nodi come colore, forma etichetta, etc\dots.
+\emph{GraphViz} è un programma \emph{open-source} che genera immagini di grafi, data la loro descrizione in DOT. Di seguito è riportato un esempio:
+
+\lstinputlisting[breaklines,frame=single,caption=Esempio di bigrafo in DOT %(Estratto)
+]{lst/mult.dot}
+
+
+\begin{figure}[htbp]
+\includegraphics{mult}
+\caption{\emph{Render} di GraphViz del bigrafo}
+\end{figure} 
+
+\section{Model Checking}
+
 \section{Esempi e applicazioni}
 \subsection{Il Gioco della Vita di Conway}
-\lipsum[1-2]
+
 % altro...
 \section{Conclusioni}
-\lipsum[1-2]
+
 \end{document}

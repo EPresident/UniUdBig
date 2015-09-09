@@ -1,0 +1,182 @@
+----- Printing Bigraph Game of Life 3x3 -----
+edge E_489{ Link[N_4B5]; Link[N_4D0]; Link[N_4D7]; Link[N_4F1]; Link[N_4C7]; Dead Cell (1,0)[N_487]; Link[N_4E2]; Link[N_4DC]; Link[N_4BA]; }
+edge E_495{ Link[N_4B1]; Link[N_4C8]; Link[N_4B2]; Link[N_4EC]; Dead Cell (1,1)[N_494]; Link[N_4DE]; Link[N_4C1]; Link[N_4D3]; Link[N_4E4]; }
+edge E_48D{ L[N_48C]; }
+edge E_49F{ Link[N_4AB]; Link[N_4BF]; Link[N_4D6]; Link[N_4E5]; Link[N_4B6]; Link[N_4CD]; Link[N_4C3]; Link[N_4DD]; Dead Cell (2,2)[N_49E]; }
+edge E_492{ Link[N_4EB]; Link[N_4B9]; Link[N_4E8]; Link[N_4E0]; Dead Cell (1,2)[N_491]; Link[N_4CF]; Link[N_4AA]; Link[N_4D5]; Link[N_4BD]; }
+edge E_49B{ Link[N_4CC]; Link[N_4E6]; Link[N_4D2]; Link[N_4B3]; Link[N_4F0]; Link[N_4BC]; Link[N_4C6]; Dead Cell (0,1)[N_49A]; Link[N_4AC]; }
+edge E_48F{ Link[N_4AD]; Link[N_4DA]; Link[N_4E3]; Link[N_4B7]; Link[N_4C5]; Link[N_4D4]; Link[N_4EE]; Live Cell(2,0)[N_48E]; Link[N_4CA]; }
+edge E_497{ D[N_496]; }
+edge E_48B{ Link[N_4C2]; Link[N_4BE]; Link[N_4D8]; Link[N_4DF]; Dead Cell (2,1)[N_48A]; Link[N_4CB]; Link[N_4AF]; Link[N_4E9]; Link[N_4EF]; }
+edge E_49D{ Link[N_4ED]; Dead Cell (0,0)[N_49C]; Link[N_4BB]; Link[N_4D9]; Link[N_4DB]; Link[N_4AE]; Link[N_4C9]; Link[N_4B8]; Link[N_4CE]; }
+edge E_499{ Link[N_4C4]; Link[N_4E1]; Link[N_4B0]; Link[N_4EA]; Link[N_4D1]; Link[N_4C0]; Link[N_4E7]; Link[N_4B4]; Dead Cell (0,2)[N_498]; }
+edge E_488{ Dead Cell (0,0)[N_49C]; Dead Cell (1,0)[N_487]; Dead Cell (1,2)[N_491]; u[N_490]; Dead Cell (0,2)[N_498]; Dead Cell (0,1)[N_49A]; Dead Cell (1,1)[N_494]; Dead Cell (2,1)[N_48A]; Dead Cell (2,2)[N_49E]; Live Cell(2,0)[N_48E]; }
+root 0 {}
+   node L[N_48C] { port0: Edge E_48D;}
+   node Dead Cell (0,0)[N_49C] { port0: Edge E_49D; port1: Edge E_488;}
+      node Link Holder[N_4A8] {}
+         node Link[N_4E9] { port0: Edge E_48B;}
+            node NorthWest[N_531] {}
+         node Link[N_4E8] { port0: Edge E_492;}
+            node SouthEast[N_530] {}
+         node Link[N_4E7] { port0: Edge E_499;}
+            node South[N_52F] {}
+         node Link[N_4E6] { port0: Edge E_49B;}
+            node North[N_52E] {}
+         node Link[N_4E5] { port0: Edge E_49F;}
+            node SouthWest[N_52D] {}
+         node Link[N_4E4] { port0: Edge E_495;}
+            node NorthEast[N_52C] {}
+         node Link[N_4E3] { port0: Edge E_48F;}
+            node West[N_52B] {}
+         node Link[N_4E2] { port0: Edge E_489;}
+            node East[N_52A] {}
+   node Dead Cell (2,1)[N_48A] { port0: Edge E_48B; port1: Edge E_488;}
+      node Link Holder[N_4A1] {}
+         node Link[N_4B9] { port0: Edge E_492;}
+            node NorthWest[N_501] {}
+         node Link[N_4B8] { port0: Edge E_49D;}
+            node SouthEast[N_500] {}
+         node Link[N_4B7] { port0: Edge E_48F;}
+            node South[N_4FF] {}
+         node Link[N_4B6] { port0: Edge E_49F;}
+            node North[N_4FE] {}
+         node Link[N_4B5] { port0: Edge E_489;}
+            node SouthWest[N_4FD] {}
+         node Link[N_4B4] { port0: Edge E_499;}
+            node NorthEast[N_4FC] {}
+         node Link[N_4B3] { port0: Edge E_49B;}
+            node East[N_4FB] {}
+         node Link[N_4B2] { port0: Edge E_495;}
+            node West[N_4FA] {}
+   node Dead Cell (0,1)[N_49A] { port0: Edge E_49B; port1: Edge E_488;}
+      node Link Holder[N_4A7] {}
+         node Link[N_4E0] { port0: Edge E_492;}
+            node NorthEast[N_528] {}
+         node Link[N_4DF] { port0: Edge E_48B;}
+            node West[N_527] {}
+         node Link[N_4DE] { port0: Edge E_495;}
+            node East[N_526] {}
+         node Link[N_4DD] { port0: Edge E_49F;}
+            node NorthWest[N_525] {}
+         node Link[N_4DC] { port0: Edge E_489;}
+            node SouthEast[N_524] {}
+         node Link[N_4DB] { port0: Edge E_49D;}
+            node South[N_523] {}
+         node Link[N_4DA] { port0: Edge E_48F;}
+            node SouthWest[N_522] {}
+         node Link[N_4E1] { port0: Edge E_499;}
+            node North[N_529] {}
+   node Live Cell(2,0)[N_48E] { Position: 2,0; port0: Edge E_48F; port1: Edge E_488;}
+      node Life Token[N_4A3] {}
+      node Link Holder[N_4A2] {}
+         node Link[N_4BF] { port0: Edge E_49F;}
+            node South[N_507] {}
+         node Link[N_4BE] { port0: Edge E_48B;}
+            node North[N_506] {}
+         node Link[N_4BD] { port0: Edge E_492;}
+            node SouthWest[N_505] {}
+         node Link[N_4BC] { port0: Edge E_49B;}
+            node NorthEast[N_504] {}
+         node Link[N_4BB] { port0: Edge E_49D;}
+            node East[N_503] {}
+         node Link[N_4BA] { port0: Edge E_489;}
+            node West[N_502] {}
+         node Link[N_4C1] { port0: Edge E_495;}
+            node NorthWest[N_509] {}
+         node Link[N_4C0] { port0: Edge E_499;}
+            node SouthEast[N_508] {}
+   node Dead Cell (2,2)[N_49E] { port0: Edge E_49F; port1: Edge E_488;}
+      node Link Holder[N_4A9] {}
+         node Link[N_4F1] { port0: Edge E_489;}
+            node NorthWest[N_539] {}
+         node Link[N_4F0] { port0: Edge E_49B;}
+            node SouthEast[N_538] {}
+         node Link[N_4EF] { port0: Edge E_48B;}
+            node South[N_537] {}
+         node Link[N_4EE] { port0: Edge E_48F;}
+            node North[N_536] {}
+         node Link[N_4ED] { port0: Edge E_49D;}
+            node NorthEast[N_535] {}
+         node Link[N_4EC] { port0: Edge E_495;}
+            node SouthWest[N_534] {}
+         node Link[N_4EB] { port0: Edge E_492;}
+            node West[N_533] {}
+         node Link[N_4EA] { port0: Edge E_499;}
+            node East[N_532] {}
+   node Dead Cell (1,1)[N_494] { port0: Edge E_495; port1: Edge E_488;}
+      node Link Holder[N_4A5] {}
+         node Link[N_4CF] { port0: Edge E_492;}
+            node North[N_517] {}
+         node Link[N_4CE] { port0: Edge E_49D;}
+            node SouthWest[N_516] {}
+         node Link[N_4CD] { port0: Edge E_49F;}
+            node NorthEast[N_515] {}
+         node Link[N_4CC] { port0: Edge E_49B;}
+            node West[N_514] {}
+         node Link[N_4CB] { port0: Edge E_48B;}
+            node East[N_513] {}
+         node Link[N_4CA] { port0: Edge E_48F;}
+            node SouthEast[N_512] {}
+         node Link[N_4D1] { port0: Edge E_499;}
+            node NorthWest[N_519] {}
+         node Link[N_4D0] { port0: Edge E_489;}
+            node South[N_518] {}
+   node alpha[N_493] {}
+   node Dead Cell (1,2)[N_491] { port0: Edge E_492; port1: Edge E_488;}
+      node Link Holder[N_4A4] {}
+         node Link[N_4C9] { port0: Edge E_49D;}
+            node NorthWest[N_511] {}
+         node Link[N_4C8] { port0: Edge E_495;}
+            node South[N_510] {}
+         node Link[N_4C7] { port0: Edge E_489;}
+            node North[N_50F] {}
+         node Link[N_4C6] { port0: Edge E_49B;}
+            node SouthWest[N_50E] {}
+         node Link[N_4C5] { port0: Edge E_48F;}
+            node NorthEast[N_50D] {}
+         node Link[N_4C4] { port0: Edge E_499;}
+            node West[N_50C] {}
+         node Link[N_4C3] { port0: Edge E_49F;}
+            node East[N_50B] {}
+         node Link[N_4C2] { port0: Edge E_48B;}
+            node SouthEast[N_50A] {}
+   node u[N_490] { port0: Edge E_488;}
+   node Dead Cell (1,0)[N_487] { port0: Edge E_489; port1: Edge E_488;}
+      node Link Holder[N_4A0] {}
+         node Link[N_4AF] { port0: Edge E_48B;}
+            node NorthEast[N_4F7] {}
+         node Link[N_4AE] { port0: Edge E_49D;}
+            node West[N_4F6] {}
+         node Link[N_4AD] { port0: Edge E_48F;}
+            node East[N_4F5] {}
+         node Link[N_4AC] { port0: Edge E_49B;}
+            node NorthWest[N_4F4] {}
+         node Link[N_4AB] { port0: Edge E_49F;}
+            node SouthEast[N_4F3] {}
+         node Link[N_4AA] { port0: Edge E_492;}
+            node South[N_4F2] {}
+         node Link[N_4B1] { port0: Edge E_495;}
+            node North[N_4F9] {}
+         node Link[N_4B0] { port0: Edge E_499;}
+            node SouthWest[N_4F8] {}
+   node Dead Cell (0,2)[N_498] { port0: Edge E_499; port1: Edge E_488;}
+      node Link Holder[N_4A6] {}
+         node Link[N_4D9] { port0: Edge E_49D;}
+            node North[N_521] {}
+         node Link[N_4D8] { port0: Edge E_48B;}
+            node SouthWest[N_520] {}
+         node Link[N_4D7] { port0: Edge E_489;}
+            node NorthEast[N_51F] {}
+         node Link[N_4D6] { port0: Edge E_49F;}
+            node West[N_51E] {}
+         node Link[N_4D5] { port0: Edge E_492;}
+            node East[N_51D] {}
+         node Link[N_4D4] { port0: Edge E_48F;}
+            node NorthWest[N_51C] {}
+         node Link[N_4D3] { port0: Edge E_495;}
+            node SouthEast[N_51B] {}
+         node Link[N_4D2] { port0: Edge E_49B;}
+            node South[N_51A] {}
+   node D[N_496] { port0: Edge E_497;}
+----- Done Printing Game of Life 3x3 ------

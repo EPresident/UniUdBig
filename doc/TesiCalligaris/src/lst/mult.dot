@@ -1,0 +1,43 @@
+digraph Moltiplicazione {
+ranksep=.75;{
+outernames->rank0->rank1->rank2->rank3[style=invisible arrowhead=none];outernames[shape=none style=invisible];
+rank0[label="roots" shape=none style=invisible];
+rank1[shape=none style=invisible];
+rank2[shape=none style=invisible];
+rank3[shape=none style=invisible];
+
+}
+
+//printing tree 
+
+N_3D -> 0
+N_3E -> N_3D
+N_40 -> N_3E
+N_41 -> N_3E
+N_42 -> N_3E
+N_43 -> N_3E
+N_3F -> N_3D
+N_44 -> N_3F
+N_45 -> N_3F
+{
+rank=same;
+rank0;0[shape=box color=blue,label=Root0];
+}
+{
+rank=same;
+rank1;N_3D[shape=ellipse,label=Moltiplicazione];
+}
+{
+rank=same;
+rank2;N_3E[shape=ellipse,label=Num2];
+N_3F[shape=ellipse,label=Num1];
+}
+{
+rank=same;
+rank3;N_40[shape=ellipse,label=Uno];
+N_41[shape=ellipse,label=Uno];
+N_42[shape=ellipse,label=Uno];
+N_43[shape=ellipse,label=Uno];
+N_44[shape=ellipse,label=Uno];
+N_45[shape=ellipse,label=Uno];}
+}

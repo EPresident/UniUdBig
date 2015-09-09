@@ -271,6 +271,7 @@ public class BigPPrinterVeryPretty {
         } else {
             sb.append(id);
         }
+        sb.append(":").append(n.getControl().getName());
         return sb.toString();
     }
 

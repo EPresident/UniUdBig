@@ -19,7 +19,7 @@ Capire quando due bigrafi sono isomorfi e quindi \emph{semanticamente equivalent
 \end{itemize}
 Questo concetto verrà chiarito con gli esempi sottostanti.
 
-\section{Esempio:}\label{sub:networkExe}
+\section{Esempio}\label{sub:networkExe}
 Si prenda l'esempio di una rete modellata tramite un bigrafo: si vuole fare in modo che, dato un pacchetto iniziale che ha
 come mittente l'host A, esso arrivi al destinatario B. Ci saranno quindi delle regole di reazione per i router, che permetteranno di inoltrare i pacchetti verso le sue interfacce
 di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di reazione per modellare il fatto che se il destinario è X allora l'interfaccia di uscita del pacchetto è la numero N,  si può pensare di inoltrare il pacchetto verso tutte le uscite in modo non deterministico. Così facendo, il pacchetto arriverà sicuramente al destinatario.
@@ -48,6 +48,51 @@ Il problema consiste quindi nel trovare un funzione biettiva che ha come dominio
 la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione di supporto}.\\
 Si noti come la traduzione di supporto consenta di ritenere isomorfi due bigrafi che sono uguali \emph{modulo permutazione}: tale funzione può infatti operare una permutazione sui nomi dei nodi e degli archi, così come sugli inner names e outer names. In altre parole, non c'è nessun vincolo sui nomi, ma solo sulla struttura del bigrafo. Si capirà meglio questo concetto negli esempi che seguiranno.
 
+
+\subsection{Complessità}\label{sub:isoComplexity}
+Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
+
+L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
+
+Si dimostrerà il seguente risultato:
+
+\begin{teor}[Complessità di $P_{big}$]
+Il problema dell'isomorfismo tra bigrafi è GI-completo.
+\end{teor}
+
+\begin{corol}
+Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
+\end{corol}
+
+\begin{dimos}
+Per dimostrare l'equivalenza, procederemo in due direzioni: nella prima dimostreremo che esiste una riduzione in tempo polinomiale da $P_{graph}$ a $P_{big}$, cioè che ogni istanza del problema $P_{graph}$ può venire tradotta in un'istanza del problema $P_{big}$. Invece, nella seconda direzione, faremo l'inverso. Si dimostreranno quindi che esistono le seguenti riduzioni:\\
+
+$
+\begin{cases}   
+P_{graph} \le P_{big}\\
+P_{big} \le P_{graph}
+\end{cases}
+$
+\\
+
+\begin{itemize}
+	\item
+	$P_{graph} \le P_{big}$:\\
+	Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
+	
+	\item
+	$P_{big} \le P_{graph}$:\\
+	Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$. 	
+\end{itemize}
+
+Si è quindi dimostrata l'equivalenza fra il problema dell'isomorfismo tra bigrafi e quella tra grafi, concludendo quindi che il problema $P_{big}$ è equivalente al problema $P_{graph}$.
+\end{dimos}
+
+E' noto che $P_{graph}$ appartiene alla classe NP, ma non è ancora stato dimostrato che sia completo. Per qui si è creata una nuova classe di complessità, nota con il nome di GI, che raccoglie tutti i problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Quindi si ha che $P_{big} \in GI$.
+
+Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
+
+
 \section{Strategia di soluzione}
 Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica per esempio può essere espressa come
 il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione 
@@ -57,6 +102,17 @@ Si è scelto di trattare questo problema tramite la programmazione a vincoli. Que
 risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari,
 con la conseguenza che si avrà un sistema lineare: questo permette di abbassare la complessità dell'algoritmo.\\
 Si è usata la libreria Java \emph{Choco vs 3.3.1} per esprimere tutti i vincoli.\\
+Si è scelta il paradigma del \emph{Constraint Programming} per i seguenti motivi:
+\begin{itemize}
+	\item
+	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori, specie per problemi NP, come l'isomorfismo tra bigrafi.
+	\item
+	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
+	\item
+	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
+\end{itemize}
+E' possibile che esista un algoritmo che risolva in modo più efficiente questo problema: se per esempio sarà inventato l'algoritmo che risolve in tempo polinomiale un isomorfismo tra grafi, allora per quanto dimostrato nella sottosezione \ref{sub:isoComplexity} anche questo problema potrà essere risolto in tempo polinomiale. Fino ad allora, la programmazione a vincoli, che può non risultare il metodo migliore per risolvere questo problema, crea un ottimo compromesso tra complessità dell'algoritmo e tempo di sviluppo.
+
 
 Si è precedentemente visto che ogni bigrafo è formato da due strutture ortogonali e totalmente indipendenti, il place graph ed il link graph. Il problema dell'isomorfismo verrà quindi trattato
 separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).\\
@@ -450,7 +506,7 @@ Incominciamo con i \textbf{vincoli strutturali}: si è adottata una versione rico
 	$M_{d-1,prnt(m), prnt(n)}=0 \qquad \Rightarrow \qquad M_{d,m,n}=0$
 	\end{center}
 	Esso costituisce il caso ricorsivo perchè vale per tutti i nodi tranne le radici, e le radici sono ricoperte dal caso base. Si veda la figura \ref{fig:secondConstraintExe}: la variabile 
-	$M_{1,n_1,n_2}=0$ perchè dalla figura \ref{fig:firstConstraintExe} sappiamo che $M_{0,r_0,r_0}=0$ e perchè $prnt_F(n_1)=r_0$ e $prnt_G(n_2)=r_0$. Lo stesso ragionamento vale per la variabile $M_{1,n_1,n_3}$. \\ \\ \\ \\ \\ \\
+	$M_{1,n_1,n_2}=0$ perchè dalla figura \ref{fig:firstConstraintExe} sappiamo che $M_{0,r_0,r_0}=0$ e perchè $prnt_F(n_1)=r_0$ e $prnt_G(n_2)=r_0$. Lo stesso ragionamento vale per la variabile $M_{1,n_1,n_3}$.
 	
 	
 		
@@ -1121,6 +1177,191 @@ Nell'esempio citato, si era già notato informalmente che il quadrato collegato a
 	
 \end{itemize}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Implementazione con Choco}
+Tutti i vincoli sono stati espressi sul calcolatore tramite la libreria Java \emph{Choco vs 3.3.1}. Essa permette di rappresentare un sistema di equazioni che poi la stessa libreria risolverà. Forniamo quindi una panoramica della libreria ed alcuni esempi di vincoli che sono stati espressi.
+
+La prima fase, che precede la definizione dei vincoli, riguarda la creazione delle variabili. Ad ogni variabile si deve obbligatoriamente assegnare anche un dominio, che, per quanto grande sia, deve essere finito. A titolo di esempio, in \emph{Choco vs 3.3.1} possiamo creare le variabili $x$ e $y$ entrambe con dominio $\{0,1,2,3,4\}$ con le seguenti istruzioni:\\
+\begin{lstlisting}
+IntVar x = VariableFactory.enumerated("x", 0, 4, solver);
+IntVar y = VariableFactory.enumerated("y", 0, 4, solver);
+\end{lstlisting}
+Si noti come ogni variabile venga associata ad un \textbf{solver}, che è il motore interno che risolverà il sistema. Sia $x$ che $y$ sono associate allo stesso solver: questo equivale a dire che apparterranno allo stesso sistema di equazioni. La sintassi dei metodi è chiara: come primo argomento c'è il nome della variabile, come secondo ci può essere un vettore (che enumera tutti gli elementi del dominio) oppure il primo estremo dell'intervallo del dominio; come terzo argomento abbiamo il limite superiore del dominio, ed infine c'è il solver al quale le variabili dovranno fare riferimento.
+
+Esprimiamo ora degli esempi di vincoli, che sono appunto equazioni. Tutte le equazioni che appartengono allo stesso sistema, dovranno fare riferimento allo stesso solver. Nel solver di \emph{Choco vs 3.3.1}, le equazioni vengono aggiunte al sistema tramite il suo metodo \emph{post()}. Il sistema \\
+\begin{center}
+$\begin{cases}
+x+y=7 \\
+x \le 3 \\
+y > 1
+\end{cases}$
+\end{center}
+si può rappresentare con le seguenti istruzioni:\\
+\begin{lstlisting}
+IntVar[] sumV = {x,y};
+IntVar seven = VariableFactory.fixed("seven", 7, solver);
+solver.post(ICF.sum(sumV, "=", seven));
+solver.post(ICF.arithm(x,"<=",3));
+solver.post(ICF.arithm(y,">",1));
+\end{lstlisting}
+
+Si noti come tutti i vincoli facciano riferimento a ``solver", e che quindi faranno parte dello stesso sistema. Inoltre, con il metodo $sum$ si è dovuto creare una costante che rappresentasse il numero 7 (nel metodo $arithm$ questo non è necessario). Vediamo brevemente come si usano questi metodi: il metodo $fixed$ serve per creare una costante; è simile ad $enumerated$ e vuole come argomenti il nome della variabile, il valore della costante ed il solver al quale fare riferimento.
+
+Il metodo $sum$ accetta come primo argomento un vettore formato da tutte le variabili che costituiscono la somma, come secondo argomento l'operatore (per esempio $=$ oppure $\le$) ed infine la variabile che nell'equazione sta a destra dell'operatore.
+
+Il metodo $arithm$ consente di esprimere le più comuni equazioni aritmetiche: il primo argomento è una variabile, il secondo un operatore ($<,\le,=,\ge,>$) ed il terzo una variabile o un numero naturale.
+
+Con il seguente comando: 
+\begin{lstlisting}
+solver.findSolution();
+\end{lstlisting}
+la libreria cerca di risolvere il sistema di equazioni. Se esiste una soluzione ritorna True, altrimenti False. Si noti come in questa sede non ci interessino le soluzioni del sistema, che però potrebbero venire calcolate con il metodo:
+\begin{lstlisting}
+var.getValue() //dove var è una IntVar
+\end{lstlisting}
+per ogni variabile $var$ che fa parte del sistema.
+
+Da quanto appena visto, l'implementazioni dei vincoli per l'isomorfismo tra bigrafi è una traduzione quasi immediata delle formule della sezione precedente. Forniamo quindi solo alcuni esempi:
+\begin{itemize}
+	\item
+	Il vincolo sul flusso in uscita ($\delta^+(p)=1$) da ogni punto del primo link graph è $\sum\limits_{p'}y_{p,p'} = 1$. La sua traduzione nella libreria \emph{Choco vs 3.3.1} usa il metodo \emph{sum} visto prima. Si guardi la figura \ref{fig:outFlowChoco}: se vogliamo esprimere questo vincolo su $p_3$ allora la corrispondente istruzione sarà: 
+	\begin{lstlisting}
+	BoolVar p3_p1 = VF.bool("P3-P1", solver);
+	BoolVar p3_p2 = VF.bool("P3-P2", solver);
+	BoolVar p3_p3 = VF.bool("P3-P3", solver);
+	IntVar[] redArrows = {p3_p1 , p3_p2 , p3_p3};
+	IntVar one = VF.fixed("one", 1, solver);
+	solver.post(ICF.sum(redArrows, "=", one));
+	\end{lstlisting}
+
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\node [below] at (1.5,1.0) {$p_3$};
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\node [below left] at (1.0,1.5) {$p_2$};
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node [below] at (1.5,2.0) {$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (1.4,3.0) to [out=230,in=130] (1.4,2.0);%p3-p1
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (0.9,1.5);%p3-p2
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (1.4,1.0);%p3-p3
+	
+	\end{tikzpicture}
+	\caption{Implementazione del vincolo sul flusso in uscita. \label{fig:outFlowChoco}}
+	\end{figure*}
+	
+		
+	VF è la semplice abbreviazione per \emph{VariableFactory}. Come prima cosa, si sono create le tre variabili che corrispondo agli archi rossi della figura. Tutte e tre hanno dominio $\{0,1\}$, per cui possiamo dichiararle direttamente come variabili booleane. Dato che c'è una sommatoria, dobbiamo usare il metodo \emph{sum}: creiamo quindi il vettore con tutti i membri della somma ($redArrows$) e una costante per il numero 1 ($one$). L'ultima istruzione, aggiunge l'equazione $\sum\limits_{p'}y_{p,p'} = 1$ al sistema.
+	
+	
+	\item
+	Il vincolo $y_{p,p'} \le x_{link_F(p),link_G(p')}$ modella una semplice implicazione, come visto nella sezione precedente. Si prenda la figura \ref{fig:secConstraintChoco}: presi i due punti $p_2$ e $p_1$ rispettivamente del primo e del secondo link graph, si ha che questo vincolo può essere espresso tramite queste istruzioni:
+	\begin{lstlisting}
+	BoolVar p2_p1 = VF.bool("P2-P1", solver);
+	BoolVar h2_h1 = VF.bool("H2-H1", solver);	
+	solver.post(ICF.arithm(p2_p1, "<=", h2_h1));
+	\end{lstlisting}
+	
+	Come si può vedere, la traduzione è quasi immediata: il metodo $arithm$ consente di scrivere direttamente l'equazione, risultando quindi molto comodo.
+		
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\node [above] at (1.0,3.5) {$p_2$};
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2 	
+	\node[right] at (5.0,3.5){$h_2$};
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node [below] at (1.5,2.0) {$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	\node[right] at (5.0,2.0){$h_1$};
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (5.0,3.4) to [out=0,in=0] (4.6,2.0);%h2-h1
+	\draw [red, ->] (0.9,3.5) to [out=210,in=180] (1.4,2.0);%p2-p1
+
+	
+	\end{tikzpicture}
+	\caption{Implementazione del secondo vincolo strutturale \label{fig:secConstraintChoco}}
+	\end{figure*}
+	
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Benchmarks}\label{ref:sec:benchmarks}
+Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del problema dell'isomorfismo tra bigrafi. Ora si vedranno dei test (benchmark) volti a misurare le prestazioni dell'algoritmo proposto, cioè la soluzione basata sul \emph{Constraint Programming}. Tutti i test sono stati eseguiti su una macchina con queste caratteristiche:
+\begin{itemize}
+	\item
+	processore Intel Core i5 a 2.4GHz
+	\item
+	IDE: Eclipse
+	\item
+	libreria per il constraint programming: \emph{Choco vs 3.3.1}
+\end{itemize}
+I risultati verranno visualizzati con i \emph{box and whiskers plot}. 
+
+La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto. 
+
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Grafo degli stati}
@@ -1474,13 +1715,11 @@ Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo s
 
 Di per sè, il BRS si dimentica degli stati precedenti, in questo caso $S_0$. Per cui, da $S_1$ scatterebbe di nuovo la regola $R_0$, creando lo stato $S_2$. A sua volta, da $S_2$, eseguirebbe di nuovo $R_0$ e causerebbe così un'esecuzione infinita, dando luogo al grafo degli stati in figura \ref{fig:infiniteStateGraphNetwork}.
 
-Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$. Poichè da $S_1$ tramite la regola $R_0$ viene creato lo stato $S_2$, siamo ora in grado non doverlo più memorizzare, in quanto è uguale (o meglio, è semanticamente equivalente) allo stato $S_0$. Per cui, ritrovandoci di nuovo in $S_0$, sappiamo che non dobbiamo applicare più nessuna regola, pena un'esecuzione infinita del BRS. Tramite l'isomorfismo, si è potuto generare il \emph{grafo degli stati} della figura \ref{fig:finiteStateGraphNetwork}.
-
 
 
 \begin{figure*}[th]
 	\centering
-	\begin{tikzpicture}
+	\begin{tikzpicture}%[scale=0.8]
 	%\draw[help lines] (0,0) grid (14,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -1511,7 +1750,7 @@ Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$
 
 \begin{figure*}[th]
 	\centering
-	\begin{tikzpicture}
+	\begin{tikzpicture}%[scale=0.8]
 	%\draw[help lines] (0,0) grid (14,5);
 	%States
 	\draw[thick] (1.5,1.5) circle [radius=0.5];
@@ -1529,62 +1768,7 @@ Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$
 	\caption{Grafo degli stati finito. \label{fig:finiteStateGraphNetwork}}
 \end{figure*}
 
-
-
-
-\section{Complessità}\label{sub:isoComplexity}
-Il problema dell'isomorfismo tra bigrafi, come si è visto, è stato affrontato tramite il \emph{constraint programming}. Si è scelta questa tecnica per i seguenti motivi:
-\begin{itemize}
-	\item
-	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori.
-	\item
-	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
-	\item
-	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
-\end{itemize}
-
-Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
-
-L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
-
-Si dimostrerà il seguente risultato:
-
-\begin{teor}[Complessità di $P_{big}$]
-Il problema dell'isomorfismo tra bigrafi è GI-completo.
-\end{teor}
-
-\begin{corol}
-Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
-\end{corol}
-
-\begin{dimos}
-Per dimostrare l'equivalenza, procederemo in due direzioni: nella prima dimostreremo che esiste una riduzione in tempo polinomiale da $P_{graph}$ a $P_{big}$, cioè che ogni istanza del problema $P_{graph}$ può venire tradotta in un'istanza del problema $P_{big}$. Invece, nella seconda direzione, faremo l'inverso. Si dimostreranno quindi che esistono le seguenti riduzioni:\\
-
-$
-\begin{cases}   
-P_{graph} \le P_{big}\\
-P_{big} \le P_{graph}
-\end{cases}
-$
-\\
-
-\begin{itemize}
-	\item
-	$P_{graph} \le P_{big}$:\\
-	Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
-	
-	\item
-	$P_{big} \le P_{graph}$:\\
-	Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$. 	
-\end{itemize}
-
-Si è quindi dimostrata l'equivalenza fra il problema dell'isomorfismo tra bigrafi e quella tra grafi, concludendo quindi che il problema $P_{big}$ è equivalente al problema $P_{graph}$.
-\end{dimos}
-
-E' noto che $P_{graph}$ appartiene alla classe NP, ma non è ancora stato dimostrato che sia completo. Per qui si è creata una nuova classe di complessità, nota con il nome di GI, che raccoglie tutti i problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Quindi si ha che $P_{big} \in GI$.
-
-Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
-
+Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$. Poichè da $S_1$ tramite la regola $R_0$ viene creato lo stato $S_2$, siamo ora in grado non doverlo più memorizzare, in quanto è uguale (o meglio, è semanticamente equivalente) allo stato $S_0$. Per cui, ritrovandoci di nuovo in $S_0$, sappiamo che non dobbiamo applicare più nessuna regola, pena un'esecuzione infinita del BRS. Tramite l'isomorfismo, si è potuto generare il \emph{grafo degli stati} della figura \ref{fig:finiteStateGraphNetwork}.
 
 
 

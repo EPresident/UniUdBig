@@ -18,16 +18,15 @@ public class Test {
 		Scanner scan = new Scanner(System.in);
 		String str = scan.nextLine();
 		int n = Integer.parseInt(str);
-		System.out.println("Strategy: Every philosopher takes first the left fork.\n"
-				+ "Deadlock are NOT avoided so the procedure must return False...");
+		System.out.println("Strategy: Every philosopher takes first the left fork.");
 		System.out.println("Are deadlocks avoided?\t"+((problem.deadlockDanger(n)) ? "YES" : "NO"));
+		System.out.println("Number of nodes of the Model Checker:\t"+problem.getGraphSize());
 		System.out.println("\n\n\n\n\n\n");
 		
-		System.out.println("Strategy: all the forks are enumerated.\n"
-				+ "Every philosopher takes first the fork with the lower index.\n"
-				+ "Deadlock are avoided so the procedure may not terminate...");
+		System.out.println("Strategy: all the forks are enumerated. Every philosopher takes first the fork with the lower index.\n");
 		DinnerNoDead bigProblem = new DinnerNoDead();
 		System.out.println("Are deadlocks avoided?\t"+((bigProblem.deadlockDanger(n)) ? "YES" : "NO"));
+		System.out.println("Number of nodes of the Model Checker:\t"+problem.getGraphSize());
 	}
 	
 }

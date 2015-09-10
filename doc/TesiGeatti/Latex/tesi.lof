@@ -38,63 +38,72 @@
 \contentsline {figure}{\numberline {1.20}{\ignorespaces Match decomposto }}{24}
 \contentsline {figure}{\numberline {1.21}{\ignorespaces Bigrafo finale }}{24}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Bigrafi Isomorfi: $(4*2) = (2*4)$ }}{28}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Bigrafi non Isomorfi}}{29}
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Place Graph e Link Graph del bigrafo \ref {fig:falseIso}}}{29}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph isomorfi}}}{29}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph isomorfi}}}{29}
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Rete di flusso per l'isomorfismo tra place graphs. }}{30}
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Soluzione della rete di flusso }}{31}
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Esempio per il primo vincolo }}{32}
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Esempio per il secondo vincolo }}{33}
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Esempio per il vincolo sul flusso in uscita }}{33}
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Esempio per il vincolo sul flusso in entrata }}{34}
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Esempio di rete di flusso per il problema di isomorfismo tra link graphs. }}{35}
-\contentsline {figure}{\numberline {2.11}{\ignorespaces Esempio per il primo vincolo. }}{36}
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Esempio per il secondo vincolo. }}{37}
-\contentsline {figure}{\numberline {2.13}{\ignorespaces Esempio per i due vincoli sul flusso in uscita. }}{37}
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Esempio per i due vincoli sul flusso in entrata. }}{38}
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Esempio di grafo degli stati. }}{40}
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Grafo degli stati infinito. }}{41}
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Regola di inoltro tra router. }}{42}
-\contentsline {figure}{\numberline {2.18}{\ignorespaces Bigrafo di partenza }}{43}
-\contentsline {figure}{\numberline {2.19}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{44}
-\contentsline {figure}{\numberline {2.20}{\ignorespaces Grafo degli stati infinito. }}{44}
-\contentsline {figure}{\numberline {2.21}{\ignorespaces Grafo degli stati finito. }}{44}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Bigrafi Isomorfi: $(4*2) = (2*4)$ }}{31}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Bigrafi non Isomorfi}}{31}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Place Graph e Link Graph del bigrafo \ref {fig:falseIso}}}{32}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Place Graph isomorfi}}}{32}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Link Graph isomorfi}}}{32}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Rete di flusso per l'isomorfismo tra place graphs. }}{32}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Soluzione della rete di flusso }}{34}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Esempio per il primo vincolo }}{34}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Esempio per il secondo vincolo }}{35}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Esempio per il vincolo sul flusso in uscita }}{36}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Esempio per il vincolo sul flusso in entrata }}{36}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Esempio di rete di flusso per il problema di isomorfismo tra link graphs. }}{37}
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Esempio per il primo vincolo. }}{38}
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Esempio per il secondo vincolo. }}{39}
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Esempio per i due vincoli sul flusso in uscita. }}{40}
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Esempio per i due vincoli sul flusso in entrata. }}{40}
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Implementazione del vincolo sul flusso in uscita. }}{44}
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Implementazione del secondo vincolo strutturale }}{45}
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Esempio di grafo degli stati. }}{46}
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Grafo degli stati infinito. }}{47}
+\contentsline {figure}{\numberline {2.19}{\ignorespaces Regola di inoltro tra router. }}{48}
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Bigrafo di partenza }}{49}
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{49}
+\contentsline {figure}{\numberline {2.22}{\ignorespaces Grafo degli stati infinito. }}{50}
+\contentsline {figure}{\numberline {2.23}{\ignorespaces Grafo degli stati finito. }}{50}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{50}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{51}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{51}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{51}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{51}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{52}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{52}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{52}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{52}
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto passo}}}{52}
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{52}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Regola di inoltro tra router. }}{56}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Bigrafo per il numero 8 }}{57}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Model Checker. }}{58}
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Bigrafo di partenza }}{58}
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Regola di inoltro tra router. }}{59}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Esempi di predicati}}{59}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Predicato Sbagliato}}}{59}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Predicato Corretto}}}{59}
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{60}
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{61}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{52}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{53}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{53}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{53}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{53}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{54}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{54}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{54}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{54}
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto passo}}}{54}
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{54}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Regola di inoltro tra router. }}{58}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Bigrafo per il numero 8 }}{59}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Model Checker. }}{60}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Bigrafo di partenza }}{60}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Regola di inoltro tra router. }}{61}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Esempi di predicati}}{61}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Predicato Sbagliato}}}{61}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Predicato Corretto}}}{61}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{62}
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{63}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{63}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Bigrafo per l'automa A }}{64}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{65}
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{66}
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{67}
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Bigrafo B }}{68}
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Grafo degli stati }}{68}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Passo}}}{70}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Passo}}}{70}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo Passo}}}{70}
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{71}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{65}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Bigrafo per l'automa A }}{66}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{67}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{68}
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{69}
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Bigrafo B }}{70}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Passo}}}{71}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Passo}}}{71}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo Passo}}}{71}
 \contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto Passo}}}{71}
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{71}
 \contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto Passo}}}{71}
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Grafo degli stati }}{72}
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Codifica in bigrafi di un'istanza del problema }}{73}
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Regole per prendere la forchetta }}{74}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{74}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{74}
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Regole per lasciare la forchetta }}{75}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{75}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{75}
 \addvspace {10\p@ }

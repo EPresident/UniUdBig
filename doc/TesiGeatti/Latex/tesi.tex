@@ -13,12 +13,31 @@
 \usepackage{amsthm}
 \usepackage{tikz}
 \usepackage{subfigure}
+\usepackage[final]{listings}
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{setspace}
 \usepackage{pbox}
 \usepackage{booktabs, longtable, tabu}
 \usetikzlibrary{shapes, positioning, trees, arrows, shadows, calc, matrix}
+
+%Settings for the Listings package
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 %this only if you like to use some of its features (like smartrefs)
 %\usepackage{theorems}[2003/12/05]
@@ -44,6 +63,9 @@
 %Tikz style
 \definecolor{myGreen}{RGB}{18,142,21}
 \definecolor{myGrey}{RGB}{222,223,222}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
 
 
 \title{Verifica di proprietà locali su BRS}

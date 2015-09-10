@@ -1,4 +1,4 @@
-\chapter{Esempi}\label{ch:examples}
+\chapter{Casi di studio}\label{ch:examples}
 In questo capitolo vedremo degli esempi che riguarderanno principalmente il model checker $MC_{big}$ e la sua logica. Si cambierà spesso dominio, mostrando come i bigrafi siano flessibili per rappresentare vari tipi di sistema.
 
 \section{NFA}\label{sec:nfa}
@@ -39,9 +39,9 @@ L'automa A è una quintupla $(Q,\Sigma,\delta,q_0,F)$, dove:
 	\item
 	$\delta : Q \times \Sigma \to Q$ è la funzione di transizione definita come:
 		\begin{center}
-		$\delta(q_0,a)=q_1$\\
-		$\delta(q_1,a)=q_0$\\
-		$\delta(q_1,b)=q_0$
+		$\delta(q_0,a)=\{q_1\}$\\
+		$\delta(q_1,a)=\{q_0\}$\\
+		$\delta(q_1,b)=\{q_0\}$
 		\end{center}
 	\item
 	$q_0$ è lo stato iniziale
@@ -126,20 +126,20 @@ Il nodo $A$ (Active) indica che lo stato $q_i$ che lo contiene è quello attivo, 
 Infine, lo stato $q_i$ è uno stato finale ($q_i \in F$) se e solo se contiene al suo interno il nodo di tipo $F$ (Final). Queste considerazioni ci portano a definire la segnatura del bigrafo:
 
 \begin{prop}[Segnature per gli NFA]
-La segnatura del bigrafo rappresentante un generico NFA è definita come segue, dove la notazione $Node:n:(active)$ significa che il nodo $Node$ ha $n$ porte ed è $attivo$, cioè può essere modificato dalle regole di reazione:
+La segnatura del bigrafo rappresentante un generico NFA è definita come segue, dove la notazione $Node:n:$ significa che il nodo $Node$ ha $n$ porte:
 \begin{itemize}
 	\item
-	State : 1 : passive
+	State : 1 
 	\item
-	Transition : 2 : passive
+	Transition : 2
 	\item
-	ActiveState : 0 : active
+	ActiveState : 0 
 	\item
-	FinalState : 0 : passive
+	FinalState : 0 
 	\item
-	String : 0 : passive
+	String : 0 
 	\item
-	Input : 3 : active
+	Input : 3 
 \end{itemize}
 \end{prop}
 
@@ -459,54 +459,18 @@ Si noti la semplicità di quest'ultima formula: il nodo di tipo $String$ deve ess
 Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = W_B(T,T,T)$.
 \end{prop}
 
+Infine, si noti come l'automa modellato tramite bigrafi sia \emph{non deterministico}: le transizioni sono modellate tramite regole di reazione che scattano dopo aver trovato un match. Il processo di matching però è per natura non deterministico, il che vuol dire che se nel bigrafo di partenza la regola $R_0$ trova più di un match, allora sceglie uno dei due in maniera non deterministica. Si prenda il bigrafo di figura \ref{fig:bigAutomataProblem}: se si aggiunge nel nodo $q_0$ un'altra transizione collegata all'outername `a' che porta ad un terzo stato $q_2$, allora l'automa diventa non deterministico, perchè la regola $R_0$ troverà sempre due match nel bigrafo e ne sceglierà uno in maniera casuale.
+Riassumendo: nella versione bigrafica, gli automi non deterministici si distinguono da quelli deterministici \emph{solamente} perchè nei primi esiste almeno un nodo che ha due o più archi uscenti con la stessa etichetta.\\
 
 
 Prendiamo l'istanza del problema in figura \ref{fig:bigAutomataProblem}. Seguiremo una traccia d'esecuzione, cioè faremo tutti i passi che fa $MC_{big}$ per verificare la proprietà desiderata. Vedremo come il grafo degli stati sarà molto semplice: questo spesso è un indice di buona progettazione. Vuol dire che il sistema è stato modellato correttamente, scegliendo poche regole ed evitando di costruire regole ad-hoc per casi particolari. Il nostro BRS è formato da una sola regola, il che evita per esempio che in uno stato $S_i$ venga applicata la regola sbagliata creando nodi inutili nel grafo degli stati.
 
 In figura \ref{fig:MCbigTrace}, c'è la traccia d'esecuzione di $MC_{big}$, mentre in \ref{fig:BSGAutomata} c'è il corrispondente grafo degli stati. \\
 
-\begin{figure}[th]
+
+\begin{figure*}[h]
 \centering
-\begin{tikzpicture}
-%\draw[help lines] (0,0) grid (13,5);
-%Nodes
-\draw[thick] (1.5,1.5) circle [radius=0.5];%s0
-\node at (1.5,1.5){$S_0$};
-\draw[thick] (3.5,1.5) circle [radius=0.5];%s1
-\node at (3.5,1.5){$S_1$};
-\draw[thick] (5.5,1.5) circle [radius=0.5];%s2
-\node at (5.5,1.5){$S_2$};
-\draw[thick] (7.5,1.5) circle [radius=0.5];%s3
-\node at (7.5,1.5){$S_3$};
-\draw[thick, red] (9.5,1.5) circle [radius=0.5];%s4
-\node[red] at (9.5,1.5){$S_4$};
-%Edges
-\draw[->, thick] (2.0,1.5) -- (3.0,1.5);%s0-s1
-\draw[->, thick] (4.0,1.5) -- (5.0,1.5);%s1-s2
-\draw[->, thick] (6.0,1.5) -- (7.0,1.5);%s2-s3
-\draw[->, thick] (8.0,1.5) -- (9.0,1.5);%s3-s4
-\end{tikzpicture}
-
-\caption{Grafo degli stati \label{fig:BSGAutomata}}
-\end{figure}
-
-
-
-Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perchè il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perchè il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
-
-Questo esempio è molto importante perchè mostra due aspetti fondamentali:
-\begin{itemize}
-	\item
-	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perchè significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
-	\item
-	il secondo è la generalità della logica per $MC_{big}$: si è espressa una proprietà di uno specifico dominio usando la logica generale creata per il model checker. In questo esempio si è usato il Wario Predicate, che permette di spostarsi all'interno del bigrafo e di verificare se una sua parte esiste e rispetta determinate proprietà. Nel NFA ci è bastato verificare che esistesse la parte denotata dal bigrafo B.
-\end{itemize}
-
-In questo esempio si è potuto apprezzare la comodità del model checker e della sua logica per verificare una generica proprietà, che rappresentano quindi uno strumento generale adatto per ogni BRS.
-
-
-\begin{figure*}[th]
-\centering
+\scalebox{.7}{
 \subfigure[Primo Passo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (14,14);
@@ -603,7 +567,7 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \end{tikzpicture}
 }
 
-\hspace{5mm}
+\hspace{3mm}
 
 \subfigure[Secondo Passo]{
 \begin{tikzpicture}[scale=0.5]
@@ -692,9 +656,13 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \node[above] at (8.0,10.0){b};
 \end{tikzpicture}
 }
+}
+\end{figure*}
 
-\hspace{5mm}
 
+\begin{figure*}[h]
+\centering
+\scalebox{.7}{
 \subfigure[Terzo Passo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (14,14);
@@ -773,11 +741,9 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \node[above] at (8.0,10.0){b};
 \end{tikzpicture}
 }
-\end{figure*}
 
+\hspace{5mm}
 
-\begin{figure*}[th]
-\centering
 \subfigure[Quarto Passo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (14,14);
@@ -848,9 +814,12 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \node[above] at (8.0,10.0){b};
 \end{tikzpicture}
 }
+}
+\end{figure*}
 
-\hspace{5mm}
-
+\begin{figure*}[h]
+\centering
+\scalebox{.7}{
 \subfigure[Quinto Passo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (14,14);
@@ -908,8 +877,392 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \node[above] at (8.0,10.0){b};
 \end{tikzpicture}
 }
+}
 \caption{Traccia d'esecuzione di $MC_{big}$ \label{fig:MCbigTrace}}
 \end{figure*}
+
+
+
+
+Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perchè il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perchè il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=0.5];%s0
+\node at (1.5,1.5){$S_0$};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%s1
+\node at (3.5,1.5){$S_1$};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%s2
+\node at (5.5,1.5){$S_2$};
+\draw[thick] (7.5,1.5) circle [radius=0.5];%s3
+\node at (7.5,1.5){$S_3$};
+\draw[thick, red] (9.5,1.5) circle [radius=0.5];%s4
+\node[red] at (9.5,1.5){$S_4$};
+%Edges
+\draw[->, thick] (2.0,1.5) -- (3.0,1.5);%s0-s1
+\draw[->, thick] (4.0,1.5) -- (5.0,1.5);%s1-s2
+\draw[->, thick] (6.0,1.5) -- (7.0,1.5);%s2-s3
+\draw[->, thick] (8.0,1.5) -- (9.0,1.5);%s3-s4
+\end{tikzpicture}
+
+\caption{Grafo degli stati \label{fig:BSGAutomata}}
+\end{figure}
+
+
+Questo esempio è molto importante perchè mostra due aspetti fondamentali:
+\begin{itemize}
+	\item
+	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perchè significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
+	\item
+	il secondo è la generalità della logica per $MC_{big}$: si è espressa una proprietà di uno specifico dominio usando la logica generale creata per il model checker. In questo esempio si è usato il Wario Predicate, che permette di spostarsi all'interno del bigrafo e di verificare se una sua parte esiste e rispetta determinate proprietà. Nel NFA ci è bastato verificare che esistesse la parte denotata dal bigrafo B.
+\end{itemize}
+
+In questo esempio si è potuto apprezzare la comodità del model checker e della sua logica per verificare una generica proprietà, che rappresentano quindi uno strumento generale adatto per ogni BRS.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Problema dei filosofi a cena}
+In questa sezione si fornisce una codifica in bigrafi del problema dei filosofi a cena, introdotto da Dijkstra nel 1965 per esporre un problema di concorrenza tra processi paralleli.
+
+\begin{prop}[Formulazione del problema]
+Cinque filosofi sono seduti a cena ad una tavola rotonda. Ogni filosofo ha davanti il piatto in cui mangiare e due forchette, una a destra e l'altra a sinistra: per cui nel tavolo sono presenti cinque filosofi, cinque piatti e cinque forchette. Ogni filosofo alterna periodi in cui mangia ad altri in cui pensa. Per mangiare, ha bisogno di entrambe le forchette, ma deve prenderle una per volta. Quando ha finito di mangiare, lascia le forchette e continua a pensare.
+
+Si progetti un algoritmo che eviti il \emph{deadlock} o la \emph{starvation}.
+\end{prop}
+
+Il problema chiede di progettare un algoritmo che eviti queste due situazioni:
+\begin{itemize}
+	\item
+	ogni filosofo ha una forchetta e aspetta l'altra dal suo vicino: la situazioni si trova in uno stato di stallo (\emph{deadlock})
+	\item
+	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perchè non ha mai due forchette, che muore di inedia (\emph{starvation}).
+\end{itemize}
+
+Il problema è una metafora dove i filosofi sono processi paralleli in un calcolatore: il momento in cui devono prendere le forchette corrisponde alla lettura dei dati, che possono per l'appunto essere condivisi tra più processi come le forchette; il momento in cui un filosofo mangia corrisponde al momento in cui un processo consuma i dati che ha appena recuperato. Si vedranno due strategie: la prima causerà una situazione di deadlock, mentre la seconda lo eviterà e sarà una soluzione al problema.
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,6.0) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,4.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (4.0,5.0) -- (4.5,5.0) -- (4.25,5.8) -- (4.0,5.0);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (8.0,5.0) -- (8.5,5.0) -- (8.25,5.8) -- (8.0,5.0);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (8.25,5.7) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (8.25,5.7) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (4.25,5.7) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (4.25,5.7) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Codifica in bigrafi di un'istanza del problema \label{fig:diningPhil}}
+\end{figure}
+
+
+
+Per prima cosa, si definirà come il problema può essere tradotto in bigrafi. Si consideri la figura \ref{fig:diningPhil}: ogni filosofo è rappresentato da un nodo circolare con due porte; si immagini che ogni filosofo sia rivolto verso il centro del tavolo: si ha che la porta a sinistra \emph{dal punto di vista del filosofo} rappresenta la mano sinistra e la chiameremo \emph{porta 0}, mentre la porta a destra rappresenta la mano destra (\emph{porta 1}). Per esempio: la mano sinistra le filosofo $P_1$ è quella collegata a $F_1$, mentre la mano destra è quella collegata a $F_2$.
+
+Le forchette sono rappresentate come nodi triangolari e sono identificate tramite un outername, per esempio $F_4$. Modelliamo il fatto che la forchetta sinistra di un filosofo sia $F_i$ collegando la sua porta 0 all'outername $F_i$. Per esempio: il filosofo $P_4$ ha come forchetta sinistra $F_4$ perchè la sua porta 0 è collegata a questo outername, mentre come forchetta destra $F_5$ perchè la sua porta 1 punta a $F_5$.
+
+Inizialmente tutte le forchette sono posizionate sul tavolo. Modelliamo il fatto che un filosofo $P_i$ abbiamo preso la forchetta $F_k$ spostando quest'ultima all'interno di $P_i$.
+
+\subsection{Prima strategia}
+Tramite la prima strategia, che causa situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo per mangiare debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perchè $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
+
+
+\begin{figure}[th]
+\centering
+\subfigure[Prima Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (2.7,1.5) circle [radius=0.8];%Phil
+\draw[rounded corners=1mm, thick] (0.8,0.5) -- (1.2,0.5) -- (1.0,1.3) -- (0.8,0.5);%Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (1.9,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (3.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.2) to [out=90,in=270] (1.0,3.2);
+\draw[fill] (1.9,1.5) circle [radius=0.05];
+\draw[fill] (3.5,1.5) circle [radius=0.05];
+\draw[fill] (1.0,1.2) circle [radius=0.05];
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (7.7,1.5) circle [radius=0.8];%Phil
+\draw[rounded corners=1mm, thick] (7.6,1.0) -- (8.0,1.0) -- (7.8,1.8) -- (7.6,1.0);%Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (6.9,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (7.8,1.7) to [out=90,in=270] (6.0,3.2);
+\draw[fill] (6.9,1.5) circle [radius=0.05];
+\draw[fill] (8.5,1.5) circle [radius=0.05];
+\draw[fill] (7.8,1.7) circle [radius=0.05];
+
+\end{tikzpicture}
+}
+
+\hspace{3mm}
+
+\subfigure[Seconda Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (0.8,1.0) -- (1.2,1.0) -- (1.0,1.8) -- (0.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (3.0,0.2) -- (3.4,0.2) -- (3.2,1.0) -- (3.0,0.2);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.7) to [out=90,in=270] (1.0,3.2);
+\draw[myGreen,thick] (3.2,0.9) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (1.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (3.2,0.9) circle [radius=0.05];%outer fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (6.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (5.8,1.0) -- (6.2,1.0) -- (6.0,1.8) -- (5.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (6.8,1.0) -- (7.2,1.0) -- (7.0,1.8) -- (6.8,1.0);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (5.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (6.0,1.7) to [out=90,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.0,1.7) to [out=90,in=270] (8.5,3.2);
+\draw[fill] (5.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (7.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (6.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (7.0,1.7) circle [radius=0.05];%inner right fork
+
+\end{tikzpicture}
+}
+\caption{Regole per prendere la forchetta \label{fig:takeFork}}
+\end{figure}
+
+
+
+In figura \ref{fig:takeFork}, ci sono le regole che consentono ad un filosofo di prendere le forchette. Si noti come si debba prendere prima la forchetta sinistra e poi la destra: la seconda regola infatti scatta se e solo se il filosofo possiede già la forchetta sinistra, che a sua volta ha potuto prendere se e solo se non possedeva ancora nessuna forchetta (nella regola \ref{fig:takeFork} non c'è nessun sito dentro il nodo del filosofo).
+
+
+
+
+
+\begin{figure}[th]
+\centering
+\subfigure[Prima Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (0.8,1.0) -- (1.2,1.0) -- (1.0,1.8) -- (0.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (1.8,1.0) -- (2.2,1.0) -- (2.0,1.8) -- (1.8,1.0);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.7) to [out=90,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.0,1.7) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (1.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (2.0,1.7) circle [radius=0.05];%inner right fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (7.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (5.8,0.2) -- (6.2,0.2) -- (6.0,1.0) -- (5.8,0.2);%Right Fork
+\draw[rounded corners=1mm, thick] (7.8,1.0) -- (8.2,1.0) -- (8.0,1.8) -- (7.8,1.0);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (6.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (6.0,0.9) to [out=110,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.0,1.7) to [out=90,in=270] (8.5,3.2);
+\draw[fill] (6.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (8.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (6.0,0.9) circle [radius=0.05];%outer fork
+\draw[fill] (8.0,1.7) circle [radius=0.05];%inner fork
+\end{tikzpicture}
+}
+
+\hspace{3mm}
+
+\subfigure[Seconda Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (1.8,1.0) -- (2.2,1.0) -- (2.0,1.8) -- (1.8,1.0);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (2.0,1.7) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (2.0,1.7) circle [radius=0.05];%inner right fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (6.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (7.8,0.2) -- (8.2,0.2) -- (8.0,1.0) -- (7.8,0.2);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (5.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (8.0,0.9) to [out=60,in=270] (8.5,3.2);
+\draw[fill] (5.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (7.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (8.0,0.9) circle [radius=0.05];%inner right fork
+
+\end{tikzpicture}
+}
+\caption{Regole per lasciare la forchetta \label{fig:dropFork}}
+\end{figure}
+
+
+
+Le regole per lasciare le forchette sono similari: quando un filosofo ha entrambe le forchette significa che ha mangiato e, grazie alla regola \ref{fig:dropFork}.a, lascia prima la forchetta a sinistra, come vuole la nostra strategia. Infine, tramite \ref{fig:dropFork}.b, lascia la forchetta destra.
+
+Queste quattro regole andranno a formare il BRS per il nostro problema. Si noti come un BRS di questo tipo sia particolarmente adatto per il problema della cena tra filosofi: quest'ultimo è infatti un problema di sincronizzazione tra processi paralleli che viene modellato perfettamente dalle regole non deterministiche del BRS. Ogni filosofo decide autonomamente quando incominciare a mangiare: per cui può essere che incominci il terzo filosofo così come il primo. Questa è la stessa situazione in cui si ritrovano le regole: per esempio, in figura \ref{fig:diningPhil} la regola \ref{fig:takeFork}.a trova cinque match e ne sceglie in modo non deterministico uno solo. In altre parole, il BRS modella bene il caso reale in cui i processi decidono di leggere dati autonomamente, senza alcun ordine.
+
+Ora si userà $MC_{big}$ per capire con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è molto semplice:
+\begin{center}
+$\varphi = \lnot T$
+\end{center}
+In altre parole, $MC_{big}$ dovrà costruire l'intero grafo degli stati disinteressandosi delle proprietà: se il grafo è finito, allora c'è sicuramente una situazione di stallo e quindi c'è un deadlock. Altrimenti, i filosofi continuano a mangiare e, dato che la proprietà è False, il model checker continua a generare stati all'infinito.
+
+Si noti come ad ogni passo ogni regola trovi molti match: il grafo degli stati sarà molto grande. Si consideri la figura \ref{fig:diningPhil}: la regola \ref{fig:takeFork}.a può scattare su ognuno dei 5 filosofi; per esempio, ipotizziamo che scatti sul primo filosofo $P_1$. Ora, le possibilità sono molteplici:
+\begin{itemize}
+	\item
+	$P_1$ può prendere anche la forchetta destra: quindi scatta la regola \ref{fig:takeFork}.b
+	\item
+	uno qualsiasi degli altri quattro filosofi può prendere la propria forchetta sinistra: quindi statta la regola \ref{fig:takeFork}.a
+\end{itemize}
+per un totale di 6 stati possibili. Si vede bene come l'\textbf{esplosione combinatoria} aumenti in modo esponenziale in numero di nodi del grafo degli stati.
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+5
+Strategy: Every philosopher takes first the left fork.
+Are deadlocks avoided?	NO
+Number of nodes of the Model Checker:	50
+\end{lstlisting}
+
+Quello mostrato qui sopra è il risultato dell'esecuzione del problema: si è costruito un modulo che costruisse il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi. In seguito, il sistema informa quale strategia si sta adottando. Nella terza riga ritorna il risultato, e nel caso ci sia un deadlock anche il numero di nodi del grafo degli stati.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

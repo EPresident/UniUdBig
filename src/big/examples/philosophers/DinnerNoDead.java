@@ -25,6 +25,7 @@ import big.sim.BreadthFirstSim;
 public class DinnerNoDead {
 	
 	protected BigraphBuilder builder;
+	protected int num_nodes = 0;
 	
 	public DinnerNoDead(){
 		Signature signature = DinnerNoDead.getProblemSignature();
@@ -275,8 +276,22 @@ public class DinnerNoDead {
 		Predicate trueP = new TruePredicate();
 		Predicate falseP = new NotPredicate(trueP);
 		ModelChecker mc = new ModelChecker(new BreadthFirstSim(problem,rules), falseP);
+
+		boolean result = mc.modelCheck();
+		num_nodes = mc.getGraph().getGraphSize();
 		
-		return mc.modelCheck();
+		return result;
+	}
+	
+	/**
+	 * Returns the number of nodes of the state graph used by the model checker
+	 * @return
+	 */
+	public int getGraphSize(){
+		if(num_nodes == 0){
+			throw new RuntimeException("This method must be called after deadlockDanger() ");
+		}
+		return num_nodes;
 	}
 	
 }

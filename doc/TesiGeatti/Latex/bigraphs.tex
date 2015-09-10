@@ -11,7 +11,7 @@ Infine si rimanda all'Appendice A per la descrizione della terminologia usata.
 L'idea fondamentale alla base della loro teoria, è che ogni bigrafo sia composto da due strutture del tutto \emph{indipendenti} sullo \emph{stesso} insieme di nodi.
 Queste due strutture si chiamano \emph{Place Graph} e \emph{Link Graph} e modellano rispettivamente la località e la connessione. 
 
-Nell' introduzione, si è accennato al fatto che i bigrafi sono flessibili e adatti a rappresentare ogni dominio. Questo è possibile grazie al concetto di 
+Nell'introduzione, si è accennato al fatto che i bigrafi sono flessibili e adatti a rappresentare ogni dominio. Questo è possibile grazie al concetto di 
 \emph{segnatura}, che è l'analogo ad una grammatica per un linguaggio.
 
 \begin{define}[Segnatura e Controllo]
@@ -398,7 +398,7 @@ Un place graph
 \begin{center}
 $F=(V_F,ctrl_F,prnt_F) : m\to n$
 \end{center}
-è una tripla avente un' interfaccia interna $m$ ed un' interfaccia esterna $n$, entrambe ordinali finiti.Queste indicano rispettivamente i \emph{siti} e le \emph{radici} del
+è una tripla avente un'interfaccia interna $m$ ed un'interfaccia esterna $n$, entrambe ordinali finiti.Queste indicano rispettivamente i \emph{siti} e le \emph{radici} del
 place graph. F ha un insieme finito $V_F$ di \emph{nodi}, una \emph{control map} $ctrl:V_F \to K$, e una \emph{parent map}
 \begin{center}
 $prnt:m \uplus V_F \to V_F \uplus n$
@@ -406,7 +406,7 @@ $prnt:m \uplus V_F \to V_F \uplus n$
 che è aciclica, cioè se $prnt_{F}^{i}(v)=v$ allora $i=0$.
 \end{define}
 
-Questa definizione formale ricalca ciò che è già stato notato nell' esempio della sottosezione \ref{sub:esempioInit}. Infatti, si noti che il place graph $F$ ha $m$ siti
+Questa definizione formale ricalca ciò che è già stato notato nell'esempio della sottosezione \ref{sub:esempioInit}. Infatti, si noti che il place graph $F$ ha $m$ siti
 ed $n$ radici, entrambi ordinati, che costituiscono rispettivamente la sua interfaccia interna ed esterna.\\
 La funzione $ctrl_F$ associa ad ogni nodo un controllo, cioè un nome. Come già notato, l'equivalente grafico sta nel disegnare con simboli diversi nodi con controllo diverso.
 Infine, la funzione $prnt_F$ associa ad ogni nodo interno o sito il suo genitore, che può essere a sua volta un altro nodo interno o una radice.\\
@@ -428,7 +428,7 @@ Un link graph
 \begin{center}
 $F=(V_F,E_F,ctrl_F,link_F):X \to Y$
 \end{center}
-è una quadrupla avente un' interfaccia interna $X$ ed una interfaccia esterna $Y$, chiamate rispettivamente gli \emph{inner names} e \emph{outer names} del link graph.
+è una quadrupla avente un'interfaccia interna $X$ ed una interfaccia esterna $Y$, chiamate rispettivamente gli \emph{inner names} e \emph{outer names} del link graph.
 F ha un insieme finito $V_F$ di nodi e $E_F$ di archi (\emph{edges}), una \emph{control map} $ctrl:V_F \to K$, e una \emph{link map}:
 \begin{center}
 $link_F: X \uplus P_F \to E_F \uplus Y$
@@ -587,7 +587,7 @@ Il bigrafo della figura \ref{fig:innerOuterBig}, rispettando la notazione, è scr
 %Operazioni sui bigrafi
 \section{Operazioni sui Bigrafi}\label{sec:operations}
 Nelle sezioni precedenti, si è definita formalmente la nozione di bigrafo. Ora, si studiano le varie operazioni possibili, ovvero come ottenere un nuovo bigrafo da
-due bigrafi di partenza. Queste operazioni saranno utili per la prossima sezione, che tratterà dell' algebra dei bigrafi.
+due bigrafi di partenza. Queste operazioni saranno utili per la prossima sezione, che tratterà dell'algebra dei bigrafi.
 
 \subsection{Traduzione di Supporto}
 La prima operazione tratta di come si può ottenere un nuovo bigrafo avendo a disposizione un solo bigrafo base e una funzione biettiva. Si dimostra che applicando
@@ -686,11 +686,11 @@ Si trattano separatamente i casi del place graph e del link graph:
 \end{define}
 
 
-Si noti come l'operazione di composizione \emph{unisca} le interfacce dei due bigrafi, creando un unico bigrafo risultato, cioè un' unica funzione $prnt$ ed un' unica 
+Si noti come l'operazione di composizione \emph{unisca} le interfacce dei due bigrafi, creando un unico bigrafo risultato, cioè un'unica funzione $prnt$ ed un'unica 
 funzione $link$. \\
 
 \subsection{Giustapposizione}
-Si definisce ora un' altra operazione per creare un bigrafo da altri due base. Si chiama \emph{giustapposizione} e consiste nell'affiancare un bigrafo ad un altro. Questa 
+Si definisce ora un'altra operazione per creare un bigrafo da altri due base. Si chiama \emph{giustapposizione} e consiste nell'affiancare un bigrafo ad un altro. Questa 
 operazione è possibile solo se i due bigrafi sono \emph{disgiunti}. Spesso viene anche chiamata \emph{prodotto}.
 
 \begin{define}[Bigrafi disgiunti]
@@ -740,12 +740,12 @@ Tutte queste tre operazioni saranno utili per definire l'algebra dei bigrafi del
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Algebra
-\section{L' algebra dei bigrafi}\label{sec:algebra}
+\section{L'algebra dei bigrafi}\label{sec:algebra}
 In questa sezione verrà illustrato come poter ottenere nuovi bigrafi da bigrafi base tramite le operazioni di composizione, identità e prodotto (giustapposizione). Si definisce
 quindi una vera e propria \emph{algebra} per la teoria dei bigrafi, in cui si dimostra che ogni bigrafo può essere derivato da alcuni bigrafi base. Si incomincia nelle prime
 tre sezioni ad illustrare i bigrafi base su cui si appoggerà l'algebra, ovvero placing, linking e ioni.Infine, si enuncia un importante risultato che è la decomponibilità di
 ogni bigrafo in una sua forma normale.\\
-Si rimanda all' appendice \ref{ch:appA} per i dettagli sulla notazione usata.
+Si rimanda all'appendice \ref{ch:appA} per i dettagli sulla notazione usata.
 
 \subsection{Placing elementari}
 \begin{define}[Placing, Permutazioni, Merge]
@@ -1000,7 +1000,7 @@ Si è ora arrivati al risultato principale: la decomponibilità di ogni bigrafo in
 \emph{bigrafo discreto} (definizione \ref{def:bigrafoDiscreto}) e di \emph{bigrafo primo}.
 
 \begin{define}[Bigrafo primo]
-Un bigrafo si dice \emph{primo} se non ha inner names ed ha un' interfaccia esterna unaria. Esso prende la segue forma: $m \to \langle X \rangle$.
+Un bigrafo si dice \emph{primo} se non ha inner names ed ha un'interfaccia esterna unaria. Esso prende la segue forma: $m \to \langle X \rangle$.
 \end{define}
 
 Un importante esempio di bigrafo primo è $merge_n: n \to 1$, dove $n \ge 0$. L'assenza di inner names nei bigrafi primi è fondamentale: essa assicura che ci sia una
@@ -1054,7 +1054,7 @@ La definizione di un BRS richiede prima la definizione di altri concetti, come q
 Un bigrafo F occorre in un bigrafo G se l'equazione $G = C_1 \circ (F \otimes id_I) \circ C_0$ esiste per qualche interfaccia I e per qualche bigrafo $C_0$ e $C_1$.
 \end{define}
 
-L' identità $id_I$ è importante: consente a $C_1$ di avere figli in $C_0$ e in $F$, e consente a $C_0$ e $C_1$ di condividere link che non riguardano $F$.
+L'identità $id_I$ è importante: consente a $C_1$ di avere figli in $C_0$ e in $F$, e consente a $C_0$ e $C_1$ di condividere link che non riguardano $F$.
 
 Il secondo concetto importante è quello di \emph{regola di reazione}. 
 
@@ -1075,7 +1075,7 @@ reazione possono coinvolgere sia il link graph sia il place graph, come si può v
 Nella figura \ref{fig:buildings} , è rappresentato un bigrafo che indica lo stato di un ambiente. Esso è formato da due costruzioni B (buildings), da quattro stanze R (rooms), da
 cinque agenti A e da quattro computer C. Il bigrafo ha le seguente segnatura: $K = \{A:2, B:1, C:2, R:0\}$.
 
-Il bigrafo rappresenta lo stato dell' ambiente, in cui i cinque agenti A stanno tenendo una video conferenza: gli agenti che stanno partecipando sono collegati dal link $e_0$. 
+Il bigrafo rappresenta lo stato dell'ambiente, in cui i cinque agenti A stanno tenendo una video conferenza: gli agenti che stanno partecipando sono collegati dal link $e_0$. 
 Ogni agente che vuole partecipare deve essere collegato ad un computer. A sua volta i vari computer di una stessa costruzione sono collegati insieme, formando una LAN.\\
 
 
@@ -1133,7 +1133,7 @@ Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsR
 \begin{itemize}
 	\item
 	La prima è la più semplice: un agente può lasciare la video chiamata. Il redex è la parte a sinistra della regola e può matchare qualsiasi agent. I due outername del redex
-	indicano che le porte dell' agent devono essere collegate (prima dello scatto della regola) a zero o più porte. Se l'agent è collegato ad altri in una videochiamata, egli
+	indicano che le porte dell'agent devono essere collegate (prima dello scatto della regola) a zero o più porte. Se l'agent è collegato ad altri in una videochiamata, egli
 	verrà disconnesso, mantenendo però attivo il collegamento al computer: questa informazione è espressa dal reactum, la parte destra della regola.
 	
 	\begin{figure}[!htbp]
@@ -1160,7 +1160,7 @@ Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsR
 	
 	\item
 	La seconda regola prevede di matchare solo gli agent che non sono collegati a nessun computer e che si trova nella loro stessa stanza. Il reactum prevede che 
-	l'agent si ricolleghi a un tale computer. Se ci sono più computer nella stanza, la regola non si esprime su quale computer l' agent si debba ricollegare. Si noti un' 
+	l'agent si ricolleghi a un tale computer. Se ci sono più computer nella stanza, la regola non si esprime su quale computer l'agent si debba ricollegare. Si noti un'
 	importante dettaglio: agent e computer si trovano sotto la stessa radice, e quindi la regola scatta solo se essi si trovano dentro la stessa stanza, o dentro entrambi 
 	dentro lo stesso building.
 	
@@ -1200,7 +1200,7 @@ Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsR
 		
 	\item
 	Mentre le prime due regole modificavano solamente il link graph, questa terza regola agisce anche sul place graph. Essa prevede lo spostamento di un agent in
-	una stanza. Si noti ancora una volta che l' agent e la stanza si trovano sotto la stessa radice. Questo implica che se assumiamo che ogni stanza sia dentro una
+	una stanza. Si noti ancora una volta che l'agent e la stanza si trovano sotto la stessa radice. Questo implica che se assumiamo che ogni stanza sia dentro una
 	costruzione (building), allora questa regola scatta se e solo se l'agent si trova nella stesso building della stanza. In altre parole, non è possibile che un agent fuori
 	da un building entri direttamente in una stanza. Infine, si noti il sito presente sia nel redex che nel reactum: esso rappresenta i parametri della regola. Dentro questo
 	sito ci possono essere altri computer o altri agent. Se si togliesse tale sito dal redex, allora la regola scatterebbe solo se in tale stanza non ci fossero nè computer

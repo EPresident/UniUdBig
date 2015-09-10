@@ -1,6 +1,6 @@
 \select@language {italian}
 \select@language {italian}
-\contentsline {chapter}{\numberline {}Introduzione}{vii}
+\contentsline {chapter}{\numberline {}Introduzione}{ix}
 \contentsline {chapter}{\numberline {1}Bigrafi e BRS}{1}
 \contentsline {section}{\numberline {1.1}Definizione informale di Bigrafo}{1}
 \contentsline {subsection}{\numberline {1.1.1}Esempio}{2}
@@ -12,7 +12,7 @@
 \contentsline {subsection}{\numberline {1.3.1}Traduzione di Supporto}{9}
 \contentsline {subsection}{\numberline {1.3.2}Composizione}{9}
 \contentsline {subsection}{\numberline {1.3.3}Giustapposizione}{11}
-\contentsline {section}{\numberline {1.4}L' algebra dei bigrafi}{12}
+\contentsline {section}{\numberline {1.4}L'algebra dei bigrafi}{12}
 \contentsline {subsection}{\numberline {1.4.1}Placing elementari}{13}
 \contentsline {subsection}{\numberline {1.4.2}Linking elementari}{13}
 \contentsline {subsection}{\numberline {1.4.3}Ioni}{14}
@@ -23,34 +23,38 @@
 \contentsline {subsection}{\numberline {1.5.3}BRS}{21}
 \contentsline {subsection}{\numberline {1.5.4}Esempio}{21}
 \contentsline {chapter}{\numberline {2}Isomorfismo tra bigrafi}{25}
-\contentsline {section}{\numberline {2.1}Esempio:}{25}
+\contentsline {section}{\numberline {2.1}Esempio}{25}
 \contentsline {section}{\numberline {2.2}Formulazione del problema}{26}
-\contentsline {section}{\numberline {2.3}Strategia di soluzione}{27}
-\contentsline {subsection}{\numberline {2.3.1}Esempi}{28}
-\contentsline {section}{\numberline {2.4}Vincoli}{30}
-\contentsline {subsection}{\numberline {2.4.1}Vincoli per il place graph}{30}
-\contentsline {subsection}{\numberline {2.4.2}Vincoli per il link graph}{34}
-\contentsline {subsection}{\numberline {2.4.3}Vincoli di coerenza}{38}
-\contentsline {section}{\numberline {2.5}Grafo degli stati}{40}
-\contentsline {subsection}{\numberline {2.5.1}Esempio}{42}
-\contentsline {section}{\numberline {2.6}Complessit\`a}{45}
-\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{49}
-\contentsline {section}{\numberline {3.1}Model Checker}{49}
-\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{50}
-\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{53}
-\contentsline {subsection}{\numberline {3.2.1}Sintassi}{53}
-\contentsline {subsection}{\numberline {3.2.2}Semantica}{54}
-\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{55}
-\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{56}
-\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{56}
-\contentsline {section}{\numberline {3.4}Esempi}{57}
-\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{57}
-\contentsline {subsection}{\numberline {3.4.2}Router}{58}
-\contentsline {chapter}{\numberline {4}Esempi}{63}
-\contentsline {section}{\numberline {4.1}NFA}{63}
-\contentsline {chapter}{\numberline {}Conclusioni}{73}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{75}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{75}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{75}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{76}
-\contentsline {chapter}{\numberline {}Bibliografia}{77}
+\contentsline {subsection}{\numberline {2.2.1}Complessit\`a}{27}
+\contentsline {section}{\numberline {2.3}Strategia di soluzione}{29}
+\contentsline {subsection}{\numberline {2.3.1}Esempi}{30}
+\contentsline {section}{\numberline {2.4}Vincoli}{32}
+\contentsline {subsection}{\numberline {2.4.1}Vincoli per il place graph}{32}
+\contentsline {subsection}{\numberline {2.4.2}Vincoli per il link graph}{36}
+\contentsline {subsection}{\numberline {2.4.3}Vincoli di coerenza}{40}
+\contentsline {subsection}{\numberline {2.4.4}Implementazione con Choco}{42}
+\contentsline {section}{\numberline {2.5}Benchmarks}{45}
+\contentsline {section}{\numberline {2.6}Grafo degli stati}{46}
+\contentsline {subsection}{\numberline {2.6.1}Esempio}{47}
+\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{51}
+\contentsline {section}{\numberline {3.1}Model Checker}{51}
+\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{52}
+\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{55}
+\contentsline {subsection}{\numberline {3.2.1}Sintassi}{55}
+\contentsline {subsection}{\numberline {3.2.2}Semantica}{56}
+\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{57}
+\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{58}
+\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{58}
+\contentsline {section}{\numberline {3.4}Esempi}{59}
+\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{59}
+\contentsline {subsection}{\numberline {3.4.2}Router}{60}
+\contentsline {chapter}{\numberline {4}Casi di studio}{65}
+\contentsline {section}{\numberline {4.1}NFA}{65}
+\contentsline {section}{\numberline {4.2}Problema dei filosofi a cena}{72}
+\contentsline {subsection}{\numberline {4.2.1}Prima strategia}{74}
+\contentsline {chapter}{\numberline {}Conclusioni}{77}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{79}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{79}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{79}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{80}
+\contentsline {chapter}{\numberline {}Bibliografia}{81}

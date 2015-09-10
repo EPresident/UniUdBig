@@ -1,4 +1,4 @@
-package big.iso.sim;
+package big.iso.benchmark;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import big.iso.Isomorphism;

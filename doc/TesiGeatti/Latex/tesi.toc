@@ -52,9 +52,10 @@
 \contentsline {section}{\numberline {4.1}NFA}{65}
 \contentsline {section}{\numberline {4.2}Problema dei filosofi a cena}{72}
 \contentsline {subsection}{\numberline {4.2.1}Prima strategia}{74}
-\contentsline {chapter}{\numberline {}Conclusioni}{77}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{79}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{79}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{79}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{80}
-\contentsline {chapter}{\numberline {}Bibliografia}{81}
+\contentsline {subsection}{\numberline {4.2.2}Seconda strategia}{79}
+\contentsline {chapter}{\numberline {}Conclusioni}{81}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{83}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{83}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{83}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{84}
+\contentsline {chapter}{\numberline {}Bibliografia}{85}

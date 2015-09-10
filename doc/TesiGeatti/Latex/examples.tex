@@ -936,18 +936,18 @@ In questa sezione si fornisce una codifica in bigrafi del problema dei filosofi 
 \begin{prop}[Formulazione del problema]
 Cinque filosofi sono seduti a cena ad una tavola rotonda. Ogni filosofo ha davanti il piatto in cui mangiare e due forchette, una a destra e l'altra a sinistra: per cui nel tavolo sono presenti cinque filosofi, cinque piatti e cinque forchette. Ogni filosofo alterna periodi in cui mangia ad altri in cui pensa. Per mangiare, ha bisogno di entrambe le forchette, ma deve prenderle una per volta. Quando ha finito di mangiare, lascia le forchette e continua a pensare.
 
-Si progetti un algoritmo che eviti il \emph{deadlock} o la \emph{starvation}.
+Si progetti un algoritmo che eviti \emph{deadlock} o \emph{starvation}.
 \end{prop}
 
 Il problema chiede di progettare un algoritmo che eviti queste due situazioni:
 \begin{itemize}
 	\item
-	ogni filosofo ha una forchetta e aspetta l'altra dal suo vicino: la situazioni si trova in uno stato di stallo (\emph{deadlock})
+	ogni filosofo ha una forchetta e aspetta l'altra dal suo vicino: la situazione si trova in uno stato di stallo (\emph{deadlock})
 	\item
-	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perchè non ha mai due forchette, che muore di inedia (\emph{starvation}).
+	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perchè non ha mai due forchette, morendo di inedia (\emph{starvation}).
 \end{itemize}
 
-Il problema è una metafora dove i filosofi sono processi paralleli in un calcolatore: il momento in cui devono prendere le forchette corrisponde alla lettura dei dati, che possono per l'appunto essere condivisi tra più processi come le forchette; il momento in cui un filosofo mangia corrisponde al momento in cui un processo consuma i dati che ha appena recuperato. Si vedranno due strategie: la prima causerà una situazione di deadlock, mentre la seconda lo eviterà e sarà una soluzione al problema.
+Il problema è una metafora, dove i filosofi sono processi paralleli in un calcolatore: il momento in cui devono prendere le forchette corrisponde alla lettura dei dati, che possono per l'appunto essere condivisi tra più processi come le forchette; il momento in cui un filosofo mangia corrisponde al momento in cui un processo consuma i dati che ha appena recuperato. Si vedranno due strategie: la prima causerà una situazione di deadlock, mentre la seconda lo eviterà e sarà una soluzione al problema.
 
 \begin{figure}[th]
 \centering
@@ -1027,7 +1027,7 @@ Le forchette sono rappresentate come nodi triangolari e sono identificate tramit
 Inizialmente tutte le forchette sono posizionate sul tavolo. Modelliamo il fatto che un filosofo $P_i$ abbiamo preso la forchetta $F_k$ spostando quest'ultima all'interno di $P_i$.
 
 \subsection{Prima strategia}
-Tramite la prima strategia, che causa situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo per mangiare debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perchè $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
+Tramite la prima strategia, che causerà situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo, per riuscire a mangiare, debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perchè $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
 
 
 \begin{figure}[th]
@@ -1119,12 +1119,12 @@ Tramite la prima strategia, che causa situazioni di stallo, vogliamo fare vedere
 
 \end{tikzpicture}
 }
-\caption{Regole per prendere la forchetta \label{fig:takeFork}}
+\caption{Regole per prendere le forchette \label{fig:takeFork}}
 \end{figure}
 
 
 
-In figura \ref{fig:takeFork}, ci sono le regole che consentono ad un filosofo di prendere le forchette. Si noti come si debba prendere prima la forchetta sinistra e poi la destra: la seconda regola infatti scatta se e solo se il filosofo possiede già la forchetta sinistra, che a sua volta ha potuto prendere se e solo se non possedeva ancora nessuna forchetta (nella regola \ref{fig:takeFork} non c'è nessun sito dentro il nodo del filosofo).
+In figura \ref{fig:takeFork}, ci sono le regole che consentono ad un filosofo di prendere le forchette. Si noti come si debba prendere prima la forchetta sinistra e poi la destra: la seconda regola infatti scatta se e solo se il filosofo possiede già la forchetta sinistra, che a sua volta ha potuto prendere se e solo se non possedeva ancora nessuna forchetta (nella regola \ref{fig:takeFork}.a non c'è nessun sito dentro il nodo del filosofo).
 
 
 
@@ -1218,20 +1218,98 @@ In figura \ref{fig:takeFork}, ci sono le regole che consentono ad un filosofo di
 
 \end{tikzpicture}
 }
-\caption{Regole per lasciare la forchetta \label{fig:dropFork}}
+\caption{Regole per lasciare le forchette \label{fig:dropFork}}
 \end{figure}
 
 
 
 Le regole per lasciare le forchette sono similari: quando un filosofo ha entrambe le forchette significa che ha mangiato e, grazie alla regola \ref{fig:dropFork}.a, lascia prima la forchetta a sinistra, come vuole la nostra strategia. Infine, tramite \ref{fig:dropFork}.b, lascia la forchetta destra.
 
-Queste quattro regole andranno a formare il BRS per il nostro problema. Si noti come un BRS di questo tipo sia particolarmente adatto per il problema della cena tra filosofi: quest'ultimo è infatti un problema di sincronizzazione tra processi paralleli che viene modellato perfettamente dalle regole non deterministiche del BRS. Ogni filosofo decide autonomamente quando incominciare a mangiare: per cui può essere che incominci il terzo filosofo così come il primo. Questa è la stessa situazione in cui si ritrovano le regole: per esempio, in figura \ref{fig:diningPhil} la regola \ref{fig:takeFork}.a trova cinque match e ne sceglie in modo non deterministico uno solo. In altre parole, il BRS modella bene il caso reale in cui i processi decidono di leggere dati autonomamente, senza alcun ordine.
+Queste quattro regole andranno a formare il BRS per il nostro problema. Si noti come un BRS di questo tipo sia particolarmente adatto per il problema della cena tra filosofi: quest'ultimo è infatti un problema di sincronizzazione tra processi paralleli che viene modellato perfettamente dalle regole non deterministiche del BRS. Ogni filosofo decide autonomamente quando incominciare a mangiare: per cui può essere che incominci il terzo filosofo così come il primo. Questa è la stessa situazione in cui operano le regole: per esempio, in figura \ref{fig:diningPhil} la regola \ref{fig:takeFork}.a trova cinque match e ne sceglie in modo non deterministico uno solo. In altre parole, il BRS modella bene il caso reale in cui i processi decidono di leggere dati autonomamente, senza che ci sia alcun ordine tra di loro.
 
-Ora si userà $MC_{big}$ per capire con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è molto semplice:
+Ora si userà $MC_{big}$ per capire se con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è una \emph{IsoProperty}:
 \begin{center}
-$\varphi = \lnot T$
+$\varphi =  \pi_G$
 \end{center}
-In altre parole, $MC_{big}$ dovrà costruire l'intero grafo degli stati disinteressandosi delle proprietà: se il grafo è finito, allora c'è sicuramente una situazione di stallo e quindi c'è un deadlock. Altrimenti, i filosofi continuano a mangiare e, dato che la proprietà è False, il model checker continua a generare stati all'infinito.
+dove G è il bigrafo di figura \ref{fig:diningAim}, in cui ogni filosofo $P_i$ contiene solamente la forchetta $F_i$.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,5.3) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,3.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,0.3) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,0.3) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,3.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (3.8,0.8) -- (4.2,0.8) -- (4.0,1.4) -- (3.8,0.8);%F3
+\draw[rounded corners=1mm, thick] (7.8,0.8) -- (8.2,0.8) -- (8.0,1.4) -- (7.8,0.8);%F4
+\draw[rounded corners=1mm, thick] (8.8,3.8) -- (9.2,3.8) -- (9.0,4.4) -- (8.8,3.8);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.3) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.3) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (4.0,1.3) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (4.0,1.3) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (8.0,1.3) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (8.0,1.3) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (9.0,4.3) to [out=40,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (9.0,4.3) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Bigrapfo B: proprietà di stallo \label{fig:diningAim}}
+\end{figure}
+
+
+In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{infinito} perchè le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Quando però trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perchè si è causato un deadlock:
+\begin{prop}
+$MC_{big}$ ritorna False se e solo se esiste almeno una situazione di deadlock.
+\end{prop}
+
+Per convincersi che il bigrafo B rappresenti una situazione di deadlock, si noti come su di esso non si possa applicare più nessuna delle quattro regole: poichè la proprietà è una \emph{IsoProperty}, $MC_{big}$ cerca un nodo che sia uguale a B, cioè a cui non si possano applicare più regole. Un tale nodo del grafo degli stati si chiama \textbf{stato finale}.
 
 Si noti come ad ogni passo ogni regola trovi molti match: il grafo degli stati sarà molto grande. Si consideri la figura \ref{fig:diningPhil}: la regola \ref{fig:takeFork}.a può scattare su ognuno dei 5 filosofi; per esempio, ipotizziamo che scatti sul primo filosofo $P_1$. Ora, le possibilità sono molteplici:
 \begin{itemize}
@@ -1240,28 +1318,224 @@ Si noti come ad ogni passo ogni regola trovi molti match: il grafo degli stati s
 	\item
 	uno qualsiasi degli altri quattro filosofi può prendere la propria forchetta sinistra: quindi statta la regola \ref{fig:takeFork}.a
 \end{itemize}
-per un totale di 6 stati possibili. Si vede bene come l'\textbf{esplosione combinatoria} aumenti in modo esponenziale in numero di nodi del grafo degli stati.
+per un totale di 6 stati possibili. Si vede bene come l'\textbf{esplosione combinatoria} faccia aumentare in modo esponenziale il numero di nodi del grafo degli stati. \\ 
 
 \begin{lstlisting}
 Insert the number of philosophers: 
 5
-Strategy: Every philosopher takes first the left fork.
+
+
+
+STRATEGY: Every philosopher takes first the left fork.
 Are deadlocks avoided?	NO
-Number of nodes of the Model Checker:	50
+Number of nodes of the Model Checker:	93
+
+
+
+STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
+Are deadlocks avoided?	YES
+Number of nodes of the Model Checker:	243
 \end{lstlisting}
 
-Quello mostrato qui sopra è il risultato dell'esecuzione del problema: si è costruito un modulo che costruisse il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi. In seguito, il sistema informa quale strategia si sta adottando. Nella terza riga ritorna il risultato, e nel caso ci sia un deadlock anche il numero di nodi del grafo degli stati.
+Quello mostrato qui sopra è il risultato dell'esecuzione del software, che comprende un modulo che costruisce il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi come in figura \ref{fig:diningPhil}. In seguito, il sistema informa quale strategia si sta adottando: per ora ci interessa solamente la prima strategia. Nella terza riga il software ritorna il risultato (cioè se c'è o non c'è un deadlock), ed infine il numero di nodi del grafo degli stati.
+
+Per verificare che la strategia in uso causa deadlock, con solamente cinque filosofi il model checker ha creato un grafo degli stati con 93 nodi. Questo è il risultato dell'esplosione combinatoria, che causa appunto un aumento esponenziale del numero di nodi che il model checker deve controllare.\\
+
+In questo esercizio si è usato l'isomorfismo con proprietà (\emph{Property Isomorphism}), il cui funzionamento, che è poco differente dal normale algoritmo, viene riportato qui sotto:
+
+\begin{prop}[Property Isomorphism]
+Due nodi costituiscono un match nel Property Isomorphism se e solo se lo fanno nel normale Isomorphism e hanno le stesse proprietà.
+\end{prop}
+
+Nella libreria \emph{JLibbig}, c'è la possibilità di allegare ad ogni nodo delle proprietà. Si sono quindi dati degli identificativi per ogni filosofo ed ogni forchetta. In seguito, si sono usate le regole con proprietà introdotte nella sottosezione \ref{sec:dettImpl} per manterle anche dopo l'esecuzione delle quattro regole viste prima. 
+
+La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di esso il model checker avrebbe riconosciuto come uguali i due bigrafi in figura \ref{fig:isoDinings}, causando un comportamento anomalo nella verifica delle proprietà. 
+
+\begin{figure}[th]
+\centering
+\subfigure[...]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,4.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (4.0,5.0) -- (4.5,5.0) -- (4.25,5.8) -- (4.0,5.0);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.4) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.4) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (4.25,5.7) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (4.25,5.7) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+\end{tikzpicture}
+}
+
+\hspace{1mm}
+
+\subfigure[...]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,6.0) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (8.0,5.0) -- (8.5,5.0) -- (8.25,5.8) -- (8.0,5.0);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (8.25,5.7) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (8.25,5.7) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+\end{tikzpicture}
+}
+\caption{Due bigrafi isomorfi \label{fig:isoDinings}}
+\end{figure}
+
+Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perchè non si esplorerebbero tutte le possibilità
+
+
+\subsection{Seconda strategia}
+Vediamo ora un modo per evitare i deadlock: si enumerino tutte le forchette presenti sul tavolo (nel nostro esempio consideriamo il pedice di $F_i$); per mangiare, ogni filosofo deve prendere per prima la forchetta con indice minore. Una traccia d'esecuzione basata sulla figura \ref{fig:diningPhil} potrebbe essere questa: tutti i filosofi $P_i$ ($i \in \{1,2,3,4\}$) prenderanno la forchetta $F_i$ tranne l'ultimo ($P_5$), che dovrà prendere $F_1$, che ha indice minore; questa forchetta però è già occupata da $P_1$ e quindi $P_5$ dovrà aspettare, lasciando libera $F_5$ che potrà essere utilizzata da $F_4$. Quest'ultimo riuscirà a mangiare e dopo un po' lascerà libera la forchetta $F_4$, che verrà presa da $P_3$, e così via. Infine, quando si libererà $F_1$, anche il filosofo $P_5$ riuscirà a mangiare. Con questa soluzione, si evitano quindi sia i deadlock e le situazioni di starvation.
+
+Le regole sono uguali a quelle della strategia precedente con un'eccezione: si noti come l'ultimo filosofo debba prendere la prima forchetta (quella con indice minore) con la mano destra, mentre la seconda con la sinistra. Quindi si creano altre due regole ad-hoc per l'ultimo filosofo: deve prendere per prima la forchetta destra e per seconda quella sinistra, a differenza di tutti gli altri. La nuova strategia è quindi identica alla prima, modulo l'aggiunta di queste due regole. Il nodo finale viene identificato tramite un controllo $L$ (Last) al suo interno.
+
+Il BRS per questa strategia ha sei regole. La proprietà a verificare resta la stessa: $\varphi = \pi_B$. Si vedrà però che ora $MC_{big}$ non riuscirà ad identificare nessuna situazione di deadlock. 
+
+Prima però si deve precisare un'aspetto importante: si sarebbe tentati di pensare che in assenza di deadlock il model checker continui all'infinito a generare stati. Infatti, se al bigrafo di partenza, che chiameremo $B_1$, applichiamo le quattro regole sempre al filosofo $P_1$, allora quest'ultimo (in ordine):
+\begin{itemize}
+	\item
+	prende la forchetta sinistra
+	\item
+	prende la forchetta destra
+	\item
+	posa la forchetta sinistra
+	\item
+	posa la forchetta destra
+\end{itemize}
+Dopo la quarta regola, si ritorna ad uno stato uguale al primo, che chiameremo $B_2$, e nulla vieta che queste quattro regole continuino ad eseguire all'infinito. Tramite il \emph{PropertyIsomorphism} si riesce ad evitare questa situazione: questo algoritmo riesce infatti a verificare che $B1$ e $B_2$ sono uguali, evitando quindi di tornare ad eseguire tutte le regole.
+
+E' un concetto diverso da quello per cui si è introdotto il \emph{PropertyIsomorphism} nella sezione precedente: ora i due bigrafi $B_21$ e $B_2$ sono uguali anche guardando le proprietà. Questo nuovo tipo di isomorfismo porta quindi molti benefici: grazie ad esso, si è riusciti ad avere \textbf{un grafo degli stati finito per un processo infinito}.
+
+$MC_{big}$ riesce quindi a computare l'intero grafo degli stati e, dato che per ogni suo nodo $S_i$ si ha che $MC,S_i \not \models \varphi$, ritorna True, a significare che la tecnica è priva di situazioni di deadlock o starvation.
+\begin{prop}
+$MC_{big}$ ritorna True se e solo se ogni stato non rappresenta una situazione di deadlock.
+\end{prop}
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+5
 
 
 
+STRATEGY: Every philosopher takes first the left fork.
+Are deadlocks avoided?	NO
+Number of nodes of the Model Checker:	93
 
 
 
+STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
+Are deadlocks avoided?	YES
+Number of nodes of the Model Checker:	243
+\end{lstlisting}
 
 
-
-
-
+Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 243.
 
 
 

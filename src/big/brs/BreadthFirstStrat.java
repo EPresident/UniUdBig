@@ -56,7 +56,7 @@ public class BreadthFirstStrat implements BRSStrategy {
     @Override
     public List<RuleApplication> apply_RA(Bigraph to) {
         LinkedList<RuleApplication> queue = new LinkedList<>();
-        for (RewritingRule r : rules) {
+        for (RewritingRule r : rules){
 	        if(r.getClass().getSimpleName().equals("RewRuleWProps")){
 	            RewRuleWProps rrwp = (RewRuleWProps) r;
 	            if(rrwp.isApplicable(to)){

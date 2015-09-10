@@ -16,17 +16,18 @@
  */
 package big.sim;
 
-import big.brs.BRS;
-import big.brs.BreadthFirstStrat;
-import big.brs.RuleApplication;
-import big.bsg.BSGNode;
-import big.bsg.BigStateGraph;
-import big.prprint.BigPPrinterVeryPretty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import big.brs.BRS;
+import big.brs.BreadthFirstStrat;
+import big.brs.RuleApplication;
+import big.bsg.BSGNode;
+import big.bsg.BigStateGraph;
+import big.iso.Isomorphism;
 
 /**
  * Simulator using a breadth-first approach.
@@ -42,7 +43,14 @@ public class BreadthFirstSim extends Sim {
         nodeQueue = new LinkedList<>();
         nodeQueue.add(bsg.getRoot());
     }
-
+    
+    public BreadthFirstSim(Bigraph big, RewritingRule[] rwrls, Isomorphism iso){
+        super(new BigStateGraph(big,iso), new BRS(new BreadthFirstStrat(), rwrls));
+        nodeQueue = new LinkedList<>();
+        nodeQueue.add(bsg.getRoot());
+    }
+    
+    
     @Override
     public void step() {
         BSGNode node = nodeQueue.pop();

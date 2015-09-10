@@ -1,15 +1,20 @@
 package big.examples.philosophers;
 
+import it.uniud.mads.jlibbig.core.attachedProperties.SharedProperty;
+import it.uniud.mads.jlibbig.core.attachedProperties.SimpleProperty;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
 import it.uniud.mads.jlibbig.core.std.Control;
+import it.uniud.mads.jlibbig.core.std.InstantiationMap;
 import it.uniud.mads.jlibbig.core.std.Node;
 import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
 import it.uniud.mads.jlibbig.core.std.Site;
+import big.iso.PropertyIsomorphism;
 import big.mc.ModelChecker;
+import big.predicate.IsoPredicate;
 import big.predicate.NotPredicate;
 import big.predicate.Predicate;
 import big.predicate.TruePredicate;
@@ -82,7 +87,7 @@ public class DinnerNoDead {
 	 * Rule for taking the left fork
 	 * @return
 	 */
-	private RewritingRule takeFirstFork(){
+	private RewritingRule takeLeftFork(){
 		//Redex
 		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
 		Root root = builder.addRoot();
@@ -109,7 +114,7 @@ public class DinnerNoDead {
 	 * Rule for taking the right fork
 	 * @return
 	 */
-	private RewritingRule takeSecondFork(){
+	private RewritingRule takeRightFork(){
 		//Redex
 		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
 		Root root = builder.addRoot();
@@ -266,22 +271,52 @@ public class DinnerNoDead {
 		Bigraph problem = getProblem(n);
 		
 		RewritingRule[] rules = new RewritingRule[6];
-		rules[0] = takeFirstLast();
-		rules[1] = takeSecondLast();
-		rules[2] = dropLeftFork();
-		rules[3] = dropRightFork();
-		rules[4] = takeFirstFork();
-		rules[5] = takeSecondFork();
+		InstantiationMap map1 = new InstantiationMap(1,0);
+		InstantiationMap map2 = new InstantiationMap(0);
+		rules[0] = new DiningRule(takeLeftFork().getRedex(),takeLeftFork().getReactum(),map2);
+		rules[1] = new DiningRule(takeRightFork().getRedex(),takeRightFork().getReactum(),map2);
+		rules[2] = new DiningRule(dropLeftFork().getRedex(),dropLeftFork().getReactum(),map1);
+		rules[3] = new DiningRule(dropRightFork().getRedex(),dropRightFork().getReactum(),map1);
+		rules[4] = new DiningRule(takeFirstLast().getRedex(),takeFirstLast().getReactum(),map2);
+		rules[5] = new DiningRule(takeSecondLast().getRedex(),takeSecondLast().getReactum(),map2);
 		
-		Predicate trueP = new TruePredicate();
-		Predicate falseP = new NotPredicate(trueP);
-		ModelChecker mc = new ModelChecker(new BreadthFirstSim(problem,rules), falseP);
 
+		PropertyIsomorphism isoP = new PropertyIsomorphism();
+		Predicate atom = new IsoPredicate(getAim(n));
+		ModelChecker mc = new ModelChecker(new BreadthFirstSim(problem,rules,isoP), atom);
+		
 		boolean result = mc.modelCheck();
 		num_nodes = mc.getGraph().getGraphSize();
 		
-		return result;
+		return !result;
 	}
+	
+	
+	private Bigraph getAim(int n){
+		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
+		Root root = builder.addRoot();
+		Node[] nodes = new Node[n];
+		OuterName[] outers = new OuterName[n];
+		for(int i=0; i<n; i++){
+			OuterName fL = builder.addOuterName("F"+i);
+			outers[i] = fL;
+			Node phil = builder.addNode("P", root, fL);
+			phil.attachProperty(new SharedProperty<String>(
+					new SimpleProperty<String>("PhilName", "P_"+i)));
+			nodes[i] = phil;
+			Node fork = builder.addNode("F", phil, fL);
+			fork.attachProperty(new SharedProperty<String>(
+					new SimpleProperty<String>("ForkName", "F_"+i)));
+			if(i>0){
+				builder.relink(fL, nodes[i-1].getPort(1));
+			}
+			if(i==n-1){
+				builder.relink(outers[0], phil.getPort(1));
+			}
+		}
+		return builder.makeBigraph();
+	}
+	
 	
 	/**
 	 * Returns the number of nodes of the state graph used by the model checker

@@ -62,7 +62,11 @@ public class BigStateGraph {
         current = root;
         this.iso = isomorphism;
     }
-
+    
+    public BigStateGraph(Bigraph big, Isomorphism isomorphism ) {
+        this(big, PLACELINK_HASH, isomorphism);
+    }
+    
     public BigStateGraph(Bigraph big) {
         this(big, PLACELINK_HASH, new Isomorphism());
     }

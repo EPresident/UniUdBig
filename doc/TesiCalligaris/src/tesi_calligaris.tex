@@ -16,23 +16,30 @@
 \usepackage{hyperref} % questo va per ultimo
 
 % Teoremi
-\newtheorem{teo}{Teorema}
 \newtheorem*{nota}{Notazione}
 \newtheorem*{dimo}{Dimostrazione}
+
 \theoremstyle{definition}
+\newtheorem{teo}{Teorema}
+\newtheorem{prop}{Proposizione}
+\newtheorem{cor}{Corollario}
 \newtheorem{defi}{Definizione}
 \newtheorem*{term}{Terminologia}
-\newtheorem*{oss}{Osservazione}
+
 \theoremstyle{remark}
+\newtheorem*{oss}{Osservazione}
 
 % Comandi aggiuntivi
-\newcommand{\eqdef}{\stackrel{\text{\tiny def}}{=}} %equal con def sopra
+\newcommand{\eqdef}{\stackrel{\text{\tiny def}}{=}} % equal con def sopra
+\newcommand{\squote}[1]{\textquoteleft#1\textquoteright} % testo tra singlequote
+\newcommand{\dquote}[1]{\textquotedblleft#1\textquotedblright} % testo tra doublequote
 
 % Traduzioni
 %\newtranslation[to=italian]{Section}{Sezione}
 % Direttive
 \renewcommand{\lstlistingname}{Codice}
 \lstset{basicstyle=\small\ttfamily}
+\setlength{\parindent}{0pt}
 \graphicspath{{img/}}
 \makeindex
 
@@ -133,7 +140,11 @@ Un link graph è una tupla $(V,E,ctrl,link):X\rightarrow Y$ dove:
 \end{itemize}
 \end{defi}
 
-\begin{term}[Punti e handle] \foreignlanguage{english}{Inner names} e porte vengono chiamati \emph{punti}; \foreignlanguage{english}{outer names} e archi vengono chiamati \emph{handle} (oppure \emph{link} o \emph{maniglie}).
+\begin{term}[Punti e link] \foreignlanguage{english}{Inner names} e porte vengono chiamati \emph{punti}; \foreignlanguage{english}{outer names} e archi vengono chiamati \emph{link}. Gli archi sono detti \emph{link aperti}, mentre gli outer names sono detti \emph{link chiusi}.
+\end{term}
+
+\begin{term}[Idle]
+Un posto senza figli o un link senza punti è detto \emph{idle}.
 \end{term}
 
 \subsection{Bigrafo}
@@ -156,9 +167,13 @@ Un bigrafo è composto da:
 \end{itemize}
 Che sono strutture ortogonali ed indipendenti. Pertanto, un bigrafo si può definire anche come una coppia $\langle B^P,B^L\rangle$.
 \end{oss}
-\begin{term}
+\begin{term}(Ground, agente)
 Un bigrafo la cui interfaccia interna è vuota viene detto \emph{ground} o \emph{agente}. Ne viene indicata solo l'interfaccia esterna.
 \end{term}
+
+\begin{nota}
+I bigrafi generici vengono indicati con lettere maiuscole ($A$,$B$,$C$,\dots), mentre gli agenti vengono indicati con lettere minuscole ($a$,$b$,$c$,\dots).
+\end{nota}
 
 \subsection{Sorting?}
 % aggiungere sorting?
@@ -258,12 +273,232 @@ Nella giustapposizione tra bigrafi l'interfaccia unità è $\epsilon = \langle 0,\
 \end{oss}
 
 \subsection{Algebra dei bigrafi}
+Ora si mostrerà come i bigrafi possono essere costruiti a partire da bigrafi più piccoli, per via di composizioni, prodotti ed identità.
+Verranno descritti i bigrafi elementari e le loro forme normali.
+
+\begin{defi}[Placing, permutazione, merge]
+Un \emph{placing} ($\phi$) è un bigrafo senza né nodi né link.
+Un placing biiettivo dai siti alle radici (ovvero che per ogni radice ha un solo sito) è una \emph{permutazione} ($\pi$).
+Un placing con una radice ed $n$ siti è denotato con $merge_n$.
+\end{defi}
+
+% aggiungere img placing elementari
+
+Tutte le permutazioni possono essere costruite dalla simmetria elementare $\gamma_{1,1}$; tutti i placings possono essere costruiti a partire da $\gamma_{1,1}$, $1$ e $join$.
+
+\begin{defi}[Linking, sostituzione, chiusura]
+Un \emph{linking} ($\lambda$) è un bigrafo senza posti. I linkings sono generati per composizione, prodotto e identità a partire da \emph{sostituzioni} elementari $y/X$ e \emph{chiusure} elementari $/x:x\to \epsilon$.
+
+% inserire img linkings elementari
+
+Una \emph{sostituzione} ($\sigma$) è il prodotto di sostituzioni elementari; una \emph{chiusura} è il prodotto di chiusure elementari. La sostituzione vuota è $x:\epsilon \to x$. \qed
+\end{defi}
+
+\begin{term}[Rinomina]
+Una sostituzione biiettiva è detta \emph{rinomina} ($\alpha$).
+\end{term}
+
+\begin{prop}[Isomorfismo]
+Isomorfismi tra place graphs e link graphs sono, rispettivamente, permutazioni $\pi$ e rinomine $\alpha$; isomorfismi tra bigrafi sono coppie $\langle \pi,\alpha \rangle$.
+\end{prop}
+
+C'è solo un tipo di bigrafo elementare che introduce nodi:
+\begin{defi}[Ione]
+Per ogni controllo $K : n$, il bigrafo 
+ $K_{\vec{x}}: 1 \to \left< 1 , \{ x_1 , \ldots , x_n \} \right>$ 
+avente un unico nodo $K$ le cui porte sono collegate biiettivamente con $n$ 
+distinti nomi ed un unico sito all'interno di $K$, è detto \emph{ione discreto} (o più semplicemente, \emph{ione}).
+
+% immagine ione
+\end{defi}
+
+\begin{defi}[(Bigrafo) Primo, discreto]
+% controllare traduzione homset
+Un bigrafo \emph{primo} con interfaccia $m\to\langle X\rangle$ è privo di inner names, e ha una sola radice. Un bigrafo (o link graph) è \emph{discreto} se non ha link chiusi, e la sua mappa dei link è biiettiva.  
+\end{defi}
+
+\begin{oss}
+$merge_n:n\to 1$ è un primo importante, in quanto non ha nodi e mappa $n$ siti in una singola radice.
+\end{oss}
+
+\begin{defi}[Atomo, molecola]
+Se il sito di un K-ione discreto è riempito da $1:0\to 1$ (placing elementare), il risultato è un \emph{atomo} discreto $K_{\vec{x}}\circ 1$; se è riempito da un bigrafo discreto $G: I \to \langle 1,Y\rangle$ è una \emph{molecola} discreta $(K_{\vec{x}} \otimes id_Y)\circ G$. 
+
+% immagini
+\end{defi}
+
+\begin{defi}[Occorrenza]
+Un bigrafo $F$ \emph{occorre} in un bigrafo $G$ se l'equazione $C_1 \circ (F \otimes id_I) \circ C_2$ è vera per qualche interfaccia $I$ e bigrafo $C_1$ e $C_2$.
+\end{defi}
+
+\begin{term}[Matching, contesto, parametro] La ricerca dell'occorrenza di un bigrafo $F$ in uno $G$ viene detta \emph{matching}. I risultati del matching vengono chiamati \emph{match}, indicati con  $M = C \circ (F \otimes id_I) \circ D$; $C$ viene detto
+\emph{contesto} mentre $D$ viene chiamato \emph{vettore di parametri} (o, più semplicemente, \emph{parametro}).
+\end{term}
+
+\begin{oss}
+L'identità $id_I$ è importante qua: permette ai nodi di $C_1$ di avere figli in $C_2$ ed $F$, e permette a $C_1$ e $C_2$ di condividere link che non coinvolgono $F$.
+\end{oss}
+
+\begin{prop}[Forma Normale Discreta]
+Ogni bigrafo $G:\left<m,X\right> \to \left<n,Z\right>$
+può essere espresso univocamente, a meno di rinomine su $Y$, come
+\begin{center}
+ $G = (id_n \otimes \lambda) \circ D$
+\end{center}
+dove $\lambda:Y \to Z$ è un linking e $D:\left<m,X\right> \to \left<n,Y\right>$ è discreto.
+Inoltre, ogni bigrafo discreto $D$ può essere fattorizzato univocamente, a meno di permutazione dei siti per ogni fattore, come
+\begin{center}
+ $D = \alpha \otimes ((P_0 \otimes \cdots \otimes P_{n-1}) \circ \pi)$
+\end{center}
+con $\alpha$ un renaming, ogni $P_i$ primo e discreto e $\pi$ una permutazione di tutti i siti.
+\end{prop}
+Si noti che il renaming $\alpha$ è discreto ma non primo, dato che ha $width=0$ e possiede inner names.
+Nel caso in cui il grafo $D$ sia ground, il risultato può essere semplificato come segue:
+\begin{cor}[Forma Normale Discreta per Bigrafi Ground]
+Un bigrafo ground $g:\left<n,Z\right>$ è fattorizzabile in modo univoco, a meno di rinomine su $Y$, come
+\begin{center}
+ $g=(id_n \otimes \lambda) \circ (d_0 \otimes \cdots \otimes d_{n-1})$
+\end{center}
+dove $\lambda : Y \to Z$ sono linking e $d_i$ sono bigrafi discreti e primi.
+\end{cor}
+
+Questa scomposizione di un bigrafo in bigrafi discreti più piccoli è cruciale per dimostrare la completezza
+della teoria algebrica dei bigrafi. %bla bla bla + cite milner
 
 \subsection{Operazioni derivate}
 
-\section{BRS - Sistemi Reattivi Bigrafici}
+\begin{nota} 
+Spesso si omette \squote{$\cdots \otimes id_I$} in una composizione del tipo
+$(F \otimes id_I) \circ G$, dove $F$ non possiede un'interfaccia sufficiente per comporre con $G$. Si scriverà dunque,
+qualora non presenti ambiguità, $F \circ G$.
+Dato un linking $\lambda : Y \to Z$, potremmo volerlo applicare ad un bigrafo $G$ con interfaccia esterna $\left<m,X\right>$
+avente meno nomi, i.e. $Y = X \uplus X^\prime$. Scriveremo allora $\lambda \circ G$ per indicare
+$(id_m \otimes \lambda) \circ (G \otimes X^\prime)$, quando $m$ e $X^\prime$ possono essere capiti dal contesto.
+
+Se $X=\{x_1,\dots,x_n\}$ si scriverà $/X$ per intendere $/x_1 \otimes \dots \otimes x_n$.
+\end{nota}
+
+\begin{defi}[Prodotto parallelo]
+Siano $G_i:\langle m_i,X_i\rangle\to\langle n_i,Y_i\rangle$ ($i=0,1$) due bigrafi i cui supporti sono disgiunti e per cui $link_0\cap link_1$ è una funzione; Allora il loro \emph{prodotto parallelo} %($\parallel$) 
+\begin{center}
+$G_0\parallel G_1\eqdef\langle m_0+m_1,X_0\cup X_1\rangle\to\langle n_0+n_1,Y_0\cup Y_1\rangle$
+\end{center}
+è definito proprio come la giustapposizione, eccetto per il fatto che la mappa dei link permette la condivisione dei nomi.
+\end{defi}
+
+\begin{prop}[Proprietà di $\parallel$]
+Il prodotto parallelo ha la \emph{proprietà associativa}, ovvero $F \parallel ( G \parallel H) = (F \parallel G) \parallel H$, ed ha $id_\epsilon$ come unità; inoltre soddisfa la \emph{proprietà \squote{bifuntoriale}}, se ambo le parti sono definite:
+\begin{center}
+$(F_1 \parallel G_1) \circ (F_0 \parallel G_0) = (F_1 \circ F_0) \parallel (G_1 \circ G_0)$
+\end{center}
+\end{prop}
+\begin{dimo}
+La dimostrazione segue linearmente dalla definizione, una volta notato che la condizione sulle mappe dei link è soddisfatta da una parte se e solo se è soddisfatta anche dall'altra.\qed
+\end{dimo}
+
+\begin{defi}[Annidamento]
+Dati i bigrafi $F:I\to\langle m,X\rangle$ e $G:m\to\langle n,Y\rangle$, il loro \emph{annidamento} $G.F: I \to \langle m,X\cup Y\rangle$ è definito come:
+\begin{center}
+$G.F\eqdef (id_X\parallel G)\circ F$
+\end{center}
+\end{defi}
+% exempio milner
+
+\begin{defi}[Prodotto Merge]
+Il prodotto merge ($|$) di due bigrafi $G_i:\left<m_i,X_i\right> \to \left<n_i,Y_i\right>$ $(i=0,1)$, il cui prodotto parallelo esiste, è definito come:
+\begin{center}
+ $G_0 \mid G_1 = merge_{n_0+n_1} \circ ( G_0 \parallel G_1 ): \left< m_0 + m_1 , X_0 \cup X_1\right> \to \left< 1 , Y_0 \cup Y_1\right>$
+\end{center}
+\end{defi}
+
+\begin{prop}[Proprietà di $\mid$]
+Il prodotto merge gode della \emph{proprietà associativa} e (su bigrafi di larghezza unitaria) ha 1 come unità.
+\end{prop}
+
+\section{Evoluzione dei bigrafi}
+Bla Bla-Bla-Bla Bla, Bla Bla
+
+\begin{defi}[Reazione]
+Una \emph{reazione} $F\to F'$ è una trasformazione da un bigrafo $F$ ad un bigrafo $F^\prime$.
+\end{defi}
+
+\begin{defi}[Segnatura dinamica]
+Una segnatura è detta \emph{dinamica} se associa ad ogni controllo $K$ uno \emph{stato} nell'insieme $\{atomico,attivo,passivo\}$.
+Un K-nodo è detto attivo se il suo controllo è attivo. Le regioni sono sempre attive.
+Un sito è attivo se tutti i suoi antenati nel place graph sono attivi. Un bigrafo è attivo se tutti i suoi siti
+sono attivi.
+\end{defi}
+
+\begin{oss}
+Un K-nodo passivo, e conseguentemente tutti i suoi discendenti, sono inibiti al prendere parte alle reazioni.
+\end{oss}
+
+Definito cosa intendiamo per reazione, ora è necessario formalizzare un modo per rappresentare il \emph{modo} in cui queste reazioni avvengono; ciò viene ottenuto definendo delle \emph{regole di riscrittura}.
+
+\subsection{Regole di riscrittura}
+
+\begin{defi}[Regola di riscrittura]
+Una \emph{regola di riscrittura} $R\to R^\prime$ definisce una reazione $a\to a'$, dove:
+\begin{itemize}
+\item $a = C\circ (R\otimes id_I)\circ d$;
+\item $a'= C\circ (R'\otimes id_I)\circ d$;
+\item $C$ è attivo;
+\item $a$, $a'$ e $d$ sono \emph{ground}(\emph{agenti});
+\item $R$ ed $R'$ hanno una stessa interfaccia $I$.
+\end{itemize}
+$R$ è detto \emph{redex}, $R'$ è detto \emph{reactum}.
+\end{defi}
+
+\begin{oss}
+Il fatto che $R$ e $R^\prime$ debbano avere la stessa interfaccia è un vincolo molto forte:
+infatti non consente di fare, per esempio, la copia del contenuto di un nodo in un altro, o lo scambio
+dei contenuti di due nodi in regioni differenti (mantenendo inalterata la loro posizione).
+\end{oss}
+Per rilassare questo vincolo, si va a definire una mappa tra le interfacce di redex e reactum.
+
+\begin{defi}[Mappa d'istanziazione]
+Siano $R$ ed $R^\prime$ due bigrafi con, rispettivamente, $\left<m,X\right>$ e $\left<m^\prime,X\right>$ come interfacce interne. Una \emph{mappa d'istanziazione} è una funzione
+$\eta : m^\prime \to m$ che mappa siti di $R^\prime$ in siti di $R$.
+\end{defi}
+
+Grazie alle mappe di istanziazione è possibile definire una forma più espressiva di regola di riscrittura.
+
+\begin{defi}[Istanziamento]
+Una \emph{funzione istanza} $\bar{\eta}$, data una mappa d'istanziazione $\eta : m^\prime \to m$, e dato un agente $g:\left<m,X\right>$ la cui Forma Normale Discreta è $g = \lambda \circ ( d_0 \otimes \cdots \otimes d_{m-1} )$, è definita come:
+\begin{center}
+ $\bar{\eta}(g) \eqdef \lambda \circ ( d^\prime_0 \parallel \cdots \parallel d^\prime_{m^\prime - 1} )$, con $d^\prime_i \bumpeq d_{\eta(i)}$.
+\end{center}
+\end{defi}
+
+\begin{defi}[Regola di riscrittura parametrica]
+Una regola di riscrittura $R\to R'$, affiancata da una mappa d'istanziazione $\eta$, è detta \emph{regola di riscrittura parametrica}.
+Dato un \emph{agente} $a$, dove $R$ occorre in $a$, la regola di riscrittura parametrica produce la seguente reazione $a\to a'$, dove:
+\begin{itemize}
+\item $a = C \circ (R \otimes id_I) \circ d$;
+\item $a' = C \circ (R^\prime \otimes id_I) \circ \bar{\eta}(d)$;
+\item $\bar{\eta}$ è la funzione istanza su $\eta$. 
+\end{itemize}
+\end{defi}
+
+\begin{oss} Ogni regola di riscrittura si può scrivere come una regola di riscrittura parametrica che ha come mappa d'istanziazione la funzione identità.
+\end{oss}
+
+\begin{term} Con la locuzione \emph{regola di riscrittura} si indicheranno le regole di riscrittura \emph{parametriche}.
+\end{term}
+
+\subsection{BRS - Sistema Reattivo Bigrafico}
+
+\begin{defi}[Sistema Reattivo Bigrafico]
+Un \emph{Sistema Reattivo Bigrafico} (BRS) è definito attraverso una coppia $(K , \mathcal{R})$, dove $K$  è una segnatura e $\mathcal{R}$ è un insieme di regole
+di riscrittura; pertanto viene indicato con $BG(K,\mathcal{R})$.
+ L'insieme $\mathcal{R}$ è chiuso rispetto all'\emph{equivalenza sul supporto}; ovvero,
+se $R \bumpeq S$ e $R^\prime \bumpeq S^\prime$ e $(R,R^\prime,\eta) \in \mathcal{R}$ per un certo $\eta$, allora $(S,S^\prime,\eta) \in \mathcal{R}$.
+\end{defi}
+
+Pertanto, dato un agente $a$ con segnatura $K$, $BG(K,\mathcal{R})$ permette di calcolare tutti gli agenti $a'$ che si possono ottenere facendo reagire $a$ un numero indeterminato di volte, ovvero gli $a':a\to_* a'$.
 
 
+Nei capitoli a seguire, sarà illustrato un modo di implementare e simulare il BRS, nonché di ottenere tutti gli stati possibili da esso.
 
 % % % % % % % % % % % % % % % % % % % % % % % 
 %			CAP 2							%

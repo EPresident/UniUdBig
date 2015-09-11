@@ -1304,7 +1304,9 @@ dove G è il bigrafo di figura \ref{fig:diningAim}, in cui ogni filosofo $P_i$ co
 \end{figure}
 
 
-In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{infinito} perchè le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Quando però trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perchè si è causato un deadlock:
+In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perchè le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
+
+Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perchè si è causato un deadlock:
 \begin{prop}
 $MC_{big}$ ritorna False se e solo se esiste almeno una situazione di deadlock.
 \end{prop}
@@ -1334,10 +1336,10 @@ Number of nodes of the Model Checker:	93
 
 STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
 Are deadlocks avoided?	YES
-Number of nodes of the Model Checker:	243
+Number of nodes of the Model Checker:	189
 \end{lstlisting}
 
-Quello mostrato qui sopra è il risultato dell'esecuzione del software, che comprende un modulo che costruisce il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi come in figura \ref{fig:diningPhil}. In seguito, il sistema informa quale strategia si sta adottando: per ora ci interessa solamente la prima strategia. Nella terza riga il software ritorna il risultato (cioè se c'è o non c'è un deadlock), ed infine il numero di nodi del grafo degli stati.
+Quello mostrato qui sopra è il risultato dell'esecuzione del software: si è implementato un modulo che costruisce il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi come in figura \ref{fig:diningPhil}. In seguito, il sistema informa quale strategia si sta adottando: per ora ci interessa solamente la prima strategia. Nella riga seguente il software ritorna il risultato (cioè se c'è o non c'è un deadlock), ed infine il numero di nodi del grafo degli stati.
 
 Per verificare che la strategia in uso causa deadlock, con solamente cinque filosofi il model checker ha creato un grafo degli stati con 93 nodi. Questo è il risultato dell'esplosione combinatoria, che causa appunto un aumento esponenziale del numero di nodi che il model checker deve controllare.\\
 
@@ -1487,15 +1489,15 @@ La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di es
 \caption{Due bigrafi isomorfi \label{fig:isoDinings}}
 \end{figure}
 
-Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perchè non si esplorerebbero tutte le possibilità
+Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perchè non si esplorerebbero tutte le possibilità. Si guardi la figura \ref{}: se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
 
 
 \subsection{Seconda strategia}
-Vediamo ora un modo per evitare i deadlock: si enumerino tutte le forchette presenti sul tavolo (nel nostro esempio consideriamo il pedice di $F_i$); per mangiare, ogni filosofo deve prendere per prima la forchetta con indice minore. Una traccia d'esecuzione basata sulla figura \ref{fig:diningPhil} potrebbe essere questa: tutti i filosofi $P_i$ ($i \in \{1,2,3,4\}$) prenderanno la forchetta $F_i$ tranne l'ultimo ($P_5$), che dovrà prendere $F_1$, che ha indice minore; questa forchetta però è già occupata da $P_1$ e quindi $P_5$ dovrà aspettare, lasciando libera $F_5$ che potrà essere utilizzata da $F_4$. Quest'ultimo riuscirà a mangiare e dopo un po' lascerà libera la forchetta $F_4$, che verrà presa da $P_3$, e così via. Infine, quando si libererà $F_1$, anche il filosofo $P_5$ riuscirà a mangiare. Con questa soluzione, si evitano quindi sia i deadlock e le situazioni di starvation.
+Vediamo ora un modo per evitare i deadlock: si enumerino tutte le forchette presenti sul tavolo (nel nostro esempio consideriamo il pedice di $F_i$); per mangiare, ogni filosofo deve prendere per prima la forchetta con indice minore. Una traccia d'esecuzione basata sulla figura \ref{fig:diningPhil} potrebbe essere questa: tutti i filosofi $P_i$ ($i \in \{1,2,3,4\}$) prenderanno la forchetta $F_i$ tranne l'ultimo ($P_5$), che dovrà prendere $F_1$, che ha indice minore; questa forchetta però è già occupata da $P_1$ e quindi $P_5$ dovrà aspettare, lasciando libera $F_5$ che potrà essere utilizzata da $F_4$. Quest'ultimo riuscirà a mangiare e dopo un po' lascerà libera la forchetta $F_4$, che verrà presa da $P_3$, e così via. Infine, quando si libererà $F_1$, anche il filosofo $P_5$ riuscirà a mangiare. Con questa soluzione, si evitano quindi sia i deadlock sia le situazioni di starvation.
 
-Le regole sono uguali a quelle della strategia precedente con un'eccezione: si noti come l'ultimo filosofo debba prendere la prima forchetta (quella con indice minore) con la mano destra, mentre la seconda con la sinistra. Quindi si creano altre due regole ad-hoc per l'ultimo filosofo: deve prendere per prima la forchetta destra e per seconda quella sinistra, a differenza di tutti gli altri. La nuova strategia è quindi identica alla prima, modulo l'aggiunta di queste due regole. Il nodo finale viene identificato tramite un controllo $L$ (Last) al suo interno.
+Le regole sono uguali a quelle della strategia precedente con un'eccezione: si noti come l'ultimo filosofo debba prendere la prima forchetta (quella con indice minore) con la mano destra, mentre la seconda con la sinistra. Quindi si creano altre quattro regole ad-hoc per l'ultimo filosofo: deve prendere per prima la forchetta destra e per seconda quella sinistra, a differenza di tutti gli altri. Lo stesso vale per posare le forchette, per un totale di quattro nuove regole. La nuova strategia è quindi identica alla prima, modulo l'aggiunta di queste quattro regole. Il nodo finale viene identificato tramite un controllo $L$ (Last) al suo interno.
 
-Il BRS per questa strategia ha sei regole. La proprietà a verificare resta la stessa: $\varphi = \pi_B$. Si vedrà però che ora $MC_{big}$ non riuscirà ad identificare nessuna situazione di deadlock. 
+Il BRS per questa strategia ha otto perciò regole. La proprietà da verificare resta la stessa: $\varphi = \pi_B$. Si vedrà però che ora $MC_{big}$ non riuscirà ad identificare nessuna situazione di deadlock. 
 
 Prima però si deve precisare un'aspetto importante: si sarebbe tentati di pensare che in assenza di deadlock il model checker continui all'infinito a generare stati. Infatti, se al bigrafo di partenza, che chiameremo $B_1$, applichiamo le quattro regole sempre al filosofo $P_1$, allora quest'ultimo (in ordine):
 \begin{itemize}
@@ -1508,11 +1510,18 @@ Prima però si deve precisare un'aspetto importante: si sarebbe tentati di pensar
 	\item
 	posa la forchetta destra
 \end{itemize}
-Dopo la quarta regola, si ritorna ad uno stato uguale al primo, che chiameremo $B_2$, e nulla vieta che queste quattro regole continuino ad eseguire all'infinito. Tramite il \emph{PropertyIsomorphism} si riesce ad evitare questa situazione: questo algoritmo riesce infatti a verificare che $B1$ e $B_2$ sono uguali, evitando quindi di tornare ad eseguire tutte le regole.
+Dopo la quarta regola, si ritorna ad uno stato uguale al primo, che chiameremo $B_2$, e nulla vieta che queste quattro regole continuino ad eseguire all'infinito. Tramite il \emph{Property Isomorphism} si riesce ad evitare questa situazione: questo algoritmo riesce infatti a verificare che $B1$ e $B_2$ sono uguali, evitando quindi di tornare ad eseguire tutte le regole. Grazie ad esso, si è riusciti ad avere \textbf{un grafo degli stati finito per un processo infinito}.
 
-E' un concetto diverso da quello per cui si è introdotto il \emph{PropertyIsomorphism} nella sezione precedente: ora i due bigrafi $B_21$ e $B_2$ sono uguali anche guardando le proprietà. Questo nuovo tipo di isomorfismo porta quindi molti benefici: grazie ad esso, si è riusciti ad avere \textbf{un grafo degli stati finito per un processo infinito}.
+Riprendendo quanto detto nella sottosezione precedente sull'\emph{Property Isomorphism}, si ha che esso porta i seguenti benefici:
+\begin{itemize}
+	\item
+	il model checker computa un grafo degli stati \textbf{completo}, senza dimenticare nessuna possibile situazione
+	\item
+	il model checker verifica le proprietà di un processo infinito su un grafo degli stati \textbf{finito}.
+\end{itemize}
 
 $MC_{big}$ riesce quindi a computare l'intero grafo degli stati e, dato che per ogni suo nodo $S_i$ si ha che $MC,S_i \not \models \varphi$, ritorna True, a significare che la tecnica è priva di situazioni di deadlock o starvation.
+
 \begin{prop}
 $MC_{big}$ ritorna True se e solo se ogni stato non rappresenta una situazione di deadlock.
 \end{prop}
@@ -1531,17 +1540,28 @@ Number of nodes of the Model Checker:	93
 
 STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
 Are deadlocks avoided?	YES
-Number of nodes of the Model Checker:	243
+Number of nodes of the Model Checker:	189
 \end{lstlisting}
 
 
-Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 243.
+Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 189. Aumentando il numero di filosofi ci si rende conto dell'andamento esponenziale dell'esplosione.
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+7
 
 
 
+STRATEGY: Every philosopher takes first the left fork.
+Are deadlocks avoided?	NO
+Number of states of the Model Checker:	801
 
 
 
+STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
+Are deadlocks avoided?	YES
+Number of states of the Model Checker:	1701
+\end{lstlisting}
 
 
 

@@ -17,51 +17,25 @@
 package big.brs;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.List;
 
 /**
- * Bigraphic Reactive System. Class for applying a set of rewriting rules to a
- * bigraph.
- *
+ * Class encapsulating the behavior of a BRS, e.g. which rules are applied where,
+ * when, and how many times.
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class BRS {
-
-    private final RewritingRule[] rules;
-    private BRSStrategy strategy;
-
-    public BRS(BRSStrategy ss, RewritingRule[] rs) {
-        rules = rs;
-        strategy = ss;
-        strategy.setRules(rules);
-    }
-
-    public BRSStrategy getStrategy() {
-        return strategy;
-    }
-
-    public void setStrategy(BRSStrategy strategy) {
-        this.strategy = strategy;
-        this.strategy.setRules(rules);
-    }
-
+public interface BRS {
     /**
      * Apply a RewritingRule to (all redex matches within) a Bigraph.
      * @param to Bigraph to match the rule on
      * @return An Iterable with the resulting Bigraph(s)
      */
-    public List<Bigraph> apply(Bigraph to) {
-        return strategy.apply(to);
-    }
-
+    public List<Bigraph> apply(Bigraph to);
     /**
      * Apply a RewritingRule to (all redex matches within) a Bigraph.
      * @param to Bigraph to match the rule on
      * @return An Iterable of RuleApplication objects, i.e. the resulting 
      * Bigraphs paired with the rules that were applied on them.
      */
-    public List<RuleApplication> apply_RA(Bigraph to){
-        return strategy.apply_RA(to);
-    }
+    public List<RuleApplication> apply_RA(Bigraph to);
 }

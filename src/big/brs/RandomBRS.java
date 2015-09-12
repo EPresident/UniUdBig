@@ -21,56 +21,62 @@ import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
- * Applies the rules following a breadth-first approach.
- * This means that, for each node/state, all possible nodes/states (deriving
- * from the application of the rules) are computed.
+ * This BRS chooses an application at random.
+ *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class BreadthFirstStrat implements BRSStrategy {
+public class RandomBRS implements BRS {
 
-    private RewritingRule[] rules;
+    private final RewritingRule[] rules;
+    private final Random randGen;
+    private final int randBound;
 
-    public BreadthFirstStrat() {
-
+    /**
+     * This BRS generates a random integer i, and applies the provided rules;
+     * then the i-th application is selected and returned. If the number of
+     * applications is less than i, the one with the largest index is chosen.
+     *
+     * @param rrs Rewriting Rules this BRS employs.
+     * @param randBound Max bound for the random generation of i.
+     */
+    public RandomBRS(RewritingRule[] rrs, int randBound) {
+        rules = rrs;
+        randGen = new Random();
+        this.randBound = randBound;
     }
 
     @Override
     public List<Bigraph> apply(Bigraph to) {
+        int rand = randGen.nextInt(randBound);
+        int i = 0;
         LinkedList<Bigraph> queue = new LinkedList<>();
         for (RewritingRule r : rules) {
-            //RewRuleWProps rrwp = (RewRuleWProps) r;
             for (Bigraph big : r.apply(to)) {
                 queue.add(big);
+                if (++i >= rand) {
+                    return queue;
+                }
             }
         }
         return queue;
     }
 
     @Override
-    public void setRules(RewritingRule[] rs) {
-        rules = rs;
-    }
-
-    @Override
     public List<RuleApplication> apply_RA(Bigraph to) {
         LinkedList<RuleApplication> queue = new LinkedList<>();
-        for (RewritingRule r : rules){
-	        if(r.getClass().getSimpleName().equals("RewRuleWProps")){
-	            RewRuleWProps rrwp = (RewRuleWProps) r;
-	            if(rrwp.isApplicable(to)){
-	            	for (Bigraph big : rrwp.apply(to)) {
-	            		queue.add(new RuleApplication(big,rrwp));
-	                }
-	            }
-	        }else{
-	        	for (Bigraph big : r.apply(to)) {
-            		queue.add(new RuleApplication(big,r,r.toString()));
+        int rand = randGen.nextInt(randBound);
+        int i = 0;
+        for (RewritingRule r : rules) {
+            for (Bigraph big : r.apply(to)) {
+                queue.add(new RuleApplication(big, r));
+                if (++i >= rand) {
+                    return queue;
                 }
-	        }
+            }
         }
         return queue;
     }
-
 }

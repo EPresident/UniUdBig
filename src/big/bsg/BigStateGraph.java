@@ -90,7 +90,7 @@ public class BigStateGraph {
         for (BSGNode previous : nodes) {
             BSGNode dupNode = findDuplicate(reactum, previous);
             if (dupNode != null) {// Found a duplicate
-                //redex.addLink(dupNode, rewritingRule);
+                redex.addLink(dupNode, rewritingRule);
                 return null;
             }
         }

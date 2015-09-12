@@ -18,6 +18,12 @@ import java.util.List;
 
 import big.rules.RewRuleWProps;
 
+/**
+ * Rule for the "Dining Philosophers" Problem, that conserves all the properties.
+ * 
+ * @author Luca Geatti <geatti.luca@spes.uniud.it>
+ *
+ */
 public class DiningRule extends RewRuleWProps {
 
 	private final static LinkedList<String> auxProperties;
@@ -30,6 +36,10 @@ public class DiningRule extends RewRuleWProps {
 
 	public DiningRule(Bigraph redex, Bigraph reactum, InstantiationMap map) {
 		super(redex, reactum, map);
+	}
+	
+	public DiningRule(Bigraph redex, Bigraph reactum, InstantiationMap map, String name) {
+		super(redex, reactum, map, name);
 	}
 
 	protected List<String> getAuxProperties() {

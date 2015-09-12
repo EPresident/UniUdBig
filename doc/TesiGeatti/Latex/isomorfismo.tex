@@ -1345,7 +1345,7 @@ Da quanto appena visto, l'implementazioni dei vincoli per l'isomorfismo tra bigr
 
 
 \section{Benchmarks}\label{ref:sec:benchmarks}
-Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del problema dell'isomorfismo tra bigrafi. Ora si vedranno dei test (benchmark) volti a misurare le prestazioni dell'algoritmo proposto, cioè la soluzione basata sul \emph{Constraint Programming}. Tutti i test sono stati eseguiti su una macchina con queste caratteristiche:
+Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del problema dell'isomorfismo tra bigrafi. Ora si vedranno dei test (benchmark) volti a misurare le prestazioni dell'algoritmo proposto, basato sul \emph{Constraint Programming}. Tutti i test sono stati eseguiti su una macchina con queste caratteristiche:
 \begin{itemize}
 	\item
 	processore Intel Core i5 a 2.4GHz
@@ -1354,9 +1354,22 @@ Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del
 	\item
 	libreria per il constraint programming: \emph{Choco vs 3.3.1}
 \end{itemize}
-I risultati verranno visualizzati con i \emph{box and whiskers plot}. 
 
-La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto. 
+La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto, per fare in modo che il tempo di risoluzione non dipendesse dalla struttura del bigrafo, che può essere semplice o complessa. I risultati verranno visualizzati con i \emph{box and whiskers plot}; si vedranno due grafici: 
+\begin{itemize}
+	\item
+	il primo rappresenta il \emph{tempo di preparazione} (figura \ref{}): è la misura di quanto l'algoritmo impiega per creare tutte le variabili ed i vincoli
+	\item
+	il secondo rappresenta il \emph{tempo d'esecuzione} (figura \ref{}), cioè quanto tempo impiega la libreria \emph{Choco vs 3.3.1} per risolvere il sistema di equazioni
+\end{itemize}
+Ogni grafico ha sulle ascisse il numero di nodi dell'intero problema: in altre parole, il problema testato in $x=n$ verifica l'isomorfismo tra due bigrafi con $n/2$ nodi ciascuno. Sulle ascisse c'è invece il tempo espresso in secondi. Entrambi i grafici sono in scala logaritmica: l'aumento del numero di nodi causa un esplosione combinatoria tra i due bigrafi, che causano un aumento esponenziale del numero di vincoli e quindi anche del relativo tempo d'esecuzione.
+
+
+
+\begin{tikzpicture} 
+\begin{axis}[ymin=0,ymax=1,enlargelimits=false] 
+\addplot    [blue!80!black,fill=blue,fill opacity=0.5]coordinates{(0,0.1)    (0.1,0.15)  (0.2,0.5)   (0.3,0.62) (0.4,0.56) (0.5,0.58)  (0.6,0.65)  (0.7,0.6) (0.8,0.58) (0.9,0.55)  (1,0.52)}|- (0,0) -- cycle;\addplot    [red,fill=red!90!black,opacity=0.5]coordinates{(0,0.25)   (0.1,0.27)  (0.2,0.24)  (0.3,0.24) (0.4,0.26) (0.5,0.3)   (0.6,0.23)  (0.7,0.2) (0.8,0.15) (0.9,0.1)   (1,0.1)}|- (0,0) -- cycle;\addplot[green!20!black] coordinates    {(0,0.4) (0.2,0.75) (1,0.75)};\end{axis}\end{tikzpicture}
+
 
 
 

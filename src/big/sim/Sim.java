@@ -60,7 +60,7 @@ public abstract class Sim {
      *
      * @return true if the simulation is over.
      */
-    public abstract boolean simOver();
+    public abstract boolean simOver() throws UnsupportedOperationException;
 
     /**
      * Computes the entire state graph.

@@ -18,8 +18,7 @@ package big.sim;
 
 import big.bsg.BigStateGraph;
 import big.bsg.BSGNode;
-import big.brs.BRS;
-import big.brs.BreadthFirstStrat;
+import big.brs.BreadthFirstBRS;
 import big.brs.RuleApplication;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
@@ -28,8 +27,8 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Choose an execution path (pseudo)randomly. This strategy has no way of 
- * telling when all possible states have been generated. It just follows one 
+ * Choose an execution path (pseudo)randomly. This strategy has no way of
+ * telling when all possible states have been generated. It just follows one
  * path until no rules can be applied (i.e. a leaf is reached in the BSG).
  *
  * @author EPresident <prez_enquiry@hotmail.com>
@@ -40,64 +39,79 @@ public class TrueRandomSim extends Sim {
     private BSGNode currentNode;
 
     public TrueRandomSim(Bigraph big, RewritingRule[] rwrls) {
-        super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+        super(new BigStateGraph(big), new BreadthFirstBRS(rwrls));
         currentNode = bsg.getRoot();
         randomGen = new Random();
     }
 
-    public TrueRandomSim(Bigraph big, RewritingRule[] rwrls, long seed) {
-        super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+    public TrueRandomSim(Bigraph big, RewritingRule[] rwrls, int randBound, long seed) {
+        super(new BigStateGraph(big), new BreadthFirstBRS(rwrls));
         currentNode = bsg.getRoot();
         randomGen = new Random(seed);
     }
 
     @Override
     public void step() {
-        List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
-        int size = ras.size();
-        if (size > 0) {
-            int rand = randomGen.nextInt(size - 1);
-            RuleApplication ra = ras.get(rand);
-            BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRuleName(), ra.getBig());
-            if (newNode != null) {
-                currentNode = newNode;
+        if (currentNode != null) {
+            List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
+            int size = ras.size();
+            if (size > 0) {
+                int rand = randomGen.nextInt(size - 1);
+                if (rand == 0) {
+                    rand++;
+                }
+                RuleApplication ra = ras.get(rand);
+                BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRule(), ra.getBig());
+                if (newNode != null) {
+                    currentNode = newNode;
+                }
+            } else {
+                currentNode = null;
             }
         } else {
-            currentNode = null;
+            System.err.println("Null state!");
         }
     }
 
     @Override
     public List<RuleApplication> stepAndGet() {
-        List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
-        int size = ras.size();
-        if (size > 0) {
-            int rand = randomGen.nextInt(size - 1);
-            RuleApplication ra = ras.get(rand);
-            BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRuleName(), ra.getBig());
-            if (newNode != null) {
-                currentNode = newNode;
+        if (currentNode != null) {
+            List<RuleApplication> ras = brs.apply_RA(currentNode.getState());
+            int size = ras.size();
+            if (size > 0) {
+                int rand = randomGen.nextInt(size - 1);
+                if (rand == 0) {
+                    rand++;
+                }
+                RuleApplication ra = ras.get(rand);
+                BSGNode newNode = bsg.applyRewritingRule(currentNode, ra.getRule(), ra.getBig());
+                if (newNode != null) {
+                    currentNode = newNode;
+                    LinkedList<RuleApplication> ret = new LinkedList<>();
+                    ret.add(ra);
+                    return ret;
+                }
             }
-            LinkedList<RuleApplication> ret = new LinkedList<>();
-            ret.add(ra);
-            return ret;
-        } else {
             currentNode = null;
             return new LinkedList<>();
         }
+        System.err.println("Null State!");
+        return new LinkedList<>();
     }
 
     @Override
     public boolean simOver() {
-        return currentNode == null;
+        throw new UnsupportedOperationException("This Sim can't tell when all "
+                + "states have been generated.");
     }
-    
+
     /**
      * Gets the state computed in the last step() or stepAndGet() call.
+     *
      * @return A Bigraph representing the current state, or null.
      */
-    public Bigraph getCurrentState(){
-        if(currentNode != null){
+    public Bigraph getCurrentState() {
+        if (currentNode != null) {
             return currentNode.getState();
         }
         return null;

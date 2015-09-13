@@ -18,9 +18,7 @@ package big.sim;
 
 import big.bsg.BigStateGraph;
 import big.bsg.BSGNode;
-import big.brs.BRS;
 import big.brs.RuleApplication;
-import big.brs.BreadthFirstStrat;
 import big.net.Utils;
 import big.prprint.BigPPrinterVeryPretty;
 import big.bsg.BSGNode.BSGLink;
@@ -45,7 +43,6 @@ public class SimTest {
         BigPPrinterVeryPretty pp = new BigPPrinterVeryPretty();
         System.out.println(pp.prettyPrint(bigraph, "Bigrafo iniziale"));
         RewritingRule[] rules = Utils.getNetFWRules();
-        BRS brs = new BRS(new BreadthFirstStrat(), rules);
         Sim sim = new BreadthFirstSim(bigraph, rules);
 
         //System.out.println(BigStateGraph.areIsomorph(bigraph, new BigraphBuilder(bigraph).makeBigraph()));
@@ -90,7 +87,7 @@ public class SimTest {
                 System.err.println("Expected a number as input: " + nfex.getMessage());
                 System.exit(1);
             }
-            prName = links.get(choice).rewRule;
+            prName = links.get(choice).rewRule.getClass().getSimpleName();
             currentNode = links.get(choice).destNode;
             links = currentNode.getLinks();
         }

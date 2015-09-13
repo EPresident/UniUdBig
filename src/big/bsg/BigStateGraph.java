@@ -51,12 +51,13 @@ public class BigStateGraph {
      */
     private BigHashFunction hashFunc;
     public static final BigHashFunction PLACE_HASH = new PlaceGraphBHF(),
-            PLACELINK_HASH = new PlaceLinkBHF();
+            PLACELINK_HASH = new PlaceLinkBHF(), CARD_HASH = new CardinalityBHF();
     private final Isomorphism iso;
     /**
      * Tells if the graph is acyclic or not.
      */
     private final boolean acyclic;
+    private int collisions = 0;
 
     public BigStateGraph(Bigraph big, boolean acyclic, BigHashFunction bhf,
             Isomorphism isomorphism, int hashCapacity) {
@@ -70,11 +71,15 @@ public class BigStateGraph {
     }
 
     public BigStateGraph(Bigraph big, Isomorphism isomorphism) {
-        this(big, false, PLACELINK_HASH, isomorphism, 100);
+        this(big, true, PLACELINK_HASH, isomorphism, 100);
+    }
+
+    public BigStateGraph(Bigraph big, boolean acyclic) {
+        this(big, acyclic, PLACELINK_HASH, new Isomorphism(), 100);
     }
 
     public BigStateGraph(Bigraph big) {
-        this(big, false, PLACELINK_HASH, new Isomorphism(), 100);
+        this(big, true, PLACELINK_HASH, new Isomorphism(), 100);
     }
 
     /**
@@ -90,11 +95,11 @@ public class BigStateGraph {
      * duplicate.
      */
     public BSGNode applyRewritingRule(BSGNode redex, RewritingRule rewRule, Bigraph reactum) {
-        // Generate a new state, build links
-        BSGNode newNode = new BSGNode(reactum, hashFunc.bigHash(reactum));
-        if (nodes.containsKey(newNode.getHashCode())) {
+        int hash = hashFunc.bigHash(reactum);
+        BSGNode newNode = new BSGNode(reactum, hash);
+        if (nodes.containsKey(hash)) {
             // Possible duplicate found
-            BSGNode dupNode = nodes.get(newNode.getHashCode());
+            BSGNode dupNode = nodes.get(hash);
             // Check isomorphism
             if (iso.areIsomorph(newNode.getState(), dupNode.getState())) {
                 if (!acyclic) {
@@ -104,7 +109,7 @@ public class BigStateGraph {
                 return null;
             }
         } else {
-            nodes.put(newNode.hashCode(), newNode);
+            nodes.put(hash, newNode);
             redex.addLink(newNode, rewRule);
         }
 
@@ -114,8 +119,8 @@ public class BigStateGraph {
     public BSGNode getRoot() {
         return root;
     }
-    
-    public boolean isAcyclic(){
+
+    public boolean isAcyclic() {
         return acyclic;
     }
 

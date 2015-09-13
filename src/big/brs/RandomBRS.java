@@ -24,6 +24,8 @@ import java.util.Random;
 
 /**
  * This BRS chooses an application at random.
+ * 
+ * TODO add dynamic bound adjustment
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */

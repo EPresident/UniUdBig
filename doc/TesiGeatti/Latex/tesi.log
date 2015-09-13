@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  12 SEP 2015 13:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  13 SEP 2015 18:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1010,12 +1010,12 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 5.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-]
+] [2]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page ii undefined on input
- line 60.
+LaTeX Warning: Reference `sec:operazioniDerivate' on page iii undefined on inpu
+t line 63.
 
-[2])
+)
 \tf@toc=\write4
 \openout4 = `tesi.toc'.
 
@@ -1351,7 +1351,40 @@ Underfull \hbox (badness 10000) in paragraph at lines 1344--1345
 
 LaTeX Warning: Reference `' on page 80 undefined on input line 1492.
 
-[80] [81] [82]) [83] [84
+[80] [81] [82] [83]
+Underfull \hbox (badness 10000) in paragraph at lines 1964--1965
+
+ []
+
+[84]
+
+LaTeX Warning: Text page 85 contains only floats.
+
+
+Overfull \vbox (2.15324pt too high) has occurred while \output is active []
+
+
+[85] [86]
+Underfull \hbox (badness 10000) in paragraph at lines 1966--1967
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1968--1969
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2070--2071
+
+ []
+
+[87] [88]
+Underfull \hbox (badness 10000) in paragraph at lines 2072--2073
+
+ []
+
+) [89] [90
 
 
 ]
@@ -1359,26 +1392,26 @@ LaTeX Warning: Reference `' on page 80 undefined on input line 1492.
 
  (./conclusions.tex
 Conclusioni.
-) [85
+) [91
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [86
+ (./appendix.tex [92
 
 
 
 ]
 Appendice A.
-[87]
+[93]
 
-LaTeX Warning: Reference `sec:operazioniDerivate' on page 88 undefined on input
+LaTeX Warning: Reference `sec:operazioniDerivate' on page 94 undefined on input
  line 28.
 
-) [88] (./tesi.bbl
+) [94] (./tesi.bbl
 Bibliografia.
-) [89
+) [95
 
 
 
@@ -1392,10 +1425,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 28922 strings out of 493091
- 697180 string characters out of 6134965
- 884920 words of memory out of 5000000
- 31812 multiletter control sequences out of 15000+600000
+ 28977 strings out of 493091
+ 698380 string characters out of 6134965
+ 887040 words of memory out of 5000000
+ 31867 multiletter control sequences out of 15000+600000
  15875 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,11n,102p,949b,1804s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1423,10 +1456,10 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (105 pages, 724573 bytes).
+Output written on tesi.pdf (111 pages, 748096 bytes).
 PDF statistics:
- 472 PDF objects out of 1000 (max. 8388607)
- 319 compressed objects within 4 object streams
+ 492 PDF objects out of 1000 (max. 8388607)
+ 333 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

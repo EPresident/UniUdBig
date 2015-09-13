@@ -110,4 +110,14 @@
 \contentsline {figure}{\numberline {4.13}{\ignorespaces Due bigrafi isomorfi }}{80}
 \contentsline {subfigure}{\numberline {(a)}{\ignorespaces {...}}}{80}
 \contentsline {subfigure}{\numberline {(b)}{\ignorespaces {...}}}{80}
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Bigrafo per il problema della sicurezza dell'azienda }}{85}
+\contentsline {figure}{\numberline {4.15}{\ignorespaces regola per l'entrata in una stanza ($R_0$)}}{85}
+\contentsline {figure}{\numberline {4.16}{\ignorespaces regola per l'uscita da una stanza ($R_1$)}}{85}
+\contentsline {figure}{\numberline {4.17}{\ignorespaces regola per il collegamento ad un computer ($R_2$)}}{86}
+\contentsline {figure}{\numberline {4.18}{\ignorespaces regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)}}{86}
+\contentsline {figure}{\numberline {4.19}{\ignorespaces regola per iniziare una connessione tra due smartphones ($R_4$)}}{86}
+\contentsline {figure}{\numberline {4.20}{\ignorespaces regola per trasferire un Token fra due smartphones ($R_5$)}}{87}
+\contentsline {figure}{\numberline {4.21}{\ignorespaces Applicazione delle regola $R_0$,$R_2$ e $R_3$ }}{88}
+\contentsline {figure}{\numberline {4.22}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{88}
+\contentsline {figure}{\numberline {4.23}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{89}
 \addvspace {10\p@ }

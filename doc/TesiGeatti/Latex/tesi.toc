@@ -53,9 +53,12 @@
 \contentsline {section}{\numberline {4.2}Problema dei filosofi a cena}{74}
 \contentsline {subsection}{\numberline {4.2.1}Prima strategia}{76}
 \contentsline {subsection}{\numberline {4.2.2}Seconda strategia}{81}
-\contentsline {chapter}{\numberline {}Conclusioni}{85}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{87}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{87}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{87}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{88}
-\contentsline {chapter}{\numberline {}Bibliografia}{89}
+\contentsline {section}{\numberline {4.3}Politiche di sicurezza}{83}
+\contentsline {subsection}{\numberline {4.3.1}Segnatura}{84}
+\contentsline {subsection}{\numberline {4.3.2}Prima politica}{84}
+\contentsline {chapter}{\numberline {}Conclusioni}{91}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{93}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{93}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{93}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{94}
+\contentsline {chapter}{\numberline {}Bibliografia}{95}

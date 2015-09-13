@@ -49,16 +49,18 @@ public class PlaceLinkBHF implements BigHashFunction {
         }
 
         for(Edge e: big.getEdges()){
+            int val=1;
             hash+=1;
             for(Point p: e.getPoints()){
-                hash+=1;
+                hash+=val++;
             }
         }
         
         for(OuterName o: big.getOuterNames()){
+            int val=1;
             hash+=1;
             for(Point p: o.getPoints()){
-                hash+=1;
+                hash+=val++;
             }
         }
         

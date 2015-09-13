@@ -39,7 +39,7 @@ public class BigStateGraph {
     /**
      * Nodes of the graph.
      */
-    private final HashMap<Integer, BSGNode> nodes;
+    private final HashMap<Integer, LinkedList<BSGNode>> nodes;
     private final BSGNode root;
     /**
      * Last node added to the graph.
@@ -63,8 +63,12 @@ public class BigStateGraph {
             Isomorphism isomorphism, int hashCapacity) {
         hashFunc = bhf;
         root = new BSGNode(big, hashFunc.bigHash(big));
-        nodes = new HashMap<>(hashCapacity);
-        nodes.put(root.getHashCode(), root);
+        /*nodes = new HashMap<>(hashCapacity);
+         nodes.put(root.getHashCode(), root);*/
+        nodes = new HashMap<>();
+        LinkedList<BSGNode> bucket = new LinkedList<>();
+        bucket.add(root);
+        nodes.put(root.getHashCode(), bucket);
         lastAdded = root;
         this.iso = isomorphism;
         this.acyclic = acyclic;
@@ -99,17 +103,23 @@ public class BigStateGraph {
         BSGNode newNode = new BSGNode(reactum, hash);
         if (nodes.containsKey(hash)) {
             // Possible duplicate found
-            BSGNode dupNode = nodes.get(hash);
+            LinkedList<BSGNode> bucket = nodes.get(hash);
             // Check isomorphism
-            if (iso.areIsomorph(newNode.getState(), dupNode.getState())) {
-                if (!acyclic) {
-                    // Cycle link
-                    redex.addLink(dupNode, rewRule);
+            for (BSGNode bsgn : bucket) {
+                if (iso.areIsomorph(newNode.getState(), bsgn.getState())) {
+                    if (!acyclic) {
+                        // Cycle link
+                        redex.addLink(bsgn, rewRule);
+                    }
+                    return null;
                 }
-                return null;
             }
+            // Hash collision but no isomorphism
+            bucket.add(newNode);
         } else {
-            nodes.put(hash, newNode);
+            LinkedList<BSGNode> bucket = new LinkedList<>();
+            bucket.add(newNode);
+            nodes.put(hash, bucket);
             redex.addLink(newNode, rewRule);
         }
 
@@ -138,7 +148,13 @@ public class BigStateGraph {
     }
 
     public List<BSGNode> getNodes() {
-        return new ArrayList<>(nodes.values());
+        LinkedList<BSGNode> llist = new LinkedList<>();
+        for(LinkedList<BSGNode> ns : nodes.values()){
+            if(ns!=null){
+                llist.addAll(ns);
+            }
+        }
+        return llist;
     }
 
     /**

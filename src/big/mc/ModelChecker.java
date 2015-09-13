@@ -3,6 +3,7 @@ package big.mc;
 import big.brs.RuleApplication;
 import big.bsg.BigStateGraph;
 import big.predicate.Predicate;
+import big.prprint.BigPPrinterVeryPretty;
 import big.sim.Sim;
 
 /**
@@ -71,4 +72,5 @@ public class ModelChecker {
 	public BigStateGraph getGraph(){
 		return sim.getGraph();
 	}
+	
 }

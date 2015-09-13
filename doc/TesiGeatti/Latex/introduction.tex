@@ -11,13 +11,9 @@ disposizione un Sistema Reattivo Bigrafico. \\
 
 Questa tesi tratta il problema di come poter sapere se un dato BRS rispetti certe proprietà. Per esempio: se rappresentiamo una rete con un BRS, ci possiamo chiedere se, 
 dato uno stato iniziale in cui il pacchetto parte dal mittente A, esso arrivi o meno al destinatario B che si trova a vari router di distanza da A.
-Oppure, cambiando dominio del problema, ci possiamo domandare se, data una configurazione iniziale del gioco della vita, il giocatore X possa vincere ed entro quante
-mosse.
+Oppure, cambiando dominio del problema, ci possiamo domandare se un automa rappresentato tramite bigrafi riconosca o meno una data stringa.\\
 
-Nei precedenti due casi, le proprietà da verificare sono rispettivamente l'arrivo a destinazione del pacchetto e la condizione di vincita al gioco della vita.\\
-
-
-Il problema affrontato in questa sede prescinde quindi dal particolare dominio del problema, ed offre una soluzione generale, cioè valida per qualsiasi BRS.
+Il problema affrontato in questa sede prescinde quindi dal particolare dominio del problema, ed offre una soluzione generale, valida per qualsiasi BRS.
 Per fare questo, si sono dovute affrontare varie problematiche. Tra le più importanti figurano:
 \begin{itemize}
   \item
@@ -26,7 +22,7 @@ Per fare questo, si sono dovute affrontare varie problematiche. Tra le più impor
   è arrivato.
   \item
   come rappresentare le proprietà da verificare nel BRS? In particolare, posso rappresentare con un solo formalismo vari tipi di proprietà, dall'arrivo a destinazione di
-  un pacchetto alla condizione di vincita di un gioco?
+  un pacchetto al riconoscimento di una stringa?
   Il problema maggiore è il fatto che il modo per rappresentarle deve essere generale tanto quanto i BRS. In
   sostanza si è scelto un modo che astraesse ancora una volta dal dominio scelto. \\ \\
 \end{itemize}

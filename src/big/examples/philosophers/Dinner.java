@@ -14,7 +14,10 @@ import it.uniud.mads.jlibbig.core.std.Signature;
 import big.iso.PropertyIsomorphism;
 import big.mc.ModelChecker;
 import big.predicate.IsoPredicate;
+import big.predicate.NotPredicate;
 import big.predicate.Predicate;
+import big.predicate.TruePredicate;
+import big.rules.LabelledRule;
 import big.sim.BreadthFirstSim;
 
 /**
@@ -28,6 +31,9 @@ public class Dinner {
 	
 	protected BigraphBuilder builder;
 	protected int num_nodes = 0;
+	protected int nodesN;
+	protected RewritingRule[] rulesP;
+	
 	
 	public Dinner(){
 		Signature signature = Dinner.getProblemSignature();
@@ -56,6 +62,25 @@ public class Dinner {
 		return this.builder.getSignature();
 	}
 	
+	
+
+	/**
+	 * Return the SAME model checker used for computing the graph.
+	 * @return
+	 */
+	public ModelChecker getMC(){
+		Bigraph building = getProblem(nodesN);
+		
+		Predicate trueP = new TruePredicate();
+		Predicate falseP = new NotPredicate(trueP); //Necessary to compute the entire graph.
+		ModelChecker modelC = new ModelChecker(new BreadthFirstSim(building, rulesP), falseP);
+		
+		modelC.modelCheck();
+		
+		return modelC;
+	}
+	
+	
 	/**
 	 * Creates the problem, that is the philosophers and the forks.
 	 * @param n
@@ -70,11 +95,11 @@ public class Dinner {
 			outers[i] = fL;
 			Node phil = builder.addNode("P", root, fL);
 			phil.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("PhilName", "P_"+i)));
+					new SimpleProperty<String>("PhilName", "P_"+(i+1))));
 			nodes[i] = phil;
 			Node fork = builder.addNode("F", root, fL);
 			fork.attachProperty(new SharedProperty<String>(
-					new SimpleProperty<String>("ForkName", "F_"+i)));
+					new SimpleProperty<String>("ForkName", "F_"+(i+1))));
 			if(i>0){
 				builder.relink(fL, nodes[i-1].getPort(1));
 			}
@@ -117,7 +142,7 @@ public class Dinner {
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_left_fork");
 	}
 	
 	
@@ -158,7 +183,7 @@ public class Dinner {
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_right_fork");
 	}
 	
 	
@@ -199,7 +224,7 @@ public class Dinner {
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "drop_left_fork");
 	}
 	
 	/**
@@ -233,7 +258,7 @@ public class Dinner {
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "drop_right_fork");
 	}
 	
 	/**
@@ -247,11 +272,11 @@ public class Dinner {
 		
 		RewritingRule[] rules = new RewritingRule[4];
 		InstantiationMap map = new InstantiationMap(0);
-		rules[0] = new DiningRule(takeLeftFork().getRedex(),takeLeftFork().getReactum(),map);
-		rules[1] = new DiningRule(takeRightFork().getRedex(),takeRightFork().getReactum(),map);
-		rules[2] = new DiningRule(dropLeftFork().getRedex(),dropLeftFork().getReactum(),map);
-		rules[3] = new DiningRule(dropRightFork().getRedex(),dropRightFork().getReactum(),map);
-		
+		rules[0] = new DiningRule(takeLeftFork().getRedex(),takeLeftFork().getReactum(),map, "take_left_fork");
+		rules[1] = new DiningRule(takeRightFork().getRedex(),takeRightFork().getReactum(),map, "take_right_fork");
+		rules[2] = new DiningRule(dropLeftFork().getRedex(),dropLeftFork().getReactum(),map, "drop_left_fork");
+		rules[3] = new DiningRule(dropRightFork().getRedex(),dropRightFork().getReactum(),map, "drop_right_fork");
+		this.rulesP = rules;
 		
 		PropertyIsomorphism isoP = new PropertyIsomorphism();
 		Predicate atom = new IsoPredicate(getAim(n));

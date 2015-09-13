@@ -56,58 +56,68 @@
 \contentsline {figure}{\numberline {2.14}{\ignorespaces Esempio per i due vincoli sul flusso in entrata. }}{40}
 \contentsline {figure}{\numberline {2.15}{\ignorespaces Implementazione del vincolo sul flusso in uscita. }}{44}
 \contentsline {figure}{\numberline {2.16}{\ignorespaces Implementazione del secondo vincolo strutturale }}{45}
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Esempio di grafo degli stati. }}{46}
-\contentsline {figure}{\numberline {2.18}{\ignorespaces Grafo degli stati infinito. }}{47}
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Esempio di grafo degli stati. }}{47}
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Grafo degli stati infinito. }}{48}
 \contentsline {figure}{\numberline {2.19}{\ignorespaces Regola di inoltro tra router. }}{48}
 \contentsline {figure}{\numberline {2.20}{\ignorespaces Bigrafo di partenza }}{49}
-\contentsline {figure}{\numberline {2.21}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{49}
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{50}
 \contentsline {figure}{\numberline {2.22}{\ignorespaces Grafo degli stati infinito. }}{50}
 \contentsline {figure}{\numberline {2.23}{\ignorespaces Grafo degli stati finito. }}{50}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{52}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{53}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{53}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{53}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{53}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{54}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{54}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{54}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{54}
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto passo}}}{54}
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{54}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Regola di inoltro tra router. }}{58}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Bigrafo per il numero 8 }}{59}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Model Checker. }}{60}
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Bigrafo di partenza }}{60}
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Regola di inoltro tra router. }}{61}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Esempi di predicati}}{61}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Predicato Sbagliato}}}{61}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Predicato Corretto}}}{61}
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{62}
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{63}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{54}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{55}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{55}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{55}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{55}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{56}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo passo}}}{56}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo passo}}}{56}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo passo}}}{56}
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto passo}}}{56}
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{56}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Regola di inoltro tra router. }}{60}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Bigrafo per il numero 8 }}{61}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Model Checker. }}{62}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Bigrafo di partenza }}{62}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Regola di inoltro tra router. }}{63}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Esempi di predicati}}{63}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Predicato Sbagliato}}}{63}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Predicato Corretto}}}{63}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{64}
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{65}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{65}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Bigrafo per l'automa A }}{66}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{67}
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{68}
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{69}
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Bigrafo B }}{70}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Passo}}}{71}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Passo}}}{71}
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo Passo}}}{71}
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto Passo}}}{71}
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{71}
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto Passo}}}{71}
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Grafo degli stati }}{72}
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Codifica in bigrafi di un'istanza del problema }}{73}
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Regole per prendere le forchette }}{74}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{74}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{74}
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Regole per lasciare le forchette }}{75}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{75}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{75}
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Bigrapfo B: propriet\`a di stallo }}{76}
-\contentsline {figure}{\numberline {4.13}{\ignorespaces Due bigrafi isomorfi }}{78}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {...}}}{78}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {...}}}{78}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{67}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Bigrafo per l'automa A }}{68}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Bigrafo per la stringa ``abaa" }}{69}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? }}{70}
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Regola di reazione $R_0$ }}{71}
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Bigrafo B }}{72}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Passo}}}{73}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Passo}}}{73}
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Terzo Passo}}}{73}
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Quarto Passo}}}{73}
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{73}
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto Passo}}}{73}
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Grafo degli stati }}{74}
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Codifica in bigrafi di un'istanza del problema }}{75}
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Regole per prendere le forchette }}{76}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{76}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{76}
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Regole per lasciare le forchette }}{77}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{77}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{77}
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Bigrapfo B: propriet\`a di stallo }}{78}
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Due bigrafi isomorfi }}{80}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {...}}}{80}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {...}}}{80}
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Bigrafo per il problema della sicurezza dell'azienda }}{85}
+\contentsline {figure}{\numberline {4.15}{\ignorespaces regola per l'entrata in una stanza ($R_0$)}}{85}
+\contentsline {figure}{\numberline {4.16}{\ignorespaces regola per l'uscita da una stanza ($R_1$)}}{85}
+\contentsline {figure}{\numberline {4.17}{\ignorespaces regola per il collegamento ad un computer ($R_2$)}}{86}
+\contentsline {figure}{\numberline {4.18}{\ignorespaces regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)}}{86}
+\contentsline {figure}{\numberline {4.19}{\ignorespaces regola per iniziare una connessione tra due smartphones ($R_4$)}}{86}
+\contentsline {figure}{\numberline {4.20}{\ignorespaces regola per trasferire un Token fra due smartphones ($R_5$)}}{87}
+\contentsline {figure}{\numberline {4.21}{\ignorespaces Applicazione delle regola $R_0$,$R_2$ e $R_3$ }}{88}
+\contentsline {figure}{\numberline {4.22}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{88}
+\contentsline {figure}{\numberline {4.23}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{89}
 \addvspace {10\p@ }

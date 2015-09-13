@@ -36,26 +36,29 @@
 \contentsline {section}{\numberline {2.5}Benchmarks}{45}
 \contentsline {section}{\numberline {2.6}Grafo degli stati}{46}
 \contentsline {subsection}{\numberline {2.6.1}Esempio}{47}
-\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{51}
-\contentsline {section}{\numberline {3.1}Model Checker}{51}
-\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{52}
-\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{55}
-\contentsline {subsection}{\numberline {3.2.1}Sintassi}{55}
-\contentsline {subsection}{\numberline {3.2.2}Semantica}{56}
-\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{57}
-\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{58}
-\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{58}
-\contentsline {section}{\numberline {3.4}Esempi}{59}
-\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{59}
-\contentsline {subsection}{\numberline {3.4.2}Router}{60}
-\contentsline {chapter}{\numberline {4}Casi di studio}{65}
-\contentsline {section}{\numberline {4.1}NFA}{65}
-\contentsline {section}{\numberline {4.2}Problema dei filosofi a cena}{72}
-\contentsline {subsection}{\numberline {4.2.1}Prima strategia}{74}
-\contentsline {subsection}{\numberline {4.2.2}Seconda strategia}{79}
-\contentsline {chapter}{\numberline {}Conclusioni}{83}
-\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{85}
-\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{85}
-\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{85}
-\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{86}
-\contentsline {chapter}{\numberline {}Bibliografia}{87}
+\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{53}
+\contentsline {section}{\numberline {3.1}Model Checker}{53}
+\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{54}
+\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{57}
+\contentsline {subsection}{\numberline {3.2.1}Sintassi}{57}
+\contentsline {subsection}{\numberline {3.2.2}Semantica}{58}
+\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{59}
+\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{60}
+\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{60}
+\contentsline {section}{\numberline {3.4}Esempi}{61}
+\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{61}
+\contentsline {subsection}{\numberline {3.4.2}Router}{62}
+\contentsline {chapter}{\numberline {4}Casi di studio}{67}
+\contentsline {section}{\numberline {4.1}NFA}{67}
+\contentsline {section}{\numberline {4.2}Problema dei filosofi a cena}{74}
+\contentsline {subsection}{\numberline {4.2.1}Prima strategia}{76}
+\contentsline {subsection}{\numberline {4.2.2}Seconda strategia}{81}
+\contentsline {section}{\numberline {4.3}Politiche di sicurezza}{83}
+\contentsline {subsection}{\numberline {4.3.1}Segnatura}{84}
+\contentsline {subsection}{\numberline {4.3.2}Prima politica}{84}
+\contentsline {chapter}{\numberline {}Conclusioni}{91}
+\contentsline {chapter}{\numberline {A}Notazione dei vari capitoli}{93}
+\contentsline {section}{\numberline {A.1}Notazione della sezione \ref {sec:formalBigraphs}}{93}
+\contentsline {section}{\numberline {A.2}Notazione della sezione \ref {sec:algebra} }{93}
+\contentsline {section}{\numberline {A.3}Notazione della sezione \ref {sec:operazioniDerivate}}{94}
+\contentsline {chapter}{\numberline {}Bibliografia}{95}

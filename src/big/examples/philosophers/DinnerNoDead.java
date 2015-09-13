@@ -11,13 +11,13 @@ import it.uniud.mads.jlibbig.core.std.OuterName;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
-import it.uniud.mads.jlibbig.core.std.Site;
 import big.iso.PropertyIsomorphism;
 import big.mc.ModelChecker;
 import big.predicate.IsoPredicate;
 import big.predicate.NotPredicate;
 import big.predicate.Predicate;
 import big.predicate.TruePredicate;
+import big.rules.LabelledRule;
 import big.sim.BreadthFirstSim;
 
 /**
@@ -31,6 +31,8 @@ public class DinnerNoDead {
 	
 	protected BigraphBuilder builder;
 	protected int num_nodes = 0;
+	protected int nodesN;
+	protected RewritingRule[] rulesP;
 	
 	public DinnerNoDead(){
 		Signature signature = DinnerNoDead.getProblemSignature();
@@ -57,11 +59,28 @@ public class DinnerNoDead {
 	}
 	
 	/**
+	 * Return the SAME model checker used for computing the graph.
+	 * @return
+	 */
+	public ModelChecker getMC(){
+		Bigraph building = getProblem(nodesN);
+		
+		Predicate trueP = new TruePredicate();
+		Predicate falseP = new NotPredicate(trueP); //Necessary to compute the entire graph.
+		ModelChecker modelC = new ModelChecker(new BreadthFirstSim(building, rulesP), falseP);
+		
+		modelC.modelCheck();
+		
+		return modelC;
+	}
+	
+	
+	/**
 	 * Creates the problem, that is the philosophers and the forks.
 	 * @param n
 	 * @return the bigraphical encoding of the problem
 	 */
-	private Bigraph getProblem(int n){
+	public Bigraph getProblem(int n){
 		Root root = builder.addRoot();
 		Node[] nodes = new Node[n];
 		OuterName[] outers = new OuterName[n];
@@ -69,8 +88,12 @@ public class DinnerNoDead {
 			OuterName fL = builder.addOuterName("F"+i);
 			outers[i] = fL;
 			Node phil = builder.addNode("P", root, fL);
+			phil.attachProperty(new SharedProperty<String>(
+					new SimpleProperty<String>("PhilName", "P_"+(i+1))));
 			nodes[i] = phil;
 			Node fork = builder.addNode("F", root, fL);
+			fork.attachProperty(new SharedProperty<String>(
+					new SimpleProperty<String>("ForkName", "F_"+(i+1))));
 			if(i>0){
 				builder.relink(fL, nodes[i-1].getPort(1));
 			}
@@ -94,7 +117,11 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node fork = builder.addNode("F", root,lf);
+		fork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Fork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -102,11 +129,15 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		fork = builder.addNode("F", phil,lf);
+		fork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Fork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_left_fork");
 	}
 	
 	
@@ -121,8 +152,14 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node leftFork = builder.addNode("F", phil, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
 		Node rightFork = builder.addNode("F", root, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -130,12 +167,18 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		leftFork = builder.addNode("F", phil, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
 		rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_right_fork");
 	}
 	
 	
@@ -150,8 +193,14 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
-		Site site = builder.addSite(phil);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node leftFork = builder.addNode("F", phil, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
+		Node rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -159,12 +208,18 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
-		site = builder.addSite(phil);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		leftFork = builder.addNode("F", root, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
+		rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
-		int[] map = {0};
-		return new RewritingRule(redex, reactum, map);
+		int[] map = {};
+		return new LabelledRule(redex, reactum, map, "dropLeftFork");
 	}
 	
 	
@@ -180,8 +235,11 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
-		Site site = builder.addSite(phil);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -189,12 +247,15 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
-		site = builder.addSite(phil);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		rightFork = builder.addNode("F", root, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
-		int[] map = {0};
-		return new RewritingRule(redex, reactum, map);
+		int[] map = {};
+		return new LabelledRule(redex, reactum, map, "drop_right_fork");
 	}
 	
 	
@@ -209,8 +270,12 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node last = builder.addNode("L", phil);
 		Node fork = builder.addNode("F", root,rf);
+		fork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Fork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -218,12 +283,16 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		last = builder.addNode("L", phil);
 		fork = builder.addNode("F", phil,rf);
+		fork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Fork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_first_fork_lastNode");
 	}
 	
 	
@@ -238,9 +307,15 @@ public class DinnerNoDead {
 		OuterName lf = builder.addOuterName("lf");
 		OuterName rf = builder.addOuterName("rf");
 		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		Node last = builder.addNode("L", phil);
 		Node leftFork = builder.addNode("F", root, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
 		Node rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph redex = builder.makeBigraph();
 		//Reactum
 		builder = new BigraphBuilder(this.builder.getSignature());
@@ -248,13 +323,103 @@ public class DinnerNoDead {
 		lf = builder.addOuterName("lf");
 		rf = builder.addOuterName("rf");
 		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
 		last = builder.addNode("L", phil);
 		leftFork = builder.addNode("F", phil, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
 		rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
 		Bigraph reactum = builder.makeBigraph();
 		//Rewriting Rule
 		int[] map = {};
-		return new RewritingRule(redex, reactum, map);
+		return new LabelledRule(redex, reactum, map, "take_second_fork_lastNode");
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Rule for dropping the left fork
+	 * @return
+	 */
+	private RewritingRule dropFirstLast(){
+		//Redex
+		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
+		Root root = builder.addRoot();
+		OuterName lf = builder.addOuterName("lf");
+		OuterName rf = builder.addOuterName("rf");
+		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
+		Node leftFork = builder.addNode("F", phil, lf);
+		Node last = builder.addNode("L", phil);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
+		Node rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
+		Bigraph redex = builder.makeBigraph();
+		//Reactum
+		builder = new BigraphBuilder(this.builder.getSignature());
+		root = builder.addRoot();
+		lf = builder.addOuterName("lf");
+		rf = builder.addOuterName("rf");
+		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
+		last = builder.addNode("L", phil);
+		leftFork = builder.addNode("F", root, lf);
+		leftFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "LeftFork")));
+		rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
+		Bigraph reactum = builder.makeBigraph();
+		//Rewriting Rule
+		int[] map = {};
+		return new LabelledRule(redex, reactum, map, "drop_first_fork_lastNode");
+	}
+	
+	
+	
+	/**
+	 * Rule for dropping the right fork
+	 * @return
+	 */
+	private RewritingRule dropSecondLast(){
+		//Redex
+		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
+		Root root = builder.addRoot();
+		OuterName lf = builder.addOuterName("lf");
+		OuterName rf = builder.addOuterName("rf");
+		Node phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
+		Node last = builder.addNode("L", phil);
+		Node rightFork = builder.addNode("F", phil, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
+		Bigraph redex = builder.makeBigraph();
+		//Reactum
+		builder = new BigraphBuilder(this.builder.getSignature());
+		root = builder.addRoot();
+		lf = builder.addOuterName("lf");
+		rf = builder.addOuterName("rf");
+		phil = builder.addNode("P", root, lf, rf);
+		phil.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "Phil")));
+		last = builder.addNode("L", phil);
+		rightFork = builder.addNode("F", root, rf);
+		rightFork.attachProperty(new SharedProperty<String>(
+                new SimpleProperty<String>("NodeType", "RightFork")));
+		Bigraph reactum = builder.makeBigraph();
+		//Rewriting Rule
+		int[] map = {};
+		return new LabelledRule(redex, reactum, map, "drop_second_fork_lastNode");
 	}
 	
 	
@@ -270,29 +435,31 @@ public class DinnerNoDead {
 	public boolean deadlockDanger(int n){
 		Bigraph problem = getProblem(n);
 		
-		RewritingRule[] rules = new RewritingRule[6];
-		InstantiationMap map1 = new InstantiationMap(1,0);
+		RewritingRule[] rules = new RewritingRule[8];
 		InstantiationMap map2 = new InstantiationMap(0);
-		rules[0] = new DiningRule(takeLeftFork().getRedex(),takeLeftFork().getReactum(),map2);
-		rules[1] = new DiningRule(takeRightFork().getRedex(),takeRightFork().getReactum(),map2);
-		rules[2] = new DiningRule(dropLeftFork().getRedex(),dropLeftFork().getReactum(),map1);
-		rules[3] = new DiningRule(dropRightFork().getRedex(),dropRightFork().getReactum(),map1);
-		rules[4] = new DiningRule(takeFirstLast().getRedex(),takeFirstLast().getReactum(),map2);
-		rules[5] = new DiningRule(takeSecondLast().getRedex(),takeSecondLast().getReactum(),map2);
-		
+		rules[0] = new DiningRule(takeLeftFork().getRedex(),takeLeftFork().getReactum(),map2, "take_left_fork");
+		rules[1] = new DiningRule(takeRightFork().getRedex(),takeRightFork().getReactum(),map2, "take_right_fork");
+		rules[2] = new DiningRule(dropLeftFork().getRedex(),dropLeftFork().getReactum(),map2, "drop_left_fork");
+		rules[3] = new DiningRule(dropRightFork().getRedex(),dropRightFork().getReactum(),map2, "drop_right_fork");
+		rules[4] = new DiningRule(takeFirstLast().getRedex(),takeFirstLast().getReactum(),map2, "take_first_fork_lastNode");
+		rules[5] = new DiningRule(takeSecondLast().getRedex(),takeSecondLast().getReactum(),map2, "take_second_fork_lastNode");
+		rules[6] = new DiningRule(dropFirstLast().getRedex(),dropFirstLast().getReactum(),map2, "drop_first_fork_lastNode");
+		rules[7] = new DiningRule(dropSecondLast().getRedex(),dropSecondLast().getReactum(),map2, "drop_second_fork_lastNode");
+		this.rulesP = rules;
 
 		PropertyIsomorphism isoP = new PropertyIsomorphism();
 		Predicate atom = new IsoPredicate(getAim(n));
 		ModelChecker mc = new ModelChecker(new BreadthFirstSim(problem,rules,isoP), atom);
 		
 		boolean result = mc.modelCheck();
-		num_nodes = mc.getGraph().getGraphSize();
+		this.num_nodes = mc.getGraph().getGraphSize();
 		
 		return !result;
 	}
 	
 	
 	private Bigraph getAim(int n){
+		this.nodesN = n;
 		BigraphBuilder builder = new BigraphBuilder(this.builder.getSignature());
 		Root root = builder.addRoot();
 		Node[] nodes = new Node[n];

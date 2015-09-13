@@ -41,7 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public abstract class RewRuleWProps extends RewritingRule {
+public abstract class RewRuleWProps extends LabelledRule{
 
     protected Bigraph bigraph;
     protected Map<String, Node[]> rr;//Link from reactum node to redex nodes.
@@ -51,7 +51,13 @@ public abstract class RewRuleWProps extends RewritingRule {
         rr = new HashMap<>();
         createAssociations();
     }
-
+    
+    public RewRuleWProps(Bigraph redex, Bigraph reactum, InstantiationMap map, String name) {
+        super(redex, reactum, map, name);
+        rr = new HashMap<>();
+        createAssociations();
+    }
+    
     @Override
     public Iterable<Bigraph> apply(Bigraph to) {
         this.bigraph = to;
@@ -146,10 +152,15 @@ public abstract class RewRuleWProps extends RewritingRule {
         return true;
     }
     
-    public String getName(){
+    /*public String getName(){
         return this.getClass().getSimpleName();
     }
-
+    
+    public String toString(){
+        return this.getClass().getSimpleName();
+    }*/
+    
+    
     /**
      * Wrapper for the Iterable provided by RewritingRule.apply(to)
      */

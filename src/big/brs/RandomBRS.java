@@ -16,7 +16,6 @@
  */
 package big.brs;
 
-import big.rules.RewRuleWProps;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.LinkedList;

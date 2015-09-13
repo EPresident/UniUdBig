@@ -16,8 +16,8 @@
  */
 package big.bsg;
 
-import big.bsg.BigHashFunction;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
+import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,19 +32,14 @@ public class BSGNode {
     private final Bigraph state;
     private final List<BSGLink> links;
     /**
-     * FIXME Color used in DFSVisit, not pertinent to the class itself.
-     */
-    //private char color;
-    /**
      * Hash code is pre-computed and stored here.
      */
     private final int hashCode;
     
-    protected BSGNode(Bigraph big, BigHashFunction bhf){
+    protected BSGNode(Bigraph big, int hash){
         state=big;
         links=new LinkedList<>();
-        hashCode=bhf.bigHash(big);
-      //  this.color = 'W';
+        hashCode=hash;
     }
     
     /**
@@ -55,7 +50,7 @@ public class BSGNode {
      * used consistently for the graph to recognise cycles, i.e. the same name
      * must be <b>always</b> used for the same rewriting rule.
      */
-    protected void addLink(BSGNode reactum, String rr){
+    protected void addLink(BSGNode reactum, RewritingRule rr){
         links.add(new BSGLink(reactum,rr));
     }
 
@@ -70,25 +65,15 @@ public class BSGNode {
     public int getHashCode() {
         return hashCode;
     }
-    
-  /*  public char getColor(){
-    	return this.color;
-    }
-    
-    public void setColor(char cl){
-    	this.color = cl;
-    }*/
-    
-    
         
     /**
      * Encapsulates a link as a (Destination Node, Rule Applied) couple.
      */
     public class BSGLink{
         public BSGNode destNode;
-        public String rewRule;
+        public RewritingRule rewRule;
         
-        public BSGLink(BSGNode bsgn, String rr){
+        public BSGLink(BSGNode bsgn, RewritingRule rr){
             destNode=bsgn;
             rewRule=rr;
         }

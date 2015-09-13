@@ -146,7 +146,11 @@ public class BigStateGraph {
     }
 
     public int getGraphSize() {
-        return nodes.size();
+        int size = 0;
+        for(LinkedList<BSGNode> bucket: nodes.values()){
+            size+=bucket.size();
+        }
+        return size;
     }
 
     public List<BSGNode> getNodes() {

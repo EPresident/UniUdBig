@@ -49,9 +49,10 @@ public class BSGNode {
      * @param rr Name of the rewriting rule applied. The name <u>must</u> be
      * used consistently for the graph to recognise cycles, i.e. the same name
      * must be <b>always</b> used for the same rewriting rule.
+     * @param backwards True if this links forms a cycle in the graph.
      */
-    protected void addLink(BSGNode reactum, RewritingRule rr){
-        links.add(new BSGLink(reactum,rr));
+    protected void addLink(BSGNode reactum, RewritingRule rr, boolean backwards){
+        links.add(new BSGLink(reactum,rr, backwards));
     }
 
     public List<BSGLink> getLinks() {
@@ -70,12 +71,27 @@ public class BSGNode {
      * Encapsulates a link as a (Destination Node, Rule Applied) couple.
      */
     public class BSGLink{
-        public BSGNode destNode;
-        public RewritingRule rewRule;
+        private final BSGNode destNode;
+        private final RewritingRule rewRule;
+        private final boolean backwards;
         
-        public BSGLink(BSGNode bsgn, RewritingRule rr){
+        public BSGLink(BSGNode bsgn, RewritingRule rr, boolean back){
             destNode=bsgn;
             rewRule=rr;
+            backwards = back;
         }
+
+        public BSGNode getDestNode() {
+            return destNode;
+        }
+
+        public RewritingRule getRewRule() {
+            return rewRule;
+        }
+
+        public boolean isBackwards() {
+            return backwards;
+        }
+                
     }
 }

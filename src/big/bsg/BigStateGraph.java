@@ -57,7 +57,7 @@ public class BigStateGraph {
      * Tells if the graph is acyclic or not.
      */
     private final boolean acyclic;
-    private int collisions = 0;
+   // private int collisions = 0;
 
     public BigStateGraph(Bigraph big, boolean acyclic, BigHashFunction bhf,
             Isomorphism isomorphism, int hashCapacity) {
@@ -83,7 +83,7 @@ public class BigStateGraph {
     }
 
     public BigStateGraph(Bigraph big) {
-        this(big, true, PLACELINK_HASH, new Isomorphism(), 100);
+        this(big, false, PLACELINK_HASH, new Isomorphism(), 100);
     }
 
     /**
@@ -109,21 +109,23 @@ public class BigStateGraph {
                 if (iso.areIsomorph(newNode.getState(), bsgn.getState())) {
                     if (!acyclic) {
                         // Cycle link
-                        redex.addLink(bsgn, rewRule);
+                        redex.addLink(bsgn, rewRule, true);
                     }
                     return null;
                 }
             }
             // Hash collision but no isomorphism
             bucket.add(newNode);
+            redex.addLink(newNode, rewRule, false);
+            return newNode;
         } else {
             LinkedList<BSGNode> bucket = new LinkedList<>();
             bucket.add(newNode);
             nodes.put(hash, bucket);
-            redex.addLink(newNode, rewRule);
+            redex.addLink(newNode, rewRule, false);
+            return newNode;
         }
 
-        return newNode;
     }
 
     public BSGNode getRoot() {
@@ -149,8 +151,8 @@ public class BigStateGraph {
 
     public List<BSGNode> getNodes() {
         LinkedList<BSGNode> llist = new LinkedList<>();
-        for(LinkedList<BSGNode> ns : nodes.values()){
-            if(ns!=null){
+        for (LinkedList<BSGNode> ns : nodes.values()) {
+            if (ns != null) {
                 llist.addAll(ns);
             }
         }
@@ -167,10 +169,12 @@ public class BigStateGraph {
         while (!queue.isEmpty()) {
             BSGNode curr = queue.pop();
             for (BSGLink l : curr.getLinks()) {
-                queue.addLast(l.destNode);
+                if (!l.isBackwards()) {
+                    queue.addLast(l.getDestNode());
+                }
                 sb.append(curr.getHashCode()).append("->")
-                        .append(l.destNode.getHashCode()).append("[label=")
-                        .append(l.rewRule.getClass().getSimpleName()).append("];\n");
+                        .append(l.getDestNode().getHashCode()).append("[label=")
+                        .append(l.getRewRule().getClass().getSimpleName()).append("];\n");
             }
         }
         sb.append("\n}");

@@ -1566,6 +1566,639 @@ Number of states of the Model Checker:	1701
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Politiche di sicurezza}\label{sec:secureBuilding}
+In quest'ultimo esempio vedremo come tramite i bigrafi ed il model checker $MC_{big}$ si possano testare delle politiche di sicurezza. In particolare, faremo riferimento alla seguente situazione: un edificio appartenente ad un'azienda contiene varie stanze, ognuna con un computer al suo interno. L'azienda ha importanti file segreti (token) da mantenere al sicuro dentro ogni computer. Ha anche vari dipendenti, che possono entrare liberamente in ogni stanza e collegarsi ai vari computer. Uno di questi dipendenti si chiama Alice.
+Lei ed il suo complice Bob vogliono rubare un segreto dell'azienda, seguendo questo piano:
+
+\begin{itemize}
+	\item
+	Alice, che essendo una dipendente può collegarsi ad un computer, ruba il file segreto e lo trasferisce sul proprio smartphone.
+	\item
+	Alice esce dalla stanza, pur rimanendo all'interno dell'azienda
+	\item
+	Alice tramite il suo smartphone stabilisce un collegamento con quello di Bob, che si trova al di fuori dell'azienda, e trasferisce il file segreto, che ora è di dominio pubblico
+\end{itemize}
+
+Il nostro compito è quello di stabilire una politica di sicurezza che eviti a qualsiasi token dell'azienda di diventare pubblico, in questo caso di diventare in possesso di Bob. Si vedranno quindi due politiche: la prima consentirà a Bob di ottenere il token, mentre la seconda lo eviterà assicurando la sicurezza dell'azienda. 
+
+Tutte le possibili situazioni in cui Alice e Bob possono agire per rubare i file segreti verranno calcolate dal model checker $MC_{big}$, che alla fine dell'esecuzione dirà se la politica scelta sarà sicura o meno. Infine, si è costruito un modulo che offre all'utente la possibilità di visitare il grafo degli stati, consentendogli di ripercorrere tutte le azioni che hanno consentito a Alice e Bob di ottenere il file segreto.
+
+
+\subsection{Segnatura}
+Incominciamo con il definire la segnatura del bigrafo che modella il problema. Si consideri la figura \ref{fig:bigSafety}: il nodo più grande è ``\emph{Building}" e rappresenta l'edificio dell'azienda. In questo esempio, sono presenti due stanze, ognuna con un computer all'interno. Ogni computer contiene un ``\emph{Token}", che è uno dei file segreti dell'azienda. 
+
+I nodi per Alice e Bob sono modellati tramite due circonferenze, che però si trovano sotto radici diverse: Alice è dentro l'azienda, in quanto è una dipendente e può entrare a tutti gli effetti sia dentro il ``\emph{Building}" sia dentro le ``\emph{Room}". Invece Bob si trova al di fuori dell'azienda, perchè non è un dipendente e quindi il suo accesso è vietato. Ai fini della verifica da parte del model checker, tutti i dipendenti verranno considerati con cattive intenzioni, ovvero: ogni dipendente sarà modellato da un nodo di controllo ``\emph{Alice}". Allo stesso modo, ogni persona al di fuori dell'azienda verrà modellata con un nodo di controllo ``\emph{Bob}".
+Sia Alice che Bob possiedono uno smartphone, che useranno per trasferire il ``\emph{Token}".
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (3.0,4.0) to [out=130,in=270] (2.5,4.5);%Alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+\node[above right] at (1.0,9.0) {Building};
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+\node[above right] at (2.0,8.0) {$Room_1$};
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\node[above right] at (3.5,6.0) {Computer};
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (3.7,5.3) -- (4.3,5.3) -- (4.0,5.9) -- (3.7,5.3);
+\draw[red] (4.0,5.6) to [out=270,in=90] (6.0,4.2);
+\node at (6.0,4.0){Token};
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+\node[above right] at (7.0,8.0) {$Room_2$};
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\node[above right] at (8.5,6.0) {Computer};
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+\draw[red] (9.0,5.6) to [out=270,in=90] (6.2,4.2);
+%Alice
+\draw[thick] (3.0,3.5) circle [radius=0.8];
+\node[below] at (3.0,2.7) {Alice};
+% Phone A
+\draw[rounded corners=1mm, thick] (2.8,3.0) rectangle (3.2,4.0);
+\draw[red] (3.0,3.2) to [out=180,in=90] (1.8,1.3);
+\node at (2.0,1.0){Smartphone};
+\draw[fill] (3.0,4.0) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+\node[right] at (6.8,1.0) {Bob};
+% Phone B
+\draw[rounded corners=1mm, thick] (5.8,0.5) rectangle (6.2,1.5);
+\draw[red] (6.0,1.0) to [out=180,in=50] (3.2,1.2);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\end{tikzpicture}
+\caption{Bigrafo per il problema della sicurezza dell'azienda \label{fig:bigSafety}}
+\end{figure}
+
+Ogni smartphone ed ogni computer possiedono una porta per consentire il collegamento: uno smartphone si può collegare ad un altro smartphone oppure ad un computer. Stabilito il collegamento, è possibile trasferire il Token. Per distinguere il ``\emph{Building}" dalle ``\emph{Room}", si è disegnato il primo tramite doppie linee.  
+
+
+\subsection{Prima politica}
+Vediamo ora la prima politica, che come già anticipato \textbf{non} assicurerà la sicurezza dell'azienda. Nei BRS, una politica si traduce in un insieme di regole di reazione, che descrivono come ogni nodo deve comportarsi. Per esempio, una regola potrebbe coinvolgere una ``\emph{Room}", obbligandola a chiedere un badge ad ogni dipendente che vuole entrare.
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (1.0,1.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (0.8,0.8) rectangle (1.2,1.2);
+\node at (1.0,1.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (12.0,2.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (11.8,1.8) rectangle (12.2,2.2);
+\node at (12.0,2.0){1};
+
+
+\end{tikzpicture}
+\caption{regola per l'entrata in una stanza ($R_0$)\label{fig:enterRoom}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (4.0,2.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (3.8,1.8) rectangle (4.2,2.2);
+\node at (4.0,2.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (9.0,1.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (8.8,0.8) rectangle (9.2,1.2);
+\node at (9.0,1.0){1};
+
+\end{tikzpicture}
+\caption{regola per l'uscita da una stanza ($R_1$)\label{fig:leaveRoom}}
+\end{figure}
+
+
+
+Le regole $R_0$ e $R_1$ modellano rispettivamente l'entrata e l'uscita da una stanza all'interno dell'azienda. Si noti come ogni dipendente, ovvero ogni nodo circolare all'interno dell'azienda, possa entrare liberamente in ogni stanza. La politica di sicurezza è quindi \textbf{minima}, perchè non vengono fatti controlli e ogni dipendente può accedere al computer: in particolare, può collegarlo al suo smartphone e trasferire il Token. Se togliessimo il sito numero 1, allora si potrebbe entrare nella stanza solamente senza oggetti pericolosi: in altre parole, ogni dipendente non dovrebbe avere niente con sè per poter entrare in una stanza.
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Links
+\draw[myGreen,thick] (2.7,2.0) to [out=60,in=270] (2.5,4.3);%x
+\draw[myGreen,thick] (4.25,2.5) to [out=120,in=270] (4.5,4.3);%y
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (0.5,0.5) rectangle (5.5,3.5);
+%Computer
+\draw[rounded corners=2mm, thick] (1.0,1.0) rectangle (3.0,2.0);
+\draw[fill] (2.7,2.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.7,1.1) -- (2.3,1.1) -- (2.0,1.9) -- (1.7,1.1);
+%Alice
+\draw[thick] (4.3,2.0) circle [radius=0.8];
+%Alice phone
+\draw[rounded corners=1mm, thick] (4.0,1.5) rectangle (4.5,2.5);
+\draw[fill] (4.25,2.5) circle [radius=0.05];
+%Outers
+\node at (2.5,4.5){x};
+\node at (4.5,4.5){y};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Links
+\draw[myGreen,thick] (10.7,2.0) to [out=60,in=270] (10.5,4.3);%x
+\draw[myGreen,thick] (12.25,2.5) to [out=120,in=270] (10.8,3.0);
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (8.5,0.5) rectangle (13.5,3.5);
+%Computer
+\draw[rounded corners=2mm, thick] (9.0,1.0) rectangle (11.0,2.0);
+\draw[fill] (10.7,2.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (9.7,1.1) -- (10.3,1.1) -- (10.0,1.9) -- (9.7,1.1);
+%Alice
+\draw[thick] (12.3,2.0) circle [radius=0.8];
+%Alice phone
+\draw[rounded corners=1mm, thick] (12.0,1.5) rectangle (12.5,2.5);
+\draw[fill] (12.25,2.5) circle [radius=0.05];
+%Outers
+\node at (10.5,4.5){x};
+\node at (12.5,4.5){y};
+\end{tikzpicture}
+\caption{regola per il collegamento ad un computer ($R_2$)\label{fig:compConnect}}
+\end{figure}
+
+
+
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Links
+\draw[myGreen, thick] (2.0,1.3) to [out=90,in=270] (3.0,4.3);
+\draw[myGreen, thick] (4.5,3.0) to [out=90,in=270] (3.0,4.3);
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Computer
+\draw[rounded corners=2mm, thick] (0.3,0.3) rectangle (2.7,1.3);
+\draw[fill] (2.0,1.3) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,0.4) -- (1.8,0.4) -- (1.5,1.2) -- (1.2,0.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Links
+\draw[myGreen, thick] (10.0,1.3) to [out=90,in=270] (11.0,4.3);
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Computer
+\draw[rounded corners=2mm, thick] (8.3,0.3) rectangle (10.7,1.3);
+\draw[fill] (10.0,1.3) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (12.2,1.4) -- (12.8,1.4) -- (12.5,2.2) -- (12.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Outers
+\node at (11.0,4.5) {x};
+\end{tikzpicture}
+\caption{regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)\label{fig:transfer_comp}}
+\end{figure}
+
+
+Le regola $R_2$ e $R_3$ trattano il trasferimento di un Token dal computer ad uno smartphone: la prima stabilisce una connessione mentre la seconda esegue lo spostamento del file segreto. Si noti come lo smartphone del dipendente non debba contenere nessun altro token: se Alice ha già rubato un file segreto, allora il prossimo computer a cui si connette se ne accorgerà e non le darà il file segreto al suo interno.\\
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (1.0,1.0) rectangle (2.0,3.0);
+\draw[fill] (1.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,1.4) -- (1.8,1.4) -- (1.5,2.2) -- (1.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (4.1,2.2) rectangle (4.6,2.7);
+\node at (4.35,2.45) {0};
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Links
+\draw[myGreen, thick] (9.5,3.0) to [out=90,in=270] (11.0,4.3);
+\draw[myGreen, thick] (12.5,3.0) to [out=90,in=270] (11.0,4.3);
+%Phone
+\draw[rounded corners=3mm, thick] (9.0,1.0) rectangle (10.0,3.0);
+\draw[fill] (9.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (9.2,1.4) -- (9.8,1.4) -- (9.5,2.2) -- (9.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (12.1,2.2) rectangle (12.6,2.7);
+\node at (12.35,2.45) {0};
+%Outers
+\node at (11.0,4.5) {x};
+
+
+\end{tikzpicture}
+\caption{regola per iniziare una connessione tra due smartphones ($R_4$)\label{fig:call}}
+\end{figure}
+
+
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Links
+\draw[myGreen, thick] (1.5,3.0) to [out=90,in=270] (3.0,4.5);
+\draw[myGreen, thick] (4.5,3.0) to [out=90,in=270] (3.0,4.5);
+%Phone
+\draw[rounded corners=3mm, thick] (1.0,1.0) rectangle (2.0,3.0);
+\draw[fill] (1.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,1.4) -- (1.8,1.4) -- (1.5,2.2) -- (1.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (4.1,2.2) rectangle (4.6,2.7);
+\node at (4.35,2.45) {0};
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (9.0,1.0) rectangle (10.0,3.0);
+\draw[fill] (9.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (12.2,1.4) -- (12.8,1.4) -- (12.5,2.2) -- (12.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (12.1,2.2) rectangle (12.6,2.7);
+\node at (12.35,2.45) {0};
+%Outers
+\node at (11.0,4.5) {x};
+
+
+\end{tikzpicture}
+\caption{regola per trasferire un Token fra due smartphones ($R_5$)\label{fig:transf_token}}
+\end{figure}
+
+
+
+Infine, le regole $R_4$ e $R_5$ consentono allo smarthphone di Alice di stabilire una connessione con quello di Bob e di trasferire il Token, che ora si trova al di fuori dell'azienda. Alice può chiamare solo se ha ottenuto il Token, come suggerisce il redex della regola $R_4$. Si noti come, una volta ottenuto il Token, Alice possa connettersi a Bob anche dall'interno dell'azienda.\\
+
+
+Vediamo ora l'applicazione delle regole sul bigrafo di figura \ref{fig:bigSafety}, che chiameremo $S_0$. Applicando in ordine le regole $R_0$, $R_2$ ed $R_3$ al bigrafo $S_0$ si ottiene il bigrafo di figura \ref{fig:threeRules}: Alice è entrata nella prima stanza, ha collegato il suo smartphone al computer ed ha trasferito un file segreto dell'azienda dal computer allo smartphone. Dato che abbiamo applicato tre regole, chiameremo questo bigrafo $S_3$.
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (5.0,7.5) to [out=90,in=45] (4.5,8.5);%alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (4.7,6.6) -- (5.3,6.6) -- (5.0,7.2) -- (4.7,6.6);
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+%Alice
+\draw[thick] (5.0,7.0) circle [radius=0.8];
+% Phone A
+\draw[rounded corners=1mm, thick] (4.6,6.5) rectangle (5.4,7.5);
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+% Phone B
+\draw[rounded corners=1mm, thick] (5.8,0.5) rectangle (6.2,1.5);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+
+
+\end{tikzpicture}
+\caption{Applicazione delle regola $R_0$,$R_2$ e $R_3$ \label{fig:threeRules}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (3.0,4.0) to [out=130,in=270] (2.5,4.5);%Alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (5.7,0.6) -- (6.3,0.6) -- (6.0,1.3) -- (5.7,0.6);
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+%Alice
+\draw[thick] (3.0,3.5) circle [radius=0.8];
+% Phone A
+\draw[rounded corners=1mm, thick] (2.8,3.0) rectangle (3.2,4.0);
+\draw[fill] (3.0,4.0) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+% Phone B
+\draw[rounded corners=1mm, thick] (5.6,0.5) rectangle (6.4,1.5);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\end{tikzpicture}
+\caption{Applicazione delle regole $R_1$,$R_4$ e $R_5$ \label{fig:threeLastRules}}
+\end{figure}
+
+
+
+
+In figura \ref{fig:threeLastRules}, è raffigurato il bigrafo $S_6$, ottenuto tramite l'applicazione delle regole $R_1$,$R_4$ e $R_5$ al bigrafo $S_3$. In ordine: Alice è uscita dalla stanza con il Token, ha stabilito una connessione con Bob ed ha trasferito il file segreto. Si noti come non fosse necessario che Alice uscisse dalla stanza per chiamare Bob. Questa politica di sicurezza è quindi fallace, perchè consente a Bob o a qualsiasi persona esterna di ottenere un file segreto dell'azienda.\\
+
+In molti casi l'azienda non ha un edificio semplice come quello di figura \ref{fig:bigSafety}, e quindi c'è bisogno di uno strumento automatico, che affronti il problema anche quando nell'edificio sono presenti numerose stanze, computers e soprattutto numerosi dipendenti. Per questi motivi si è usato $MC_{big}$ per la verifica: esso computa l'intero grafo degli stati, cioè considera tutte le possibili situazioni in cui l'azienda si può trovare, ed appena trova una situazione di pericolo ritorna False, a significare che la politica adottata dall'azienda non è sicura.
+\begin{prop}
+Il model checker $MC_{big}$ ritorna True se e solo se non c'è \emph{nessuna} situazione di pericolo.
+\end{prop}
+La proprietà da far verificare al model checker è molto semplice:
+\begin{center}
+$\varphi = W_B(T,T,T)$
+\end{center}
+dove B è il bigrafo di figura \ref{fig:bigBSafety}. Quindi la precedente proposizione, la possiamo tradurre in:
+\begin{prop}\label{prop:MCsafety}
+Il model checker $MC_{big}$ ritorna False $\Leftrightarrow \exists S_i$ t.c. $MC,S_i \models W_B(T,T,T)$. 
+Equivalentemente, ritorna True  $\Leftrightarrow \forall S_i$ $(MC,S_i \not \models W_B(T,T,T) )$.
+\end{prop}
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Root
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (5.0,5.0);
+%Outers
+\node at (3.0,5.5){x};
+%Link
+\draw[myGreen,thick] (2.5,4.0) to [out=90,in=270] (3.0,5.3);
+%Bob
+\draw[thick, red] (2.5,2.5) circle [radius=2.0];
+%Phone
+\draw[rounded corners=3mm, thick] (1.8,1.0) rectangle (3.2,4.0);
+\draw[fill] (2.5,4.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (2.2,1.2) rectangle (2.7,1.7);
+\node at (2.45,1.45) {0};
+%Token
+\draw[rounded corners=1mm,thick] (2.1,2.0) -- (2.9,2.0) -- (2.5,2.8) -- (2.1,2.0); 
+
+
+
+\end{tikzpicture}
+\caption{Applicazione delle regole $R_1$,$R_4$ e $R_5$ \label{fig:bigBSafety}}
+\end{figure}
+
+
+
+
+
+\subsection{Seconda strategia}
+Si vedrà ora una strategia che, tramite l'introduzione di due nuove regole, riesce a garantire la sicurezza dell'azienda. Le regole sono le stesse del caso precedente, eccetto $R_0$ e $R_1$, che ora sono state sostituite da $secureR_0$ e $secureR_1$, in figura \ref{fig:secureEnterRoom} e \ref{fig:secureLeaveRoom}.
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Outers
+\node at (1.5,4.5){x};
+%Links
+\draw[myGreen,thick] (1.0,1.5) to [out=90,in=270] (1.5,4.3);
+%Root
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (1.0,1.0) circle [radius=0.8];
+%Phone 
+\draw[rounded corners=2mm, thick] (0.6,0.5) rectangle (1.4,1.5);
+\draw[fill] (1.0,1.5) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (0.8,0.8) rectangle (1.2,1.2);
+\node at (1.0,1.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (12.0,2.0) circle [radius=0.8];
+\end{tikzpicture}
+\caption{regola per l'entrata sicura in una stanza ($secureR_0$)\label{fig:secureEnterRoom}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (4.0,2.0) circle [radius=0.8];
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (9.0,1.0) circle [radius=0.8];
+%Phone
+\draw[rounded corners=2mm, thick] (8.7,0.3) rectangle (9.3,1.5);
+\draw[fill] (9.0,1.5) circle [radius=0.05];
+
+\end{tikzpicture}
+\caption{regola per l'uscita sicura da una stanza ($secureR_1$)\label{fig:secureLeaveRoom}}
+\end{figure}
+
+
+
+
+Ora Alice non può più trasferire il Token sul suo smartphone, e di conseguenza le uniche due regole applicabili sono $secureR_0$ e $secureR_1$. La proprietà che $MC_{big}$ dovrà verificare sarà sempre $\varphi = W_B(T,T,T)$: ora nessuno stato $S_i$ del grafo sarà tale che $MC,S_i \models \varphi$, per cui, data la proposizione \ref{prop:MCsafety}, il model checker ritornerà True. Questa politica rende sicura l'azienda.\\
+
+Quest'ultimo esempio mostra particolarmente bene con i bigrafi ed i BRS siano flessibili per rappresentare qualsiasi dominio e la loro utilità in casi reali come questo. $MC_{big}$ e la sua logica, implementati per questa tesi, sono quindi di aiuto sia per bigrafi che modellano un formalismo (come quello per gli NFA) sia per i bigrafi \emph{domain specific} (come quest'ultimo esempio), rendendo l'isomorfismo tra bigrafi, il model checker e la sua relativa logica degli strumenti generali adatti ad ogni dominio.
 
 
 

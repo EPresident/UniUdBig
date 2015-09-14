@@ -6,13 +6,17 @@
 
 \usepackage[latin1]{inputenc}
 \usepackage[italian]{babel}
-\usepackage{microtype}
-\usepackage{graphicx}
+\usepackage[autostyle,italian=guillemets]{csquotes} % necessario per biblatex
+\usepackage[bibstyle=numeric,citestyle=numeric,backend=biber]{biblatex} % bibliografia
+\usepackage{microtype} % tipografia
+\usepackage{graphicx} % immagini
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage{lipsum}
-\usepackage{listings}
+\usepackage{subfig} % sottofigure
+\usepackage{lipsum} % lorem ipsum
+\usepackage{listings} % codice
+\usepackage{float}
 \usepackage{hyperref} % questo va per ultimo
 
 % Teoremi
@@ -28,6 +32,7 @@
 
 \theoremstyle{remark}
 \newtheorem*{oss}{Osservazione}
+\newtheorem*{esempio}{Esempio}
 
 % Comandi aggiuntivi
 \newcommand{\eqdef}{\stackrel{\text{\tiny def}}{=}} % equal con def sopra
@@ -39,8 +44,10 @@
 % Direttive
 \renewcommand{\lstlistingname}{Codice}
 \lstset{basicstyle=\small\ttfamily}
-\setlength{\parindent}{0pt}
+\setlength{\parindent}{0pt} % togliere indentazione paragrafi
 \graphicspath{{img/}}
+\addbibresource{bib/milner_1540607.bib} % bibliografia
+\addbibresource{bib/geatti_tesi_brs.bib} % bibliografia
 \makeindex
 
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
@@ -48,7 +55,7 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \title{Simulazione di Sistemi Reattivi Bigrafici}
 \author{Elia Calligaris}
-\email{eliac_mail@libero.it}
+%\email{eliacmail@libero.it}
 \supervisor{Prof. Marino Miculan}
 \cosupervisor{Dott. Marco Peressotti}
 \date{2014-2015}
@@ -65,6 +72,8 @@
 \end{dedication}
 
 \tableofcontents
+\listoffigures
+\lstlistoflistings
 
 %\chapter*{Prefazione}
 %\addcontentsline{toc}{chapter}{Prefazione}
@@ -75,27 +84,46 @@
 %\pagestyle{empty}
 %\addcontentsline{toc}{chapter}{Introduzione}
 
-\chapter{Teoria dei bigrafi}
+\chapter{Teoria dei bigrafi}\label{cap:teoria}
 \pagestyle{plain}
 % spostare sta roba
-In questo capitolo si daranno definizioni formali dei bigrafi, delle loro componenti, e delle operazioni elementari e derivate sui bigrafi.
-Si darà la definizione di BRS (Sistema Reattivo Bigrafico)
+In questo capitolo si daranno definizioni formali dei bigrafi, delle loro componenti, e delle relative operazioni elementari e derivate; si vedrà come costruire un bigrafo a partire da bigrafi elementari, e si darà la definizione di \emph{BRS} (\emph{Sistema Reattivo Bigrafico}).
 
-\section{Bigrafi e le loro componenti}
+La teoria è estratta dall'ampia trattazione di Robert Milner \cite{Milner:SMCA}, e adattata per le ridotte necessità di questa tesi.
 
-Un \emph{bigrafo} è un tipo particolare di grafo in cui i nodi possono essere annidati l'uno dentro l'altro, e gli archi sono \emph{iper-archi}, cioè collegano un punto di partenza a più punti di arrivo. Pertanto, come la parola \emph{bi-grafo} suggerisce, siamo in presenza di una struttura composta da due grafi indipendenti, di cui uno descrive la topologia, e l'altro i collegamenti tra nodi.
-Inoltre ogni nodo ha un \emph{controllo} che ne definisce il significato: questo rende i bigrafi un \emph{meta-modello}, similmente all'XML. Di seguito si daranno definizioni formali delle componenti dei bigrafi, e poi dei bigrafi stessi.
+\section{Bigrafi e le loro componenti}\label{sec:componenti_bigrafi}
 
-% figura bigrafo con etichette componenti
+Un \emph{bigrafo} è un tipo particolare di grafo in cui i nodi possono essere annidati l'uno dentro l'altro, e gli archi sono \emph{iper-archi}, cioè collegano un punto di partenza a più punti di arrivo. Pertanto, come la parola \emph{bi-grafo} suggerisce, siamo in presenza di una struttura composta da due grafi indipendenti, dei quali uno descrive la topologia, e l'altro i collegamenti tra nodi.
+Inoltre si possono definire diversi tipi di nodo con diverso significato: questo rende i bigrafi un \emph{meta-modello}, in modo simile all'XML. 
 
-\subsection{Segnature e controlli}
+\begin{figure}[h]
+\begin{center}
+%\def \svgwidth{ 2 \textwidth / 3}
+%\input{img/big_esempio_nonomi.pdf_tex}
+\includegraphics[width=2 \textwidth /3]{big_esempio_nonomi.pdf}
+\end{center}
+\caption{Esempio di bigrafo.}
+\end{figure}
 
-Innanzitutto è necessario definire due nozioni fondamentali alla definizione dei bigrafi, nonché del loro significato.
-\paragraph{Controlli}
-Per \emph{controllo} si intende il tipo di un nodo; ogni nodo ha un solo controllo. La possibilità di creare ed assegnare controlli ai nodi permette di definirne il significato a piacere, garantendo una grande libertà semantica.
+\subsection{Segnature e controlli}\label{ssec:segnature}
+
+Data la generalità dei bigrafi, è innanzitutto necessario definire il significato dei nodi: per far ciò gli si assegnano dei \emph{controlli}.
+\begin{defi}[Controllo]
+Un \emph{controllo} $K$ è il tipo di un nodo.
+\end{defi}
+Ogni nodo ha un solo controllo, ed ogni controllo è tipicamente definito con un nome. La possibilità di creare ed assegnare controlli ai nodi permette di definirne il significato a piacere, garantendo una grande libertà semantica. Per fare un paragone con la programmazione orientata agli oggetti, un nodo sta al suo controllo come un'istanza sta alla sua classe.
+\begin{term}[K-nodo]
+Con l'espressione \emph{K-nodo} si intende un nodo il cui controllo è $K$.
+\end{term}
+Ora, siccome ogni bigrafo avrà (tipicamente) più di un tipo di nodo, è necessario definirne l'insieme dei controlli.
 \begin{defi}[Segnatura]
 Una \emph{segnatura} è una coppia $(K,ar)$, dove $K$ è un insieme di controlli e $ar$ è una funzione $K\rightarrow \mathbb{N} $, che mappa ad ogni nodo la sua arietà (numero di porte).
 \end{defi}
+
+\begin{oss}
+Tramite la segnatura, si accoppia il controllo di un nodo al suo numero di porte biunivocamente.
+\end{oss}
+
 \begin{nota}
 Per semplicità, le segnature possono essere descritte come segue:
 \begin{center}
@@ -103,16 +131,26 @@ $K = \{ K_1:a_1, \dots, K_n:a_n \}$ intendendo che il controllo $K_i$ ha arietà 
 \end{center}
 \end{nota}
 
-\subsection{\foreignlanguage{english}{Place graph}}
+Quindi tramite la segnatura si ha già una prima caratterizzazione del bigrafo in termini di semantica ed arietà dei nodi. Con questo fondamento si può passare ad analizzare la topologia e le relazioni tra nodi.
+
+\subsection{\foreignlanguage{english}{Place graph}}\label{ssec:place_graph}
 Il place graph è una foresta che descrive la topologia del bigrafo; in altre parole, indica come sono annidati i nodi. Ogni albero della foresta inizia con una \emph{radice} (o \emph{regione}); ogni radice è etichettata con un numero che va da $0$ a $n-1$, dove $n$ è il numero di radici.
 Ogni nodo può contenere un \emph{sito}, che indica la possibilità che vi siano altri nodi all'interno di quel nodo.
 
-\begin{term}
+\begin{figure}[t]
+\begin{center}
+\subfloat[Bigrafo]{\includegraphics{big_esempio_nonomi.pdf}}\qquad
+\subfloat[Place graph]{\includegraphics{place_esempio.pdf}}
+\end{center}
+\caption{Esempio di bigrafo e relativo place graph.}
+\end{figure}
+
+\begin{term}[Posto]
 Gli elementi del place graph sono detti \emph{posti}.
 \end{term}
 
 \begin{nota}
-Con $A\uplus B$ si intende l'unione di insiemi che si sa o si assume disgiunti.
+Con $A\uplus B$ si intende l'unione di insiemi che si sa o si assume essere fra loro disgiunti.
 \end{nota}
 
 \begin{defi}[Place graph]
@@ -125,33 +163,44 @@ Un \emph{place graph} è una tripla $(V,ctrl,prnt):m\rightarrow n$ dove:
 \end{itemize}
 \end{defi}
 
-\subsection{Link graph}
-Il link graph è un \emph{ipergrafo} (cioè un grafo i cui archi possono connettere più nodi) non orientato che descrive il collegamento fra i vari nodi del bigrafo.
+\subsection{Link graph}\label{ssec:link_graph}
+Il link graph è un \emph{ipergrafo} (cioè un grafo i cui archi possono connettere più nodi) non orientato che descrive il collegamento fra i vari nodi del bigrafo (ovvero le loro relazioni). Il link graph descrive anche dei potenziali collegamenti con altri bigrafi grazie alle interfacce descritte dagli \emph{inner names} e dagli \emph{outer names}: gli outer names indicano l'interfaccia verso l'esterno, a cui possono collegarsi altri bigrafi; gli inner names (interfaccia interna) descrivono l'interfaccia dei bigrafi che possono aggiunti per composizione (si veda il paragrafo \ref{ssec:op_costruzione}). 
 
-% aggiungere figura
+\begin{figure}[ht]
+\begin{center}
+\subfloat[Bigrafo]{\setlength\fboxsep{10pt}
+\fbox{\input{img/big_esempio_nomi.pdf_tex}}}\qquad
+\subfloat[Link graph]{ \setlength\fboxsep{10pt}
+\fbox{\input{img/link_esempio.pdf_tex}}}
+\end{center}
+\caption{Esempio di bigrafo e relativo link graph.}
+\end{figure}
+
+\begin{term}[Punti e link] \foreignlanguage{english}{Inner names} e porte vengono chiamati \emph{punti}; \foreignlanguage{english}{outer names} e archi vengono chiamati \emph{link}. Gli archi sono detti \emph{link chiusi}, mentre gli outer names sono detti \emph{link aperti}.
+\end{term}
 
 \begin{defi}
 Un link graph è una tupla $(V,E,ctrl,link):X\rightarrow Y$ dove:
 \begin{itemize}
 \item $V$ ed $E$ sono, rispettivamente, gli insiemi (finiti) dei nodi e degli (iper)archi;
 \item $ctrl$ è la mappa dei controlli $V\rightarrow K$;
-\item $X$ e $Y$ sono, rispettivamente, le \emph{interfacce esterna} e \emph{interna}, composte dagli \emph{\foreignlanguage{english}{outer names}} e dagli \emph{\foreignlanguage{english}{inner names}};
+\item $X$ e $Y$ sono, rispettivamente, le \emph{interfacce interna} e \emph{esterna}, composte dagli \emph{\foreignlanguage{english}{inner names}} e dagli \emph{\foreignlanguage{english}{outer names}};
 \item $link$ è la mappa $X \uplus P \rightarrow E \uplus Y$, dove $P = \{(v,i) : v \in V, i \in ar(ctrl(v)) \}$ è l'insieme delle porte.
 \end{itemize}
 \end{defi}
-
-\begin{term}[Punti e link] \foreignlanguage{english}{Inner names} e porte vengono chiamati \emph{punti}; \foreignlanguage{english}{outer names} e archi vengono chiamati \emph{link}. Gli archi sono detti \emph{link aperti}, mentre gli outer names sono detti \emph{link chiusi}.
-\end{term}
 
 \begin{term}[Idle]
 Un posto senza figli o un link senza punti è detto \emph{idle}.
 \end{term}
 
-\subsection{Bigrafo}
-Prima di dare la definizione formale di bigrafo è necessario definire un'ulteriore nozione intermedia.
+\subsection{Bigrafo}\label{ssec:bigrafo}
+Definendo le strutture che compongono i bigrafi, si è parlato più volte di \emph{interfacce}. Ora verranno definite formalmente.
 \begin{defi}[Interfaccia]
-Un'\emph{interfaccia} per bigrafi è una coppia $\langle m,X\rangle$, dove $m \in \mathbb{N}$ e $X$ è un insieme di nomi. $m$ è detta \emph{larghezza}.
+Un'\emph{interfaccia} per bigrafi è una coppia $\langle m,X\rangle$, dove $m \in \mathbb{N}$ è detta \emph{larghezza}, mentre $X$ è l'insieme dei nomi.
 \end{defi}
+
+Detto questo, si può dare una definizione formale di bigrafo.
+
 \begin{defi}[Bigrafo]
 Un \emph{bigrafo} è una tupla 
 \begin{center}
@@ -160,13 +209,26 @@ $(V,E,ctrl,prnt,link):\langle m,X\rangle \rightarrow \langle n,Y\rangle$
 dove $\langle m,X\rangle$ è detta \emph{interfaccia interna}, mentre $\langle n,Y\rangle$ è detta \emph{interfaccia esterna}.
 \end{defi}
 \begin{oss}
-Un bigrafo è composto da:
+Un bigrafo $B$ è composto da:
 \begin{itemize}
 \item un place graph $B^P=(V,ctrl,prnt):m\rightarrow n$;
 \item un link graph $B^L=(V,E,ctrl,link):X\rightarrow Y$.
 \end{itemize}
 Che sono strutture ortogonali ed indipendenti. Pertanto, un bigrafo si può definire anche come una coppia $\langle B^P,B^L\rangle$.
 \end{oss}
+
+\begin{figure}[ht]
+\begin{center}
+\subfloat[Bigrafo $B$]{\setlength\fboxsep{10pt}
+\fbox{\input{img/big_esempio_nomi2.pdf_tex}}}\qquad
+\subfloat[Place graph $B^P$]{\setlength\fboxsep{10pt}
+\fbox{\includegraphics{place_esempio.pdf}}}
+\subfloat[Link graph $B^L$]{ \setlength\fboxsep{10pt}
+\fbox{\input{img/link_esempio.pdf_tex}}}
+\end{center}
+\caption{Esempio di bigrafo e sua scomposizione.}
+\end{figure}
+
 \begin{term}(Ground, agente)
 Un bigrafo la cui interfaccia interna è vuota viene detto \emph{ground} o \emph{agente}. Ne viene indicata solo l'interfaccia esterna.
 \end{term}
@@ -177,13 +239,14 @@ I bigrafi generici vengono indicati con lettere maiuscole ($A$,$B$,$C$,\dots), m
 
 \subsection{Sorting?}
 % aggiungere sorting?
+\lipsum[1]
 
-\section{Operazioni sui bigrafi}
-bla bla bla
 
-\subsection{Operazioni di base}
-bla bla
+% % % Operazioni sui bigrafi
+\section{Operazioni sui bigrafi}\label{sec:op_bigrafi}
+Ora si andranno a definire alcune operazioni sui bigrafi e la loro algebra, con lo scopo di fornire il necessario per poter costruire bigrafi complessi a partire da quelli elementari. Tali operazioni saranno fondamentali anche per poter descrivere l'evoluzione dei sistemi reattivi bigrafi (sez. \ref{sec:evoluzione_bigrafi}).
 
+\subsection{Operazioni di base}\label{ssec:op_base}
 \begin{nota}
 Con $Id_I$ si indica la funzione identità sull'insieme $I$.
 \end{nota}
@@ -208,7 +271,7 @@ Diremo che $F$ e $G$ sono \emph{support equivalent} (hanno supporti equivalenti)
 se e solo se esiste una traduzione di supporto tra $F$ e $G$.
 \end{defi}
 
-\subsection{Operazioni di costruzione}
+\subsection{Operazioni di costruzione}\label{ssec:op_costruzione} 
 Verranno ora illustrate le principali operazioni di costruzione di bigrafi.
 
 \begin{defi}[Composizione]
@@ -272,7 +335,7 @@ dove $prnt^\prime_G(m_F+i) = n_F + j$ ogni qualvolta $print_G(i) = j$.
 Nella giustapposizione tra bigrafi l'interfaccia unità è $\epsilon = \langle 0,\emptyset \rangle$.
 \end{oss}
 
-\subsection{Algebra dei bigrafi}
+\subsection{Algebra dei bigrafi}\label{sec:algebra_bigrafi}
 Ora si mostrerà come i bigrafi possono essere costruiti a partire da bigrafi più piccoli, per via di composizioni, prodotti ed identità.
 Verranno descritti i bigrafi elementari e le loro forme normali.
 
@@ -280,19 +343,41 @@ Verranno descritti i bigrafi elementari e le loro forme normali.
 Un \emph{placing} ($\phi$) è un bigrafo senza né nodi né link.
 Un placing biiettivo dai siti alle radici (ovvero che per ogni radice ha un solo sito) è una \emph{permutazione} ($\pi$).
 Un placing con una radice ed $n$ siti è denotato con $merge_n$.
+Vengono definiti tre placing detti \emph{elementari}:
+\begin{figure}[h]
+\begin{center}
+\subfloat{\input{img/placing_elem1.pdf_tex}}\quad
+\centering
+\subfloat{\input{img/placing_elem2.pdf_tex}}\qquad
+\subfloat{\input{img/placing_elem3.pdf_tex}}
+\end{center}
+\caption{Placing elementari.}
+\end{figure}
 \end{defi}
 
-% aggiungere img placing elementari
-
-Tutte le permutazioni possono essere costruite dalla simmetria elementare $\gamma_{1,1}$; tutti i placings possono essere costruiti a partire da $\gamma_{1,1}$, $1$ e $join$.
+\begin{oss}
+Tutte le permutazioni possono essere costruite a partire dalla simmetria elementare $\gamma_{1,1}$; tutti i placings possono essere costruiti a partire da $\gamma_{1,1}$, $1$ e $join$.
+\end{oss}
+\begin{esempio}
+$merge_0 = 1$ e $merge_{n+1}= join \circ (id_I \otimes merge_n)$
+\end{esempio}
 
 \begin{defi}[Linking, sostituzione, chiusura]
-Un \emph{linking} ($\lambda$) è un bigrafo senza posti. I linkings sono generati per composizione, prodotto e identità a partire da \emph{sostituzioni} elementari $y/X$ e \emph{chiusure} elementari $/x:x\to \epsilon$.
+Un \emph{linking} ($\lambda$) è un bigrafo senza posti. I linkings sono generati per composizione, prodotto e identità a partire da \emph{sostituzioni elementari} $y/X$ e \emph{chiusure elementari} $/x:x\to \epsilon$ (si veda la figura \ref{fig:linking_elem}).
 
-% inserire img linkings elementari
+Una \emph{sostituzione} ($\sigma$) è il prodotto di sostituzioni elementari; una \emph{chiusura} è il prodotto di chiusure elementari.
 
-Una \emph{sostituzione} ($\sigma$) è il prodotto di sostituzioni elementari; una \emph{chiusura} è il prodotto di chiusure elementari. La sostituzione vuota è $x:\epsilon \to x$. \qed
+La sostituzione vuota è $x:\epsilon \to x$.
 \end{defi}
+\begin{figure}[h]
+\begin{center}
+\subfloat[Sostituzione elementare]{\input{img/linking_elem1.pdf_tex}}\qquad
+\centering
+\subfloat[Chiusura elementare]{\qquad\qquad\input{img/linking_elem2.pdf_tex}}
+\end{center}
+\caption{Linking elementari.}
+\label{fig:linking_elem}
+\end{figure}
 
 \begin{term}[Rinomina]
 Una sostituzione biiettiva è detta \emph{rinomina} ($\alpha$).
@@ -302,17 +387,22 @@ Una sostituzione biiettiva è detta \emph{rinomina} ($\alpha$).
 Isomorfismi tra place graphs e link graphs sono, rispettivamente, permutazioni $\pi$ e rinomine $\alpha$; isomorfismi tra bigrafi sono coppie $\langle \pi,\alpha \rangle$.
 \end{prop}
 
-C'è solo un tipo di bigrafo elementare che introduce nodi:
+C'è solo un tipo di bigrafo elementare che introduce nodi: l'\emph{ione}.
 \begin{defi}[Ione]
 Per ogni controllo $K : n$, il bigrafo 
  $K_{\vec{x}}: 1 \to \left< 1 , \{ x_1 , \ldots , x_n \} \right>$ 
 avente un unico nodo $K$ le cui porte sono collegate biiettivamente con $n$ 
 distinti nomi ed un unico sito all'interno di $K$, è detto \emph{ione discreto} (o più semplicemente, \emph{ione}).
-
-% immagine ione
+\begin{figure}[h]
+\begin{center}
+\def\svgwidth{\textwidth/3}
+\input{img/ione.pdf_tex}
+\end{center}
+\caption{Ione.}
+\end{figure}
 \end{defi}
 
-\begin{defi}[(Bigrafo) Primo, discreto]
+\begin{defi}[Primo, discreto]
 % controllare traduzione homset
 Un bigrafo \emph{primo} con interfaccia $m\to\langle X\rangle$ è privo di inner names, e ha una sola radice. Un bigrafo (o link graph) è \emph{discreto} se non ha link chiusi, e la sua mappa dei link è biiettiva.  
 \end{defi}
@@ -323,17 +413,15 @@ $merge_n:n\to 1$ è un primo importante, in quanto non ha nodi e mappa $n$ siti i
 
 \begin{defi}[Atomo, molecola]
 Se il sito di un K-ione discreto è riempito da $1:0\to 1$ (placing elementare), il risultato è un \emph{atomo} discreto $K_{\vec{x}}\circ 1$; se è riempito da un bigrafo discreto $G: I \to \langle 1,Y\rangle$ è una \emph{molecola} discreta $(K_{\vec{x}} \otimes id_Y)\circ G$. 
-
-% immagini
+\begin{figure}[h]
+\begin{center}
+\subfloat[Atomo]{\input{img/atomo.pdf_tex}}
+\centering
+\subfloat[Molecola]{\qquad\input{img/molecola.pdf_tex}}
+\end{center}
+\caption{Atomo e molecola.}
+\end{figure}
 \end{defi}
-
-\begin{defi}[Occorrenza]
-Un bigrafo $F$ \emph{occorre} in un bigrafo $G$ se l'equazione $C_1 \circ (F \otimes id_I) \circ C_2$ è vera per qualche interfaccia $I$ e bigrafo $C_1$ e $C_2$.
-\end{defi}
-
-\begin{term}[Matching, contesto, parametro] La ricerca dell'occorrenza di un bigrafo $F$ in uno $G$ viene detta \emph{matching}. I risultati del matching vengono chiamati \emph{match}, indicati con  $M = C \circ (F \otimes id_I) \circ D$; $C$ viene detto
-\emph{contesto} mentre $D$ viene chiamato \emph{vettore di parametri} (o, più semplicemente, \emph{parametro}).
-\end{term}
 
 \begin{oss}
 L'identità $id_I$ è importante qua: permette ai nodi di $C_1$ di avere figli in $C_2$ ed $F$, e permette a $C_1$ e $C_2$ di condividere link che non coinvolgono $F$.
@@ -363,9 +451,9 @@ dove $\lambda : Y \to Z$ sono linking e $d_i$ sono bigrafi discreti e primi.
 \end{cor}
 
 Questa scomposizione di un bigrafo in bigrafi discreti più piccoli è cruciale per dimostrare la completezza
-della teoria algebrica dei bigrafi. %bla bla bla + cite milner
+della teoria algebrica dei bigrafi (\cite{Milner:SMCA}). 
 
-\subsection{Operazioni derivate}
+\subsection{Operazioni derivate}\label{ssec:op_derivate}
 
 \begin{nota} 
 Spesso si omette \squote{$\cdots \otimes id_I$} in una composizione del tipo
@@ -415,15 +503,15 @@ Il prodotto merge ($|$) di due bigrafi $G_i:\left<m_i,X_i\right> \to \left<n_i,Y
 Il prodotto merge gode della \emph{proprietà associativa} e (su bigrafi di larghezza unitaria) ha 1 come unità.
 \end{prop}
 
-\section{Evoluzione dei bigrafi}
-Bla Bla-Bla-Bla Bla, Bla Bla
+\section{Evoluzione dei bigrafi}\label{sec:evoluzione_bigrafi}
+Il uno dei motivi per cui i bigrafi sono un formalismo interessante è la loro capacità di evolvere.
 
 \begin{defi}[Reazione]
 Una \emph{reazione} $F\to F'$ è una trasformazione da un bigrafo $F$ ad un bigrafo $F^\prime$.
 \end{defi}
 
 \begin{defi}[Segnatura dinamica]
-Una segnatura è detta \emph{dinamica} se associa ad ogni controllo $K$ uno \emph{stato} nell'insieme $\{atomico,attivo,passivo\}$.
+Una segnatura è detta \emph{dinamica} se associa ad ogni controllo $K$ uno \emph{stato} nell'insieme $\{attivo,passivo\}$.
 Un K-nodo è detto attivo se il suo controllo è attivo. Le regioni sono sempre attive.
 Un sito è attivo se tutti i suoi antenati nel place graph sono attivi. Un bigrafo è attivo se tutti i suoi siti
 sono attivi.
@@ -435,9 +523,9 @@ Un K-nodo passivo, e conseguentemente tutti i suoi discendenti, sono inibiti al 
 
 Definito cosa intendiamo per reazione, ora è necessario formalizzare un modo per rappresentare il \emph{modo} in cui queste reazioni avvengono; ciò viene ottenuto definendo delle \emph{regole di riscrittura}.
 
-\subsection{Regole di riscrittura}
+\subsection{Regole di riscrittura}\label{ssec:regole_riscrittura}
 
-\begin{defi}[Regola di riscrittura]
+\begin{defi}[Regola di riscrittura]\label{def:regola_riscrittura}
 Una \emph{regola di riscrittura} $R\to R^\prime$ definisce una reazione $a\to a'$, dove:
 \begin{itemize}
 \item $a = C\circ (R\otimes id_I)\circ d$;
@@ -446,29 +534,49 @@ Una \emph{regola di riscrittura} $R\to R^\prime$ definisce una reazione $a\to a'
 \item $a$, $a'$ e $d$ sono \emph{ground}(\emph{agenti});
 \item $R$ ed $R'$ hanno una stessa interfaccia $I$.
 \end{itemize}
+\end{defi}
+\begin{term}[Redex, Reactum]
 $R$ è detto \emph{redex}, $R'$ è detto \emph{reactum}.
+\end{term}
+
+\begin{figure}[h]
+\begin{center}
+\def \svgwidth{0.8 \textwidth}
+\input{img/regola_reazione.pdf_tex}
+\end{center}
+\caption[Esempio di regola di riscrittura.]{Esempio di regola di riscrittura. A sinistra della freccia c'è il redex, a destra c'è il reactum}
+\end{figure}
+
+In buona sostanza, quando si applica una regola di riscrittura ad un bigrafo $B$, si va a cercare un'\emph{occorrenza} del redex in $B$, e la si sostituisce con il reactum. Ora si formalizzerà questo procedimento.
+
+\begin{defi}[Occorrenza]
+Un bigrafo $F$ \emph{occorre} in un bigrafo $G$ se l'equazione $C_1 \circ (F \otimes id_I) \circ C_2$ è vera per qualche interfaccia $I$ e bigrafo $C_1$ e $C_2$.
 \end{defi}
 
+\begin{term}[Matching, contesto, parametro] La ricerca dell'occorrenza di un bigrafo $F$ in uno $G$ viene detta \emph{matching}. I risultati del matching vengono chiamati \emph{match}, indicati con  $M = C \circ (F \otimes id_I) \circ D$; $C$ viene detto
+\emph{contesto} mentre $D$ viene chiamato \emph{vettore di parametri} (o, più semplicemente, \emph{parametro}).
+\end{term}
+
 \begin{oss}
-Il fatto che $R$ e $R^\prime$ debbano avere la stessa interfaccia è un vincolo molto forte:
-infatti non consente di fare, per esempio, la copia del contenuto di un nodo in un altro, o lo scambio
+Con riferimento alla definizione \ref{def:regola_riscrittura}, il fatto che $R$ ed $R^\prime$ debbano avere la stessa interfaccia è un vincolo molto forte:
+infatti non ciò consente di fare, per esempio, la copia del contenuto di un nodo in un altro, o lo scambio
 dei contenuti di due nodi in regioni differenti (mantenendo inalterata la loro posizione).
 \end{oss}
-Per rilassare questo vincolo, si va a definire una mappa tra le interfacce di redex e reactum.
+Per rilassare questo vincolo, si va a definire una mappa tra le interfacce del redex e del reactum.
 
 \begin{defi}[Mappa d'istanziazione]
 Siano $R$ ed $R^\prime$ due bigrafi con, rispettivamente, $\left<m,X\right>$ e $\left<m^\prime,X\right>$ come interfacce interne. Una \emph{mappa d'istanziazione} è una funzione
 $\eta : m^\prime \to m$ che mappa siti di $R^\prime$ in siti di $R$.
 \end{defi}
 
-Grazie alle mappe di istanziazione è possibile definire una forma più espressiva di regola di riscrittura.
-
-\begin{defi}[Istanziamento]
+\begin{defi}[Funzione istanza/istanziamento]
 Una \emph{funzione istanza} $\bar{\eta}$, data una mappa d'istanziazione $\eta : m^\prime \to m$, e dato un agente $g:\left<m,X\right>$ la cui Forma Normale Discreta è $g = \lambda \circ ( d_0 \otimes \cdots \otimes d_{m-1} )$, è definita come:
 \begin{center}
  $\bar{\eta}(g) \eqdef \lambda \circ ( d^\prime_0 \parallel \cdots \parallel d^\prime_{m^\prime - 1} )$, con $d^\prime_i \bumpeq d_{\eta(i)}$.
 \end{center}
 \end{defi}
+
+Grazie alle mappe di istanziazione è possibile definire una forma più espressiva di regola di riscrittura.
 
 \begin{defi}[Regola di riscrittura parametrica]
 Una regola di riscrittura $R\to R'$, affiancata da una mappa d'istanziazione $\eta$, è detta \emph{regola di riscrittura parametrica}.
@@ -483,22 +591,22 @@ Dato un \emph{agente} $a$, dove $R$ occorre in $a$, la regola di riscrittura par
 \begin{oss} Ogni regola di riscrittura si può scrivere come una regola di riscrittura parametrica che ha come mappa d'istanziazione la funzione identità.
 \end{oss}
 
-\begin{term} Con la locuzione \emph{regola di riscrittura} si indicheranno le regole di riscrittura \emph{parametriche}.
+\begin{term} In seguito, con la locuzione \emph{regola di riscrittura}, si indicheranno le regole di riscrittura \emph{parametriche}.
 \end{term}
 
-\subsection{BRS - Sistema Reattivo Bigrafico}
+\subsection{BRS - Sistema Reattivo Bigrafico}\label{ssec:brs}
+Definite le regole di scrittura, si vuole accoppiare la semantica del bigrafo (definita dalla segnatura) all'insieme di regole che ne causano l'evoluzione. Ciò viene fatto dal \emph{BRS}.
 
-\begin{defi}[Sistema Reattivo Bigrafico]
-Un \emph{Sistema Reattivo Bigrafico} (BRS) è definito attraverso una coppia $(K , \mathcal{R})$, dove $K$  è una segnatura e $\mathcal{R}$ è un insieme di regole
+\begin{defi}[Sistema Reattivo Bigrafico - BRS]
+Un \emph{Sistema Reattivo Bigrafico} (BRS) è definito da una coppia $(K , \mathcal{R})$, dove $K$  è una segnatura ed $\mathcal{R}$ è un insieme di regole
 di riscrittura; pertanto viene indicato con $BG(K,\mathcal{R})$.
- L'insieme $\mathcal{R}$ è chiuso rispetto all'\emph{equivalenza sul supporto}; ovvero,
-se $R \bumpeq S$ e $R^\prime \bumpeq S^\prime$ e $(R,R^\prime,\eta) \in \mathcal{R}$ per un certo $\eta$, allora $(S,S^\prime,\eta) \in \mathcal{R}$.
+ L'insieme $\mathcal{R}$ è chiuso rispetto all'\emph{equivalenza sul supporto}: se $R \bumpeq S$ e $R^\prime \bumpeq S^\prime$ e $(R,R^\prime,\eta) \in \mathcal{R}$ per un certo $\eta$, allora $(S,S^\prime,\eta) \in \mathcal{R}$.
 \end{defi}
 
 Pertanto, dato un agente $a$ con segnatura $K$, $BG(K,\mathcal{R})$ permette di calcolare tutti gli agenti $a'$ che si possono ottenere facendo reagire $a$ un numero indeterminato di volte, ovvero gli $a':a\to_* a'$.
 
 
-Nei capitoli a seguire, sarà illustrato un modo di implementare e simulare il BRS, nonché di ottenere tutti gli stati possibili da esso.
+Nei capitoli a seguire, sarà illustrato un modo di implementare e simulare il BRS, nonché di ottenere tutti gli stati possibili del sistema da esso.
 
 % % % % % % % % % % % % % % % % % % % % % % % 
 %			CAP 2							%
@@ -560,8 +668,7 @@ Per verificare se ci sono nodi duplicati si svolge una ricerca in due fasi:
 \item Si verifica se c'è una collisione nella tabella di hash tra il nodo che si vuole aggiungere ed uno esistente;
 \item Se è così, si controlla se i due stati sono isomorfi sfruttando la classe \texttt{Isomorphism}, ed in particolare il suo metodo \texttt{areIsomorph(Bigraph,Bigraph)}.
 \end{itemize}
-\paragraph{Nota}L'implementazione della classe \texttt{Isomorphism} non è oggetto di questa tesi; ci si limita a specificare che essa modella il problema dell'isomorfismo tra bigrafi come un'eguaglianza di flusso, risolto con tecniche di programmazione a vincoli.
-% riferimento a luca e/o paper di miculan-peressotti?
+\paragraph{Nota}L'implementazione della classe \texttt{Isomorphism} non è oggetto di questa tesi; ci si limita a specificare che essa modella il problema dell'isomorfismo tra bigrafi come un'eguaglianza di flusso, risolto con tecniche di programmazione a vincoli. Per ulteriori dettagli si rimanda il lettore a \cite{Geatti:tesiBRS}.
 
 
 \section{Comporre il Simulatore}
@@ -578,10 +685,10 @@ Di seguito vengono descritte alcune implementazioni già definite di \texttt{Sim}
 \subsection{TrueRandomSim} 
 \texttt{TrueRandomSim} è un simulatore che segue un singolo ``ramo" di evoluzione del sistema: per far ciò, ogni volta che vengono generati degli stati applicando le regole di riscrittura, ne viene scelto uno \emph{pseudo}-casualmente e gli altri vengono scartati; in tal modo, il grafo degli stati si riduce ad una catena lineare di nodi con un solo figlio (eccetto l'ultimo nodo). Non è possibile sapere quando si sono esplorati tutti gli stati possibili.
 
-\section{Visualizzare i Bigrafi}
+\chapter{Visualizzare i Bigrafi}
 Ora che si dispone di un simulatore, sarebbe interessante poter visualizzare i risultati ottenuti nel modo migliore possibile. Tuttavia generare in modo automatico una rappresentazione grafica di bigrafi è un problema complicato, che non è stato ancora risolto. Pertanto, come punto di partenza, si vuole ottenere una rappresentazione testuale; in seguito, si indicherà come produrre una rappresentazione grafica molto semplificata.
 
-\subsection{Rappresentazione testuale}
+\section{Rappresentazione testuale}
 JLibBig fornisce già un metodo per tradurre un bigrafo in testo, ovvero \texttt{Bigraph.toString()}; tuttavia il formato è poco leggibile, perciò si propone di migliorare questo risultato andando a definire una classe \emph{pretty-printer}: tale classe legge l'oggetto \texttt{Bigraph}, costruendone una sua rappresentazione interna (ad albero), e lo stampa visualizzando le proprietà dei nodi (in particolare le propietà con nome del tipo \emph{``*Name"}).
 
 \lstinputlisting[breaklines,frame=single,caption=Un estratto di \emph{pretty-print} di un bigrafo,firstline=14, lastline=38]{lst/prettyprint.txt}
@@ -596,7 +703,7 @@ In particolare si noti che il \emph{pretty-printer}:
 \item identifica e numera esplicitamente le porte dei nodi, ove presenti.
 \end{itemize}
 
-\subsection{Rappresentazione grafica}
+\section{Rappresentazione grafica}
 Come anticipato, non esiste un algoritmo preciso ed affidabile per generare automaticamente la rappresentazione grafica dei bigrafi; al contrario, il campo della visualizzazione dei grafi è stato soggetto ad estesa ricerca, e sono disponibili linguaggi e programmi già pronti. Pertanto si è deciso di fornire una rappresentazione semplificata dei bigrafi in questo modo:
 \begin{itemize}
 \item[1.] un parser trasforma il bigrafo in un grafo orientato, rappresentato in \emph{DOT Language};
@@ -605,22 +712,29 @@ Come anticipato, non esiste un algoritmo preciso ed affidabile per generare auto
 \end{itemize}
 \paragraph{Gli strumenti} Il \emph{parser} citato al punto 1 è implementato dalla classe \texttt{DotLangPrinter}, che internamente funziona similarmente al \emph{pretty-printer}. Il \emph{DOT Language} è un formalismo nato per rappresentare grafi orientati e non orientati, permettendo di specificare proprietà per i nodi come colore, forma etichetta, etc\dots.
 \emph{GraphViz} è un programma \emph{open-source} che genera immagini di grafi, data la loro descrizione in DOT. Di seguito è riportato un esempio:
-
+% cambiare esempio!!!
 \lstinputlisting[breaklines,frame=single,caption=Esempio di bigrafo in DOT %(Estratto)
 ]{lst/mult.dot}
 
 
-\begin{figure}[htbp]
-\includegraphics{mult}
+\begin{figure}[ht]
+\includegraphics[height=0.3 \textheight]{mult}
 \caption{\emph{Render} di GraphViz del bigrafo}
 \end{figure} 
 
 \section{Model Checking}
+\subsection{Predicati}
 
-\section{Esempi e applicazioni}
-\subsection{Il Gioco della Vita di Conway}
+\chapter{Esempi e applicazioni}
+\section{Viaggio in macchina}
 
 % altro...
-\section{Conclusioni}
+\chapter{Conclusioni}
+
+% Bibliografia
+\cleardoublepage
+%\phantomsection
+\addcontentsline{toc}{chapter}{\bibname}
+\printbibliography
 
 \end{document}

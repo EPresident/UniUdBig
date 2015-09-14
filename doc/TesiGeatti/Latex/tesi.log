@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  14 SEP 2015 15:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  14 SEP 2015 17:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1280,7 +1280,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 1501--1502
 
  []
 
-[48] [49]) [50] [51]
+[48] [49] [50]) [51]
 \openout2 = `logic.aux'.
 
  (./logic.tex [52
@@ -1390,6 +1390,21 @@ Underfull \hbox (badness 10000) in paragraph at lines 2199--2200
 
  (./conclusions.tex
 Conclusioni.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--3
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 4--5
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 6--7
+
+ []
+
 ) [93
 
 
@@ -1420,7 +1435,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  28628 strings out of 493091
  686983 string characters out of 6134965
- 881405 words of memory out of 5000000
+ 881401 words of memory out of 5000000
  31516 multiletter control sequences out of 15000+600000
  15875 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1449,7 +1464,7 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (113 pages, 755327 bytes).
+Output written on tesi.pdf (113 pages, 753712 bytes).
 PDF statistics:
  498 PDF objects out of 1000 (max. 8388607)
  337 compressed objects within 4 object streams

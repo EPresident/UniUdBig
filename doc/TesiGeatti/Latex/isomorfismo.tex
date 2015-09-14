@@ -1675,7 +1675,7 @@ Infine, si noti anche il sito numero 2: si trova dentro il pacchetto e permette 
 Vediamo ora un esempio reale, proposto in figura \ref{fig:networkRuleExe}. Siano $D_S$ e $D_R$ i domini rispettivamente del mittente (sender) e del destinatario (receiver). Indicheremo con il triangolo il controllo per un host. Quindi $h_1$ e $h_2$ saranno rispettivamente all'interno di $D_S$ e $D_R$. Lo stesso vale per i router, cioè $R_S$ e $R_R$. Supponiamo che il pacchetto sia di tipo IP, e che $h_1$ sia collegato per esempio a $158.110.3.46$, e $h_2$ a $158.110.144.31$. Infine, per quanto detto prima a proposito di ``$Local_S$" e ``$Local_R$", alla porta inferiore di $R_S$ si collegherà $h_1$, mentre a quella di $R_R$ si collegherà $id_2$.
 
 
-	\begin{figure*}[th]
+	\begin{figure*}[!htbp]
 	\centering
 	\begin{tikzpicture}
 	%\draw[help lines] (0,0) grid (10,5);
@@ -1738,11 +1738,9 @@ Vediamo ora un esempio reale, proposto in figura \ref{fig:networkRuleExe}. Siano
 	\end{figure*}
 
 
-Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo stato iniziale del grafo degli stati. Il nostro BRS è formato da una sola regola, cioè quella di figura \ref{fig:forwardRule}, che chiameremo $R_0$. Si noti come il redex di $R_0$ trovi una ed una sola occorrenza in $S_0$, e quindi genererà un solo stato, ovvero $S_1$, dove il pacchetto si è spostano in $D_R$, arrivando a destinazione. Si può vedere questo risultato nel bigrafo di figura \ref{fig:forwardRuleBigPost}, che sarà quindi $S_1$.
 
 
-
-	\begin{figure*}[th]
+	\begin{figure*}[!htbp]
 	\centering
 	\begin{tikzpicture}
 	%\draw[help lines] (0,0) grid (10,5);
@@ -1804,12 +1802,15 @@ Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo s
 	\caption{Bigrafo dopo l'applicazione della regola $R_0$ \label{fig:forwardRuleBigPost}}
 	\end{figure*}
 
+Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo stato iniziale del grafo degli stati. Il nostro BRS è formato da una sola regola, cioè quella di figura \ref{fig:forwardRule}, che chiameremo $R_0$. Si noti come il redex di $R_0$ trovi una ed una sola occorrenza in $S_0$, e quindi genererà un solo stato, ovvero $S_1$, dove il pacchetto si è spostano in $D_R$, arrivando a destinazione. Si può vedere questo risultato nel bigrafo di figura \ref{fig:forwardRuleBigPost}, che sarà quindi $S_1$.
+
+
 
 Di per sè, il BRS si dimentica degli stati precedenti, in questo caso $S_0$. Per cui, da $S_1$ scatterebbe di nuovo la regola $R_0$, creando lo stato $S_2$. A sua volta, da $S_2$, eseguirebbe di nuovo $R_0$ e causerebbe così un'esecuzione infinita, dando luogo al grafo degli stati in figura \ref{fig:infiniteStateGraphNetwork}.
 
 
 
-\begin{figure*}[th]
+\begin{figure*}[!htbp]
 	\centering
 	\begin{tikzpicture}%[scale=0.8]
 	%\draw[help lines] (0,0) grid (14,5);
@@ -1840,7 +1841,7 @@ Di per sè, il BRS si dimentica degli stati precedenti, in questo caso $S_0$. Per
 
 
 
-\begin{figure*}[th]
+\begin{figure*}[!htbp]
 	\centering
 	\begin{tikzpicture}%[scale=0.8]
 	%\draw[help lines] (0,0) grid (14,5);

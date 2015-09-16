@@ -1,68 +1,88 @@
 \relax 
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Model Checker per bigrafi}{53}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Model Checker per bigrafi}{51}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Model Checker}{53}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Grafo degli stati. }}{54}}
-\newlabel{fig:bsgExe}{{3.1}{54}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Generazione degli stati}{54}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Esempio di generazione Breadth First. }}{55}}
-\newlabel{fig:BSGen}{{3.2}{55}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Primo passo}}}{55}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Secondo passo}}}{55}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Terzo passo}}}{55}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Esempio di generazione random. }}{56}}
-\newlabel{fig:BSGenRandom}{{3.3}{56}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Primo passo}}}{56}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Secondo passo}}}{56}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Terzo passo}}}{56}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Quarto passo}}}{56}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {Quinto passo}}}{56}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Logica per i bigrafi}{57}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Sintassi}{57}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Semantica}{58}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Dettagli Implementativi}{59}}
-\newlabel{sec:dettImpl}{{3.3}{59}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Property Matcher}{60}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Regole di Reazione con Propriet\`a}{60}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Regola di inoltro tra router. }}{60}}
-\newlabel{fig:forwardRuleTemp}{{3.4}{60}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Esempi}{61}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Moltiplicazione}{61}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Bigrafo per il numero 8 }}{61}}
-\newlabel{fig:big8}{{3.5}{61}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Model Checker. }}{62}}
-\newlabel{fig:modelCheckerMult}{{3.6}{62}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.2}Router}{62}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Bigrafo di partenza }}{62}}
-\newlabel{fig:moreRouters}{{3.7}{62}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Regola di inoltro tra router. }}{63}}
-\newlabel{fig:forwardRuleBis}{{3.8}{63}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Esempi di predicati}}{63}}
-\newlabel{fig:wrongRightProps}{{3.9}{63}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Predicato Sbagliato}}}{63}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Predicato Corretto}}}{63}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Grafo degli stati }}{64}}
-\newlabel{fig:stateGraphNetworkLoops}{{3.10}{64}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Predicato con propriet\`a }}{65}}
-\newlabel{fig:propertyPredicate}{{3.11}{65}}
+\newlabel{ch:modelCheckerChapter}{{4}{51}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Grafo degli stati}{51}}
+\citation{BRSAnalysis}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Esempio di grafo degli stati. }}{52}}
+\newlabel{fig:stateGraphExe}{{4.1}{52}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Grafo degli stati infinito. }}{52}}
+\newlabel{fig:infiniteStateGraphExe}{{4.2}{52}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Esempio}{53}}
+\newlabel{sub:networkExe}{{4.1.1}{53}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Regola di inoltro tra router. }}{53}}
+\newlabel{fig:forwardRule}{{4.3}{53}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Bigrafo di partenza }}{54}}
+\newlabel{fig:networkRuleExe}{{4.4}{54}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Bigrafo dopo l'applicazione della regola $R_0$ }}{55}}
+\newlabel{fig:forwardRuleBigPost}{{4.5}{55}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Grafo degli stati infinito. }}{55}}
+\newlabel{fig:infiniteStateGraphNetwork}{{4.6}{55}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Grafo degli stati finito. }}{55}}
+\newlabel{fig:finiteStateGraphNetwork}{{4.7}{55}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Model Checker}{56}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Grafo degli stati. }}{56}}
+\newlabel{fig:bsgExe}{{4.8}{56}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Generazione degli stati}{57}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Esempio di generazione Breadth First. }}{57}}
+\newlabel{fig:BSGen}{{4.9}{57}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Primo passo}}}{57}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Secondo passo}}}{57}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Terzo passo}}}{57}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Esempio di generazione random. }}{58}}
+\newlabel{fig:BSGenRandom}{{4.10}{58}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Primo passo}}}{58}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Secondo passo}}}{58}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {Terzo passo}}}{58}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(d)}{\ignorespaces {Quarto passo}}}{58}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(e)}{\ignorespaces {Quinto passo}}}{58}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Logica per i bigrafi}{59}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Sintassi}{59}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Semantica}{60}}
+\citation{JLibbig}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Dettagli Implementativi}{62}}
+\newlabel{sec:dettImpl}{{4.4}{62}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Property Matcher}{62}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Regole di Reazione con Propriet\`a}{62}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Regola di inoltro tra router. }}{63}}
+\newlabel{fig:forwardRuleTemp}{{4.11}{63}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Esempi}{63}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Moltiplicazione}{63}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.12}{\ignorespaces Bigrafo per il numero 8 }}{64}}
+\newlabel{fig:big8}{{4.12}{64}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.13}{\ignorespaces Model Checker. }}{64}}
+\newlabel{fig:modelCheckerMult}{{4.13}{64}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Router}{64}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.14}{\ignorespaces Bigrafo di partenza }}{65}}
+\newlabel{fig:moreRouters}{{4.14}{65}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.15}{\ignorespaces Regola di inoltro tra router. }}{65}}
+\newlabel{fig:forwardRuleBis}{{4.15}{65}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.16}{\ignorespaces Esempi di predicati}}{66}}
+\newlabel{fig:wrongRightProps}{{4.16}{66}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Predicato Sbagliato}}}{66}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Predicato Corretto}}}{66}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.17}{\ignorespaces Grafo degli stati }}{66}}
+\newlabel{fig:stateGraphNetworkLoops}{{4.17}{66}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.18}{\ignorespaces Predicato con propriet\`a }}{67}}
+\newlabel{fig:propertyPredicate}{{4.18}{67}}
 \@setckpt{logic}{
-\setcounter{page}{66}
+\setcounter{page}{68}
 \setcounter{equation}{0}
 \setcounter{enumi}{0}
 \setcounter{enumii}{0}
 \setcounter{enumiii}{0}
 \setcounter{enumiv}{0}
-\setcounter{footnote}{0}
+\setcounter{footnote}{1}
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
-\setcounter{chapter}{3}
-\setcounter{section}{4}
+\setcounter{chapter}{4}
+\setcounter{section}{5}
 \setcounter{subsection}{2}
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{11}
+\setcounter{figure}{18}
 \setcounter{table}{0}
 \setcounter{parentequation}{0}
 \setcounter{subfigure}{0}
@@ -70,11 +90,12 @@
 \setcounter{subtable}{0}
 \setcounter{lotdepth}{1}
 \setcounter{lstnumber}{4}
+\setcounter{r@tfl@t}{0}
 \setcounter{LT@tables}{0}
 \setcounter{LT@chunks}{0}
-\setcounter{teor}{2}
-\setcounter{define}{25}
-\setcounter{prop}{7}
-\setcounter{corol}{1}
+\setcounter{teor}{0}
+\setcounter{define}{0}
+\setcounter{prop}{0}
+\setcounter{corol}{0}
 \setcounter{lstlisting}{0}
 }

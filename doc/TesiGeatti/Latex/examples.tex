@@ -109,9 +109,9 @@ A riconosce il linguaggio $L(A) = (a(a+b))^*$.
 \end{figure}
 
 
-Trattiamo ora il problema di come rappresentare gli automi tramite i bigrafi. Per prima cosa, guardiamo la figura \ref{fig:bigAutomata1}. I due stati $q_0$ e $q_1$ sono stati modellati con dei rettangoli aventi una sola porta. Le transizioni sono i nodi di tipo T. Ogni stato $q_i$ contiene al suo interno tutte le transizioni che partono da esso: per esempio $q_0$ contiene solo un nodo T perchè la sola transizione che parte da $q_0$ è $q_0\stackrel{a}{\longrightarrow} q_1$, mentre $q_1$ contiene due nodi T, che modellano le transizioni $q_1\stackrel{a}{\longrightarrow} q_0$ e $q_1\stackrel{b}{\longrightarrow} q_0$. 
+Trattiamo ora il problema di come rappresentare gli automi tramite i bigrafi. Per prima cosa, guardiamo la figura \ref{fig:bigAutomata1}. I due stati $q_0$ e $q_1$ sono stati modellati con dei rettangoli aventi una sola porta. Le transizioni sono i nodi di tipo T. Ogni stato $q_i$ contiene al suo interno tutte le transizioni che partono da esso: per esempio $q_0$ contiene solo un nodo T perché la sola transizione che parte da $q_0$ è $q_0\stackrel{a}{\longrightarrow} q_1$, mentre $q_1$ contiene due nodi T, che modellano le transizioni $q_1\stackrel{a}{\longrightarrow} q_0$ e $q_1\stackrel{b}{\longrightarrow} q_0$. 
 
-Ogni transizione è quindi modellata da un nodo di controllo T con due porte: la prima è collegata al carattere che fa scattare la transizione, mentre la seconda è collegata allo stato destinazione. Nella precedente figura, si prenda in considerazione il nodo T dentro $q_0$: esso simboleggia la transizione $q_0\stackrel{a}{\longrightarrow} q_1$ perchè:
+Ogni transizione è quindi modellata da un nodo di controllo T con due porte: la prima è collegata al carattere che fa scattare la transizione, mentre la seconda è collegata allo stato destinazione. Nella precedente figura, si prenda in considerazione il nodo T dentro $q_0$: esso simboleggia la transizione $q_0\stackrel{a}{\longrightarrow} q_1$ perché:
 \begin{itemize}
 	\item
 	T è dentro $q_0$
@@ -459,8 +459,8 @@ Si noti la semplicità di quest'ultima formula: il nodo di tipo $String$ deve ess
 Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = W_B(T,T,T)$.
 \end{prop}
 
-Infine, si noti come l'automa modellato tramite bigrafi sia \emph{non deterministico}: le transizioni sono modellate tramite regole di reazione che scattano dopo aver trovato un match. Il processo di matching però è per natura non deterministico, il che vuol dire che se nel bigrafo di partenza la regola $R_0$ trova più di un match, allora sceglie uno dei due in maniera non deterministica. Si prenda il bigrafo di figura \ref{fig:bigAutomataProblem}: se si aggiunge nel nodo $q_0$ un'altra transizione collegata all'outername `a' che porta ad un terzo stato $q_2$, allora l'automa diventa non deterministico, perchè la regola $R_0$ troverà sempre due match nel bigrafo e ne sceglierà uno in maniera casuale.
-Riassumendo: nella versione bigrafica, gli automi non deterministici si distinguono da quelli deterministici \emph{solamente} perchè nei primi esiste almeno un nodo che ha due o più archi uscenti con la stessa etichetta.\\
+Infine, si noti come l'automa modellato tramite bigrafi sia \emph{non deterministico}: le transizioni sono modellate tramite regole di reazione che scattano dopo aver trovato un match. Il processo di matching però è per natura non deterministico, il che vuol dire che se nel bigrafo di partenza la regola $R_0$ trova più di un match, allora sceglie uno dei due in maniera non deterministica. Si prenda il bigrafo di figura \ref{fig:bigAutomataProblem}: se si aggiunge nel nodo $q_0$ un'altra transizione collegata all'outername `a' che porta ad un terzo stato $q_2$, allora l'automa diventa non deterministico, perché la regola $R_0$ troverà sempre due match nel bigrafo e ne sceglierà uno in maniera casuale.
+Riassumendo: nella versione bigrafica, gli automi non deterministici si distinguono da quelli deterministici \emph{solamente} perché nei primi esiste almeno un nodo che ha due o più archi uscenti con la stessa etichetta.\\
 
 
 Prendiamo l'istanza del problema in figura \ref{fig:bigAutomataProblem}. Seguiremo una traccia d'esecuzione, cioè faremo tutti i passi che fa $MC_{big}$ per verificare la proprietà desiderata. Vedremo come il grafo degli stati sarà molto semplice: questo spesso è un indice di buona progettazione. Vuol dire che il sistema è stato modellato correttamente, scegliendo poche regole ed evitando di costruire regole ad-hoc per casi particolari. Il nostro BRS è formato da una sola regola, il che evita per esempio che in uno stato $S_i$ venga applicata la regola sbagliata creando nodi inutili nel grafo degli stati.
@@ -884,7 +884,7 @@ In figura \ref{fig:MCbigTrace}, c'è la traccia d'esecuzione di $MC_{big}$, mentr
 
 
 
-Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perchè il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perchè il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
+Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perché il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perché il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
 
 
 
@@ -915,10 +915,10 @@ Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predi
 \end{figure}
 
 
-Questo esempio è molto importante perchè mostra due aspetti fondamentali:
+Questo esempio è molto importante perché mostra due aspetti fondamentali:
 \begin{itemize}
 	\item
-	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perchè significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
+	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perché significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
 	\item
 	il secondo è la generalità della logica per $MC_{big}$: si è espressa una proprietà di uno specifico dominio usando la logica generale creata per il model checker. In questo esempio si è usato il Wario Predicate, che permette di spostarsi all'interno del bigrafo e di verificare se una sua parte esiste e rispetta determinate proprietà. Nel NFA ci è bastato verificare che esistesse la parte denotata dal bigrafo B.
 \end{itemize}
@@ -944,7 +944,7 @@ Il problema chiede di progettare un algoritmo che eviti queste due situazioni:
 	\item
 	ogni filosofo ha una forchetta e aspetta l'altra dal suo vicino: la situazione si trova in uno stato di stallo (\emph{deadlock})
 	\item
-	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perchè non ha mai due forchette, morendo di inedia (\emph{starvation}).
+	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perché non ha mai due forchette, morendo di inedia (\emph{starvation}).
 \end{itemize}
 
 Il problema è una metafora, dove i filosofi sono processi paralleli in un calcolatore: il momento in cui devono prendere le forchette corrisponde alla lettura dei dati, che possono per l'appunto essere condivisi tra più processi come le forchette; il momento in cui un filosofo mangia corrisponde al momento in cui un processo consuma i dati che ha appena recuperato. Si vedranno due strategie: la prima causerà una situazione di deadlock, mentre la seconda lo eviterà e sarà una soluzione al problema.
@@ -1022,12 +1022,12 @@ Il problema è una metafora, dove i filosofi sono processi paralleli in un calcol
 
 Per prima cosa, si definirà come il problema può essere tradotto in bigrafi. Si consideri la figura \ref{fig:diningPhil}: ogni filosofo è rappresentato da un nodo circolare con due porte; si immagini che ogni filosofo sia rivolto verso il centro del tavolo: si ha che la porta a sinistra \emph{dal punto di vista del filosofo} rappresenta la mano sinistra e la chiameremo \emph{porta 0}, mentre la porta a destra rappresenta la mano destra (\emph{porta 1}). Per esempio: la mano sinistra le filosofo $P_1$ è quella collegata a $F_1$, mentre la mano destra è quella collegata a $F_2$.
 
-Le forchette sono rappresentate come nodi triangolari e sono identificate tramite un outername, per esempio $F_4$. Modelliamo il fatto che la forchetta sinistra di un filosofo sia $F_i$ collegando la sua porta 0 all'outername $F_i$. Per esempio: il filosofo $P_4$ ha come forchetta sinistra $F_4$ perchè la sua porta 0 è collegata a questo outername, mentre come forchetta destra $F_5$ perchè la sua porta 1 punta a $F_5$.
+Le forchette sono rappresentate come nodi triangolari e sono identificate tramite un outername, per esempio $F_4$. Modelliamo il fatto che la forchetta sinistra di un filosofo sia $F_i$ collegando la sua porta 0 all'outername $F_i$. Per esempio: il filosofo $P_4$ ha come forchetta sinistra $F_4$ perché la sua porta 0 è collegata a questo outername, mentre come forchetta destra $F_5$ perché la sua porta 1 punta a $F_5$.
 
 Inizialmente tutte le forchette sono posizionate sul tavolo. Modelliamo il fatto che un filosofo $P_i$ abbiamo preso la forchetta $F_k$ spostando quest'ultima all'interno di $P_i$.
 
 \subsection{Prima strategia}
-Tramite la prima strategia, che causerà situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo, per riuscire a mangiare, debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perchè $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
+Tramite la prima strategia, che causerà situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo, per riuscire a mangiare, debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perché $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
 
 
 \begin{figure}[th]
@@ -1304,9 +1304,9 @@ dove G è il bigrafo di figura \ref{fig:diningAim}, in cui ogni filosofo $P_i$ co
 \end{figure}
 
 
-In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perchè le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
+In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perché le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
 
-Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perchè si è causato un deadlock:
+Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perché si è causato un deadlock:
 \begin{prop}
 $MC_{big}$ ritorna False se e solo se esiste almeno una situazione di deadlock.
 \end{prop}
@@ -1489,7 +1489,7 @@ La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di es
 \caption{Due bigrafi isomorfi \label{fig:isoDinings}}
 \end{figure}
 
-Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perchè non si esplorerebbero tutte le possibilità. Si guardi la figura \ref{}: se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
+Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perché non si esplorerebbero tutte le possibilità. Si guardi la figura \ref{}: se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
 
 
 \subsection{Seconda strategia}
@@ -1589,7 +1589,7 @@ Tutte le possibili situazioni in cui Alice e Bob possono agire per rubare i file
 \subsection{Segnatura}
 Incominciamo con il definire la segnatura del bigrafo che modella il problema. Si consideri la figura \ref{fig:bigSafety}: il nodo più grande è ``\emph{Building}" e rappresenta l'edificio dell'azienda. In questo esempio, sono presenti due stanze, ognuna con un computer all'interno. Ogni computer contiene un ``\emph{Token}", che è uno dei file segreti dell'azienda. 
 
-I nodi per Alice e Bob sono modellati tramite due circonferenze, che però si trovano sotto radici diverse: Alice è dentro l'azienda, in quanto è una dipendente e può entrare a tutti gli effetti sia dentro il ``\emph{Building}" sia dentro le ``\emph{Room}". Invece Bob si trova al di fuori dell'azienda, perchè non è un dipendente e quindi il suo accesso è vietato. Ai fini della verifica da parte del model checker, tutti i dipendenti verranno considerati con cattive intenzioni, ovvero: ogni dipendente sarà modellato da un nodo di controllo ``\emph{Alice}". Allo stesso modo, ogni persona al di fuori dell'azienda verrà modellata con un nodo di controllo ``\emph{Bob}".
+I nodi per Alice e Bob sono modellati tramite due circonferenze, che però si trovano sotto radici diverse: Alice è dentro l'azienda, in quanto è una dipendente e può entrare a tutti gli effetti sia dentro il ``\emph{Building}" sia dentro le ``\emph{Room}". Invece Bob si trova al di fuori dell'azienda, perché non è un dipendente e quindi il suo accesso è vietato. Ai fini della verifica da parte del model checker, tutti i dipendenti verranno considerati con cattive intenzioni, ovvero: ogni dipendente sarà modellato da un nodo di controllo ``\emph{Alice}". Allo stesso modo, ogni persona al di fuori dell'azienda verrà modellata con un nodo di controllo ``\emph{Bob}".
 Sia Alice che Bob possiedono uno smartphone, che useranno per trasferire il ``\emph{Token}".
 
 
@@ -1736,7 +1736,7 @@ Vediamo ora la prima politica, che come già anticipato \textbf{non} assicurerà l
 
 
 
-Le regole $R_0$ e $R_1$ modellano rispettivamente l'entrata e l'uscita da una stanza all'interno dell'azienda. Si noti come ogni dipendente, ovvero ogni nodo circolare all'interno dell'azienda, possa entrare liberamente in ogni stanza. La politica di sicurezza è quindi \textbf{minima}, perchè non vengono fatti controlli e ogni dipendente può accedere al computer: in particolare, può collegarlo al suo smartphone e trasferire il Token. Se togliessimo il sito numero 1, allora si potrebbe entrare nella stanza solamente senza oggetti pericolosi: in altre parole, ogni dipendente non dovrebbe avere niente con sè per poter entrare in una stanza.
+Le regole $R_0$ e $R_1$ modellano rispettivamente l'entrata e l'uscita da una stanza all'interno dell'azienda. Si noti come ogni dipendente, ovvero ogni nodo circolare all'interno dell'azienda, possa entrare liberamente in ogni stanza. La politica di sicurezza è quindi \textbf{minima}, perché non vengono fatti controlli e ogni dipendente può accedere al computer: in particolare, può collegarlo al suo smartphone e trasferire il Token. Se togliessimo il sito numero 1, allora si potrebbe entrare nella stanza solamente senza oggetti pericolosi: in altre parole, ogni dipendente non dovrebbe avere niente con sè per poter entrare in una stanza.
 
 
 
@@ -2063,7 +2063,7 @@ Vediamo ora l'applicazione delle regole sul bigrafo di figura \ref{fig:bigSafety
 
 
 
-In figura \ref{fig:threeLastRules}, è raffigurato il bigrafo $S_6$, ottenuto tramite l'applicazione delle regole $R_1$,$R_4$ e $R_5$ al bigrafo $S_3$. In ordine: Alice è uscita dalla stanza con il Token, ha stabilito una connessione con Bob ed ha trasferito il file segreto. Si noti come non fosse necessario che Alice uscisse dalla stanza per chiamare Bob. Questa politica di sicurezza è quindi fallace, perchè consente a Bob o a qualsiasi persona esterna di ottenere un file segreto dell'azienda.\\
+In figura \ref{fig:threeLastRules}, è raffigurato il bigrafo $S_6$, ottenuto tramite l'applicazione delle regole $R_1$,$R_4$ e $R_5$ al bigrafo $S_3$. In ordine: Alice è uscita dalla stanza con il Token, ha stabilito una connessione con Bob ed ha trasferito il file segreto. Si noti come non fosse necessario che Alice uscisse dalla stanza per chiamare Bob. Questa politica di sicurezza è quindi fallace, perché consente a Bob o a qualsiasi persona esterna di ottenere un file segreto dell'azienda.\\
 
 In molti casi l'azienda non ha un edificio semplice come quello di figura \ref{fig:bigSafety}, e quindi c'è bisogno di uno strumento automatico, che affronti il problema anche quando nell'edificio sono presenti numerose stanze, computers e soprattutto numerosi dipendenti. Per questi motivi si è usato $MC_{big}$ per la verifica: esso computa l'intero grafo degli stati, cioè considera tutte le possibili situazioni in cui l'azienda si può trovare, ed appena trova una situazione di pericolo ritorna False, a significare che la politica adottata dall'azienda non è sicura.
 \begin{prop}

@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{BRSAnalysis}
+E.~Calligaris e L.~Geatti.
+\newblock Brs analysis, 2015.
+\newblock \url{https://alichino.dimi.uniud.it/theses/BRSAnalysis}.
+
 \bibitem{Damgaard08ageneric}
 Troels~C. Damgaard e Jean Krivine.
 \newblock A generic language for biological systems based on bigraphs, 2008.
@@ -23,5 +28,10 @@ Eloi Pereira, Pedro~Marques da~Silva, Clemens Krainer, Christoph~M Kirsch, Jose
   Morgado, e Raja Sengupta.
 \newblock A networked robotic system and its use in an oil spill monitoring
   exercise.
+
+\bibitem{JLibbig}
+M.~Peressotti.
+\newblock Jlibbig, 2015.
+\newblock \url{http://mads.uniud.it/wordpress/downloads/libbig/}.
 
 \end{thebibliography}

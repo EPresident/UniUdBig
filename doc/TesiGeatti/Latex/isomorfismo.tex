@@ -1,10 +1,10 @@
-\chapter{Isomorfismo tra bigrafi}
-Si è visto nel precedente capitolo come un bigrafo sia capace di evolversi all'interno di un BRS. In alcune situazioni, si vuole evitare evoluzioni infinite di un bigrafo, perchè
-per esempio porterebbero sempre a stati uguali fra di loro.\\
+\chapter{Isomorfismo tra bigrafi}\label{ch:isoChapter}
+Si è visto nel precedente capitolo come un bigrafo sia capace di evolversi all'interno di un BRS. In alcune situazioni, si vuole evitare evoluzioni infinite di un bigrafo, perché
+per esempio porterebbero sempre a stati uguali fra di loro.
+
 Per tenere traccia all'istante $t_k$ di tutti gli stati precedentemente assunti da un BRS ($t_0 \dots t_{k-1}$), si è costruita una struttura dati a grafo, dove ogni nodo
-è uno stato, cioè un bigrafo: si chiamerà questo grafo  ``\emph{grafo degli stati}". Se un BRS parte dallo stato $S_0$, è possibile che dopo $K$ regole di reazione lo stato $S_k$ sia uguale allo stato iniziale $S_0$. 
-Questo significa che $S_0$ e $S_k$ hanno la stessa \emph{semantica}, cioè rappresentano lo stesso stato del sistema. Per cui, nel grafo degli stati, essi dovranno essere
-lo stesso medesimo nodo. \\
+è uno stato, cioè un bigrafo: si chiamerà questo grafo  ``\emph{grafo degli stati}". Se un BRS parte dallo stato $S_0$, è possibile che dopo $K$ regole di reazione lo stato $S_k$ sia uguale allo stato iniziale $S_0$. Questo significa che $S_0$ e $S_k$ hanno la stessa \emph{semantica}, cioè rappresentano lo stesso stato del sistema. Per cui, nel grafo degli stati, essi dovranno essere lo stesso medesimo nodo.
+
 Questo è equivalente a scrivere: ``se lo stato $S_{k}$ è stato ottenuto da $S_{k-1}$ tramite la regola $R$ e $S_k$ e $S_0$ sono isomorfi, allora da $S_{k-1}$ si ottiene
 $S_0$"
 \begin{center}
@@ -21,48 +21,43 @@ Questo concetto verrà chiarito con gli esempi sottostanti.
 
 \section{Esempio}\label{sub:networkExe}
 Si prenda l'esempio di una rete modellata tramite un bigrafo: si vuole fare in modo che, dato un pacchetto iniziale che ha
-come mittente l'host A, esso arrivi al destinatario B. Ci saranno quindi delle regole di reazione per i router, che permetteranno di inoltrare i pacchetti verso le sue interfacce
-di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di reazione per modellare il fatto che se il destinario è X allora l'interfaccia di uscita del pacchetto è la numero N,  si può pensare di inoltrare il pacchetto verso tutte le uscite in modo non deterministico. Così facendo, il pacchetto arriverà sicuramente al destinatario.
+come mittente l'host $A$, esso arrivi al destinatario $B$. Ci saranno quindi delle regole di reazione per i router, che permetteranno di inoltrare i pacchetti verso le sue interfacce di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di reazione per modellare il fatto che se il destinario è $X$ allora l'interfaccia di uscita del pacchetto è la numero $N$,  si può pensare di inoltrare il pacchetto verso tutte le uscite in modo non deterministico. Così facendo, il pacchetto arriverà sicuramente al destinatario.
 I problemi sono ora due:
 \begin{itemize}
 	\item
 	il pacchetto arriverà a destinatari non corretti. Si può introdurre una regola di reazione che elimini dall'host ogni pacchetto che non ha come destinatario l'host stesso.
 	\item
-	se prendiamo il $k-esimo$ router $R_k$, allora il pacchetto ritornerà al $(k-1)-esimo$ router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
+	se prendiamo il $k$-esimo router $R_k$, allora il pacchetto ritornerà al $(k-1)$-esimo router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
 	anche nuovamente verso $R_{k}$. Si ha così un ciclo infinito di pacchetti tra $R_k$ e $R_{k-1}$.
 \end{itemize}
 
 In questa sede si tratterà il secondo di questi problemi, che ha un'apparentemente semplice soluzione: capire quando due bigrafi sono uguali. In questo esempio, è 
 facile capire che per risolvere il problema basta verificare se gli stati $S_{k+i}$ e $S_{k-1}$ sono uguali: se $S_{k}$ è il bigrafo in cui il pacchetto è nel router $R_{k}$, allora
-si applica la regola di inoltro e si generano tanti stati ($S_{k+1} \dots S_{k+j}$) quanti sono i router vicini a $R_k$; tra di questi ci sara anche $R_{k-1}$. Quindi, se supponiamo
-che nello stato $S_{k+i}$ il pacchetto torni indietro al router $R_{k-1}$, allora il problema è capire che $S_{k+i}$ è uguale $S_{k-1}$, cioè verificare che i due bigrafi siano
-isomorfi. In questo modo si sa che dallo stato $S_{k-1}$ non si dovrà più applicare la regola di inoltro verso $S_{k}$, perchè questo causerebbe un ciclo infinito.
+si applica la regola di inoltro e si generano tanti stati ($S_{k+1} \dots S_{k+j}$) quanti sono i router vicini a $R_k$; tra di questi ci sara anche $R_{k-1}$. Quindi, se supponiamo che nello stato $S_{k+i}$ il pacchetto torni indietro al router $R_{k-1}$, allora il problema è capire che $S_{k+i}$ è uguale $S_{k-1}$, cioè verificare che i due bigrafi siano isomorfi. In questo modo si sa che dallo stato $S_{k-1}$ non si dovrà più applicare la regola di inoltro verso $S_{k}$, perché questo causerebbe un ciclo infinito.
 
 \section{Formulazione del problema}
-Si è visto che il termine isomorfismo ci aiuta a capire quando due bigrafi sono uguali. Riportiamo di nuovo la sua definizione formale (\ref{def:iso}):
+Si è visto che il concetto di isomorfismo ci aiuta a capire quando due bigrafi sono uguali. Riportiamo di nuovo la sua definizione formale:
 \begin{define}[Isomorfismo]
-Due bigrafi F e G si dicono isomorfi se e solo se esiste una traduzione di supporto tra F e G, cioè se e solo se F e G sono \emph{support equivalent} ($F \bumpeq G$).
+Due bigrafi $F$ e $G$ si dicono isomorfi se e solo se esiste una traduzione di supporto tra $F$ e $G$, cioè se e solo se $F$ e $G$ sono \emph{support equivalent} ($F \bumpeq G$).
 \end{define}
 
-Il problema consiste quindi nel trovare un funzione biettiva che ha come dominio i nodi e gli archi del primo bigrafo, come codominio quelli del secondo bigrafo e che ne rispetti
-la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione di supporto}.\\
+La definizione di isomorfismo può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda tanto la sintassi quanto la semantica: due bigrafi strutturalmente uguali sono due bigrafi semanticamente equivalenti (figura \ref{fig:bigMulIso}).
+
+Il problema consiste quindi nel trovare un funzione biettiva che ha come dominio i nodi e gli archi del primo bigrafo, come codominio quelli del secondo bigrafo e che ne rispetti la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione di supporto}.
+
 Si noti come la traduzione di supporto consenta di ritenere isomorfi due bigrafi che sono uguali \emph{modulo permutazione}: tale funzione può infatti operare una permutazione sui nomi dei nodi e degli archi, così come sugli inner names e outer names. In altre parole, non c'è nessun vincolo sui nomi, ma solo sulla struttura del bigrafo. Si capirà meglio questo concetto negli esempi che seguiranno.
 
 
 \subsection{Complessità}\label{sub:isoComplexity}
-Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perchè relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
+Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perché relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
 
 L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
 
-Si dimostrerà il seguente risultato:
+Sia $P_{graph}$ il problema dell'isomorfismo tra grafi. Dato che $P_{graph}$ è in NP ma non è stato ancora dimostrato che sia completo, introduciamo la classe di complessità GI, definita come l'insieme dei problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Si dimostrerà il seguente risultato:
 
 \begin{teor}[Complessità di $P_{big}$]
 Il problema dell'isomorfismo tra bigrafi è GI-completo.
 \end{teor}
-
-\begin{corol}
-Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
-\end{corol}
 
 \begin{dimos}
 Per dimostrare l'equivalenza, procederemo in due direzioni: nella prima dimostreremo che esiste una riduzione in tempo polinomiale da $P_{graph}$ a $P_{big}$, cioè che ogni istanza del problema $P_{graph}$ può venire tradotta in un'istanza del problema $P_{big}$. Invece, nella seconda direzione, faremo l'inverso. Si dimostreranno quindi che esistono le seguenti riduzioni:\\
@@ -75,39 +70,163 @@ P_{big} \le P_{graph}
 $
 \\
 
+
 \begin{itemize}
 	\item
 	$P_{graph} \le P_{big}$:\\
-	Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
+	Ogni grafo $G$ può essere trasformato in un bigrafo $B$ tramite la seguente trasformazione. Innanzitutto, definiamo la segnatura di $B$: servono solamente due controlli, $Node$ con $0$ porte e $Port$ con una sola ($\{Node:0, Port:1\}$). Traduciamo ogni nodo $n_G$ di $G$ in un nodo $n_B$ di tipo $Node$ di $B$; in seguito, per ogni arco uscente o entrante di $n_G$ inseriamo in $n_B$ un nodo di controllo $Port$ e colleghiamo la sua porta all'altro nodo $n_B$ di $B$. Questa trasformazione consente quindi di trasformare ogni grafo in un bigrafo: dato che è possibile implementarla come una visita sul grafo, questa riduzione è in tempo polinomiale (\emph{Karp-riduzione} da  $P_{\pi}$ a $P_{big}$). Un esempio è rappresentato in figura \ref{fig:firstRed}.
+	
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,6);
+%Nodes
+\draw[thick] (1.0,4.0) circle [radius=0.3];
+\draw[thick] (2.0,1.0) circle [radius=0.3];
+\draw[thick] (5.0,2.0) circle [radius=0.3];
+\draw[thick] (5.0,5.0) circle [radius=0.3];
+%Edges
+\draw[myGreen,thick] (1.0,3.7) to [out=270,in=90] (2.0,1.3);
+\draw[myGreen,thick] (2.3,1.0) to [out=0,in=270] (5.0,1.7);
+\draw[myGreen,thick] (1.0,4.3) to [out=90,in=180] (4.7,5.0);
+\draw[myGreen,thick] (5.0,2.3) to [out=110,in=290] (5.0,4.7);
+\draw[myGreen,thick] (2.2,1.2) to [out=80,in=200] (4.8,4.8);
+
+%Red Arrow
+\draw[->,red,thick] (5.7,3.0) -- (7.5,3.0);
+
+%Root
+\draw[rounded corners=5mm,dashed] (8.0,0.0) rectangle (14.0,6.0);
+%Edges
+\draw[myGreen,thick] (9.0,3.7) to [out=270,in=90] (10.0,1.3);%n1-n2
+\draw[myGreen,thick] (9.3,4.0) to [out=0,in=180] (12.7,5.0);%n1-n4
+\draw[myGreen,thick] (10.3,1.0) to [out=0,in=180] (12.7,2.0);%n2-n3
+\draw[myGreen,thick] (10.3,1.3) to [out=100,in=240] (12.7,4.7);%n2-n4
+\draw[myGreen,thick] (13.0,2.3) to [out=90,in=270] (13.0,4.7);%n3-n4
+%Nodes
+\draw[thick] (9.0,4.0) circle [radius=0.6];%n1
+\draw[thick] (10.0,1.0) circle [radius=0.6];%n2
+\draw[thick] (13.0,2.0) circle [radius=0.6];%n3
+\draw[thick] (13.0,5.0) circle [radius=0.6];%n4
+%Ports
+\draw[fill] (9.0,3.7) circle [radius=0.1];%n1
+\draw[fill] (9.3,4.0) circle [radius=0.1];%n1
+\draw[fill] (10.0,1.3) circle [radius=0.1];%n2
+\draw[fill] (10.3,1.0) circle [radius=0.1];%n2
+\draw[fill] (10.3,1.3) circle [radius=0.1];%n2
+\draw[fill] (13.0,2.3) circle [radius=0.1];%n3
+\draw[fill] (12.7,2.0) circle [radius=0.1];%n3
+\draw[fill] (13.0,4.7) circle [radius=0.1];%n4
+\draw[fill] (12.7,5.0) circle [radius=0.1];%n4
+\draw[fill] (12.7,4.7) circle [radius=0.1];%n4
+\end{tikzpicture}
+\caption{Riduzione da $P_{graph}$ a $P_{big}$ \label{fig:firstRed}}
+\end{figure}
+
+
+	
+	
+	%Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
 	
 	\item
 	$P_{big} \le P_{graph}$:\\
-	Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$. 	
+	Il primo approccio potrebbe essere quello di trattare i casi del place graph e del link graph separatamente, ma questa sarebbe una soluzione sbagliata: come si vedrà dagli esempi seguenti, due bigrafi che hanno sia place graph sia link graph isomorfi potrebbero non essere isomorfi. Per questo motivo, si deve trasformare ogni bigrafo in un grafo tramite questa trasformazione, di cui si è riportato un esempio in figura \ref{fig:secondRed}. Ogni nodo, radice, sito, porta, innername, arco e outername viene trasformato in un nodo del grafo: in altre parole ogni entità del bigrafo (compresi gli archi) viene trasformata in un nodo.
+	
+	Ora, l'idea è quella di sfruttare le funzione $prnt$ e $link$ che compongono rispettivamente ogni place graph ed ogni link graph. Nel primo caso, se il nodo $n_1$ si trova all'interno di $n_2$ allora ci sarà un link tra questi due nodi. Nel secondo caso, se le porte $p1$ e $p_2$ sono collegate tramite l'arco $e_0$, allora nel grafo il nodo $e_0$ sarà collegato sia al nodo $p_1$ sia al nodo $p_2$. Come si vede bene dalla figura \ref{fig:secondRed}, si costruisce un grafo che tenga conto sia della struttura del place graph (archi rossi) sia di quella del link graph (archi verdi).
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,6);
+%Root
+\draw[rounded corners=4mm,dashed] (0.0,0.0) rectangle (6.0,5.0);
+\node[right] at (0.1,4.7){$0$};
+%Edges
+\draw[myGreen, thick] (1.0,3.8) to [out=80,in=280] (1.0,5.3);
+\draw[myGreen, thick] (2.0,4.0) to [out=80,in=280] (2.5,5.3);
+\draw[myGreen, thick] (3.45,3.45) to [out=80,in=90] (5.0,2.4);
+\node at (4.5,3.5) {$e_0$};
+%n1
+\draw[thick] (2.0,3.0) ellipse (1.6 and 1.0);
+\node at (1.0,1.9){$n_1$};
+%site
+\draw[rounded corners=1mm, fill=myGrey, dashed] (1.7,2.3) rectangle (2.2,2.8);
+\node at (1.95,2.55){$0$};
+%ports n1
+\draw[fill] (1.0,3.8) circle [radius=0.05]; \node at (1.0,3.5){$p_1$};
+\draw[fill] (2.0,4.0) circle [radius=0.05]; \node at (2.0,3.7){$p_2$};
+\draw[fill] (3.45,3.45) circle [radius=0.05]; \node[below left] at (3.45,3.45){$p_3$};
+%n2
+\draw[thick] (5.0,2.0) ellipse (0.5 and 0.4);
+\node at (5.0,1.4){$n_2$};
+%ports n2
+\draw[fill] (5.0,2.4) circle [radius=0.05];\node at (5.0,2.1){$p_4$};
+%Outers
+\node at (1.0,5.5){$out_1$};
+\node at (2.5,5.5){$out_2$};
+
+
+%Red Arrow
+\draw[->,thick,red] (6.2,2.5) -- (7.2,2.5);
+
+
+%Nodes
+\draw[thick] (8.0,4.0) circle [radius=0.3]; \node at (8.0,4.0){$0$};
+\draw[thick] (8.0,2.5) circle [radius=0.3]; \node at (8.0,2.5){$n_1$};
+\draw[thick] (8.0,1.0) circle [radius=0.3]; \node at (8.0,1.0){$0$};
+\draw[thick] (10.0,4.0) circle [radius=0.3]; \node at (10.0,4.0){$p_1$};
+\draw[thick] (10.0,2.5) circle [radius=0.3]; \node at (10.0,2.5){$p_2$};
+\draw[thick] (10.0,1.0) circle [radius=0.3]; \node at (10.0,1.0){$p_3$};
+\draw[thick] (12.0,4.0) circle [radius=0.4]; \node at (12.0,4.0){$out_1$};
+\draw[thick] (12.0,2.5) circle [radius=0.4]; \node at (12.0,2.5){$out_2$};
+\draw[thick] (12.0,1.0) circle [radius=0.3]; \node at (12.0,1.0){$e_0$};
+\draw[thick] (13.5,2.5) circle [radius=0.4]; \node at (13.5,2.5){$n_2$};
+\draw[thick] (13.5,1.0) circle [radius=0.3]; \node at (13.5,1.0){$p_4$};
+%Edges
+\draw[thick,red] (8.0,3.7) -- (8.0,2.8); %0-n1
+\draw[thick,red] (8.0,2.2) -- (8.0,1.3); %n1-0
+\draw[thick,red] (8.0,4.3) to[out=90,in=90] (13.5,2.9); %0-n2
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,4.0); %n1-p1
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,2.5); %n1-p2
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,1.0); %n1-p3
+\draw[thick,myGreen] (10.3,4.0) to[out=10,in=190] (11.6,4.0); %p1-out1
+\draw[thick,myGreen] (10.3,2.5) to[out=10,in=190] (11.6,2.5); %p2-out2
+\draw[thick,myGreen] (10.3,1.0) to[out=10,in=190] (11.7,1.0); %p3-e0
+\draw[thick,myGreen] (13.5,2.1) to[out=280,in=100] (13.5,1.3); %n2-p4
+\draw[thick,myGreen] (12.3,1.0) to[out=10,in=190] (13.2,1.0); %e0-p4
+
+\end{tikzpicture}
+\caption{Riduzione da $P_{big}$ a $P_{graph}$ \label{fig:secondRed}}
+\end{figure}
+	
+	
+	%Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$.
 \end{itemize}
+
 
 Si è quindi dimostrata l'equivalenza fra il problema dell'isomorfismo tra bigrafi e quella tra grafi, concludendo quindi che il problema $P_{big}$ è equivalente al problema $P_{graph}$.
 \end{dimos}
 
-E' noto che $P_{graph}$ appartiene alla classe NP, ma non è ancora stato dimostrato che sia completo. Per qui si è creata una nuova classe di complessità, nota con il nome di GI, che raccoglie tutti i problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Quindi si ha che $P_{big} \in GI$.
+\begin{corol}
+Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
+\end{corol}
 
-Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
+
+Quindi si ha che $P_{big} \in GI$. Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
 
 
 \section{Strategia di soluzione}
-Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica per esempio può essere espressa come
-il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione 
-dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per la modellizzazione.
+Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica per esempio può essere espressa come il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per la modellizzazione.
 
 Si è scelto di trattare questo problema tramite la programmazione a vincoli. Questo paradigma permette di rappresentare al calcolatore un sistema di equazioni, che esso
-risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari,
-con la conseguenza che si avrà un sistema lineare: questo permette di abbassare la complessità dell'algoritmo.\\
-Si è usata la libreria Java \emph{Choco vs 3.3.1} per esprimere tutti i vincoli.\\
+risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari, con la conseguenza che si avrà un sistema lineare: questo permette di abbassare la complessità dell'algoritmo.
+
 Si è scelta il paradigma del \emph{Constraint Programming} per i seguenti motivi:
 \begin{itemize}
 	\item
 	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori, specie per problemi NP, come l'isomorfismo tra bigrafi.
 	\item
-	il motore che risolve il sistema di equazioni (in questo caso \emph{Choco vs 3.3.1}) è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
+	il motore che risolve il sistema di equazioni è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
 	\item
 	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
 \end{itemize}
@@ -115,9 +234,8 @@ E' possibile che esista un algoritmo che risolva in modo più efficiente questo p
 
 
 Si è precedentemente visto che ogni bigrafo è formato da due strutture ortogonali e totalmente indipendenti, il place graph ed il link graph. Il problema dell'isomorfismo verrà quindi trattato
-separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).\\
+separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).
 
-La definizione di isomorfismo vista precedentemente può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda anche la semantica: due bigrafi strutturalmente uguali sono due bigrafi semanticamente equivalenti (figura \ref{fig:bigMulIso}).
 
 \subsection{Esempi}\label{sub:isoExamples}
 Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quindi alcuni esempi per acquisire familiarità con questo concetto. 
@@ -125,7 +243,7 @@ Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quind
 Il primo riprende il bigrafo di figura \ref{fig:bigMul} per la moltiplicazione tra numeri naturali. Si vuole mostrare che, semanticamente, l'operazione $2*4$ è equivalente
 all'operazione $4*2$. In altre parole, non importa l'ordine dei nodi.
 
-Incominciamo notando che i due link graph sono isomorfi, perchè non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, si nota subito come i due place graph siano uguali perchè i nodi interni non sono ordinati.
+Incominciamo notando che i due link graph sono isomorfi, perché non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, si nota subito come i due place graph siano uguali perché i nodi interni non sono ordinati.
 
 Il fatto di dimostrare che i due bigrafi sono isomorfi e semanticamente equivalenti, dimostra che la proprietà commutativa della moltiplicazione vale anche nella sua versione bigrafica.\\
 
@@ -186,14 +304,10 @@ Il fatto di dimostrare che i due bigrafi sono isomorfi e semanticamente equivale
 
 Presentiamo un altro esempio, questa volta su un caso negativo. Si è specificato che per risolvere il problema si trattano separatamente i casi del place graph e del link graph: questo approccio però necessita di avere dei vincoli di ``coerenza" che uniscano le due soluzioni. Senza questi vincoli, si può incorrere nel seguente problema.
 
-Si considerino i due bigrafi di figura \ref{fig:falseIso} e i loro relativi place graph e link graph (figura \ref{fig:falsoIsoDecap}). Si nota subito che i due bigrafi \emph{non} sono isomorfi. Prendendo però i due place graph ci si accerta che essi lo sono. Lo stesso vale per i due link graph: sono entrambi formati da tre nodi, in cui c'è solamente un edge che collega il cerchio ad un quadrato.
-
-I casi separati del link graph e del place graph sembrano quindi suggerire che i due bigrafi siano isomorfi, mentre si vede subito che non è così. Quello che non abbiamo considerato sono appunto i \emph{vincoli di coerenza}, che informalmente dicono che il quadrato collegato al cerchio (nel primo link graph) deve essere quello che contiene un altro quadrato (nel primo place graph). Aggiunta questa condizione, si nota che le due soluzioni sono \emph{incompatibili}, avendo quindi che i due bigrafi \emph{non} sono isomorfi.
 
 
 
-
-\begin{figure}[!h]
+\begin{figure}[!htbp]
 \centering
 \begin{tikzpicture}
 %\draw[help lines] (0,0) grid (14,5);
@@ -238,7 +352,7 @@ I casi separati del link graph e del place graph sembrano quindi suggerire che i
 
 
 
-\begin{figure}[!h]
+\begin{figure}[!htbp]
 \centering
 \subfigure[Place Graph isomorfi]{
 \begin{tikzpicture}
@@ -296,6 +410,10 @@ I casi separati del link graph e del place graph sembrano quindi suggerire che i
 \caption{Place Graph e Link Graph del bigrafo \ref{fig:falseIso}\label{fig:falsoIsoDecap}}
 \end{figure}
 
+Si considerino i due bigrafi di figura \ref{fig:falseIso} e i loro relativi place graph e link graph (figura \ref{fig:falsoIsoDecap}). Si nota subito che i due bigrafi \emph{non} sono isomorfi. Prendendo però i due place graph ci si accerta che essi lo sono. Lo stesso vale per i due link graph: sono entrambi formati da tre nodi, in cui c'è solamente un edge che collega il cerchio ad un quadrato.
+
+I casi separati del link graph e del place graph sembrano quindi suggerire che i due bigrafi siano isomorfi, mentre si vede subito che non è così. Quello che non abbiamo considerato sono appunto i \emph{vincoli di coerenza}, che informalmente dicono che il quadrato collegato al cerchio (nel primo link graph) deve essere quello che contiene un altro quadrato (nel primo place graph). Aggiunta questa condizione, si nota che le due soluzioni sono \emph{incompatibili}, avendo quindi che i due bigrafi \emph{non} sono isomorfi.
+
 
 
 
@@ -352,7 +470,7 @@ L'isomorfismo tra place graphs è un isomorfismo tra foreste. Si vuole infatti ve
 
 
 
-Alle due foreste (cioè ai due place graph, costituiti da archi di colore verde), che chiameremo $P_F$ e $P_G$, si sono aggiunti altri archi (quelli rossi) \emph{solamente} tra nodi della stessa altezza, creando così un grafo. Questa è la vera e propria rete di flusso per il problema dell'isomorfismo tra place graph. Ogni arco rosso è \emph{orientato}, perchè va dai nodi della prima foresta ai nodi della seconda, e \emph{pesato}, perchè gli è assegnato un numero naturale $p \in \{ 0, 1\}$.
+Alle due foreste (cioè ai due place graph, costituiti da archi di colore verde), che chiameremo $P_F$ e $P_G$, si sono aggiunti altri archi (quelli rossi) \emph{solamente} tra nodi della stessa altezza, creando così un grafo. Questa è la vera e propria rete di flusso per il problema dell'isomorfismo tra place graph. Ogni arco rosso è \emph{orientato}, perché va dai nodi della prima foresta ai nodi della seconda, e \emph{pesato}, perché gli è assegnato un numero naturale $p \in \{ 0, 1\}$.
 
 Nell'implementazione, trattata tramite la programmazione a vincoli, ogni arco rosso è una variabile. L'insieme delle variabili per il place graph sarà quindi:
 \begin{center}
@@ -363,11 +481,11 @@ In altre parole, creo una variabile che può assumere valore 0 o 1 per ogni coppi
 
 I vincoli dovranno essere tali che, dopo l'esecuzione del sistema sul calcolatore, le variabili che assumeranno il valore 1 saranno quelle che \emph{formeranno} la vera e propria traduzione di supporto. Ovvero: 
 \begin{prop}\label{prop:traduzioneSupporto}
-La variabile $M_{d,m,n}$ assumerà il valore 1 \emph{se e solo se} esiste una traduzione di supporto $\rho$ tale che $\rho(m)=n$.
+La variabile $M_{d,m,n}$ assumerà il valore 1 se e solo se esiste una traduzione di supporto $\rho$ tale che $\rho(m)=n$.
 \end{prop}
 Tutte le altre variabili dovranno assumere il valore 0. Un altro modo di vedere la soluzione è questa: la funzione di traduzione di supporto sarà definita da tutte e sole le variabili con valore 1. Infine: 
 \begin{term}\label{term:matchVariabili}
-Quando la variabile $M_{d,m,n}=1$ diremo che m e n costituiscono un match.
+Quando la variabile $M_{d,m,n}=1$ diremo che $m$ e $n$ costituiscono un match.
 \end{term}
 
 Nell'esempio di figura \ref{fig:placeFlow}, la soluzione esiste ed è definita come in figura \ref{fig:placeFlowRis}, dove i numeri sopra le variabili (archi rossi) indicano i valori che esse hanno assunto dopo la risoluzione del sistema di equazioni.
@@ -432,7 +550,7 @@ Incominciamo con i \textbf{vincoli strutturali}: si è adottata una versione rico
 	\begin{center}
 	$M_{d,m,n} = 0 \qquad$ se $|prnt_F^{-1}(m)| \ne |prnt_G^{-1}(n)|$ \\ $\qquad \forall d\leq depth - 1$ \\ $ \qquad \qquad \forall m \in P_F^d$ e $n \in P_G^d$
 	\end{center}
-	Nella figura sottostante, si vede subito che la variabile $M_{0,r_0,r_0}=0$ perchè $prnt_F^{-1}(r_0)=1 \ne 2=prnt_G^{-1}(r_0)$.
+	Nella figura sottostante, si vede subito che la variabile $M_{0,r_0,r_0}=0$ perché $prnt_F^{-1}(r_0)=1 \ne 2=prnt_G^{-1}(r_0)$.
 	
 	\begin{figure*}[th]
 	\centering
@@ -505,8 +623,8 @@ Incominciamo con i \textbf{vincoli strutturali}: si è adottata una versione rico
 	\begin{center}
 	$M_{d-1,prnt(m), prnt(n)}=0 \qquad \Rightarrow \qquad M_{d,m,n}=0$
 	\end{center}
-	Esso costituisce il caso ricorsivo perchè vale per tutti i nodi tranne le radici, e le radici sono ricoperte dal caso base. Si veda la figura \ref{fig:secondConstraintExe}: la variabile 
-	$M_{1,n_1,n_2}=0$ perchè dalla figura \ref{fig:firstConstraintExe} sappiamo che $M_{0,r_0,r_0}=0$ e perchè $prnt_F(n_1)=r_0$ e $prnt_G(n_2)=r_0$. Lo stesso ragionamento vale per la variabile $M_{1,n_1,n_3}$.
+	Esso costituisce il caso ricorsivo perché vale per tutti i nodi tranne le radici, e le radici sono ricoperte dal caso base. Si veda la figura \ref{fig:secondConstraintExe}: la variabile 
+	$M_{1,n_1,n_2}=0$ perché dalla figura \ref{fig:firstConstraintExe} sappiamo che $M_{0,r_0,r_0}=0$ e perché $prnt_F(n_1)=r_0$ e $prnt_G(n_2)=r_0$. Lo stesso ragionamento vale per la variabile $M_{1,n_1,n_3}$.
 	
 	
 		
@@ -755,7 +873,7 @@ Si capisce bene come questi due ultimi vincoli assicurino che la traduzione di s
 \subsection{Vincoli per il link graph}
 L'isomorfismo tra link graph è un isomorfismo tra ipergrafi. In questo problema, sfruttiamo soprattutto la definizione di link graph: la sua struttura è definita dalla funzione \emph{link}, che collega Punti a Handles. I primi sono l'insieme delle porte e degli inner names, mentre i secondi sono l'insieme degli archi e degli outer names (sottosezione \ref{sub:linkGraph}). Si può quindi vedere ogni link graph come una funzione che ha come dominio i Punti e come codominio gli Handles. 
 
-Sulla base di queste osservazioni, possiamo costruire la \emph{rete di flusso} per questo problema nel seguente modo: innanzitutto chiamiamo i due link graph rispettivamente $L_F$ e $L_G$, e le loro funzioni come $link_F$ e $link_G$ (definite dagli archi verdi di figura \ref{fig:linkFlow}). Possiamo collegare tutti gli elementi del dominio di $link_F$ a tutti gli elementi del dominio di $link_G$, creando così archi \emph{orientati}, perchè vanno da punti di $L_F$ a punti di $L_G$, e \emph{pesati}, perchè possono assumere un valore $p \in \{0, 1\}$.
+Sulla base di queste osservazioni, possiamo costruire la \emph{rete di flusso} per questo problema nel seguente modo: innanzitutto chiamiamo i due link graph rispettivamente $L_F$ e $L_G$, e le loro funzioni come $link_F$ e $link_G$ (definite dagli archi verdi di figura \ref{fig:linkFlow}). Possiamo collegare tutti gli elementi del dominio di $link_F$ a tutti gli elementi del dominio di $link_G$, creando così archi \emph{orientati}, perché vanno da punti di $L_F$ a punti di $L_G$, e \emph{pesati}, perché possono assumere un valore $p \in \{0, 1\}$.
 Infine, facciamo lo stesso con i loro Handle: colleghiamo tutti gli elementi del codominio di $link_F$ a tutti gli elementi del codominio di $link_G$. \\
 Si è così creata la rete di flusso in figura \ref{fig:linkFlow}, dove $D_X$ (con $X \in \{ F, G\}$) indica il dominio di $link_X$ e $C_X$ il suo codominio. \\
 Per chiarezza visiva, si sono omessi alcuni archi rossi, ma si deve immaginare che ogni elemento di $D_F$ abbiamo tre archi verso ognuno degli elementi di $D_G$. Lo stesso vale per $C_F$.
@@ -950,7 +1068,7 @@ Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compi
 	\caption{Esempio per il secondo vincolo. \label{fig:secondLinkConstraint}}
 	\end{figure*}
 	
-	In figura \ref{fig:secondLinkConstraint}, si può vedere un esempio per questo vincolo. Dal primo vincolo sappiamo che $x_{h_2,h_1} = 0$ perchè 
+	In figura \ref{fig:secondLinkConstraint}, si può vedere un esempio per questo vincolo. Dal primo vincolo sappiamo che $x_{h_2,h_1} = 0$ perché 
 	$|link_F^{-1}(h_2)| = 2$ mentre $|link_G^{-1}(h_1)| = 1$. Aggiungendo il vincolo appena descritto, ricaviamo quindi che $y_{p_2,p_1} = 0$ e $y_{p_3,p_1} = 0$. Infatti, si vede subito che i punti $p_2$ e $p_3$ non possono costituire un match con $p_1$.
 \end{itemize}
 
@@ -1115,7 +1233,7 @@ Si noti che i quattro vincoli di flusso assicurano la iniettività e la suriettiv
 
 
 \subsection{Vincoli di coerenza}
-Nella sottosezione \ref{sub:isoExamples}, dedicata ad alcuni esempi, la figura \ref{fig:falseIso} mostrava due bigrafi che, pur avendo i place graphs ed i link graphs isomorfi, \emph{non} erano tali. Questo perchè il sistema di equazioni non era completo: non bastano cioè i vincoli visti fino ad ora, e bisogna integrarli con dei \textbf{vincoli di coerenza} che sono dedicati all'unione delle due soluzioni.
+Nella sottosezione \ref{sub:isoExamples}, dedicata ad alcuni esempi, la figura \ref{fig:falseIso} mostrava due bigrafi che, pur avendo i place graphs ed i link graphs isomorfi, \emph{non} erano tali. Questo perché il sistema di equazioni non era completo: non bastano cioè i vincoli visti fino ad ora, e bisogna integrarli con dei \textbf{vincoli di coerenza} che sono dedicati all'unione delle due soluzioni.
 
 Nell'esempio citato, si era già notato informalmente che il quadrato collegato al cerchio nel primo link graph deve essere quello più esterno nel primo place graph. Diamo ora le definizioni formali di questi vincoli:
 
@@ -1178,17 +1296,17 @@ Nell'esempio citato, si era già notato informalmente che il quadrato collegato a
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Implementazione con Choco}
-Tutti i vincoli sono stati espressi sul calcolatore tramite la libreria Java \emph{Choco vs 3.3.1}. Essa permette di rappresentare un sistema di equazioni che poi la stessa libreria risolverà. Forniamo quindi una panoramica della libreria ed alcuni esempi di vincoli che sono stati espressi.
+\subsection{Implementazione}
+Tutti i vincoli sono stati espressi sul calcolatore tramite la libreria Java \emph{Choco v3.3.1}. Essa permette di rappresentare un sistema di equazioni che poi la stessa libreria risolverà. Forniamo quindi una panoramica della libreria ed alcuni esempi di vincoli che sono stati espressi.
 
-La prima fase, che precede la definizione dei vincoli, riguarda la creazione delle variabili. Ad ogni variabile si deve obbligatoriamente assegnare anche un dominio, che, per quanto grande sia, deve essere finito. A titolo di esempio, in \emph{Choco vs 3.3.1} possiamo creare le variabili $x$ e $y$ entrambe con dominio $\{0,1,2,3,4\}$ con le seguenti istruzioni:\\
+La prima fase, che precede la definizione dei vincoli, riguarda la creazione delle variabili. Ad ogni variabile si deve obbligatoriamente assegnare anche un dominio, che, per quanto grande sia, deve essere finito. A titolo di esempio, in \emph{Choco} possiamo creare le variabili $x$ e $y$ entrambe con dominio $\{0,1,2,3,4\}$ con le seguenti istruzioni:\\
 \begin{lstlisting}
 IntVar x = VariableFactory.enumerated("x", 0, 4, solver);
 IntVar y = VariableFactory.enumerated("y", 0, 4, solver);
 \end{lstlisting}
 Si noti come ogni variabile venga associata ad un \textbf{solver}, che è il motore interno che risolverà il sistema. Sia $x$ che $y$ sono associate allo stesso solver: questo equivale a dire che apparterranno allo stesso sistema di equazioni. La sintassi dei metodi è chiara: come primo argomento c'è il nome della variabile, come secondo ci può essere un vettore (che enumera tutti gli elementi del dominio) oppure il primo estremo dell'intervallo del dominio; come terzo argomento abbiamo il limite superiore del dominio, ed infine c'è il solver al quale le variabili dovranno fare riferimento.
 
-Esprimiamo ora degli esempi di vincoli, che sono appunto equazioni. Tutte le equazioni che appartengono allo stesso sistema, dovranno fare riferimento allo stesso solver. Nel solver di \emph{Choco vs 3.3.1}, le equazioni vengono aggiunte al sistema tramite il suo metodo \emph{post()}. Il sistema \\
+Esprimiamo ora degli esempi di vincoli, che sono appunto equazioni. Tutte le equazioni che appartengono allo stesso sistema, dovranno fare riferimento allo stesso solver. Nel solver di \emph{Choco}, le equazioni vengono aggiunte al sistema tramite il suo metodo \emph{post()}. Il sistema \\
 \begin{center}
 $\begin{cases}
 x+y=7 \\
@@ -1355,12 +1473,19 @@ Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del
 	libreria per il constraint programming: \emph{Choco vs 3.3.1}
 \end{itemize}
 
-La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto, per fare in modo che il tempo di risoluzione non dipendesse dalla struttura del bigrafo, che può essere semplice o complessa. Si vedranno due grafici: 
+La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto, per fare in modo che il tempo di risoluzione non dipendesse dalla struttura del bigrafo, che può essere semplice o complessa. Questo metodo è stato implementato in un modo molto semplice: \begin{itemize}
+	\item
+	per prima cosa si è costruito il place graph, che è equivalente a generare un albero casuale. All'inizio del metodo, si può specificare il numero di porte che gni nodo dell'albero possiede.
+	\item
+	in seguito, ogni porta di ogni nodo del place graph è stata collegata ad un outername scelto casualmente da un insieme precedentemente generato.
+\end{itemize}
+
+Si vedranno due grafici: 
 \begin{itemize}
 	\item
 	il primo rappresenta il \emph{tempo di preparazione} (figura \ref{fig:loadingTime}): è la misura di quanto l'algoritmo impiega per creare tutte le variabili ed i vincoli
 	\item
-	il secondo rappresenta il \emph{tempo d'esecuzione} (figura \ref{fig:workingTime}), cioè quanto tempo impiega la libreria \emph{Choco vs 3.3.1} per risolvere il sistema di equazioni
+	il secondo rappresenta il \emph{tempo d'esecuzione} (figura \ref{fig:workingTime}), cioè quanto tempo impiega la libreria \emph{Choco} per risolvere il sistema di equazioni
 \end{itemize}
 
 
@@ -1448,421 +1573,6 @@ La preparazione dei dati è stata condotta con attenzione: si è implementato un m
 Ogni grafico ha sulle ascisse il numero di nodi del problema: in altre parole, il problema testato in $x=n$ verifica l'isomorfismo tra due bigrafi con $n/2$ nodi ciascuno. Sulle ascisse c'è invece il tempo espresso in secondi. Il secondo grafico è in scala logaritmica: l'aumento del numero di nodi causa un esplosione combinatoria tra i due bigrafi, che porta ad un aumento esponenziale del numero di vincoli e quindi anche del relativo tempo d'esecuzione.\\
 
 Si noti come il tempo di preparazione cresca linearmente con il numero di nodi, rimanendo sempre sotto un secondo. Il tempo d'esecuzione invece aumenta drasticamente, arrivando fino a due minuti nel caso di due bigrafi con 90 nodi ciascuno.
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Grafo degli stati}
-Sono stati elencati tutti i vincoli necessari per determinare l'isomorfismo tra bigrafi. Si è già visto che l'utilità di sapere quando due bigrafi sono uguali risiede nel fatto che è possibile fermare l'esecuzione del BRS, evitando così cicli infiniti tra due bigrafi uguali. Per memorizzare tutti gli stati assunti da un BRS durante la sua evoluzione, si è creato il \emph{grafo degli stati}: è una struttura dati a grafo dove ogni nodo è a sua volta un bigrafo. 
-
-
-	\begin{figure*}[th]
-	\centering
-	\begin{tikzpicture}
-	%\draw[help lines] (0,0) grid (8,5);
-	%States
-	\draw[thick] (0.5,0.5) circle [radius=0.5];
-	\node at (0.5,0.5) {$S_0$};
-	\draw[thick] (2.5,2.5) circle [radius=0.5];
-	\node at (2.5,2.5) {$S_1$};
-	\draw[thick] (4.5,1.5) circle [radius=0.5];
-	\node at (4.5,1.5) {$S_2$};
-	\draw[thick] (4.5,3.5) circle [radius=0.5];
-	\node at (4.5,3.5) {$S_3$};
-	\draw[thick] (6.5,2.5) circle [radius=0.5];
-	\node at (6.5,2.5) {$S_4$};
-	%Edges
-	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
-	\node[above left] at (1.5,1.5) {$R_1$};
-	\draw[->, thick] (3.0,2.5) -- (4.0,3.5);%s1-s3
-	\node at (3.5,1.5) {$R_1$};
-	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
-	\node at (3.5,3.5) {$R_1$};
-	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s3-s4
-	\node at (5.5,1.5) {$R_0$};
-	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
-	\node at (5.5,3.5) {$R_0$};
-	\draw[->, thick] (6.5,2.0) to [out=270,in=0] (5.5,0.0) -- (3.5,0.0) to [out=180,in=270] (2.5,2.0) ;%s4-s1
-	\node[above] at (4.5,0.0) {$R_2$};
-	
-	\end{tikzpicture}
-	\caption{Esempio di grafo degli stati. \label{fig:stateGraphExe}}
-	\end{figure*}
-
-
-Come si può vedere dalla figura \ref{fig:stateGraphExe}, ogni nodo è etichettato con la stringa $S_i$, perchè si tratta di uno stato, cioè di un bigrafo. All'interno di un BRS, abbiamo visto che un bigrafo può evolversi tramite le regole di reazione, motivo per cui ogni arco orientato del grafo degli stati è etichettato con il nome della regola che ha portato dal primo stato al secondo. Nell'esempio di cui sopra, dal bigrafo iniziale $S_0$ si passa a $S_1$ tramite la regola $R_1$.
-
-Si noti un aspetto molto importante: da $S_0$ a $S_1$ la regola $R_1$ ha generato un solo nuovo stato. Questo vuol dire che il redex di $R_1$ ha una sola occorrenza in $S_0$, ed essa è stata sostituita dal reactum di $R_1$, creando così lo stato $S_1$. Però, se prendiamo in considerazione quest'ultimo stato, si vede che ora la regola $R_1$ porta a due nuovi stati. Questo perchè in $S_1$ ci sono due occorrenze del redex di $R_1$, che vengono sostituite dal suo reactum, creando rispettivamente i due nuovi stati $S_2$ e $S_3$. In altre parole: una regola di reazione può generare un diverso numero di stati a seconda del bigrafo a cui è applicata.
-
-Infine, si presti attenzione all'arco tra $S_4$ e $S_1$. Il significato è il seguente: applico la regola $R_2$ al bigrafo $S_4$, generando un nuovo stato $S_5$. Esso è però isomorfo a $S_1$, cioè: $S_1$ e $S_5$ hanno la stessa \emph{semantica}, per cui collego $S_4$ a $S_1$. Se non ci fossimo accorti di questa propietà, allora avremmo continuato ad applicare le regole $R_0$, $R_1$ e $R_2$ all'\emph{infinito}, generando sempre nuovi stati, come in figura \ref{fig:infiniteStateGraphExe}. Ora invece, dato che ci siamo accorti che da $S_4$ siamo ritornati ad $S_1$, non applichiamo più nessuna regola, avendo quindi un grafo degli stati \emph{finito}, cioè quello di figura \ref{fig:stateGraphExe}.\\ \\
-
-
-
-
-	\begin{figure*}[th]
-	\centering
-	\begin{tikzpicture}
-	%\draw[help lines] (0,0) grid (14,5);
-	%States
-	\draw[thick] (0.5,0.5) circle [radius=0.5];
-	\node at (0.5,0.5) {$S_0$};
-	\draw[thick] (2.5,2.5) circle [radius=0.5];
-	\node at (2.5,2.5) {$S_1$};
-	\draw[thick] (4.5,1.5) circle [radius=0.5];
-	\node at (4.5,1.5) {$S_2$};
-	\draw[thick] (4.5,3.5) circle [radius=0.5];
-	\node at (4.5,3.5) {$S_3$};
-	\draw[thick] (6.5,2.5) circle [radius=0.5];
-	\node at (6.5,2.5) {$S_4$};
-	\draw[thick] (8.5,2.5) circle [radius=0.5];
-	\node at (8.5,2.5) {$S_5$};
-	\draw[thick] (10.5,1.5) circle [radius=0.5];
-	\node at (10.5,1.5) {$S_6$};
-	\draw[thick] (10.5,3.5) circle [radius=0.5];
-	\node at (10.5,3.5) {$S_7$};
-	\draw[thick] (12.5,2.5) circle [radius=0.5];
-	\node at (12.5,2.5) {$S_8$};
-	
-	%Edges
-	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
-	\node[above left] at (1.5,1.5) {$R_1$};
-	\draw[->, thick] (3.0,2.5) -- (4.0,3.5);%s1-s3
-	\node at (3.5,1.5) {$R_1$};
-	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
-	\node at (3.5,3.5) {$R_1$};
-	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s2-s4
-	\node at (5.5,1.5) {$R_0$};
-	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s3-s4
-	\node at (5.5,3.5) {$R_0$};
-	\draw[->, thick] (7.0,2.5) -- (8.0,2.5);%s4-s5
-	\node[above] at (7.5,2.5) {$R_2$};
-	\draw[->, thick] (9.0,2.5) -- (10.0,1.5);%s5-s6
-	\node at (9.5,1.5) {$R_1$};
-	\draw[->, thick] (9.0,2.5) -- (10.0,3.5);%s5-s7
-	\node at (9.5,3.5) {$R_1$};
-	\draw[->, thick] (11.0,1.5) -- (12.0,2.5);%s6-s8
-	\node at (11.5,3.5) {$R_0$};
-	\draw[->, thick] (11.0,3.5) -- (12.0,2.5);%s7-s8
-	\node at (11.5,1.5) {$R_0$};
-	\draw[->, thick] (13.0,2.5) -- (13.9,2.5);%s8-...
-	\node[above] at (13.5,2.5) {$R_2$};
-	\node[below] at (13.5,2.5) {$\dots$};
-	
-	\end{tikzpicture}
-	\caption{Grafo degli stati infinito. \label{fig:infiniteStateGraphExe}}
-	\end{figure*}
-
-
-
-\subsection{Esempio}\label{sub:networkExe}
-In questa sottosezione, viene fornito un esempio concreto di grafo degli stati, con particolare attenzione al problema dell'evoluzione infinita. Si riprende l'esempio della rete della sottosezione \ref{sub:networkExe}. L'implementazione la si può trovare in [...]. 
-
-Si introduce solo la segnatura del pacchetto, del router e del dominio: $K=\{pacchetto:2, \quad router:2, \quad dominio:0\}$. Chiameremo rispettivamente $Encap$ e $Decap$ le regole per l'incapsulamento e il decapsulamento dei pacchetto nei vari strati, per esempio da Http a Tcp, o da Ip a Ethernet. Ci concentriamo sulla regola di inoltro tra router, che è quella in figura \ref{fig:forwardRule}.
-
-
-
-	\begin{figure*}[th]
-	\centering
-	\begin{tikzpicture}
-	%\draw[help lines] (0,0) grid (14,5);
-	%%%   Redex   %%%
-	% Sx Big
-	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
-	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
-	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (2.0,0.5) rectangle (2.5,1.0);%Site 0
-	\node at (2.3,0.75) {0};
-	%Packet
-	\draw[rounded corners=1mm, thick] (0.5,1.0) rectangle (1.7,1.7);
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (1.0,1.1) rectangle (1.4,1.5);%Site 2
-	\node at (1.2,1.3) {2};
-	%idS
-	\draw[myGreen, thick] (0.6,1.7) to [out=100,in=270] (0.5,4.2);
-	\draw[fill] (0.6,1.7) circle [radius=0.05];
-	\node[above] at (0.4,4.2) {$id_S$};
-	%idR
-	\draw[rounded corners = 5mm, myGreen, thick] (1.6,1.7) -- (2.0,1.9) -- (3.2,1.8) -- (5.0,1.5) -- (6.0,1.5) -- (6.0,4.2);
-	\draw[fill] (1.6,1.7) circle [radius=0.05];
-	\node[above] at (6.3,4.2) {$id_R$};
-	
-	%Dx Big
-	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
-	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
-	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (4.0,0.5) rectangle (4.5,1.0);%Site 1
-	\node at (4.3,0.75) {1};
-	
-	%LinkR
-	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
-	\draw[fill] (2.0,3.5) circle [radius=0.05];
-	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
-	\draw[fill] (4.5,3.5) circle [radius=0.05];
-	\node[above] at (3.15,4.5) {link};
-	%LocalS
-	\draw[rounded corners = 3mm, myGreen, thick] (2.0,2.5) -- (2.0,2.1) -- (1.2,2.1) -- (1.2,4.5);
-	\draw[fill] (2.0,2.5) circle [radius=0.05];
-	\node[above] at (1.2,4.5) {$local_S$};
-	%LocalR
-	\draw[rounded corners = 3mm, myGreen, thick] (4.5,2.5) -- (4.5,2.1) -- (5.3,2.1) -- (5.3,4.5);
-	\draw[fill] (4.5,2.5) circle [radius=0.05];
-	\node[above] at (5.3,4.5) {$local_R$};
-	
-	
-	\draw[->, red, very thick] (6.8,2.0) -- (7.8,2.0);
-	
-	%%%   Reactum   %%%
-	% Sx Big
-	\draw[rounded corners = 3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);%Root 1
-	\draw[rounded corners = 3mm, thick] (8.3,0.3) rectangle (10.7,3.7);%Domain 1
-	\draw[thick] (10.0,3.0) circle [radius=0.5];%Router 1
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (10.0,0.5) rectangle (10.5,1.0);%Site 0
-	\node [below] at (10.3,1.0) {0};
-	
-	%Dx Big
-	\draw[rounded corners = 3mm, dashed] (11.3, 0.0) rectangle (13.99,4.0);%Root 2
-	\draw[rounded corners = 3mm, thick] (11.6,0.3) rectangle (13.6,3.7);%Domain 2
-	\draw[thick] (12.5,3.0) circle [radius=0.5];%Router 2
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.0,0.4) rectangle (12.5,0.9);%Site 1
-	\node [below] at (12.3,0.9) {1};
-	%Packet
-	\draw[rounded corners=1mm, thick] (12.0,1.0) rectangle (13.2,1.7);
-	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.5,1.1) rectangle (13.0,1.5);%Site 2
-	\node at (12.7,1.3) {2};
-	%idS
-	\draw[rounded corners = 5mm, myGreen, thick] (12.0,1.7) -- (11.0,1.9) -- (8.5,1.5) -- (8.5,4.2);
-	\draw[fill] (12.0,1.7) circle [radius=0.05];
-	\node[above] at (8.4,4.2) {$id_S$};
-	%idR
-	\draw[rounded corners = 5mm, myGreen, thick] (13.2,1.7) to [out=60,in=270] (13.9,4.2);
-	\draw[fill] (13.2,1.7) circle [radius=0.05];
-	\node[above] at (13.59,4.0) {$id_R$};
-	
-	%LinkR
-	\draw[myGreen, thick] (10.0,3.5) to [out=90,in=270] (11.15,4.5);%r1-link
-	\draw[fill] (10.0,3.5) circle [radius=0.05];
-	\draw[myGreen, thick] (12.5,3.5) to [out=90,in=270] (11.15,4.5);%r2-link
-	\draw[fill] (12.5,3.5) circle [radius=0.05];
-	\node[above] at (11.15,4.5) {link};
-	%LocalS
-	\draw[rounded corners = 3mm, myGreen, thick] (10.0,2.5) -- (10.0,2.1) -- (9.2,2.1) -- (9.2,4.5);
-	\draw[fill] (10.0,2.5) circle [radius=0.05];
-	\node[above] at (9.2,4.5) {$local_S$};
-	%LocalR
-	\draw[rounded corners = 3mm, myGreen, thick] (12.5,2.5) -- (12.5,2.1) -- (13.2,2.1) -- (13.2,4.5);
-	\draw[fill] (12.5,2.5) circle [radius=0.05];
-	\node[above] at (13.0,4.5) {$local_R$};
-	
-	\end{tikzpicture}
-	\caption{Regola di inoltro tra router. \label{fig:forwardRule}}
-	\end{figure*}
-
-
-
-La regola è molto semplice. Innanzitutto, incominciamo con i vari controlli. Figli diretti delle due radici sono i due rettangoli: essi sono i domini di cui fanno parte i due router. Questi ultimi, a loro volta, sono disegnati come circonferenze con due porte: la prima collegata a ``$link$" e la seconda a ``$Local$". Infine, il pacchetto è rappresentato da un rettangolo, anch'esso con due porte: la prima, che è quella più a sinistra, è collegata al mittente, mentre la seconda al destinatario. 
-
-Passiamo ora a definire il ruolo degli outername. ``$Link$" è l'outername dedicato alla connessione tra router: se un terzo router volesse collegarsi a questi due, allora dovrebbe collegare (nel vero senso della parola) la sua porta superiore con l'outername ``$link$". Si ricordi quanto detto nella sottosezione \ref{sub:networkExe}: i router inoltrano non deterministicamente ogni pacchetto verso tutte le sue interfacce. Se tre router sono collegati all'outername ``$link$", allora uno di questi inoltra il pacchetto verso tutti gli altri due. Per cui ``$link$" rappresenta l'insieme di tutte le interfacce di un router.
-
-Gli outername ``$Local_S$" e ``$Local_R$" sono a disposizione solamente per gli host del dominio corrente. Per esempio, a ``$Local_S$" (che sta per \emph{Local Sender}) si possono collegare solo gli host del dominio in cui si trova il primo router. Nella regola di figura \ref{fig:forwardRule}, questi host vengono inglobati dal sito numero 0. Il medesimo discorso vale per ``$Local_R$".
-
-Il pacchetto è collegato a due outername. Il primo, quello più a sinistra, è ``$id_S$" (\emph{id Sender}), mentre il secondo è  ``$id_R$" (\emph{id Receiver}). Nella realtà, questi due outername saranno gli identificativi del mittente e del destinatario. Se per esempio il pacchetto in questione è IP, allora $id_S$ sarà l'indirizzo IP del mittente, mentre $id_R$ quello del destinatario.
-
-Infine, si noti anche il sito numero 2: si trova dentro il pacchetto e permette di astrarre al tipo di pacchetto. Per esempio: se è un pacchetto IP, allora è probabile che abbia incapsulato al suo interno un pacchetto TCP, che a sua volta contiene un pacchetto HTTP. Onde evitare di scrivere regole ad hoc per ogni tipo di pacchetto, si introduce il sito numero 2, così che la regola trovi un occorrenza (e quindi scatti) per qualsiasi tipo di pacchetto.
-
-Vediamo ora un esempio reale, proposto in figura \ref{fig:networkRuleExe}. Siano $D_S$ e $D_R$ i domini rispettivamente del mittente (sender) e del destinatario (receiver). Indicheremo con il triangolo il controllo per un host. Quindi $h_1$ e $h_2$ saranno rispettivamente all'interno di $D_S$ e $D_R$. Lo stesso vale per i router, cioè $R_S$ e $R_R$. Supponiamo che il pacchetto sia di tipo IP, e che $h_1$ sia collegato per esempio a $158.110.3.46$, e $h_2$ a $158.110.144.31$. Infine, per quanto detto prima a proposito di ``$Local_S$" e ``$Local_R$", alla porta inferiore di $R_S$ si collegherà $h_1$, mentre a quella di $R_R$ si collegherà $id_2$.
-
-
-	\begin{figure*}[!htbp]
-	\centering
-	\begin{tikzpicture}
-	%\draw[help lines] (0,0) grid (10,5);
-	%%%   Redex   %%%
-	% Sx Big
-	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
-	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
-	\node at (2.0,4.2){$D_S$};
-	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
-	\node at (2.0,3.0){$R_S$};
-	\draw[rounded corners = 1mm, thick] (0.7,0.5) -- (1.5,0.5) -- (1.1,1.2) -- (0.7,0.5);%h1
-	\node at (1.15,0.75) {$h_1$};
-	%Packet
-	\draw[rounded corners=1mm, thick] (1.4,1.0) rectangle (2.6,1.7);
-	\draw[rounded corners = 1mm, thick, fill=myGrey] (1.6,1.1) rectangle (2.4,1.5);%tcp
-	\node at (2.0,1.3) {tcp};
-	%packet - idS
-	\draw[myGreen, thick] (1.5,1.7) to [out=90,in=300] (0.83,2.5);
-	\draw[fill] (1.5,1.7) circle [radius=0.05];
-	%packet - idR
-	\draw[myGreen, thick] (2.5,1.7) to [out=60,in=230] (5.72,2.5);
-	\draw[fill] (2.5,1.7) circle [radius=0.05];
-	
-	
-	%Dx Big
-	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
-	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
-	\node at (4.5,4.2){$D_R$};
-	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
-	\node at (4.5,3.0){$R_R$};
-	\draw[rounded corners = 1mm, thick] (5.0,0.5) -- (5.8,0.5) -- (5.4,1.3) -- (5.0,0.5);%h2
-	\node at (5.4,0.75) {$h_2$};
-	
-	%LinkR
-	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
-	\draw[fill] (2.0,3.5) circle [radius=0.05];
-	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
-	\draw[fill] (4.5,3.5) circle [radius=0.05];
-	\node[above] at (3.15,4.5) {link};
-	%idS
-	\node[above] at (0.4,4.2) {$158.110.3.46$};
-	\draw[rounded corners = 3mm, myGreen, thick] (1.1,1.2) to [out=90,in=270] (0.4,4.2);
-	\draw[fill] (1.1,1.2) circle [radius=0.05];
-	%idR
-	\node[above] at (6.3,4.2) {$158.110.144.31$};
-	\draw[rounded corners = 3mm, myGreen, thick] (5.4,1.3) to [out=90,in=270] (6.3,4.2);
-	\draw[fill] (5.4,1.3) circle [radius=0.05];
-	%LocalS
-	\draw[rounded corners = 3mm, myGreen, thick] (1.1,0.5) -- (1.1,0.2) --  (2.0,0.2) -- (2.0,2.5);
-	\draw[fill] (2.0,2.5) circle [radius=0.05];
-	\draw[fill] (1.1,0.5) circle [radius=0.05];
-	%LocalR
-	\draw[rounded corners = 3mm, myGreen, thick] (5.4,0.5) -- (5.4,0.2) -- (4.5,0.2) -- (4.5,2.5);
-	\draw[fill] (4.5,2.5) circle [radius=0.05];
-	\draw[fill] (5.4,0.5) circle [radius=0.05];
-	
-	
-	\end{tikzpicture}
-	\caption{Bigrafo di partenza \label{fig:networkRuleExe}}
-	\end{figure*}
-
-
-
-
-	\begin{figure*}[!htbp]
-	\centering
-	\begin{tikzpicture}
-	%\draw[help lines] (0,0) grid (10,5);
-	%%%   Redex   %%%
-	% Sx Big
-	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
-	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
-	\node at (2.0,4.2){$D_S$};
-	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
-	\node at (2.0,3.0){$R_S$};
-	\draw[rounded corners = 1mm, thick] (0.7,0.5) -- (1.5,0.5) -- (1.1,1.2) -- (0.7,0.5);%h1
-	\node at (1.15,0.75) {$h_1$};
-	%Packet
-	\draw[rounded corners=1mm, thick] (3.8,1.0) rectangle (5.0,1.7);
-	\draw[rounded corners = 1mm, thick, fill=myGrey] (4.0,1.1) rectangle (4.8,1.5);%Tcp
-	\node at (4.4,1.3) {tcp};
-	%packet - idS
-	\draw[myGreen, thick] (3.9,1.7) to [out=90,in=300] (0.83,2.5);
-	\draw[fill] (3.9,1.7) circle [radius=0.05];
-	%packet - idR
-	\draw[myGreen, thick] (4.9,1.7) to [out=60,in=230] (5.72,2.5);
-	\draw[fill] (4.9,1.7) circle [radius=0.05];
-	
-	
-	%Dx Big
-	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
-	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
-	\node at (4.5,4.2){$D_R$};
-	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
-	\node at (4.5,3.0){$R_R$};
-	\draw[rounded corners = 1mm, thick] (5.0,0.5) -- (5.8,0.5) -- (5.4,1.3) -- (5.0,0.5);%h2
-	\node at (5.4,0.75) {$h_2$};
-	
-	%LinkR
-	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
-	\draw[fill] (2.0,3.5) circle [radius=0.05];
-	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
-	\draw[fill] (4.5,3.5) circle [radius=0.05];
-	\node[above] at (3.15,4.5) {link};
-	%idS
-	\node[above] at (0.4,4.2) {$158.110.3.46$};
-	\draw[rounded corners = 3mm, myGreen, thick] (1.1,1.2) to [out=90,in=270] (0.4,4.2);
-	\draw[fill] (1.1,1.2) circle [radius=0.05];
-	%idR
-	\node[above] at (6.3,4.2) {$158.110.144.31$};
-	\draw[rounded corners = 3mm, myGreen, thick] (5.4,1.3) to [out=90,in=270] (6.3,4.2);
-	\draw[fill] (5.4,1.3) circle [radius=0.05];
-	%LocalS
-	\draw[rounded corners = 3mm, myGreen, thick] (1.1,0.5) -- (1.1,0.2) --  (2.0,0.2) -- (2.0,2.5);
-	\draw[fill] (2.0,2.5) circle [radius=0.05];
-	\draw[fill] (1.1,0.5) circle [radius=0.05];
-	%LocalR
-	\draw[rounded corners = 3mm, myGreen, thick] (5.4,0.5) -- (5.4,0.2) -- (4.5,0.2) -- (4.5,2.5);
-	\draw[fill] (4.5,2.5) circle [radius=0.05];
-	\draw[fill] (5.4,0.5) circle [radius=0.05];
-	
-	
-	\end{tikzpicture}
-	\caption{Bigrafo dopo l'applicazione della regola $R_0$ \label{fig:forwardRuleBigPost}}
-	\end{figure*}
-
-Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo stato iniziale del grafo degli stati. Il nostro BRS è formato da una sola regola, cioè quella di figura \ref{fig:forwardRule}, che chiameremo $R_0$. Si noti come il redex di $R_0$ trovi una ed una sola occorrenza in $S_0$, e quindi genererà un solo stato, ovvero $S_1$, dove il pacchetto si è spostano in $D_R$, arrivando a destinazione. Si può vedere questo risultato nel bigrafo di figura \ref{fig:forwardRuleBigPost}, che sarà quindi $S_1$.
-
-
-
-Di per sè, il BRS si dimentica degli stati precedenti, in questo caso $S_0$. Per cui, da $S_1$ scatterebbe di nuovo la regola $R_0$, creando lo stato $S_2$. A sua volta, da $S_2$, eseguirebbe di nuovo $R_0$ e causerebbe così un'esecuzione infinita, dando luogo al grafo degli stati in figura \ref{fig:infiniteStateGraphNetwork}.
-
-
-
-\begin{figure*}[!htbp]
-	\centering
-	\begin{tikzpicture}%[scale=0.8]
-	%\draw[help lines] (0,0) grid (14,5);
-	%States
-	\draw[thick] (0.5,0.5) circle [radius=0.5];
-	\node at (0.5,0.5) {$S_0$};
-	\draw[thick] (2.5,0.5) circle [radius=0.5];
-	\node at (2.5,0.5) {$S_1$};
-	\draw[thick] (4.5,0.5) circle [radius=0.5];
-	\node at (4.5,0.5) {$S_2$};
-	\draw[thick] (6.5,0.5) circle [radius=0.5];
-	\node at (6.5,0.5) {$S_3$};
-	
-	%Edges
-	\draw[->, thick] (1.0,0.5) -- (2.0,0.5);%s0-s1
-	\node[above] at (1.5,0.5) {$R_0$};
-	\draw[->, thick] (3.0,0.5) -- (4.0,0.5);%s1-s2
-	\node[above] at (3.5,0.5) {$R_0$};
-	\draw[->, thick] (5.0,0.5) -- (6.0,0.5);%s2-s3
-	\node[above] at (5.5,0.5) {$R_0$};
-	\draw[->, thick] (7.0,0.5) -- (8.0,0.5);%s3-...
-	\node[above] at (7.5,0.5) {$\dots$};
-	
-	\end{tikzpicture}
-	\caption{Grafo degli stati infinito. \label{fig:infiniteStateGraphNetwork}}
-\end{figure*}
-
-
-
-
-\begin{figure*}[!htbp]
-	\centering
-	\begin{tikzpicture}%[scale=0.8]
-	%\draw[help lines] (0,0) grid (14,5);
-	%States
-	\draw[thick] (1.5,1.5) circle [radius=0.5];
-	\node at (1.5,1.5) {$S_0$};
-	\draw[thick] (3.5,1.5) circle [radius=0.5];
-	\node at (3.5,1.5) {$S_1$};
-	
-	%Edges
-	\draw[->, thick] (1.85,1.85) to [out=45,in=135] (3.15,1.85);%s0-s1
-	\node at (2.5,2.5) {$R_0$};
-	\draw[<-, thick] (1.85,1.15) to [out=-45,in=-135] (3.15,1.15);%s1-s0
-	\node at (2.5,0.5) {$R_0$};
-		
-	\end{tikzpicture}
-	\caption{Grafo degli stati finito. \label{fig:finiteStateGraphNetwork}}
-\end{figure*}
-
-Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$. Poichè da $S_1$ tramite la regola $R_0$ viene creato lo stato $S_2$, siamo ora in grado non doverlo più memorizzare, in quanto è uguale (o meglio, è semanticamente equivalente) allo stato $S_0$. Per cui, ritrovandoci di nuovo in $S_0$, sappiamo che non dobbiamo applicare più nessuna regola, pena un'esecuzione infinita del BRS. Tramite l'isomorfismo, si è potuto generare il \emph{grafo degli stati} della figura \ref{fig:finiteStateGraphNetwork}.
-
 
 
 

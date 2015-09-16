@@ -20,7 +20,10 @@
 \usepackage{pbox}
 \usepackage{verbatim}
 \usepackage{pgfplots}
+\usepackage{rotating}
 \usepackage{booktabs, longtable, tabu}
+\usepackage{url} % hyperref works too
+\urlstyle{same}
 \usetikzlibrary{shapes, positioning, trees, arrows, shadows, calc, matrix}
 
 %Settings for the Listings package
@@ -53,14 +56,25 @@
 
 % here macros
 %Comandi
-
-\newtheorem{teor}{Teorema}
-\newtheorem{define}{Definizione}
+\newtheoremstyle{mystyle}%                % Name
+  {}%                                     % Space above
+  {}%                                     % Space below
+  {\normalfont}%                             % Body font
+  {}%                                     % Indent amount
+  {\bfseries}%                            % Theorem head font
+  {.}%                                    % Punctuation after theorem head
+  { }%                                    % Space after theorem head, ' ', or \newline
+  {}%                                     % Theorem head spec (can be left empty, meaning `normal')
+  
+  
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{define}{Definizione}[section]
 \newtheorem*{notaz}{Notazione}
 \newtheorem*{term}{Terminologia}
-\newtheorem{prop}{Proposizione}
+\newtheorem{prop}{Proposizione}[section]
+\theoremstyle{mystyle}
 \newtheorem*{dimos}{Dimostrazione}
-\newtheorem{corol}{Corollario}
+\newtheorem{corol}{Corollario}[section]
 
 %Tikz style
 \definecolor{myGreen}{RGB}{18,142,21}
@@ -68,6 +82,14 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%\newcommand{\wario}{
+%\begin{rotate}{180}M\end{rotate}
+%}
+
+\newcommand{\wario}{
+\raisebox{\depth}{\rotatebox{180}{M}}
+}
 
 
 \title{Verifica di proprietà locali su BRS}
@@ -113,15 +135,13 @@
 %    Here the preface
 %\end{preface}
 
-%if you use only (sub)section* in introduction
-\include{introduction}
-
 \mainmatter %numeri arabi per il vero contenuto
 %otherwise use
 % \mainmatter
 % \include{introduction}%with \chapter{\introductionname} instead of \introduction
 
 % \part{First Part}
+\include{introduction}
 \include{bigraphs}
 \include{isomorfismo}
 \include{logic}

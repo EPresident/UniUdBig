@@ -1,9 +1,427 @@
-\chapter{Model Checker per bigrafi}
-Nel capitolo precedente si è visto come il fatto di poter riconoscere quando due bigrafi sono uguali permetta di poter arrestare l'esecuzione del BRS, evitando sue evoluzioni infinite. In questo capitolo invece si vedrà l'altro principale problema: come poter verificare date proprietà sul BRS. Riprendendo l'esempio della rete, una proprietà che potremmo verificare è l'arrivo a destinazione di un pacchetto, oppure assicurarci che nessun pacchetto non autorizzato passi attraverso un firewall.
+\chapter{Model Checker per bigrafi}\label{ch:modelCheckerChapter}
+In questo capitolo si vedrà come l'isomorfismo introdotto nel capitolo precedente consentirà di riconoscere quando due bigrafi sono uguali e di arrestare l'esecuzione del BRS, evitando sue evoluzioni infinite.
+
+Inoltre si vedrà una soluzione per l'altro principale problema di questa tesi: come poter verificare date proprietà sul BRS. Riprendendo l'esempio della rete, una proprietà che potremmo verificare è l'arrivo a destinazione di un pacchetto, oppure assicurarci che nessun pacchetto non autorizzato passi attraverso un firewall.
 
 Come per l'isomorfismo, anche questo problema necessita di una soluzione generale, che prescinde dal dominio che i bigrafi rappresentano. Si è creata quindi una semplice logica a predicati, con cui è possibile esprimere le proprietà che si vuole verificare. Essa andrà a formare la \emph{politica} per il Model Checker, che servirà a verificare le proprietà sul grafo degli stati visto nel capitolo precedente.
 
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Grafo degli stati}
+Sono stati elencati tutti i vincoli necessari per determinare l'isomorfismo tra bigrafi. Si è già visto che l'utilità di sapere quando due bigrafi sono uguali risiede nel fatto che è possibile fermare l'esecuzione del BRS, evitando così cicli infiniti tra due bigrafi uguali. Per memorizzare tutti gli stati assunti da un BRS durante la sua evoluzione, si è creato il \emph{grafo degli stati}: è una struttura dati a grafo dove ogni nodo è a sua volta un bigrafo. 
+
+
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	\draw[thick] (4.5,3.5) circle [radius=0.5];
+	\node at (4.5,3.5) {$S_3$};
+	\draw[thick] (6.5,2.5) circle [radius=0.5];
+	\node at (6.5,2.5) {$S_4$};
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,3.5);%s1-s3
+	\node at (3.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};
+	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s3-s4
+	\node at (5.5,1.5) {$R_0$};
+	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s2-s4
+	\node at (5.5,3.5) {$R_0$};
+	\draw[->, thick] (6.5,2.0) to [out=270,in=0] (5.5,0.0) -- (3.5,0.0) to [out=180,in=270] (2.5,2.0) ;%s4-s1
+	\node[above] at (4.5,0.0) {$R_2$};
+	
+	\end{tikzpicture}
+	\caption{Esempio di grafo degli stati. \label{fig:stateGraphExe}}
+	\end{figure*}
+
+
+Come si può vedere dalla figura \ref{fig:stateGraphExe}, ogni nodo è etichettato con la stringa $S_i$, perché si tratta di uno stato, cioè di un bigrafo. All'interno di un BRS, abbiamo visto che un bigrafo può evolversi tramite le regole di reazione, motivo per cui ogni arco orientato del grafo degli stati è etichettato con il nome della regola che ha portato dal primo stato al secondo. Nell'esempio di cui sopra, dal bigrafo iniziale $S_0$ si passa a $S_1$ tramite la regola $R_1$.
+
+Si noti un aspetto molto importante: da $S_0$ a $S_1$ la regola $R_1$ ha generato un solo nuovo stato. Questo vuol dire che il redex di $R_1$ ha una sola occorrenza in $S_0$, ed essa è stata sostituita dal reactum di $R_1$, creando così lo stato $S_1$. Però, se prendiamo in considerazione quest'ultimo stato, si vede che ora la regola $R_1$ porta a due nuovi stati. Questo perché in $S_1$ ci sono due occorrenze del redex di $R_1$, che vengono sostituite dal suo reactum, creando rispettivamente i due nuovi stati $S_2$ e $S_3$. In altre parole: una regola di reazione può generare un diverso numero di stati a seconda del bigrafo a cui è applicata.
+
+Infine, si presti attenzione all'arco tra $S_4$ e $S_1$. Il significato è il seguente: applico la regola $R_2$ al bigrafo $S_4$, generando un nuovo stato $S_5$. Esso è però isomorfo a $S_1$, cioè: $S_1$ e $S_5$ hanno la stessa \emph{semantica}, per cui collego $S_4$ a $S_1$. Se non ci fossimo accorti di questa propietà, allora avremmo continuato ad applicare le regole $R_0$, $R_1$ e $R_2$ all'\emph{infinito}, generando sempre nuovi stati, come in figura \ref{fig:infiniteStateGraphExe}. Ora invece, dato che ci siamo accorti che da $S_4$ siamo ritornati ad $S_1$, non applichiamo più nessuna regola, avendo quindi un grafo degli stati \emph{finito}, cioè quello di figura \ref{fig:stateGraphExe}.\\ \\
+
+
+
+
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,2.5) circle [radius=0.5];
+	\node at (2.5,2.5) {$S_1$};
+	\draw[thick] (4.5,1.5) circle [radius=0.5];
+	\node at (4.5,1.5) {$S_2$};
+	\draw[thick] (4.5,3.5) circle [radius=0.5];
+	\node at (4.5,3.5) {$S_3$};
+	\draw[thick] (6.5,2.5) circle [radius=0.5];
+	\node at (6.5,2.5) {$S_4$};
+	\draw[thick] (8.5,2.5) circle [radius=0.5];
+	\node at (8.5,2.5) {$S_5$};
+	\draw[thick] (10.5,1.5) circle [radius=0.5];
+	\node at (10.5,1.5) {$S_6$};
+	\draw[thick] (10.5,3.5) circle [radius=0.5];
+	\node at (10.5,3.5) {$S_7$};
+	\draw[thick] (12.5,2.5) circle [radius=0.5];
+	\node at (12.5,2.5) {$S_8$};
+	
+	%Edges
+	\draw[->, thick] (0.85,0.85) -- (2.15,2.15);%s0-s1
+	\node[above left] at (1.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,3.5);%s1-s3
+	\node at (3.5,1.5) {$R_1$};
+	\draw[->, thick] (3.0,2.5) -- (4.0,1.5);%s1-s2
+	\node at (3.5,3.5) {$R_1$};
+	\draw[->, thick] (5.0,3.5) -- (6.0,2.5);%s2-s4
+	\node at (5.5,1.5) {$R_0$};
+	\draw[->, thick] (5.0,1.5) -- (6.0,2.5);%s3-s4
+	\node at (5.5,3.5) {$R_0$};
+	\draw[->, thick] (7.0,2.5) -- (8.0,2.5);%s4-s5
+	\node[above] at (7.5,2.5) {$R_2$};
+	\draw[->, thick] (9.0,2.5) -- (10.0,1.5);%s5-s6
+	\node at (9.5,1.5) {$R_1$};
+	\draw[->, thick] (9.0,2.5) -- (10.0,3.5);%s5-s7
+	\node at (9.5,3.5) {$R_1$};
+	\draw[->, thick] (11.0,1.5) -- (12.0,2.5);%s6-s8
+	\node at (11.5,3.5) {$R_0$};
+	\draw[->, thick] (11.0,3.5) -- (12.0,2.5);%s7-s8
+	\node at (11.5,1.5) {$R_0$};
+	\draw[->, thick] (13.0,2.5) -- (13.9,2.5);%s8-...
+	\node[above] at (13.5,2.5) {$R_2$};
+	\node[below] at (13.5,2.5) {$\dots$};
+	
+	\end{tikzpicture}
+	\caption{Grafo degli stati infinito. \label{fig:infiniteStateGraphExe}}
+	\end{figure*}
+
+
+
+\subsection{Esempio}\label{sub:networkExe}
+In questa sottosezione, viene fornito un esempio concreto di grafo degli stati, con particolare attenzione al problema dell'evoluzione infinita. Si riprende l'esempio della rete della sottosezione \ref{sub:networkExe}. L'implementazione la si può trovare in \cite{BRSAnalysis}. 
+
+Si introduce solo la segnatura del pacchetto, del router e del dominio: $K=\{pacchetto:2, \quad router:2, \quad dominio:0\}$. Chiameremo rispettivamente $Encap$ e $Decap$ le regole per l'incapsulamento e il decapsulamento dei pacchetto nei vari strati, per esempio da Http a Tcp, o da Ip a Ethernet. Ci concentriamo sulla regola di inoltro tra router, che è quella in figura \ref{fig:forwardRule}.
+
+
+
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (14,5);
+	%%%   Redex   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (2.0,0.5) rectangle (2.5,1.0);%Site 0
+	\node at (2.3,0.75) {0};
+	%Packet
+	\draw[rounded corners=1mm, thick] (0.5,1.0) rectangle (1.7,1.7);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (1.0,1.1) rectangle (1.4,1.5);%Site 2
+	\node at (1.2,1.3) {2};
+	%idS
+	\draw[myGreen, thick] (0.6,1.7) to [out=100,in=270] (0.5,4.2);
+	\draw[fill] (0.6,1.7) circle [radius=0.05];
+	\node[above] at (0.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (1.6,1.7) -- (2.0,1.9) -- (3.2,1.8) -- (5.0,1.5) -- (6.0,1.5) -- (6.0,4.2);
+	\draw[fill] (1.6,1.7) circle [radius=0.05];
+	\node[above] at (6.3,4.2) {$id_R$};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (4.0,0.5) rectangle (4.5,1.0);%Site 1
+	\node at (4.3,0.75) {1};
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (2.0,2.5) -- (2.0,2.1) -- (1.2,2.1) -- (1.2,4.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\node[above] at (1.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (4.5,2.5) -- (4.5,2.1) -- (5.3,2.1) -- (5.3,4.5);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\node[above] at (5.3,4.5) {$local_R$};
+	
+	
+	\draw[->, red, very thick] (6.8,2.0) -- (7.8,2.0);
+	
+	%%%   Reactum   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (8.3,0.3) rectangle (10.7,3.7);%Domain 1
+	\draw[thick] (10.0,3.0) circle [radius=0.5];%Router 1
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (10.0,0.5) rectangle (10.5,1.0);%Site 0
+	\node [below] at (10.3,1.0) {0};
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (11.3, 0.0) rectangle (13.99,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (11.6,0.3) rectangle (13.6,3.7);%Domain 2
+	\draw[thick] (12.5,3.0) circle [radius=0.5];%Router 2
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.0,0.4) rectangle (12.5,0.9);%Site 1
+	\node [below] at (12.3,0.9) {1};
+	%Packet
+	\draw[rounded corners=1mm, thick] (12.0,1.0) rectangle (13.2,1.7);
+	\draw[rounded corners = 1mm, dashed, fill=myGrey] (12.5,1.1) rectangle (13.0,1.5);%Site 2
+	\node at (12.7,1.3) {2};
+	%idS
+	\draw[rounded corners = 5mm, myGreen, thick] (12.0,1.7) -- (11.0,1.9) -- (8.5,1.5) -- (8.5,4.2);
+	\draw[fill] (12.0,1.7) circle [radius=0.05];
+	\node[above] at (8.4,4.2) {$id_S$};
+	%idR
+	\draw[rounded corners = 5mm, myGreen, thick] (13.2,1.7) to [out=60,in=270] (13.9,4.2);
+	\draw[fill] (13.2,1.7) circle [radius=0.05];
+	\node[above] at (13.59,4.0) {$id_R$};
+	
+	%LinkR
+	\draw[myGreen, thick] (10.0,3.5) to [out=90,in=270] (11.15,4.5);%r1-link
+	\draw[fill] (10.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (12.5,3.5) to [out=90,in=270] (11.15,4.5);%r2-link
+	\draw[fill] (12.5,3.5) circle [radius=0.05];
+	\node[above] at (11.15,4.5) {link};
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (10.0,2.5) -- (10.0,2.1) -- (9.2,2.1) -- (9.2,4.5);
+	\draw[fill] (10.0,2.5) circle [radius=0.05];
+	\node[above] at (9.2,4.5) {$local_S$};
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (12.5,2.5) -- (12.5,2.1) -- (13.2,2.1) -- (13.2,4.5);
+	\draw[fill] (12.5,2.5) circle [radius=0.05];
+	\node[above] at (13.0,4.5) {$local_R$};
+	
+	\end{tikzpicture}
+	\caption{Regola di inoltro tra router. \label{fig:forwardRule}}
+	\end{figure*}
+
+
+
+La regola è molto semplice. Innanzitutto, incominciamo con i vari controlli. Figli diretti delle due radici sono i due rettangoli: essi sono i domini di cui fanno parte i due router. Questi ultimi, a loro volta, sono disegnati come circonferenze con due porte: la prima collegata a ``$link$" e la seconda a ``$Local$". Infine, il pacchetto è rappresentato da un rettangolo, anch'esso con due porte: la prima, che è quella più a sinistra, è collegata al mittente, mentre la seconda al destinatario. 
+
+Passiamo ora a definire il ruolo degli outername. ``$Link$" è l'outername dedicato alla connessione tra router: se un terzo router volesse collegarsi a questi due, allora dovrebbe collegare (nel vero senso della parola) la sua porta superiore con l'outername ``$link$". Si ricordi quanto detto nella sottosezione \ref{sub:networkExe}: i router inoltrano non deterministicamente ogni pacchetto verso tutte le sue interfacce. Se tre router sono collegati all'outername ``$link$", allora uno di questi inoltra il pacchetto verso tutti gli altri due. Per cui ``$link$" rappresenta l'insieme di tutte le interfacce di un router.
+
+Gli outername ``$Local_S$" e ``$Local_R$" sono a disposizione solamente per gli host del dominio corrente. Per esempio, a ``$Local_S$" (che sta per \emph{Local Sender}) si possono collegare solo gli host del dominio in cui si trova il primo router. Nella regola di figura \ref{fig:forwardRule}, questi host vengono inglobati dal sito numero 0. Il medesimo discorso vale per ``$Local_R$".
+
+Il pacchetto è collegato a due outername. Il primo, quello più a sinistra, è ``$id_S$" (\emph{id Sender}), mentre il secondo è  ``$id_R$" (\emph{id Receiver}). Nella realtà, questi due outername saranno gli identificativi del mittente e del destinatario. Se per esempio il pacchetto in questione è IP, allora $id_S$ sarà l'indirizzo IP del mittente, mentre $id_R$ quello del destinatario.
+
+Infine, si noti anche il sito numero 2: si trova dentro il pacchetto e permette di astrarre al tipo di pacchetto. Per esempio: se è un pacchetto IP, allora è probabile che abbia incapsulato al suo interno un pacchetto TCP, che a sua volta contiene un pacchetto HTTP. Onde evitare di scrivere regole ad hoc per ogni tipo di pacchetto, si introduce il sito numero 2, così che la regola trovi un occorrenza (e quindi scatti) per qualsiasi tipo di pacchetto.
+
+Vediamo ora un esempio reale, proposto in figura \ref{fig:networkRuleExe}. Siano $D_S$ e $D_R$ i domini rispettivamente del mittente (sender) e del destinatario (receiver). Indicheremo con il triangolo il controllo per un host. Quindi $h_1$ e $h_2$ saranno rispettivamente all'interno di $D_S$ e $D_R$. Lo stesso vale per i router, cioè $R_S$ e $R_R$. Supponiamo che il pacchetto sia di tipo IP, e che $h_1$ sia collegato per esempio a $158.110.3.46$, e $h_2$ a $158.110.144.31$. Infine, per quanto detto prima a proposito di ``$Local_S$" e ``$Local_R$", alla porta inferiore di $R_S$ si collegherà $h_1$, mentre a quella di $R_R$ si collegherà $id_2$.
+
+
+	\begin{figure*}[!htbp]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%%%   Redex   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\node at (2.0,4.2){$D_S$};
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\node at (2.0,3.0){$R_S$};
+	\draw[rounded corners = 1mm, thick] (0.7,0.5) -- (1.5,0.5) -- (1.1,1.2) -- (0.7,0.5);%h1
+	\node at (1.15,0.75) {$h_1$};
+	%Packet
+	\draw[rounded corners=1mm, thick] (1.4,1.0) rectangle (2.6,1.7);
+	\draw[rounded corners = 1mm, thick, fill=myGrey] (1.6,1.1) rectangle (2.4,1.5);%tcp
+	\node at (2.0,1.3) {tcp};
+	%packet - idS
+	\draw[myGreen, thick] (1.5,1.7) to [out=90,in=300] (0.83,2.5);
+	\draw[fill] (1.5,1.7) circle [radius=0.05];
+	%packet - idR
+	\draw[myGreen, thick] (2.5,1.7) to [out=60,in=230] (5.72,2.5);
+	\draw[fill] (2.5,1.7) circle [radius=0.05];
+	
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\node at (4.5,4.2){$D_R$};
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
+	\node at (4.5,3.0){$R_R$};
+	\draw[rounded corners = 1mm, thick] (5.0,0.5) -- (5.8,0.5) -- (5.4,1.3) -- (5.0,0.5);%h2
+	\node at (5.4,0.75) {$h_2$};
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%idS
+	\node[above] at (0.4,4.2) {$158.110.3.46$};
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,1.2) to [out=90,in=270] (0.4,4.2);
+	\draw[fill] (1.1,1.2) circle [radius=0.05];
+	%idR
+	\node[above] at (6.3,4.2) {$158.110.144.31$};
+	\draw[rounded corners = 3mm, myGreen, thick] (5.4,1.3) to [out=90,in=270] (6.3,4.2);
+	\draw[fill] (5.4,1.3) circle [radius=0.05];
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,0.5) -- (1.1,0.2) --  (2.0,0.2) -- (2.0,2.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (1.1,0.5) circle [radius=0.05];
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (5.4,0.5) -- (5.4,0.2) -- (4.5,0.2) -- (4.5,2.5);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\draw[fill] (5.4,0.5) circle [radius=0.05];
+	
+	
+	\end{tikzpicture}
+	\caption{Bigrafo di partenza \label{fig:networkRuleExe}}
+	\end{figure*}
+
+
+
+
+	\begin{figure*}[!htbp]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%%%   Redex   %%%
+	% Sx Big
+	\draw[rounded corners = 3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);%Root 1
+	\draw[rounded corners = 3mm, thick] (0.3,0.3) rectangle (2.7,3.7);%Domain 1
+	\node at (2.0,4.2){$D_S$};
+	\draw[thick] (2.0,3.0) circle [radius=0.5];%Router 1
+	\node at (2.0,3.0){$R_S$};
+	\draw[rounded corners = 1mm, thick] (0.7,0.5) -- (1.5,0.5) -- (1.1,1.2) -- (0.7,0.5);%h1
+	\node at (1.15,0.75) {$h_1$};
+	%Packet
+	\draw[rounded corners=1mm, thick] (3.8,1.0) rectangle (5.0,1.7);
+	\draw[rounded corners = 1mm, thick, fill=myGrey] (4.0,1.1) rectangle (4.8,1.5);%Tcp
+	\node at (4.4,1.3) {tcp};
+	%packet - idS
+	\draw[myGreen, thick] (3.9,1.7) to [out=90,in=300] (0.83,2.5);
+	\draw[fill] (3.9,1.7) circle [radius=0.05];
+	%packet - idR
+	\draw[myGreen, thick] (4.9,1.7) to [out=60,in=230] (5.72,2.5);
+	\draw[fill] (4.9,1.7) circle [radius=0.05];
+	
+	
+	%Dx Big
+	\draw[rounded corners = 3mm, dashed] (3.5,0.0) rectangle (6.5,4.0);%Root 2
+	\draw[rounded corners = 3mm, thick] (3.8,0.3) rectangle (6.2,3.7);%Domain 2
+	\node at (4.5,4.2){$D_R$};
+	\draw[thick] (4.5,3.0) circle [radius=0.5];%Router 2
+	\node at (4.5,3.0){$R_R$};
+	\draw[rounded corners = 1mm, thick] (5.0,0.5) -- (5.8,0.5) -- (5.4,1.3) -- (5.0,0.5);%h2
+	\node at (5.4,0.75) {$h_2$};
+	
+	%LinkR
+	\draw[myGreen, thick] (2.0,3.5) to [out=90,in=270] (3.15,4.5);%r1-link
+	\draw[fill] (2.0,3.5) circle [radius=0.05];
+	\draw[myGreen, thick] (4.5,3.5) to [out=90,in=270] (3.15,4.5);%r2-link
+	\draw[fill] (4.5,3.5) circle [radius=0.05];
+	\node[above] at (3.15,4.5) {link};
+	%idS
+	\node[above] at (0.4,4.2) {$158.110.3.46$};
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,1.2) to [out=90,in=270] (0.4,4.2);
+	\draw[fill] (1.1,1.2) circle [radius=0.05];
+	%idR
+	\node[above] at (6.3,4.2) {$158.110.144.31$};
+	\draw[rounded corners = 3mm, myGreen, thick] (5.4,1.3) to [out=90,in=270] (6.3,4.2);
+	\draw[fill] (5.4,1.3) circle [radius=0.05];
+	%LocalS
+	\draw[rounded corners = 3mm, myGreen, thick] (1.1,0.5) -- (1.1,0.2) --  (2.0,0.2) -- (2.0,2.5);
+	\draw[fill] (2.0,2.5) circle [radius=0.05];
+	\draw[fill] (1.1,0.5) circle [radius=0.05];
+	%LocalR
+	\draw[rounded corners = 3mm, myGreen, thick] (5.4,0.5) -- (5.4,0.2) -- (4.5,0.2) -- (4.5,2.5);
+	\draw[fill] (4.5,2.5) circle [radius=0.05];
+	\draw[fill] (5.4,0.5) circle [radius=0.05];
+	
+	
+	\end{tikzpicture}
+	\caption{Bigrafo dopo l'applicazione della regola $R_0$ \label{fig:forwardRuleBigPost}}
+	\end{figure*}
+
+Chiamiamo il bigrafo della figura \ref{fig:networkRuleExe} come $S_0$, cioè lo stato iniziale del grafo degli stati. Il nostro BRS è formato da una sola regola, cioè quella di figura \ref{fig:forwardRule}, che chiameremo $R_0$. Si noti come il redex di $R_0$ trovi una ed una sola occorrenza in $S_0$, e quindi genererà un solo stato, ovvero $S_1$, dove il pacchetto si è spostano in $D_R$, arrivando a destinazione. Si può vedere questo risultato nel bigrafo di figura \ref{fig:forwardRuleBigPost}, che sarà quindi $S_1$.
+
+
+
+Di per sè, il BRS si dimentica degli stati precedenti, in questo caso $S_0$. Per cui, da $S_1$ scatterebbe di nuovo la regola $R_0$, creando lo stato $S_2$. A sua volta, da $S_2$, eseguirebbe di nuovo $R_0$ e causerebbe così un'esecuzione infinita, dando luogo al grafo degli stati in figura \ref{fig:infiniteStateGraphNetwork}.
+
+
+
+\begin{figure*}[!htbp]
+	\centering
+	\begin{tikzpicture}%[scale=0.8]
+	%\draw[help lines] (0,0) grid (14,5);
+	%States
+	\draw[thick] (0.5,0.5) circle [radius=0.5];
+	\node at (0.5,0.5) {$S_0$};
+	\draw[thick] (2.5,0.5) circle [radius=0.5];
+	\node at (2.5,0.5) {$S_1$};
+	\draw[thick] (4.5,0.5) circle [radius=0.5];
+	\node at (4.5,0.5) {$S_2$};
+	\draw[thick] (6.5,0.5) circle [radius=0.5];
+	\node at (6.5,0.5) {$S_3$};
+	
+	%Edges
+	\draw[->, thick] (1.0,0.5) -- (2.0,0.5);%s0-s1
+	\node[above] at (1.5,0.5) {$R_0$};
+	\draw[->, thick] (3.0,0.5) -- (4.0,0.5);%s1-s2
+	\node[above] at (3.5,0.5) {$R_0$};
+	\draw[->, thick] (5.0,0.5) -- (6.0,0.5);%s2-s3
+	\node[above] at (5.5,0.5) {$R_0$};
+	\draw[->, thick] (7.0,0.5) -- (8.0,0.5);%s3-...
+	\node[above] at (7.5,0.5) {$\dots$};
+	
+	\end{tikzpicture}
+	\caption{Grafo degli stati infinito. \label{fig:infiniteStateGraphNetwork}}
+\end{figure*}
+
+
+
+
+\begin{figure*}[!htbp]
+	\centering
+	\begin{tikzpicture}%[scale=0.8]
+	%\draw[help lines] (0,0) grid (14,5);
+	%States
+	\draw[thick] (1.5,1.5) circle [radius=0.5];
+	\node at (1.5,1.5) {$S_0$};
+	\draw[thick] (3.5,1.5) circle [radius=0.5];
+	\node at (3.5,1.5) {$S_1$};
+	
+	%Edges
+	\draw[->, thick] (1.85,1.85) to [out=45,in=135] (3.15,1.85);%s0-s1
+	\node at (2.5,2.5) {$R_0$};
+	\draw[<-, thick] (1.85,1.15) to [out=-45,in=-135] (3.15,1.15);%s1-s0
+	\node at (2.5,0.5) {$R_0$};
+		
+	\end{tikzpicture}
+	\caption{Grafo degli stati finito. \label{fig:finiteStateGraphNetwork}}
+\end{figure*}
+
+Grazie all'isomorfismo tra bigrafi, riusciamo a collegare lo stato $S_1$ a $S_0$. Poichè da $S_1$ tramite la regola $R_0$ viene creato lo stato $S_2$, siamo ora in grado non doverlo più memorizzare, in quanto è uguale (o meglio, è semanticamente equivalente) allo stato $S_0$. Per cui, ritrovandoci di nuovo in $S_0$, sappiamo che non dobbiamo applicare più nessuna regola, pena un'esecuzione infinita del BRS. Tramite l'isomorfismo, si è potuto generare il \emph{grafo degli stati} della figura \ref{fig:finiteStateGraphNetwork}.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Model Checker}
 Un Model Checker (MC) è un metodo per verificare delle proprietà in un sistema formale. Nel nostro caso, si è costruito un MC basato sul grafo degli stati (come quello di figura \ref{fig:bsgExe}): il problema sarà capire se un nodo rispetti le proprietà specificate.
 
@@ -55,15 +473,10 @@ Il comportamento di un model checker MC è definito dalla seguente relazione:
 
 Nell'esempio \ref{fig:bsgExe}, il problema è quindi banale: il model checker ritorna vero se e solo se è vera la formula $MC,S_0 \models p \lor MC,S_1 \models p$.
 
-\subsection{Generazione degli stati}
+\subsection{Generazione degli stati}\label{sub:statesGen}
 Si è appena visto che in un model checker si possono esprimere delle proprietà: ogni MC ha però anche un altro grado di libertà, che riguarda la generazione degli stati. Come creare il grafo degli stati? E con che ordine?
 
-Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strategie ed ognuna è adatta per certi scopi. Vediamone alcune:
-\begin{itemize}
-	\item
-	\emph{Strategia Breadth First}: per ogni stato $S_i$ vengono generati tutti gli stati possibili adiacenti ad $S_i$. Per esempio, in figura \ref{fig:BSGen}, si mostrano i primi tre passi della strategia Breadth First. Il suo vantaggio è che non si tralascia nessuno stato, ottenendo un grafo degli stati \emph{completo}. Inoltre, se un nodo porta ad un vicolo cieco (cioè se non genera nessun bigrafo tramite nessuna regola) allora questo viene semplicemente tolto dalla coda. Lo svantaggio è che può essere molto lenta: se da ogni stato si generano k stati (con k molto alto), allora prima di verificare la proprietà potrebbero volerci molte iterazioni.
-	
-	\begin{figure*}[th]
+\begin{figure*}[!htbp]
 	\centering
 	\subfigure[Primo passo]{
 	\begin{tikzpicture}
@@ -118,14 +531,18 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\caption{Esempio di generazione Breadth First. \label{fig:BSGen}}
 	\end{figure*}
 
-	 
+
+
+Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strategie ed ognuna è adatta per certi scopi. Vediamone alcune:
+\begin{itemize}
 	\item
-	\emph{Strategia Random}: se dallo stato $S_i$ si possono applicare k regole allora viene scelto in maniera random un numero naturale $m \in \{1 \dots k\}$ e si genera solamente lo stato $S_m$. Questo consente di non memorizzare l'intero grafo degli stati (che in certi casi può essere molto grande) e verificare al momento della generazione di $S_k$ se $MC,S_k \models p$. Lo svantaggio è quello che l'esecuzione potrebbe andare avanti all'infinito, infatti il grafo \emph{non è completo}. Per cui potenzialmente potrebbero occorrere infinite evoluzioni prima di verificare una proprietà. Un esempio di generazione con la strategia random è quello in figura \ref{fig:BSGenRandom}.
+	\emph{Strategia Breadth First}: per ogni stato $S_i$ vengono generati tutti gli stati possibili adiacenti ad $S_i$. Per esempio, in figura \ref{fig:BSGen}, si mostrano i primi tre passi della strategia Breadth First. Il suo vantaggio è che non si tralascia nessuno stato, ottenendo un grafo degli stati \emph{completo}. Inoltre, se un nodo porta ad un vicolo cieco (cioè se non genera nessun bigrafo tramite nessuna regola) allora questo viene semplicemente tolto dalla coda. Lo svantaggio è che può essere molto lenta: se da ogni stato si generano k stati (con k molto alto), allora prima di verificare la proprietà potrebbero volerci molte iterazioni.
 	
-	\begin{figure*}[!h]
+	\item
+	\begin{figure*}[!htbp]
 	\centering
 	\subfigure[Primo passo]{
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=0.8]
 	%\draw[help lines] (0,0) grid (8,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -137,7 +554,7 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\hspace{5mm}
 	
 	\subfigure[Secondo passo]{
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=0.8]
 	%\draw[help lines] (0,0) grid (8,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -153,7 +570,7 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\hspace{5mm}
 	
 	\subfigure[Terzo passo]{
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=0.8]
 	%\draw[help lines] (0,0) grid (8,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -174,7 +591,7 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\hspace{5mm}
 	
 	\subfigure[Quarto passo]{
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=0.8]
 	%\draw[help lines] (0,0) grid (8,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -198,7 +615,7 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	\hspace{5mm}
 	
 	\subfigure[Quinto passo]{
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=0.8]
 	%\draw[help lines] (0,0) grid (8,5);
 	%States
 	\draw[thick] (0.5,0.5) circle [radius=0.5];
@@ -224,7 +641,9 @@ Nel MC costruito per questa tesi, che chiameremo $MC_{big}$, ci sono varie strat
 	
 	\caption{Esempio di generazione random. \label{fig:BSGenRandom}}
 	\end{figure*}
+	\emph{Strategia Random}: se dallo stato $S_i$ si possono applicare k regole allora viene scelto in maniera random un numero naturale $m \in \{1 \dots k\}$ e si genera solamente lo stato $S_m$. Questo consente di non memorizzare l'intero grafo degli stati (che in certi casi può essere molto grande) e verificare al momento della generazione di $S_k$ se $MC,S_k \models p$. Lo svantaggio è quello che l'esecuzione potrebbe andare avanti all'infinito, infatti il grafo \emph{non è completo}. Per cui potenzialmente potrebbero occorrere infinite evoluzioni prima di verificare una proprietà. Un esempio di generazione con la strategia random è quello in figura \ref{fig:BSGenRandom}.
 	
+
 \end{itemize}
 
 E' possibile creare altre strategie a seconda degli scopi: in questa sede, se non specificato altrimenti, si assumerà che la strategia sia sempre quella Breadth First, che consente di computare l'intero grafo degli stati.
@@ -250,12 +669,12 @@ Il linguaggio $L(G)$ per il model checker $MC_{big}$ è generato dalla grammatica
 		$V=\{\varphi, \sigma \}$ è l'insieme di variabili
 		
 		\item
-		$U=\{T, \land, $\emph{`(', `)', `,' ,}$ \lnot, W, \pi , A \dots Z\}$ è l'insieme di simboli terminali
+		$U=\{T, \land, $\emph{`(', `)', `,' ,}$ \lnot, \wario, \pi , A \dots Z\}$ è l'insieme di simboli terminali
 		
 		\item
 		$P$ è l'insieme di \emph{produzioni}, definito dalle seguenti relazioni:
 		\begin{center}
-		$\varphi \rightarrow T \mid \varphi \land \varphi \mid \neg \varphi \mid W_\sigma(\varphi, \varphi, \varphi) \mid \pi_\sigma$\\
+		$\varphi \rightarrow T \mid \varphi \land \varphi \mid \neg \varphi \mid \wario_\sigma(\varphi, \varphi, \varphi) \mid \pi_\sigma$\\
 		$\sigma \rightarrow A\sigma \mid \dots \mid Z\sigma \mid \varepsilon \qquad \qquad \qquad \quad$
 		\end{center}
 		
@@ -272,9 +691,9 @@ $L(M)=\{w \in U^*\ : \ S\Rightarrow_*^G w \}$.
 Seguendo l'usuale definizione di grammatica CF, diamo ora alcuni esempi di stringhe generabili dalla grammatica G, cioè di formule appartenenti al linguaggio L(G):
 \begin{itemize}
 	\item
-	$\varphi = W_B(T, T, T) \land \pi_C$
+	$\varphi = \wario_B(T, T, T) \land \pi_C$
 	\item
-	$\varphi = W_B(\pi_X, \pi_Y, \pi_Z)$
+	$\varphi = \wario_B(\pi_X, \pi_Y, \pi_Z)$
 	\item
 	$\varphi = \lnot \pi_B \land \pi_C$
 \end{itemize}
@@ -294,7 +713,7 @@ Siano $S$ uno stato e $\varphi$ una proprietà espressa nel linguaggio L(G). La r
 	\item
 	$S \models \lnot \varphi \quad \Leftrightarrow \quad S \not \models \varphi$
 	\item
-	$S \models W_\sigma(\varphi_1,\varphi_2,\varphi_3) \quad \Leftrightarrow  \quad  \begin{cases}\exists C,D \  : \  S=C \circ (\sigma \otimes id_I) \circ D \\
+	$S \models \wario_\sigma(\varphi_1,\varphi_2,\varphi_3) \quad \Leftrightarrow  \quad  \begin{cases}\exists C,D \  : \  S=C \circ (\sigma \otimes id_I) \circ D \\
 	C\models \varphi_1 \quad \sigma \models \varphi_2 \quad D \models \varphi_3 \end{cases}$
 	\item
 	$S \models \pi_\sigma \quad \Leftrightarrow \quad S \bumpeq \sigma$
@@ -304,20 +723,20 @@ Siano $S$ uno stato e $\varphi$ una proprietà espressa nel linguaggio L(G). La r
 Si dirà che la formula $\varphi$ costituisce la \emph{politica} per il model checker.
 
 \begin{prop}
-Ogni formula del linguaggio $L(G)$ viene chiamata \textbf{proprietà locale} perchè deriva da una logica spaziale e quindi può fare riferimento solamente ad aspetti spaziali/locali di un bigrafo.
+Ogni formula del linguaggio $L(G)$ viene chiamata \textbf{proprietà locale} perché deriva da una logica spaziale e quindi può fare riferimento solamente ad aspetti spaziali/locali di un bigrafo.
 \end{prop}
 
-Analizziamo ora i vari predicati. I primi tre consentono le usuali operazioni della logica proposizionale, mentre il terzo è un predicato ad-hoc per questa logica: $W_\sigma$ è detto ``Wario Predicate", e usa l'operazione di Match per controllare le tre proprietà che ha come argomento. Facciamo un esempio: sia $W_B(T,T,T)$ un Wario Predicate. Lo stato S soddisfa questo predicato ($S \models W_B(T,T,T)$) se e solo se esiste un match M di B nel bigrafo S tale che rispetti queste condizioni: il contesto del match M deve soddisfare $\varphi_1$, il redex di M deve soddisfare $\varphi_2$ mentre i parametri di M devono soddisfare $\varphi_3$. Poichè $\varphi_1=\varphi_2=\varphi_3=T$, si ha che $S \models W_B(T,T,T)$ se e solo se esiste un match di B in S. Il Wario Predicate consente quindi di isolare contesto, redex e parametri e verificare le proprietà in modo indipendente per ognuno di questi tre bigrafi.
+Analizziamo ora i vari predicati. I primi tre consentono le usuali operazioni della logica proposizionale, mentre il terzo è un predicato ad-hoc per questa logica: $\wario_\sigma$ è detto ``Wario Predicate"\footnote{Nella storia della logica, le lettere dei nuovi predicati sono spesso state scelte rovesciando l'iniziale del predicato. \'E questo l'esempio di $\exists$ (per il predicato \emph{Exist}) e di $\forall$ (per il predicato \emph{for All}). Volendo mantenere la tradizione ed essendo il \emph{Matching} la caratteristica peculiare di questo predicato, si è scelto il simbolo \wario.}, e usa l'operazione di Match per controllare le tre proprietà che ha come argomento. Facciamo un esempio: sia $\wario_B(T,T,T)$ un Wario Predicate. Lo stato S soddisfa questo predicato ($S \models \wario_B(T,T,T)$) se e solo se esiste un match M di B nel bigrafo S tale che rispetti queste condizioni: il contesto del match M deve soddisfare $\varphi_1$, il redex di M deve soddisfare $\varphi_2$ mentre i parametri di M devono soddisfare $\varphi_3$. Poichè $\varphi_1=\varphi_2=\varphi_3=T$, si ha che $S \models \wario_B(T,T,T)$ se e solo se esiste un match di B in S. Il Wario Predicate consente quindi di isolare contesto, redex e parametri e verificare le proprietà in modo indipendente per ognuno di questi tre bigrafi.
 
 L'ultimo predicato, $\pi_\sigma$, controlla se esiste un isomorfismo tra due bigrafi. Per esempio, lo stato $S_i$ soddisfa il predicato $\pi_A$ (in formule $S_i \models \pi_A$) se e solo se $S_i$ è isomorfo al bigrafo $A$, cioè $S_i \bumpeq A$. Questo predicato è di particolare importanza: esso funge da simbolo di uguaglianza tra bigrafi, rendendo quindi la nostra logica una \emph{logica con uguaglianza}.
 
 Si osservino tutti e cinque i predicati: dai i primi tre è possibile derivare ogni formula della logica proposizionale. Per esempio: se si vuole esprimere la formula $\varphi_1 \lor \varphi_2$, allora si possono usare le leggi di De Morgan e scrivere $\lnot(\lnot \varphi_1 \land \lnot \varphi_2)$. Oppure, se si vuole esprimere il falso, basterà la formula $\lnot T$.
-Gli ultimi due predicati sono invece propri dei bigrafi. Si osservi la loro definizione: si può notare che il Wario Predicate fa riferimento alla struttura interna del bigrafo consentendo infinite scomposizioni. Tramite questo predicato posso quindi \emph{isolare} qualsiasi parte del bigrafo ed esprimere proprietà su di essa. Si può pensare alla sua funzionalità in questo modo: $W_\sigma$ permette di spostarci all'interno del bigrafo, scegliere una sua parte ($\sigma$) e verificare se essa soddisfa una certa proprietà.
+Gli ultimi due predicati sono invece propri dei bigrafi. Si osservi la loro definizione: si può notare che il Wario Predicate fa riferimento alla struttura interna del bigrafo consentendo infinite scomposizioni. Tramite questo predicato posso quindi \emph{isolare} qualsiasi parte del bigrafo ed esprimere proprietà su di essa. Si può pensare alla sua funzionalità in questo modo: $\wario_\sigma$ permette di spostarci all'interno del bigrafo, scegliere una sua parte ($\sigma$) e verificare se essa soddisfa una certa proprietà.
 Il predicato $\pi_\sigma$, come abbiamo già notato, ci consente di avere una logica con uguaglianza, permettendo quindi di aumentare la sua espressibilità.
 
 
 \section{Dettagli Implementativi}\label{sec:dettImpl}
-Nel codice sorgente di questa tesi, i bigrafi e i BRS, nonchè la loro evoluzione, è stata modellata tramite \emph{JLibbig} [...], una libreria Java che tra le altre cose consente di specificare le varie regole di reazione ed eseguirle sul bigrafo. 
+Nel codice sorgente di questa tesi, i bigrafi e i BRS, nonchè la loro evoluzione, è stata modellata tramite \emph{JLibbig}\cite{JLibbig}, una libreria Java che tra le altre cose consente di specificare le varie regole di reazione ed eseguirle sul bigrafo. 
 
 \subsection{Property Matcher}
 \emph{JLibbig} mette a disposizione la possibilità di assegnare ad ogni nodo delle proprietà. Per esempio, ai due router dell'esempio \ref{sub:networkExe} si possono assegnare delle stringhe (in realtà qualsiasi tipo di oggetto) che descrivano il loro nome, per esempio $R_S$ (Router Sender) e $R_R$ (Router Receiver). Inoltre, è possibile estendere la classe Matcher e creare il proprio Matcher personale: in questa sede, si era interessati a definire un matcher in cui due nodi potessero \emph{costituire} un match se e solo se avessero le stesse proprietà. %Per cui si è creato il \emph{Property Matcher} che svolge questo compito. Lo stesso vale per gli outernames e innernames: due outername possono costituire un match se e solo se hanno lo stesso nome.
@@ -326,7 +745,7 @@ Il \emph{Property Matcher} è molto comodo per esprimere le proprietà per il mode
 
 
 \subsection{Regole di Reazione con Proprietà}
-In \emph{JLibbig} le regole di reazione non fanno alcun riferimento alle proprietà, il che significa che dopo l'applicazione di una regola ogni nodo coinvolto (cioè attivo) perde le sue proprietà. Si è creata quindi una classe che ne consenta il \emph{mantenimento} anche dopo lo scatto della regola. Chiaramente, il modo in cui le proprietà si devono conservare è lasciato da definire all'utente, perchè è impossibile definirlo a priori. Per esempio: prendiamo la regola di figura \ref{fig:forwardRuleTemp}, che inoltra e duplica un pacchetto.
+In \emph{JLibbig} le regole di reazione non fanno alcun riferimento alle proprietà, il che significa che dopo l'applicazione di una regola ogni nodo coinvolto (cioè attivo) perde le sue proprietà. Si è creata quindi una classe che ne consenta il \emph{mantenimento} anche dopo lo scatto della regola. Chiaramente, il modo in cui le proprietà si devono conservare è lasciato da definire all'utente, perché è impossibile definirlo a priori. Per esempio: prendiamo la regola di figura \ref{fig:forwardRuleTemp}, che inoltra e duplica un pacchetto.
 
 
 	\begin{figure*}[th]
@@ -437,8 +856,23 @@ Secondo la definizione di regola di reazione, il redex viene sostituito dal reac
 
 Infine, creando delle regole di reazione che consentano il mantenimento delle proprietà, è possibile usare il \emph{Property Matcher} anche dopo l'esecuzione di varie regole: di conseguenza lo possiamo usare anche nel model checker $MC_{big}$.
 
+\subsection{$MC_{big}$}
+Si è voluto implementare il model checker $MC_{big}$ in maniera che fosse il più flessibile possibile. I suoi gradi di libertà sono principalmente il modo in cui si esprimono le proprietà e il modo in cui esso genera i nuovi nodi del grafo degli stati. Si è visto che il primo problema è stato risolto introducendo una logica spaziale; il secondo problema invece ha richiesto l'introduzione di una particolare classe chiamata \emph{simulazione}.
 
+Ogni simulazione usa una particolare strategia, scelta tra quelle della sottosezione \ref{sub:statesGen}, per generare i nuovi nodi. Per esempio, si ha che la simulazione della classe \emph{BreathFirstSim} usa la strategia \emph{Breath First}. Si è quindi lasciato all'utente il compito di scegliere in che modo i nuovi stati vengano generati, in quanto le prestazione del model checker dipendono molto da questa scelta.
 
+Per usare $MC_{big}$ occorre quindi scrivere una particolare proprietà e scegliere una \emph{simulazione} per la generazione dei nuovi stati. Un esempio di codice è riportato qui sotto:
+\begin{lstlisting}
+Predicate trueP = new TruePredicate();
+Predicate notP = new NotPredicate(trueP);
+Sim simulation = new BreadthFirstSim(bigraph, rules);
+ModelChecker mc = new ModelChecker(sim, trueP);
+\end{lstlisting}
+dove \emph{bigraph} è un dato bigrafo e $rules$ è un array di regole di reazione. Infine, per verificare la proprietà specificata basta la seguente istruzione:
+\begin{lstlisting}
+mc.modelCheck();
+\end{lstlisting}
+che ritorna True o False, a seconda che esista o meno un nodo del grafo degli stati che rispetti la proprietà.
 
 
 \section{Esempi}
@@ -480,7 +914,7 @@ Il primo esempio che si propone riprende la moltiplicazione tra numeri naturali 
 
 Chiamiamo $B$ il bigrafo di figura \ref{fig:big8}. La proprietà di cui sopra si può esprimere con la seguente formula logica: $\varphi = \pi_B$.
 
-Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a generare il grafo degli stati con la strategia Breadth First (se non specificato altrimenti), e per ogni nuovo stato $S_i$ controllerà se $MC,S_i \models \varphi$. In questo esempio, il grafo generato sarà quello di figura \ref{fig:modelCheckerMult}. Per gli stati $S_0$ e $S_1$ il model checker troverà che la proprietà non è soddisfatta, perchè nessuno di questi stati è isomorfo a B. Arrivando però a $S_2$, la proprietà $\varphi$ sarà soddisfatta, ovvero $MC,S_2 \models \varphi$, e $MC_{big}$ ritornerà True.\\
+Diamo ora al model checker la formula $\varphi$. $MC_{big}$ incomincerà a generare il grafo degli stati con la strategia Breadth First (se non specificato altrimenti), e per ogni nuovo stato $S_i$ controllerà se $MC,S_i \models \varphi$. In questo esempio, il grafo generato sarà quello di figura \ref{fig:modelCheckerMult}. Per gli stati $S_0$ e $S_1$ il model checker troverà che la proprietà non è soddisfatta, perché nessuno di questi stati è isomorfo a B. Arrivando però a $S_2$, la proprietà $\varphi$ sarà soddisfatta, ovvero $MC,S_2 \models \varphi$, e $MC_{big}$ ritornerà True.\\
 
 \begin{figure*}[th]
 	\centering
@@ -726,7 +1160,7 @@ Si ricordi che un router inoltra non deterministicamente ogni pacchetto verso tu
 
 Ora il problema di capire quando un pacchetto è arrivato a destinazione diventa più interessante. Ci sono tre host, e bisogna prestare attenzione a quale sia il corretto destinatario. 
 
-Per esempio, non si deve fare il seguente errore: vogliamo esprimere la proprietà ``Il pacchetto è arrivato a destinazione". Nella logica descritta precedentemente, si potrebbe sbagliare e creare una formula del genere: $\varphi = W_B(T,T,T)$, dove B è il bigrafo di figura \ref{fig:wrongRightProps}.a.
+Per esempio, non si deve fare il seguente errore: vogliamo esprimere la proprietà ``Il pacchetto è arrivato a destinazione". Nella logica descritta precedentemente, si potrebbe sbagliare e creare una formula del genere: $\varphi = \wario_B(T,T,T)$, dove B è il bigrafo di figura \ref{fig:wrongRightProps}.a.
 
 
 
@@ -824,7 +1258,7 @@ Per esempio, non si deve fare il seguente errore: vogliamo esprimere la propriet
 
 Questa proprietà \textbf{non} verifica l'arrivo a destinazione di un pacchetto, infatti è soddisfatta anche esso si trova per esempio nel dominio $D_2$. Quello che non abbiamo considerato sono gli outernames: quello del pacchetto e quello dell'host devono essere lo stesso outername; solo così il \emph{Wario Predicate} sarà soddisfatto. Il predicato corretto è quindi quello di figura \ref{fig:wrongRightProps}.a.
 
-Testiamo ora la formula $\varphi = W_B(T,T,T)$ sul bigrafo di partenza, cioè quello di figura \ref{fig:moreRouters}, che sarà chiamato $S_0$. Per prima cosa, il model checker controlla se in questo stato iniziale la formula sia soddisfatta, ovvero se $MC,S_0 \models \varphi$. Non essendo soddisfatta continua. Inizialmente la regola $R_0$ (in figura \ref{fig:forwardRuleBis}) trova un solo match, per cui il pacchetto viene inoltrato dal dominio $D_1$ a $D_2$, dando origine allo stato $S_1$. E' utile guardare il grafo degli stati di figura \ref{fig:stateGraphNetworkLoops} per tenere traccia di tutte le esecuzioni. 
+Testiamo ora la formula $\varphi = \wario_B(T,T,T)$ sul bigrafo di partenza, cioè quello di figura \ref{fig:moreRouters}, che sarà chiamato $S_0$. Per prima cosa, il model checker controlla se in questo stato iniziale la formula sia soddisfatta, ovvero se $MC,S_0 \models \varphi$. Non essendo soddisfatta continua. Inizialmente la regola $R_0$ (in figura \ref{fig:forwardRuleBis}) trova un solo match, per cui il pacchetto viene inoltrato dal dominio $D_1$ a $D_2$, dando origine allo stato $S_1$. E' utile guardare il grafo degli stati di figura \ref{fig:stateGraphNetworkLoops} per tenere traccia di tutte le esecuzioni. 
 
 \begin{figure}[th]
 \centering
@@ -854,7 +1288,7 @@ Testiamo ora la formula $\varphi = W_B(T,T,T)$ sul bigrafo di partenza, cioè que
 
 In $S_1$ la formula non è soddisfatta ($MC,S_1 \not\models \varphi$), quindi $MC_{big}$ continua. Dallo stato $S_1$, la regola $R_0$ trova ora due match: il primo coinvolge il router $R_{2.2}$ e manderà il pacchetto nel dominio $D_3$, mentre il secondo riguarda il router $R_{2.1}$ e manderà il pacchetto indietro verso $D_1$. Quindi il grafo degli stati avrà rispettivamente gli archi: $S_1 \to S_2$ e $S_1 \to S_0$. Il model checker ora dovrà duplicare le computazioni, cioè seguire sia il primo che il secondo arco.
 
-Seguendo l'arco $S_1 \to S_0$, il MC trova il nodo $S_0$ grazie all'algoritmo per l'isomorfismo e riconosce che appartiene già al grafo degli stati. La computazione di questo ramo \textbf{viene interrotta} perchè il model checker capisce che continuando si causerebbe un'esecuzione infinita.
+Seguendo l'arco $S_1 \to S_0$, il MC trova il nodo $S_0$ grazie all'algoritmo per l'isomorfismo e riconosce che appartiene già al grafo degli stati. La computazione di questo ramo \textbf{viene interrotta} perché il model checker capisce che continuando si causerebbe un'esecuzione infinita.
 
 Seguendo l'arco $S_1 \to S_2$, si genera invece un nuovo stato $S_2$. Il model checker cerca in tutto il grafo degli stati un nodo isomorfo a $S_2$ e, se non lo trova, capisce che esso è un \emph{nuovo} stato. Dato che $MC,S_2 \not\models \varphi$, la computazione di questo ramo quindi continua. 
 
@@ -862,11 +1296,11 @@ Applicando $R_0$ a $S_2$ il discorso è lo stesso: la computazione che segue l'ar
 
 Infine, lo stato $S_3$ è il bigrafo in cui il pacchetto è dentro il dominio $D_4$. La regola $R_0$ trova solamente un match, ed eseguendola rimanda il pacchetto indietro verso il  dominio $D_3$, creando nel grafo degli stati l'arco $S_3 \to S_2$. Questa volta però lo stato $S_3$ soddisfa la proprietà desiderata: il model checker trova che 
 \begin{center}
-$MC,S_3 \models W_B(T,T,T) \qquad$ dove B è il bigrafo di figura \ref{fig:wrongRightProps}.b
+$MC,S_3 \models \wario_B(T,T,T) \qquad$ dove B è il bigrafo di figura \ref{fig:wrongRightProps}.b
 \end{center}
 e quindi ritorna True.
 
-Un'ultima osservazione: nel caso di più pacchetti si deve prestare attenzione ad un altro dettaglio. Se siamo interessati a verificare che il pacchetto spedito da $158.110.3.46$ a $158.110.144.31$ sia arrivato a destinazione, dobbiamo usare il Property Matcher. Definiremo quindi la formula sempre come $\varphi = W_B(T,T,T)$, ma ora il bigrafo B avrà nomi specifici nei suoi outernames, come in figura \ref{fig:propertyPredicate}.
+Un'ultima osservazione: nel caso di più pacchetti si deve prestare attenzione ad un altro dettaglio. Se siamo interessati a verificare che il pacchetto spedito da $158.110.3.46$ a $158.110.144.31$ sia arrivato a destinazione, dobbiamo usare il Property Matcher. Definiremo quindi la formula sempre come $\varphi = \wario_B(T,T,T)$, ma ora il bigrafo B avrà nomi specifici nei suoi outernames, come in figura \ref{fig:propertyPredicate}.
 
 
 \begin{figure}[th]

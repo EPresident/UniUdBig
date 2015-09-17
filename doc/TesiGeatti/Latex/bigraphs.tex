@@ -73,7 +73,7 @@ Diamo un primo esempio informale di bigrafo.
 \end{figure}
 
 In figura \ref{fig:simpleBig} vediamo un bigrafo B, con una data segnatura. Si vede subito come ci siano dei controlli diversi. Per esempio, il nodo $v_0$ ha una sola porta
-mentre il nodo $v_1$ ne ha due. L'informazione che quest'ultimo sia contenuto in $v_0$ è rappresentata nel place graph di figura \ref{fig:placeLink}.a. Le interconnessioni dei vari nodi sono invece riportate nel rispettivo link graph di figura \ref{fig:placeLink}.b.\\
+mentre il nodo $v_1$ ne ha due. L'informazione che quest'ultimo sia contenuto in $v_0$ è rappresentata nel place graph di figura \ref{fig:placeLink}.a. Le interconnessioni dei vari nodi sono invece riportate nel rispettivo link graph di figura \ref{fig:placeLink}.b.
 
 \begin{figure}[h]
  \centering
@@ -142,8 +142,7 @@ mentre il nodo $v_1$ ne ha due. L'informazione che quest'ultimo sia contenuto in
 
 
 Un'importante caratteristica dei bigrafi e della loro algebra è la possibilità di essere composti, cioè di formare un nuovo bigrafo da due bigrafi di partenza. Questo è equivalente
-al problema di considerare un bigrafo \emph{parte} di un altro. Si vedrà che questa operazione va sotto il nome di \emph{composizione}. Se prendiamo il bigrafo B di cui sopra,
-allora è possibile scrivere un'equazione di questo tipo:
+al problema di considerare un bigrafo \emph{parte} di un altro. Si vedrà che questa operazione va sotto il nome di \emph{composizione}. Se prendiamo il bigrafo B di cui sopra, allora è possibile scrivere un'equazione di questo tipo:
 
 $\qquad \qquad {  B = A \circ C  }$
 
@@ -151,22 +150,20 @@ Per renderla possibile dobbiamo aggiungere struttura ai bigrafi. Si introducono 
 \begin{itemize}
 	\item
 	L'interfaccia esterna ed interna del place graph sono un numero naturale \emph{n} che possiamo trattare come un ordinale: l'interfaccia $n$ indica l'insieme\\
-	$\{0, \dots, n-1 \}$. Se l'interfaccia esterna è $k$, allora si dice che ci sono \emph{k radici}. Se l'interfaccia interna è $h$, allora si dice che ci sono 
-	\emph{h siti}.
+	$\{0, \dots, n-1 \}$. Se l'interfaccia esterna è $k$, allora si dice che ci sono $k$ \emph{radici}. Se l'interfaccia interna è $h$, allora si dice che ci sono 
+	$h$ \emph{siti}.
 	
 	\item
 	Per il link graph, invece, le interfaccie sono \emph{insiemi} di nomi, come per esempio $\{x,y\}$. Se un link graph ha un interfaccia esterna del tipo $\{a,b,c\}$, allora
-	diciamo che ci sono tre \emph{outername} chiamati \emph{a,b} e \emph{c}. Se l'interfaccia interna è del tipo $\{x,y\}$, allora diciamo che il bigrafo ha due 
-	\emph{innername} chiamati \emph{x e y}.
+	diciamo che ci sono tre \emph{outername} chiamati $a,b$ e $c$. Se l'interfaccia interna è del tipo $\{x,y\}$, allora diciamo che il bigrafo ha due 
+	\emph{innername} chiamati $x$ e $y$.
 \end{itemize}
 
 Il concetto fondamentale delle interfacce è che servono per l'unione dei due bigrafi. Per esempio, prendendo il place graph, nell'operazione di composizione $A \circ C$,
-i siti di A dovranno \emph{concordare} (vedremo una descrizione formale di questo concetto) con le radici di C. Per il link graph il concetto è lo stesso: gli innername di A dovranno
-unirsi con gli outername di C.\\
+i siti di $A$ dovranno \emph{concordare} (vedremo una descrizione formale di questo concetto) con le radici di $C$. Per il link graph il concetto è lo stesso: gli innername di $A$ dovranno unirsi con gli outername di $C$.
 
-Si consideri per esempio il bigrafo della figura \ref{fig:simpleBig}. Se vogliamo trovare due bigrafi A e C tali che $B = A \circ C$, allora dobbiamo rispettare le condizioni con cui
-si può effettuare l'operazione di composizione. Le figure \ref{fig:bigC} e \ref{fig:bigA} rappresentano rispettivamente i due bigrafi C ed A. 
-Si noti ancora una volta che le radici di C si \emph{uniscono} ai siti di A, e gli outername di C fanno lo stesso con gli innername di A. \newpage
+Si consideri per esempio il bigrafo della figura \ref{fig:simpleBig}. Se vogliamo trovare due bigrafi $A$ e $C$ tali che $B = A \circ C$, allora dobbiamo rispettare le condizioni con cui si può effettuare l'operazione di composizione. Le figure \ref{fig:bigC} e \ref{fig:bigA} rappresentano rispettivamente i due bigrafi $C$ ed $A$. 
+Si noti ancora una volta che le radici di $C$ si \emph{uniscono} ai siti di $A$, e gli outername di $C$ fanno lo stesso con gli innername di $A$. \newpage
 
 %%%%%% BIGRAFO C
 \begin{figure}[h]
@@ -384,7 +381,8 @@ Si noti ancora una volta che le radici di C si \emph{uniscono} ai siti di A, e g
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Definizione formale di Bigrafo}\label{sec:formalBigraphs}
 Siamo ora pronti per definire separatamente i concetti di \emph{Place Graph} e \emph{Link Graph}. Quelli descritti, che noi chiameremo semplicemente bigrafi, in realtà
-si chiamano \emph{concrete bigraphs}, per distinguerli da quelli astratti. In questa sede si tratterà solo di bigrafi concreti.\\
+si chiamano \emph{concrete bigraphs}, per distinguerli da quelli astratti. In questa sede si tratterà solo di bigrafi concreti.
+
 Si rimanda all'appendice \ref{ch:appA} per la notazione usata.
 
 %PlaceGraph
@@ -406,12 +404,11 @@ $prnt:m \uplus V_F \to V_F \uplus n$
 che è aciclica, cioè se $prnt_{F}^{i}(v)=v$ allora $i=0$.
 \end{define}
 
-Questa definizione formale ricalca ciò che è già stato notato nell'esempio della sottosezione \ref{sub:esempioInit}. Infatti, si noti che il place graph $F$ ha $m$ siti
-ed $n$ radici, entrambi ordinati, che costituiscono rispettivamente la sua interfaccia interna ed esterna.\\
-La funzione $ctrl_F$ associa ad ogni nodo un controllo, cioè un nome. Come già notato, l'equivalente grafico sta nel disegnare con simboli diversi nodi con controllo diverso.
-Infine, la funzione $prnt_F$ associa ad ogni nodo interno o sito il suo genitore, che può essere a sua volta un altro nodo interno o una radice.\\
-Questa funzione è di fondamentale importanza, in quanto è il cuore del place graph: rappresenta l'informazione di quali nodi si trovano all'interno di altri. E' \emph{aciclica},
-nel senso che $n$ sue \emph{composizioni} non porteranno mai al nodo di partenza. In formule: 
+Questa definizione formale ricalca ciò che è già stato notato nell'esempio della sottosezione \ref{sub:esempioInit}. Infatti, si noti che il place graph $F$ ha $m$ siti ed $n$ radici, entrambi ordinati, che costituiscono rispettivamente la sua interfaccia interna ed esterna.
+
+La funzione $ctrl_F$ associa ad ogni nodo un controllo, cioè un nome. Come già notato, l'equivalente grafico sta nel disegnare con simboli diversi nodi con controllo diverso. Infine, la funzione $prnt_F$ associa ad ogni nodo interno o sito il suo genitore, che può essere a sua volta un altro nodo interno o una radice.
+
+Questa funzione è di fondamentale importanza, in quanto è il cuore del place graph: rappresenta l'informazione di quali nodi si trovano all'interno di altri. \'E \emph{aciclica}, nel senso che $n$ sue \emph{composizioni} non porteranno mai al nodo di partenza. In formule: 
 \begin{center}
 $prnt_F \circ prnt_F \circ \dots \circ prnt_F(v) \ne v$
 \end{center}
@@ -429,12 +426,12 @@ Un link graph
 $F=(V_F,E_F,ctrl_F,link_F):X \to Y$
 \end{center}
 è una quadrupla avente un'interfaccia interna $X$ ed una interfaccia esterna $Y$, chiamate rispettivamente gli \emph{inner names} e \emph{outer names} del link graph.
-F ha un insieme finito $V_F$ di nodi e $E_F$ di archi (\emph{edges}), una \emph{control map} $ctrl:V_F \to K$, e una \emph{link map}:
+$F$ ha un insieme finito $V_F$ di nodi e $E_F$ di archi (\emph{edges}), una \emph{control map} $ctrl:V_F \to K$, e una \emph{link map}:
 \begin{center}
 $link_F: X \uplus P_F \to E_F \uplus Y$
 \end{center}
-dove $P_F=\left \{(v,i) \mid v \in V_F \land i \in ar(ctrl_F(v)) \right \}$ è l'insieme delle \emph{porte} di F. Quindi, $(v,i)$ è l' i-esima porta del nodo v. Chiamiamo $X \uplus P_F$ i
-\emph{punti} di F, mentre $E_F \uplus Y$ i suoi \emph{link}.
+dove $P_F=\left \{(v,i) \mid v \in V_F \land i \in ar(ctrl_F(v)) \right \}$ è l'insieme delle \emph{porte} di $F$. Quindi, $(v,i)$ è l' i-esima porta del nodo v. Chiamiamo $X \uplus P_F$ i
+\emph{punti} di $F$, mentre $E_F \uplus Y$ i suoi \emph{link}.
 \end{define}
 
 Notiamo subito come alcune nozioni rimangono invariate dal place graph. Per esempio, $V_F$ e $ctrl_F$ non cambiano. Si aggiungono però due concetti:
@@ -447,19 +444,19 @@ Notiamo subito come alcune nozioni rimangono invariate dal place graph. Per esem
 
 Dalla definizione \ref{def:sign}, sappiamo che un dato controllo ha un ben preciso numero di porte. La funzione $ar:K \to \mathbb{N}$ consente di calcolare
 il numero di porte di un dato controllo: $ar(ctrl_F(v)$ restituisce un numero naturale, che è il  numero di porte del controllo del nodo v. 
-Grazie alla funzione \emph{ar}, nel link graph ci sleghiamo totalmente dal concetto di \emph{nodo}, e siamo in grado di sostituirlo con il concetto di \emph{porta}.\\
+Grazie alla funzione \emph{ar}, nel link graph ci sleghiamo totalmente dal concetto di \emph{nodo}, e siamo in grado di sostituirlo con il concetto di \emph{porta}.
 
 Introduciamo ora due concetti:
 \begin{itemize}
 	\item
-	l'insieme dei \emph{punti} di F è l'insieme che comprende tutte le sue porte ($P_F$) e tutti i suoi inner names (X).
+	l'insieme dei \emph{punti} di $F$ è l'insieme che comprende tutte le sue porte ($P_F$) e tutti i suoi inner names ($X$).
 	\item
-	l'insieme dei \emph{link} di F è l'insieme che comprende tutti i suoi archi (edges) e tutti i suoi outer names (Y).
+	l'insieme dei \emph{link} di $F$ è l'insieme che comprende tutti i suoi archi (edges) e tutti i suoi outer names ($Y$).
 \end{itemize}
 
 La funzione $link_F$ avrà come dominio l'insieme dei punti e come codominio l'insieme dei link. Possiamo quindi pensarla come è raffigurata in figura \ref{fig:linkDecomp}.b.
 La funzione $link_F$ è perciò quella che crea il vero e proprio ipergrafo: associa ad ogni punto \emph{uno ed un solo} link. Sfruttando la \emph{non-iniettività} della
-funzione possiamo creare l'ipergrafo.\\
+funzione possiamo creare l'ipergrafo.
 
 \begin{figure}[h]
  \centering
@@ -529,7 +526,7 @@ Un bigrafo F viene spesso indicato tramite le sue interfacce:
 \begin{center}
 $F = \langle n, X \rangle \to \langle m, Y \rangle$
 \end{center}
-stando ad indicare che F ha $n$ siti, $X$ inner names, $m$ radici e $Y$ outer names.
+stando ad indicare che $F$ ha $n$ siti, $X$ inner names, $m$ radici e $Y$ outer names.
 \end{notaz}
 
 
@@ -579,7 +576,7 @@ stando ad indicare che F ha $n$ siti, $X$ inner names, $m$ radici e $Y$ outer na
 \caption{Esempio di bigrafo.\label{fig:innerOuterBig}}
 \end{figure}
 
-Il bigrafo della figura \ref{fig:innerOuterBig}, rispettando la notazione, è scritto in questo modo: $F = \langle 0, \emptyset  \rangle \to \langle 3, \{x,y\} \rangle$
+Il bigrafo della figura \ref{fig:innerOuterBig}, rispettando la notazione, è scritto in questo modo: $F = \langle 0, \emptyset  \rangle \to \langle 3, \{x,y\} \rangle$.
 
 
 
@@ -596,29 +593,29 @@ tale biiezione ai nodi e archi del bigrafo di partenza si determina \emph{unicam
 \begin{define}[Traduzione di Supporto]
 Per ogni place graph, link graph e per ogni bigrafo è assegnato un insieme finito $|F|$, il suo \emph{supporto}. Per un place graph, definiamo $|F| = V_F$, mentre per
 un link graph o un bigrafo definiamo $|F| = V_F \uplus E_F$.
-Per due bigrafi F e G, una \emph{traduzione di supporto}  $p: |F| \to |G|$ da F a G consiste in due biiezioni $p_V: V_F \to V_G$ and $p_E: E_F \to E_G$ che rispettano la
+Per due bigrafi F e G, una \emph{traduzione di supporto}  $\rho: |F| \to |G|$ da F a G consiste in due biiezioni $\rho_V: V_F \to V_G$ and $\rho_E: E_F \to E_G$ che rispettano la
 struttura, nel seguente senso:
 \begin{itemize}
 	\item
-	$p$ preserva i controlli, cioè: $ctrl_G \circ p_V = ctrl_F$. Ne segue che $p$ induce una biiezione sulle porte $p_P: P_F \to P_G$, definita da 
-	$p_P((v, i)) = (p_V(v), i)$.
+	$\rho$ preserva i controlli, cioè: $ctrl_G \circ \rho_V = ctrl_F$. Ne segue che $\rho$ induce una biiezione sulle porte $\rho_P: P_F \to P_G$, definita da 
+	$\rho_P((v, i)) = (\rho_V(v), i)$.
 	\item
-	$p$ modifica le mappe sulla struttura ($prnt$ e $link$) in questo modo:
+	$\rho$ modifica le mappe sulla struttura ($prnt$ e $link$) in questo modo:
 	\begin{center}
-	$prnt_G \circ (id_m \uplus p_V) = (id_n \uplus p_V) \circ prnt_F$ \\
-	$link_G \circ (id_X \uplus p_P) = (id_Y \uplus p_E) \circ link_F$
+	$prnt_G \circ (id_m \uplus \rho_V) = (id_n \uplus \rho_V) \circ prnt_F$ \\
+	$link_G \circ (id_X \uplus \rho_P) = (id_Y \uplus \rho_E) \circ link_F$
 	\end{center}
 \end{itemize}
 \end{define}
 
-Come detto prima, data la biiezione $p$ e il bigrafo $F$, queste condizioni determinano unicamente G, che denotiamo con $p \cdot F$ e chiamiamo \emph{traduzione
-di supporto di F tramite p}. Chiamiamo $F$ e $G$ \emph{support equivalent} ($F \bumpeq G$) se esiste una tale traduzione di supporto.\\
+Come detto prima, data la biiezione $\rho$ e il bigrafo $F$, queste condizioni determinano unicamente $G$, che denotiamo con $\rho \cdot F$ e chiamiamo \emph{traduzione
+di supporto} di $F$ tramite $\rho$. Chiamiamo $F$ e $G$ \emph{support equivalent} ($F \bumpeq G$) se esiste una tale traduzione di supporto.
 
 Dati due bigrafi, il problema di trovare una traduzione di supporto tra i due è equivalente al problema di stabilire quando essi sono uguali. Per cui, da qui in seguito 
-si userà il termine \emph{traduzione di supporto} come sinonimo di \emph{isomorfismo}.\\
+si userà il termine \emph{traduzione di supporto} come sinonimo di \emph{isomorfismo}.
 
 \begin{define}[Isomorfismo]\label{def:iso}
-Due bigrafi F e G si dicono isomorfi se e solo se esiste una traduzione di supporto tra F e G, cioè se e solo se F e G sono \emph{support equivalent} ($F \bumpeq G$).
+Due bigrafi $F$ e $G$ si dicono isomorfi se e solo se esiste una traduzione di supporto tra $F$ e $G$, cioè se e solo se $F$ e $G$ sono \emph{support equivalent} ($F \bumpeq G$).
 \end{define}
 
 
@@ -627,8 +624,8 @@ Due bigrafi F e G si dicono isomorfi se e solo se esiste una traduzione di suppo
 
 \subsection{Composizione}
 L'operazione di \emph{composizione} è denotata dal simbolo $\circ$ e permette di scrivere equazioni del tipo $B = A \circ C$, come nell'esempio
-\ref{sub:esempioInit}. La composizione necessita del concetto di interfaccia: come già notato, l'interfaccia interna di A deve concordare con l'interfaccia esterna di C.
-Con una prima approssimazione, possiamo dire che C deve essere incluso \emph{dentro} A. 
+\ref{sub:esempioInit}. La composizione necessita del concetto di interfaccia: come già notato, l'interfaccia interna di $A$ deve concordare con l'interfaccia esterna di $C$.
+Con una prima approssimazione, possiamo dire che $C$ deve essere incluso \emph{dentro} $A$. 
 
 \begin{define}[Composizione]
 Si trattano separatamente i casi del place graph e del link graph:
@@ -653,9 +650,9 @@ Si trattano separatamente i casi del place graph e del link graph:
 		
 	Si noti come l'unione delle due interfacce (quella esterna di A e quella interna di B) sia modellata dalla seconda riga. In particolare, $prnt_F(w) = j$ sta ad indicare che
 	$j$ è una radice di $F$ e $w$ è uno dei suoi figli. Dato che $j$ è una radice, essa sarà un intero nell'insieme $\{0, \dots, m-1\}$, e dovrà quindi appartenere anche 
-	all'interfaccia interna di $G$, dove $j$ sarà un sito. La parent map di $G \circ F$su $w$ sarà quella di G sul suo sito $j$.
+	all'interfaccia interna di $G$, dove $j$ sarà un sito. La parent map di $G \circ F$su $w$ sarà quella di $G$ sul suo sito $j$.
 	Quindi la seconda riga modella la seguente azione: mantengo la parent map per tutti i nodi interni dei due bigrafi, e
-	al momento dell'unione delle due interfacce unisco la radice i-esima di F con il sito i-esimo di G, per ogni $i \in \{0, \dots, m-1\}$.
+	al momento dell'unione delle due interfacce unisco la radice i-esima di $F$ con il sito i-esimo di $G$, per ogni $i \in \{0, \dots, m-1\}$.
 	\item
 	\emph{Link Graph}: Se $F: X \to Y$ e $G: Y \to Z$ sono due link graph con supporti disgiunti ( $|F|  \#  |G| $), la loro composizione
 		\begin{center}
@@ -673,9 +670,9 @@ Si trattano separatamente i casi del place graph e del link graph:
 		$
 		\end{center}
 	Il link graph \emph{identità} su $X$ è $id_X \stackrel{def}{=} (\emptyset, \emptyset, \emptyset, id_X): X \to X$
-	Anche qui, si noti come la seconda riga modelli l'unione tra le interfacce. In particolare, se $link_F(q) = y$ e $y \in Y$, si ha che il punto $q$ del bigrafo F è collegato
-	al suo outer name y. Dato che $Y$ è anche l'interfaccia interna di G, si ha che y è un inner name di G. La seconda riga quindi rappresenta l'unione tra gli outername
-	di F e gli inner name di G che hanno lo stesso nome.
+	Anche qui, si noti come la seconda riga modelli l'unione tra le interfacce. In particolare, se $link_F(q) = y$ e $y \in Y$, si ha che il punto $q$ del bigrafo $F$ è collegato
+	al suo outer name $y$. Dato che $Y$ è anche l'interfaccia interna di $G$, si ha che $y$ è un inner name di $G$. La seconda riga quindi rappresenta l'unione tra gli outername
+	di $F$ e gli inner name di $G$ che hanno lo stesso nome.
 	\item
 	\emph{Bigrafo}: Se $F: I \to J$ e $G: J \to K$ sono due bigrafi con supporti disgiunti ( $|F|  \#  |G| $), la loro composizione
 		\begin{center}
@@ -687,7 +684,7 @@ Si trattano separatamente i casi del place graph e del link graph:
 
 
 Si noti come l'operazione di composizione \emph{unisca} le interfacce dei due bigrafi, creando un unico bigrafo risultato, cioè un'unica funzione $prnt$ ed un'unica 
-funzione $link$. \\
+funzione $link$.
 
 \subsection{Giustapposizione}
 Si definisce ora un'altra operazione per creare un bigrafo da altri due base. Si chiama \emph{giustapposizione} e consiste nell'affiancare un bigrafo ad un altro. Questa 
@@ -709,11 +706,12 @@ Definiamo separatamente i casi del place graph e del link graph:
 		\begin{center}
 		$F_0 \otimes F_1 = (V_0 \uplus V_1, ctrl_0 \uplus ctrl_1, prnt_0 \uplus prnt_1^{'})$,
 		\end{center}
-	dove $prnt_1^{'}(m_0 + i) = n_0 + j$  ogni volta che  $prnt_1(i) = j$. \\
+	dove $prnt_1^{'}(m_0 + i) = n_0 + j$  ogni volta che  $prnt_1(i) = j$.
+	
 	Informalmente, affianco due place graph avendo come risultato una foresta. Le radici aumenteranno quindi di numero. Per questo motivo è necessaria la funzione
 	$prnt_1^{'}$: supponiamo che $F_0$ abbia due radici e $F_1$ una sola.
-	I nodi figli diretti di $F_1$ non possono più puntare alle loro vecchie radici, per esempio la radice 0, perchè ora essa è la radice di $F_0$. La parent map di $F_1$ dovrà
-	quindi venire traslata in questo modo: tutti i nodi di $F_1$ che puntano alla sua radice 0, ora punteranno alla nuova radice $0+2 = 2$. Questo è quello che fa la funzione
+	I nodi figli diretti di $F_1$ non possono più puntare alle loro vecchie radici, per esempio la radice $0$, perché ora essa è la radice di $F_0$. La parent map di $F_1$ dovrà
+	quindi venire traslata in questo modo: tutti i nodi di $F_1$ che puntano alla sua radice $0$, ora punteranno alla nuova radice $0+2 = 2$. Questo è quello che fa la funzione
 	$prnt_1^{'}$.
 	\item
 	\emph{Link Graph}: la giustapposizione di due interfaccie disgiunte di due link graph è $X_0 \uplus X_1$ e l'unità è $\emptyset$. Se 
@@ -744,7 +742,8 @@ Tutte queste tre operazioni saranno utili per definire l'algebra dei bigrafi del
 In questa sezione verrà illustrato come poter ottenere nuovi bigrafi da bigrafi base tramite le operazioni di composizione, identità e prodotto (giustapposizione). Si definisce
 quindi una vera e propria \emph{algebra} per la teoria dei bigrafi, in cui si dimostra che ogni bigrafo può essere derivato da alcuni bigrafi base. Si incomincia nelle prime
 tre sezioni ad illustrare i bigrafi base su cui si appoggerà l'algebra, ovvero placing, linking e ioni.Infine, si enuncia un importante risultato che è la decomponibilità di
-ogni bigrafo in una sua forma normale.\\
+ogni bigrafo in una sua forma normale.
+
 Si rimanda all'appendice \ref{ch:appA} per i dettagli sulla notazione usata.
 
 \subsection{Placing elementari}
@@ -802,12 +801,13 @@ sono una radice e $n$ siti è denotata da $merge_n$.
  \caption{Placing elementari.\label{fig:placingElementari}}
  \end{figure}
 
-Un placing ha quindi solo siti e radici.\\
+Un placing ha quindi solo siti e radici.
+
 Il risultato importante è che si può ottenere qualsiasi \emph{placing} dai tre \emph{placing elementari} di figura \ref{fig:placingElementari}, tramite le operazioni di 
 composizione, identità e prodotto. In particolare:
 \begin{itemize}
 	\item
-	ogni permutazione $\pi$ può essere ottenuta dalla simmetria elementare $\gamma_{1,1}$. Per esempio, se si vuole ottenere la permutazione di ordine 3 ($\pi_3$),
+	ogni permutazione $\pi$ può essere ottenuta dalla simmetria elementare $\gamma_{1,1}$. Per esempio, se si vuole ottenere la permutazione di ordine $3$ ($\pi_3$),
 	allora si può scrivere la seguente equazione: $\pi_3 = (\gamma_{1,1} \circ \gamma_{1,1}) \otimes id_1$.
 	\item
 	ogni placing $\varnothing$ (e quindi anche ogni merge) può essere ottenuto dai tre placing elementari $\gamma_{1,1}, 1$ e $join$. Per esempio: $merge_0 = 1$ e 
@@ -819,9 +819,9 @@ composizione, identità e prodotto. In particolare:
  
 \subsection{Linking elementari}
 \begin{define}[Linking, Sostituzioni, Chiusure]
-Un bigrafo senza nodi e senza places è detto \emph{linking} ($\delta$). Una \emph{sostituzione} ($\sigma$) è il prodotto tra sostituzioni elementari (\ref{}).
+Un bigrafo senza nodi e senza places è detto \emph{linking} ($\delta$). Una \emph{sostituzione} ($\sigma$) è il prodotto tra sostituzioni elementari (\ref{fig:linkingElementari.a}).
 Una sostituzione biiettiva è detta \emph{rinomina} ($\alpha$).
-Una \emph{chiusura} è il prodotto tra chiusure elementari(\ref{}).
+Una \emph{chiusura} è il prodotto tra chiusure elementari(\ref{fig:linkingElementari.b}).
 \end{define}
 
 
@@ -867,8 +867,9 @@ Una \emph{chiusura} è il prodotto tra chiusure elementari(\ref{}).
  \caption{Linking elementari.\label{fig:linkingElementari}}
  \end{figure}
 
-Un linking ha solo inner names e outer names.\\
-Il risultato importante è che ogni \emph{linking} può essere generato tramite composizione, prodotto e identità a partire dai due \emph{linking elementari} di figura \ref{}:
+Un linking ha solo inner names e outer names.
+
+Il risultato importante è che ogni \emph{linking} può essere generato tramite composizione, prodotto e identità a partire dai due \emph{linking elementari} di figura \ref{fig:linkingElementari}:
 sostituzioni elementari $^y / X$ e chiusure elementari $/x: x \to \varepsilon$.
 
 
@@ -925,11 +926,11 @@ Un bigrafo si dice discreto se non ha link chiusi e la sua link map è biiettiva.
 \end{define}
 
 \begin{define}[Atomo]\label{def:atomo}
-Se il sito di un K-ione viene riempito dal placing $1: 1 \to 0$ (vedi \ref{fig:placingElementari}.b), il risultato è un \emph{atomo discreto} $K_{\vec x} \circ 1$.
+Se il sito di un $K$-ione viene riempito dal placing $1: 1 \to 0$ (vedi \ref{fig:placingElementari}.b), il risultato è un \emph{atomo discreto} $K_{\vec x} \circ 1$.
 \end{define}
 
 \begin{define}[Molecola]\label{def:molecola}
-Se il sito di un K-ione viene riempito da un bigrafo discreto $G: I \to \langle 1, Y \rangle$, il risultato è una \emph{molecola discreta} 
+Se il sito di un $K$-ione viene riempito da un bigrafo discreto $G: I \to \langle 1, Y \rangle$, il risultato è una \emph{molecola discreta} 
 $(K_{\vec x} \otimes id_Y) \circ G$.
 \end{define}
 
@@ -1007,11 +1008,11 @@ Un importante esempio di bigrafo primo è $merge_n: n \to 1$, dove $n \ge 0$. L'a
 ed una sola decomposizione di ogni bigrafo in linking e primi discreti, come segue:
 
 \begin{prop}[Forma normale discreta]\label{prop:fnd}
-Ogni bigrafo $G: \langle m, X \rangle \to \langle n, Z \rangle$ può essere espresso univocamente, con al più una rinomina su Y, come:
+Ogni bigrafo $G: \langle m, X \rangle \to \langle n, Z \rangle$ può essere espresso univocamente, con al più una rinomina su $Y$, come:
 	\begin{center}
 	$G = (id_n \otimes \lambda) \circ D$ 
 	\end{center}
-dove $\lambda: Y \to Z$ è un linking e $D:\langle m, X \rangle \to \langle n, Y \rangle$ è un bigrafo discreto. Inoltre, ogni bigrafo discreto D può essere fattorizzato 
+dove $\lambda: Y \to Z$ è un linking e $D:\langle m, X \rangle \to \langle n, Y \rangle$ è un bigrafo discreto. Inoltre, ogni bigrafo discreto $D$ può essere fattorizzato 
 univocamente, con al più una permutazione dei siti di ogni fattore, come
 	\begin{center}
 	$D = \alpha \otimes ((P_0 \otimes \dots \otimes P_{n-1}) \circ \pi)$
@@ -1046,7 +1047,7 @@ Questa proposizione è cruciale per dimostrare la completezza della teoria algebr
 \section{Bigraphical Reactive Systems}
 Uno degli aspetti fondamentali di un bigrafo è la sua capacità di evolversi sulla base di regole ben precise. Un BRS (Bigraphical Reactive System) consente di fare
 evolvere lo stato di un sistema (bigrafo iniziale) e di dedurre nuove informazioni con specifiche regole di reazione. Un BRS costituisce quindi la \emph{dinamica} dei
-bigrafi.\\
+bigrafi.
 
 La definizione di un BRS richiede prima la definizione di altri concetti, come quello delle \emph{occorrenza} e di \emph{regola di reazione parametrica}.
 
@@ -1067,16 +1068,12 @@ dove $R$ si dice essere il \emph{redex} della regola, cioè il pattern da trovare
 che andrà a sostituire il redex.
 \end{define}
 
-Redex e reactum sono entrambi bigrafi, e possono occorrere (secondo la definizione \ref{def:occorrenza}) nel bigrafo a cui si applica la regola di reazione. Le regole di 
-reazione possono coinvolgere sia il link graph sia il place graph, come si può vedere da questo esempio.
-
+Redex e reactum sono entrambi bigrafi, e possono occorrere (secondo la definizione \ref{def:occorrenza}) nel bigrafo a cui si applica la regola di reazione. Le regole di reazione possono coinvolgere sia il link graph sia il place graph, come si può vedere da questo esempio.
 
 \subsection{Esempio}\label{sub:esempioBuilding}
-Nella figura \ref{fig:buildings} , è rappresentato un bigrafo che indica lo stato di un ambiente. Esso è formato da due costruzioni B (buildings), da quattro stanze R (rooms), da
-cinque agenti A e da quattro computer C. Il bigrafo ha le seguente segnatura: $K = \{A:2, B:1, C:2, R:0\}$.
+Nella figura \ref{fig:buildings} , è rappresentato un bigrafo che indica lo stato di un ambiente. Esso è formato da due costruzioni $B$ (buildings), da quattro stanze $R$ (rooms), da cinque agenti $A$ e da quattro computer $C$. Il bigrafo ha le seguente segnatura: $K = \{A:2, B:1, C:2, R:0\}$.
 
-Il bigrafo rappresenta lo stato dell'ambiente, in cui i cinque agenti A stanno tenendo una video conferenza: gli agenti che stanno partecipando sono collegati dal link $e_0$. 
-Ogni agente che vuole partecipare deve essere collegato ad un computer. A sua volta i vari computer di una stessa costruzione sono collegati insieme, formando una LAN.\\
+Il bigrafo rappresenta lo stato dell'ambiente, in cui i cinque agenti $A$ stanno tenendo una video conferenza: gli agenti che stanno partecipando sono collegati dal link $e_0$. Ogni agente che vuole partecipare deve essere collegato ad un computer. A sua volta i vari computer di una stessa costruzione sono collegati insieme, formando una LAN.\\
 
 
 \begin{figure}[h]
@@ -1160,7 +1157,7 @@ Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsR
 	
 	\item
 	La seconda regola prevede di matchare solo gli agent che non sono collegati a nessun computer e che si trova nella loro stessa stanza. Il reactum prevede che 
-	l'agent si ricolleghi a un tale computer. Se ci sono più computer nella stanza, la regola non si esprime su quale computer l'agent si debba ricollegare. Si noti un'
+	l'agent si ricolleghi a un tale computer. Se ci sono più computer nella stanza, la regola non si esprime su quale computer l'agent si debba ricollegare. Si noti un
 	importante dettaglio: agent e computer si trovano sotto la stessa radice, e quindi la regola scatta solo se essi si trovano dentro la stessa stanza, o dentro entrambi 
 	dentro lo stesso building.
 	
@@ -1239,12 +1236,12 @@ Alcune regole di reazione possono essere quelle delle figure \ref{fig:buildingsR
 \subsection{Regole di reazione parametriche}
 
 \begin{define}[Matching]
-Il problema di trovare una o più occorrenze di un \emph{redex R} all'interno di un bigrafo B si chiama \emph{matching}. Nel caso in cui un \emph{match} venga trovato,
+Il problema di trovare una o più occorrenze di un \emph{redex R} all'interno di un bigrafo $B$ si chiama \emph{matching}. Nel caso in cui un \emph{match} venga trovato,
 esso viene denotato tramite la seguente equazione:
 \begin{center}
 $B = C \circ (R \otimes id_I) \circ D$
 \end{center}
-dove C è detto il \emph{contesto} e D sono i \emph{parametri} del match.
+dove $C$ è detto il \emph{contesto} e $D$ sono i \emph{parametri} del match.
 \end{define}
 
 I bigrafi e la loro teoria ereditano ed estendono molte caratteristiche del CCS (\emph{Calculus of Communicating Systems}). Una di queste è la possibilità di isolare
@@ -1252,16 +1249,16 @@ le zone che possono evolversi, cioè determinare quali nodi del bigrafo possono e
 \emph{segnatura dinamica}.
 
 \begin{define}[Segnatura dinamica]
-Una segnatura è \emph{dinamica} se assegna ad ogni controllo $K$ uno stato nell'insieme $\{attivo, passivo \}$. Diciamo che un K-nodo è \emph{attivo}
+Una segnatura è \emph{dinamica} se assegna ad ogni controllo $K$ uno stato nell'insieme $\{attivo, passivo \}$. Diciamo che un $K$-nodo è \emph{attivo}
 se il suo controllo è assegnato allo stato attivo; lo stesso vale per lo stato passivo.
 
-Un bigrafo $G: \left <m, X \right > \to \left <n, Y \right >$ è attivo su $i \in m$ se ogni nodo antenato del sito $i$ è attivo. Un bigrafo G si dice attivo, se è attivo su ogni
+Un bigrafo $G: \left <m, X \right > \to \left <n, Y \right >$ è attivo su $i \in m$ se ogni nodo antenato del sito $i$ è attivo. Un bigrafo $G$ si dice attivo, se è attivo su ogni
 sito.
 \end{define}
 
 Prima di scattare, una regola di reazione necessita del processo di matching, che trova l'occorrenza del redex della regola nel bigrafo. L'occorrenza sarà della forma 
-$B = C \circ (R \otimes id_I) \circ D$. Se il contesto C è attivo, allora la regola scatta, sostituendo l'occorrenza del redex con il reactum. Altrimenti, la regola non scatta.
-In questo senso si riesce ad isolare parti del sistema che non si vogliono fare evolvere.\\
+$B = C \circ (R \otimes id_I) \circ D$. Se il contesto $C$ è attivo, allora la regola scatta, sostituendo l'occorrenza del redex con il reactum. Altrimenti, la regola non scatta.
+In questo senso si riesce ad isolare parti del sistema che non si vogliono fare evolvere.
 
 Si fornisce ora una definizione precisa di \emph{regola di reazione}. Si tenga a mente l'esempio \ref{sub:esempioBuilding}, in cui si presta particolare attenzione alla
 sostituzione del redex con il reactum.
@@ -1272,11 +1269,11 @@ bigrafo $B'$ secondo questa relazione:
 \begin{center}
 $B: C \circ (R \otimes id_I) \circ D \qquad \to \qquad B': C \circ (R' \otimes id_I) \circ D $
 \end{center}
-dove il contesto C è attivo.
+dove il contesto $C$ è attivo.
 \end{define}
 
 Si noti che questa definizione richiede che $R$ e $R'$ abbiano la stessa interfaccia. Questo è in genere un vincolo troppo forte, che obbliga il progettista a scrivere regole
-di reazione limitative. Per esempio, non potrei copiare il contenuto, perchè i siti del reactum sarebbero uno in più di quelli del redex, rendendo la loro interfaccia interna
+di reazione limitative. Per esempio, non potrei copiare il contenuto, perché i siti del reactum sarebbero uno in più di quelli del redex, rendendo la loro interfaccia interna
 diversa. Per indebolire questo vincolo, introduciamo il concetto di \emph{mappa di istanziazione} che porterà al concetto di \emph{regole di reazione parametriche}.
 
 \begin{define}[Mappa di istanziazione]
@@ -1291,7 +1288,7 @@ $(R: m \to I , R': m' \to I , \eta)$
 \end{center}
 dove $R$ e $R'$ sono rispettivamente il redex e il reactum della regola. Questa volta devono concordare solo sull'interfaccia esterna e sugli inner names.
 
-La regola di reazione parametrica, se applicata al bigrafo B, produce la reazione:
+La regola di reazione parametrica, se applicata al bigrafo $B$, produce la reazione:
 \begin{center}
 $B = C \circ (R \otimes id_I) \circ D \qquad \to \qquad B' = C \circ (R' \otimes id_I) \circ \overline{\eta}(D)$
 \end{center}
@@ -1308,7 +1305,7 @@ dove $d'_i \bumpeq d_{\eta(i)}$
 \subsection{BRS}
 Si sono date tutte le nozioni necessarie per definire formalmente la dinamica di un bigrafo. Essa è costituita da un BRS (\emph{bigraphical reactive system}), che fa evolvere
 il bigrafo di partenza sulla base di regole ben precise, contenute al suo interno. Ogni BRS è costituito da una segnatura e da un insieme di regole: risulta quindi essere
-un sistema deduttivo, perchè composto rispettivamente da sintassi e semantica. 
+un sistema deduttivo, perché composto rispettivamente da sintassi e semantica. 
 
 \begin{define}[BRS]
 Un sistema reattivo bigrafico (BRS) è definito attraverso una coppia $(K, R)$, dove $K$ è una segnatura e $R$ è un insieme di regole di reazione, e si indica con
@@ -1317,9 +1314,7 @@ L'insieme delle regole $R$ è chiuso rispetto all'\emph{equivalenza sul supporto}
 $(S, S', \eta) \in R$.
 \end{define}
 
-Si indichi ora con $B \to* B'$ il fatto che il bigrafo B' sia raggiungibile da B con zero o più regole di reazione. Si dimostra che, dato un bigrafo B la cui segnatura è K, il BRS
-denotato da $BG(K, R)$ computa ogni bigrafo B' tale che $B \to* B'$. Se si considerano quindi tutti i possibili B', si ha l'insieme di tutti i possibili stati in cui il sistema B può
-evolversi secondo le regole R.
+Si indichi ora con $B \to* B'$ il fatto che il bigrafo $B'$ sia raggiungibile da $B$ con zero o più regole di reazione. Si dimostra che, dato un bigrafo $B$ la cui segnatura è $K$, il BRS denotato da $BG(K, R)$ computa ogni bigrafo $B'$ tale che $B \to* B'$. Se si considerano quindi tutti i possibili $B'$, si ha l'insieme di tutti i possibili stati in cui il sistema $B$ può evolversi secondo le regole $R$.
 
 
 
@@ -1336,7 +1331,7 @@ Vediamo ora un ultimo esempio, in cui si useranno le regole di reazione parametr
 
 L'idea principale è che il nodo \emph{mul} contiene due numeri, cioè due nodi \emph{num}, che saranno quelli che dovranno essere moltiplicati. Si può anche optare per una versione ricorsiva, permettendo al nodo \emph{mul} di contenere anche altri nodi \emph{mul}. Infine, ogni numero è rappresentato come unione di varie unità. Per esempio, il numero 4 verrà rappresentano tramite il nodo \emph{num} contenente quattro nodi \emph{one}.
 
-Se vogliamo operare la moltiplicazione fra 4 e 2, allora il bigrafo equivalente sarà quello di figura \ref{fig:bigMul}.
+Se vogliamo operare la moltiplicazione fra $4$ e $2$, allora il bigrafo equivalente sarà quello di figura \ref{fig:bigMul}.
 
 \begin{figure}[!h]
 \centering
@@ -1427,7 +1422,8 @@ Per eseguire la moltiplicazione si usano solamente due regole di reazione, ma in
 \caption{Caso ricorsivo \label{fig:bigMulRicorsive}}
 \end{figure}
 
-La regola del caso ricorsivo mette bene in evidenza l'importanza delle regole parametriche. Un sito del redex (1) viene copiato in una regione diversa, cioè dentro \emph{mul}. Questo ci consente di \emph{copiare} tutto il contenuto del secondo nodo \emph{num} dentro il nodo \emph{mul}. Infatti, il contenuto di \emph{mul} al di fuori dei nodi \emph{num} rappresenta la somma ($+b$) dell'uguaglianza $a*b = (a-1)*b + b$.\\
+La regola del caso ricorsivo mette bene in evidenza l'importanza delle regole parametriche. Un sito del redex (1) viene copiato in una regione diversa, cioè dentro \emph{mul}. Questo ci consente di \emph{copiare} tutto il contenuto del secondo nodo \emph{num} dentro il nodo \emph{mul}. Infatti, il contenuto di \emph{mul} al di fuori dei nodi \emph{num} rappresenta la somma ($+b$) dell'uguaglianza $a*b = (a-1)*b + b$.
+
 Si noti che questa regola va applicata ricorsivamente fino a quando il primo nodo \emph{num} ha contenuto vuoto, cioè fino a quando il caso base è applicabile.
 
 
@@ -1483,15 +1479,6 @@ Seguendo la catena di uguaglianze, si trova che il risultato finale della moltip
 \begin{center}
 $result = 4*2 = (((0*2+2)+2)+2)+2 = 2 + 2 + 2 + 2 = 8$.
 \end{center}
-
-
-
-Vediamo ora l'applicazione della prima regola ricorsiva sul bigrafo di partenza (figura \ref{fig:bigMul}). La prima operazione da eseguire è trovare l'occorrenza del redex nel
-bigrafo, che formalmente significa rispettare l'equazione $B = C \circ (R \otimes id_I) \circ D$, dove C è il contesto, R è il redex e D sono i parametri. Dato che tutti e tre sono
-bigrafi, possiamo disegnarli, come è stato fatto in figura \ref{fig:bigMulMatch}.
-
-\newpage
-
 
 
 \begin{figure}[!htbp]
@@ -1554,8 +1541,6 @@ bigrafi, possiamo disegnarli, come è stato fatto in figura \ref{fig:bigMulMatch}
 \end{figure}
 
 
-Il bigrafo finale, dopo 3 applicazioni della regola ricorsiva ed una della regola base, sarà quello di figura \ref{fig:bigMulFinal}.
-
 
 \begin{figure}[!htbp]
 \centering
@@ -1588,9 +1573,12 @@ Il bigrafo finale, dopo 3 applicazioni della regola ricorsiva ed una della regol
 \caption{Bigrafo finale \label{fig:bigMulFinal}}
 \end{figure}
 
-L'implementazione di questo esempio si può trovare in \ref{}.
 
-Questo esempio mostra bene come le regole di reazione che formano il BRS rappresentano la semantica del sistema. Per evitare di sprecare memoria sul calcolatore, è necessario progettare con cura la segnature e l'insieme di regole del BRS. Nell'esempio di cui sopra, le regole erano soltanto due e potevano essere applicate ricorsivamente. Questo è preferibile ad avere $k$ regole e applicarle una dopo l'altra, appunto a causa dello spreco di memoria che si otterrebbe.
+Vediamo ora l'applicazione della prima regola ricorsiva sul bigrafo di partenza (figura \ref{fig:bigMul}). La prima operazione da eseguire è trovare l'occorrenza del redex nel bigrafo, che formalmente significa rispettare l'equazione $B = C \circ (R \otimes id_I) \circ D$, dove $C$ è il contesto, $R$ è il redex e $D$ sono i parametri. Dato che tutti e tre sono bigrafi, possiamo disegnarli, come è stato fatto in figura \ref{fig:bigMulMatch}.
+
+Il bigrafo finale, dopo 3 applicazioni della regola ricorsiva ed una della regola base, sarà quello di figura \ref{fig:bigMulFinal}.
+
+L'implementazione la si può trovare in \cite{BRSAnalysis}. Questo esempio mostra bene come le regole di reazione che formano il BRS rappresentano la semantica del sistema. Per evitare di sprecare memoria sul calcolatore, è necessario progettare con cura la segnature e l'insieme di regole del BRS. Nell'esempio di cui sopra, le regole erano soltanto due e potevano essere applicate ricorsivamente. Questo è preferibile ad avere $k$ regole e applicarle una dopo l'altra, appunto a causa dello spreco di memoria che si otterrebbe.
 
 
 

@@ -420,7 +420,7 @@ Una stringa x viene accettata se e solo se alla fine di essa l'automa si trova i
 
 Nella nostra segnatura, tutti gli stati finali ($q_F \in F$) vengono distinti tramite un nodo $F$ all'interno di essi: essendo passivi, nessuna regola di reazione può modificarli. Per cui la proprietà da verificare sarà la seguente: ``Il nodo di tipo $String$ non deve contenere nessun altro nodo e il nodo $A$ e il nodo $F$ si devono trovare dentro lo stesso stato $S$". Nella logica di $MC_{big}$, questo si traduce nella formula:
 \begin{center}
-$\varphi = W_B(T,T,T)$
+$\varphi = \wario_B(T,T,T)$
 \end{center}
 dove B è il bigrafo di figura \ref{fig:bigAimNFA}.
 
@@ -456,7 +456,7 @@ dove B è il bigrafo di figura \ref{fig:bigAimNFA}.
 
 Si noti la semplicità di quest'ultima formula: il nodo di tipo $String$ deve essere vuoto, il che significa che tutti i caratteri sono stati ``consumati" dall'automa. Inoltre, il nodo attivo e il nodo finale si devono trovare nello stesso stato, assicurando che l'automa dopo aver letto tutta la stringa è finito in uno stato finale. Quindi possiamo affermare che:
 \begin{prop}\label{prop:strWario}
-Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = W_B(T,T,T)$.
+Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = \wario_B(T,T,T)$.
 \end{prop}
 
 Infine, si noti come l'automa modellato tramite bigrafi sia \emph{non deterministico}: le transizioni sono modellate tramite regole di reazione che scattano dopo aver trovato un match. Il processo di matching però è per natura non deterministico, il che vuol dire che se nel bigrafo di partenza la regola $R_0$ trova più di un match, allora sceglie uno dei due in maniera non deterministica. Si prenda il bigrafo di figura \ref{fig:bigAutomataProblem}: se si aggiunge nel nodo $q_0$ un'altra transizione collegata all'outername `a' che porta ad un terzo stato $q_2$, allora l'automa diventa non deterministico, perché la regola $R_0$ troverà sempre due match nel bigrafo e ne sceglierà uno in maniera casuale.
@@ -884,7 +884,7 @@ In figura \ref{fig:MCbigTrace}, c'è la traccia d'esecuzione di $MC_{big}$, mentr
 
 
 
-Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$W_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models W_B(T,T,T)$, perché il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perché il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
+Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$\wario_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models \wario_B(T,T,T)$, perché il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perché il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
 
 
 
@@ -915,6 +915,23 @@ Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predi
 \end{figure}
 
 
+\subsection{Implementazione}
+Si è costruito un modulo che accetta dall'utente una stringa e costruisce il rispettivo bigrafo. Se vogliamo sapere se una data stringa è riconosciuta dal \emph{NFA}, basta innanzitutto estendere la classe \emph{NFA} costruendo il proprio automa, e in seguito inserire una stringa appena il sistema lo chiede. Ora la stringa verrà processata e trasformata in bigrafo. Per esempio, se vogliamo risolvere il problema di figura \ref{fig:bigAutomataProblem}, allora dobbiamo estendere la classe $NFA$ costruendo il bigrafo di figura \ref{fig:bigAutomata1} ed infine inserire la stringa ``abaa":
+\begin{lstlisting}
+Insert the string: 
+abaa
+Does this NFA recognize the string "abaa"?	YES
+\end{lstlisting}
+Appena inseriamo la stringa, il software crea il bigrafo rappresentante l'$NFA$ che abbiamo precedentemente costruito, il quale è affiancato ad un altro bigrafo che contiene la stringa, proprio come in figura \ref{fig:bigAutomataProblem}. In questo caso, l'automa riconosce correttamente la parola. Se invece scegliamo una stringa che non appartiene al suo linguaggio, allora il sistema non la riconosce:
+\begin{lstlisting}
+Insert the string: 
+aaba
+Does this NFA recognize the string "aaba"?	NO
+\end{lstlisting}
+
+
+
+
 Questo esempio è molto importante perché mostra due aspetti fondamentali:
 \begin{itemize}
 	\item
@@ -933,11 +950,11 @@ In questo esempio si è potuto apprezzare la comodità del model checker e della s
 \section{Problema dei filosofi a cena}
 In questa sezione si fornisce una codifica in bigrafi del problema dei filosofi a cena, introdotto da Dijkstra nel 1965 per esporre un problema di concorrenza tra processi paralleli.
 
-\begin{prop}[Formulazione del problema]
+\begin{define}[Filosofi a cena]
 Cinque filosofi sono seduti a cena ad una tavola rotonda. Ogni filosofo ha davanti il piatto in cui mangiare e due forchette, una a destra e l'altra a sinistra: per cui nel tavolo sono presenti cinque filosofi, cinque piatti e cinque forchette. Ogni filosofo alterna periodi in cui mangia ad altri in cui pensa. Per mangiare, ha bisogno di entrambe le forchette, ma deve prenderle una per volta. Quando ha finito di mangiare, lascia le forchette e continua a pensare.
 
 Si progetti un algoritmo che eviti \emph{deadlock} o \emph{starvation}.
-\end{prop}
+\end{define}
 
 Il problema chiede di progettare un algoritmo che eviti queste due situazioni:
 \begin{itemize}
@@ -1227,28 +1244,42 @@ Le regole per lasciare le forchette sono similari: quando un filosofo ha entramb
 
 Queste quattro regole andranno a formare il BRS per il nostro problema. Si noti come un BRS di questo tipo sia particolarmente adatto per il problema della cena tra filosofi: quest'ultimo è infatti un problema di sincronizzazione tra processi paralleli che viene modellato perfettamente dalle regole non deterministiche del BRS. Ogni filosofo decide autonomamente quando incominciare a mangiare: per cui può essere che incominci il terzo filosofo così come il primo. Questa è la stessa situazione in cui operano le regole: per esempio, in figura \ref{fig:diningPhil} la regola \ref{fig:takeFork}.a trova cinque match e ne sceglie in modo non deterministico uno solo. In altre parole, il BRS modella bene il caso reale in cui i processi decidono di leggere dati autonomamente, senza che ci sia alcun ordine tra di loro.
 
-Ora si userà $MC_{big}$ per capire se con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è una \emph{IsoProperty}:
+Ora si userà $MC_{big}$ per capire se con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è una disgiunzione tra due  \emph{IsoProperty}:
 \begin{center}
-$\varphi =  \pi_G$
+$\varphi =  \pi_G \lor \pi_{G'}$
 \end{center}
-dove G è il bigrafo di figura \ref{fig:diningAim}, in cui ogni filosofo $P_i$ contiene solamente la forchetta $F_i$.
+dove $G$ è il bigrafo di figura \ref{fig:diningAim1} e $G'$ quello di figura \ref{fig:diningAim2}. Nel primo, ogni filosofo $P_i$ contiene solamente la forchetta $F_i$, mentre nel secondo ogni filosofo $P_i$ contiene solamente $F_{i+1}$.
 
+Dato che la grammatica di $MC_{big}$ non contiene il simbolo $\lor$ per la disgiunzione, si è usata l'equivalenza di De Morgan, avendo quindi che:
+\begin{center}
+$\varphi =  \pi_G \lor \pi_{G'} = \lnot(\lnot \pi_G \land \lnot \pi_{G'})$
+\end{center}
+Infatti, nell'implementazione le righe corrispondenti alla creazione di questa proprietà sono queste riportate di seguito:
+\begin{lstlisting}
+Predicate p1 = new IsoPredicate(getAim1(n));
+Predicate p2 = new IsoPredicate(getAim2(n));
+Predicate notP1 = new NotPredicate(p1);
+Predicate notP2 = new NotPredicate(p2);
+Predicate andNP1NP2 = new AndPredicate(notP1,notP2);
+Predicate prop = new NotPredicate(andNP1NP2);
+\end{lstlisting}
+da cui si vede bene come si sia usata la legge di De Morgan.
 
-\begin{figure}[th]
+\begin{figure}[!htbp]
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.88]
 %\draw[help lines] (0,0) grid (13,8);
 %Root
 \draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
 %Philosophers
 \draw[thick] (6.0,6.0) circle [radius=0.5];%P1
-\node at (6.0,5.3) {$P_1$};
+\node at (6.0,5.25) {$P_1$};
 \draw[thick] (3.0,4.0) circle [radius=0.5];%P2
 \node at (3.0,3.0) {$P_2$};
 \draw[thick] (4.0,1.0) circle [radius=0.5];%P3
-\node at (4.0,0.3) {$P_3$};
+\node at (4.0,0.25) {$P_3$};
 \draw[thick] (8.0,1.0) circle [radius=0.5];%P4
-\node at (8.0,0.3) {$P_4$};
+\node at (8.0,0.25) {$P_4$};
 \draw[thick] (9.0,4.0) circle [radius=0.5];%P5
 \node at (9.0,3.0) {$P_5$};
 %Forks
@@ -1300,13 +1331,85 @@ dove G è il bigrafo di figura \ref{fig:diningAim}, in cui ogni filosofo $P_i$ co
 \node[above] at (11.0,4.0) {$F_5$};
 
 \end{tikzpicture}
-\caption{Bigrapfo B: proprietà di stallo \label{fig:diningAim}}
+\caption{Bigrafo $G$: prima proprietà di stallo \label{fig:diningAim1}}
 \end{figure}
 
 
-In altre parole, $MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perché le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
 
-Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim}, il model checker smette di generare il grafo degli stati e ritorna False, perché si è causato un deadlock:
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[scale=0.88]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,5.25) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,3.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,0.25) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,0.25) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,3.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (3.8,0.8) -- (4.2,0.8) -- (4.0,1.4) -- (3.8,0.8);%F3
+\draw[rounded corners=1mm, thick] (7.8,0.8) -- (8.2,0.8) -- (8.0,1.4) -- (7.8,0.8);%F4
+\draw[rounded corners=1mm, thick] (8.8,3.8) -- (9.2,3.8) -- (9.0,4.4) -- (8.8,3.8);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.3) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.3) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (4.0,1.3) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (4.0,1.3) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (8.0,1.3) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (8.0,1.3) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (9.0,4.3) to [out=20,in=300] (8.0,7.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (9.0,4.3) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Bigrafo $G'$: seconda proprietà di stallo \label{fig:diningAim2}}
+\end{figure}
+
+
+$MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perché le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
+
+Con la strategia di questa sottosezione è impossibile trovarsi nella situazione di figura \ref{fig:diningAim2}. Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim1}, il model checker smette di generare il grafo degli stati e ritorna False, perché si è causato un deadlock:
 \begin{prop}
 $MC_{big}$ ritorna False se e solo se esiste almeno una situazione di deadlock.
 \end{prop}
@@ -1330,18 +1433,13 @@ Insert the number of philosophers:
 
 STRATEGY: Every philosopher takes first the left fork.
 Are deadlocks avoided?	NO
-Number of nodes of the Model Checker:	93
-
-
-
-STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
-Are deadlocks avoided?	YES
-Number of nodes of the Model Checker:	189
+Number of states of the Model Checker:	93
+Resolution Time:	4.786207234 seconds
 \end{lstlisting}
 
 Quello mostrato qui sopra è il risultato dell'esecuzione del software: si è implementato un modulo che costruisce il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi come in figura \ref{fig:diningPhil}. In seguito, il sistema informa quale strategia si sta adottando: per ora ci interessa solamente la prima strategia. Nella riga seguente il software ritorna il risultato (cioè se c'è o non c'è un deadlock), ed infine il numero di nodi del grafo degli stati.
 
-Per verificare che la strategia in uso causa deadlock, con solamente cinque filosofi il model checker ha creato un grafo degli stati con 93 nodi. Questo è il risultato dell'esplosione combinatoria, che causa appunto un aumento esponenziale del numero di nodi che il model checker deve controllare.\\
+Per verificare che la strategia in uso causa deadlock, con solamente cinque filosofi il model checker ha creato un grafo degli stati con 93 nodi. Questo è il risultato dell'esplosione combinatoria, che causa appunto un aumento esponenziale del numero di nodi che il model checker deve controllare.
 
 In questo esercizio si è usato l'isomorfismo con proprietà (\emph{Property Isomorphism}), il cui funzionamento, che è poco differente dal normale algoritmo, viene riportato qui sotto:
 
@@ -1349,13 +1447,9 @@ In questo esercizio si è usato l'isomorfismo con proprietà (\emph{Property Isomo
 Due nodi costituiscono un match nel Property Isomorphism se e solo se lo fanno nel normale Isomorphism e hanno le stesse proprietà.
 \end{prop}
 
-Nella libreria \emph{JLibbig}, c'è la possibilità di allegare ad ogni nodo delle proprietà. Si sono quindi dati degli identificativi per ogni filosofo ed ogni forchetta. In seguito, si sono usate le regole con proprietà introdotte nella sottosezione \ref{sec:dettImpl} per manterle anche dopo l'esecuzione delle quattro regole viste prima. 
-
-La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di esso il model checker avrebbe riconosciuto come uguali i due bigrafi in figura \ref{fig:isoDinings}, causando un comportamento anomalo nella verifica delle proprietà. 
-
-\begin{figure}[th]
+\begin{figure}[!htbp]
 \centering
-\subfigure[...]{
+\subfigure[Primo Bigrafo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (13,8);
 %Root
@@ -1422,7 +1516,7 @@ La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di es
 
 \hspace{1mm}
 
-\subfigure[...]{
+\subfigure[Secondo Bigrafo]{
 \begin{tikzpicture}[scale=0.5]
 %\draw[help lines] (0,0) grid (13,8);
 %Root
@@ -1489,7 +1583,12 @@ La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di es
 \caption{Due bigrafi isomorfi \label{fig:isoDinings}}
 \end{figure}
 
-Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perché non si esplorerebbero tutte le possibilità. Si guardi la figura \ref{}: se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
+
+Nella libreria \emph{JLibbig}, c'è la possibilità di allegare ad ogni nodo delle proprietà. Si sono quindi dati degli identificativi per ogni filosofo ed ogni forchetta. In seguito, si sono usate le regole con proprietà introdotte nella sottosezione \ref{sec:dettImpl} per manterle anche dopo l'esecuzione delle quattro regole viste prima. 
+
+La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di esso il model checker avrebbe riconosciuto come uguali i due bigrafi in figura \ref{fig:isoDinings}, causando un comportamento anomalo nella verifica delle proprietà. 
+
+Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perché non si esplorerebbero tutte le possibilità. Se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Ora però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
 
 
 \subsection{Seconda strategia}
@@ -1532,19 +1631,14 @@ Insert the number of philosophers:
 
 
 
-STRATEGY: Every philosopher takes first the left fork.
-Are deadlocks avoided?	NO
-Number of nodes of the Model Checker:	93
-
-
-
 STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
 Are deadlocks avoided?	YES
-Number of nodes of the Model Checker:	189
+Number of states of the Model Checker:	189
+Resolution Time:	14.129189577 seconds
 \end{lstlisting}
 
 
-Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 189. Aumentando il numero di filosofi ci si rende conto dell'andamento esponenziale dell'esplosione.
+Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 189. Aumentando il numero di filosofi ci si rende conto dell'andamento esponenziale dell'esplosione. Infine si prendano in considerazione i tempi di risoluzione del problema: $MC_{big}$ impiega 20 minuti per capire che questa strategia è priva di deadlock.
 
 \begin{lstlisting}
 Insert the number of philosophers: 
@@ -1555,12 +1649,14 @@ Insert the number of philosophers:
 STRATEGY: Every philosopher takes first the left fork.
 Are deadlocks avoided?	NO
 Number of states of the Model Checker:	801
+Resolution Time:	214.26274781 seconds
 
 
 
 STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
 Are deadlocks avoided?	YES
 Number of states of the Model Checker:	1701
+Resolution Time:	1210.612988337 seconds
 \end{lstlisting}
 
 
@@ -2071,12 +2167,12 @@ Il model checker $MC_{big}$ ritorna True se e solo se non c'è \emph{nessuna} sit
 \end{prop}
 La proprietà da far verificare al model checker è molto semplice:
 \begin{center}
-$\varphi = W_B(T,T,T)$
+$\varphi = \wario_B(T,T,T)$
 \end{center}
 dove B è il bigrafo di figura \ref{fig:bigBSafety}. Quindi la precedente proposizione, la possiamo tradurre in:
 \begin{prop}\label{prop:MCsafety}
-Il model checker $MC_{big}$ ritorna False $\Leftrightarrow \exists S_i$ t.c. $MC,S_i \models W_B(T,T,T)$. 
-Equivalentemente, ritorna True  $\Leftrightarrow \forall S_i$ $(MC,S_i \not \models W_B(T,T,T) )$.
+Il model checker $MC_{big}$ ritorna False $\Leftrightarrow \exists S_i$ t.c. $MC,S_i \models \wario_B(T,T,T)$. 
+Equivalentemente, ritorna True  $\Leftrightarrow \forall S_i$ $(MC,S_i \not \models \wario_B(T,T,T) )$.
 \end{prop}
 
 
@@ -2196,7 +2292,79 @@ Si vedrà ora una strategia che, tramite l'introduzione di due nuove regole, ries
 
 
 
-Ora Alice non può più trasferire il Token sul suo smartphone, e di conseguenza le uniche due regole applicabili sono $secureR_0$ e $secureR_1$. La proprietà che $MC_{big}$ dovrà verificare sarà sempre $\varphi = W_B(T,T,T)$: ora nessuno stato $S_i$ del grafo sarà tale che $MC,S_i \models \varphi$, per cui, data la proposizione \ref{prop:MCsafety}, il model checker ritornerà True. Questa politica rende sicura l'azienda.\\
+Ora Alice non può più trasferire il Token sul suo smartphone, e di conseguenza le uniche due regole applicabili sono $secureR_0$ e $secureR_1$. La proprietà che $MC_{big}$ dovrà verificare sarà sempre $\varphi = \wario_B(T,T,T)$: ora nessuno stato $S_i$ del grafo sarà tale che $MC,S_i \models \varphi$, per cui, data la proposizione \ref{prop:MCsafety}, il model checker ritornerà True. Questa politica rende sicura l'azienda.
+
+\subsection{Implementazione}
+Si sono costruite delle classi flessibili, in modo che l'utente possa definire il proprio edificio (per quanto grande esso sia) senza ridefinire le regole di reazione della politica di sicurezza. Per esempio, in \cite{BRSAnalysis} sono presenti le classi astratte \emph{Building} e \emph{SecureBuilding}, che modellano rispettivamente la prima e la seconda strategia. L'edificio rappresentato nelle figure precedenti è stato costruito nelle due classi \emph{MyBuilding} e \emph{MySecureBuilding}, che estendono le prime due, in modo da poter simulare entrambe.
+
+Se modelliamo il problema di figura \ref{fig:bigSafety} e lanciamo l'esecuzione, allora il sistema avrà il seguente output in cui informa che la prima politica non è sicura mentre la seconda lo è:
+\begin{lstlisting}
+1. First building: the policy does not ensure the safety
+Are the tokens inside the building safe?	NO
+
+
+
+2. Second building: the policy ensures the safety
+Are the tokens inside the building safe?	YES
+\end{lstlisting}
+Un'importante caratteristica di questo esempio, è il modulo che consente di poter navigare nel grafo degli stati: per esempio, se il titolare dell'azienda vuole sapere quali sono stati i singoli passi che hanno eseguito Alice e Bob per rubare il file segreto, allora può navigare nel grafo scegliendo di volta in volta che regola di reazione applicare.
+\begin{lstlisting}
+Do you want to visit the first graph?	(yes,no)
+yes
+40 - 0
+----- Printing Bigraph Root -----
+edge E_412{ N_411:Phone; }
+edge E_418{ N_417:Phone; }
+edge E_414{ N_413:Computer; }
+edge E_416{ N_415:Computer; }
+root 0 {}
+   node N_40D:Bob {}
+      node N_411:Phone { port0: Edge E_412;}
+   node N_40C:Building {}
+      node N_40F:Room {}
+         node N_415:Computer { port0: Edge E_416;}
+            node N_41A:Token {}
+      node N_40E:Room {}
+         node N_413:Computer { port0: Edge E_414;}
+            node N_419:Token {}
+      node N_410:Alice {}
+         node N_417:Phone { port0: Edge E_418;}
+----- Done Printing Root ------
+
+Choose a branch: 
+0- enter_room
+1- enter_room
+\end{lstlisting}
+Nell'output di cui sopra, il sistema chiede se si vuole visitare il grafo. Nel caso di risposta affermativa, stampa il primo nodo ($S_0$) del grafo degli stati da cui è partita l'esecuzione e ci chiede quale regola vogliamo applicare. In questo caso, Alice può entrare nella prima o nella seconda stanza: se scriviamo $0$ allora Alice, entrerà nella prima stanza e l'output sarà:
+\begin{lstlisting}
+----- Printing Bigraph enter_room -----
+edge E_4CB{ N_4CA:Phone; }
+edge E_4E3{ N_4E2:Computer; }
+edge E_4D4{ N_4D3:Computer; }
+edge E_4E5{ N_4E4:Phone; }
+root 0 {}
+   node N_4C7:Building {}
+      node N_4CE:Room {}
+         node N_4D3:Computer { port0: Edge E_4D4;}
+            node N_4D9:Token {}
+      node N_4DC:Room {}
+         node N_4DD:Alice {}
+            node N_4E4:Phone { port0: Edge E_4E5;}
+         node N_4E2:Computer { port0: Edge E_4E3;}
+            node N_4E6:Token {}
+   node N_4C6:Bob {}
+      node N_4CA:Phone { port0: Edge E_4CB;}
+----- Done Printing enter_room ------
+
+Choose a branch: 
+0- comp_connect
+1- leave_room
+\end{lstlisting}
+Alice è entrata nella stanza, e ora può semplicemente lasciarla ($1$) o connettersi al computer($0$).
+
+In questo modo, si consente all'utente di navigare all'interno del grafo degli stati e di poter vedere gli effetti di ogni regola di reazione. Quindi, il model checker $MC_{big}$ è ora più informativo: non dice solamente se le proprietà sono rispettate o meno, ma fornisce anche una feature per seguire dei percorsi sul grafo.\\
+
+
 
 Quest'ultimo esempio mostra particolarmente bene con i bigrafi ed i BRS siano flessibili per rappresentare qualsiasi dominio e la loro utilità in casi reali come questo. $MC_{big}$ e la sua logica, implementati per questa tesi, sono quindi di aiuto sia per bigrafi che modellano un formalismo (come quello per gli NFA) sia per i bigrafi \emph{domain specific} (come quest'ultimo esempio), rendendo l'isomorfismo tra bigrafi, il model checker e la sua relativa logica degli strumenti generali adatti ad ogni dominio.
 

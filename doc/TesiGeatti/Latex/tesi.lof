@@ -82,14 +82,14 @@
 \contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto passo}}}{58}
 \contentsline {figure}{\numberline {4.11}{\ignorespaces Regola di inoltro tra router. }}{63}
 \contentsline {figure}{\numberline {4.12}{\ignorespaces Bigrafo per il numero 8 }}{64}
-\contentsline {figure}{\numberline {4.13}{\ignorespaces Model Checker. }}{64}
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Model Checker. }}{65}
 \contentsline {figure}{\numberline {4.14}{\ignorespaces Bigrafo di partenza }}{65}
-\contentsline {figure}{\numberline {4.15}{\ignorespaces Regola di inoltro tra router. }}{65}
+\contentsline {figure}{\numberline {4.15}{\ignorespaces Regola di inoltro tra router. }}{66}
 \contentsline {figure}{\numberline {4.16}{\ignorespaces Esempi di predicati}}{66}
 \contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Predicato Sbagliato}}}{66}
 \contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Predicato Corretto}}}{66}
-\contentsline {figure}{\numberline {4.17}{\ignorespaces Grafo degli stati }}{66}
-\contentsline {figure}{\numberline {4.18}{\ignorespaces Predicato con propriet\`a }}{67}
+\contentsline {figure}{\numberline {4.17}{\ignorespaces Grafo degli stati }}{67}
+\contentsline {figure}{\numberline {4.18}{\ignorespaces Predicato con propriet\`a }}{68}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Automa per il linguaggio $(a(a+b))^*$ }}{69}
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Bigrafo per l'automa A }}{70}
@@ -104,27 +104,28 @@
 \contentsline {figure}{\numberline {5.7}{\ignorespaces Traccia d'esecuzione di $MC_{big}$ }}{75}
 \contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Quinto Passo}}}{75}
 \contentsline {figure}{\numberline {5.8}{\ignorespaces Grafo degli stati }}{76}
-\contentsline {figure}{\numberline {5.9}{\ignorespaces Codifica in bigrafi di un'istanza del problema }}{77}
-\contentsline {figure}{\numberline {5.10}{\ignorespaces Regole per prendere le forchette }}{78}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{78}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{78}
-\contentsline {figure}{\numberline {5.11}{\ignorespaces Regole per lasciare le forchette }}{79}
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Codifica in bigrafi di un'istanza del problema }}{78}
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Regole per prendere le forchette }}{79}
 \contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{79}
 \contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{79}
-\contentsline {figure}{\numberline {5.12}{\ignorespaces Bigrapfo B: propriet\`a di stallo }}{80}
-\contentsline {figure}{\numberline {5.13}{\ignorespaces Due bigrafi isomorfi }}{82}
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {...}}}{82}
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {...}}}{82}
-\contentsline {figure}{\numberline {5.14}{\ignorespaces Bigrafo per il problema della sicurezza dell'azienda }}{87}
-\contentsline {figure}{\numberline {5.15}{\ignorespaces regola per l'entrata in una stanza ($R_0$)}}{87}
-\contentsline {figure}{\numberline {5.16}{\ignorespaces regola per l'uscita da una stanza ($R_1$)}}{87}
-\contentsline {figure}{\numberline {5.17}{\ignorespaces regola per il collegamento ad un computer ($R_2$)}}{88}
-\contentsline {figure}{\numberline {5.18}{\ignorespaces regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)}}{88}
-\contentsline {figure}{\numberline {5.19}{\ignorespaces regola per iniziare una connessione tra due smartphones ($R_4$)}}{89}
-\contentsline {figure}{\numberline {5.20}{\ignorespaces regola per trasferire un Token fra due smartphones ($R_5$)}}{89}
-\contentsline {figure}{\numberline {5.21}{\ignorespaces Applicazione delle regola $R_0$,$R_2$ e $R_3$ }}{90}
-\contentsline {figure}{\numberline {5.22}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{91}
-\contentsline {figure}{\numberline {5.23}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{91}
-\contentsline {figure}{\numberline {5.24}{\ignorespaces regola per l'entrata sicura in una stanza ($secureR_0$)}}{92}
-\contentsline {figure}{\numberline {5.25}{\ignorespaces regola per l'uscita sicura da una stanza ($secureR_1$)}}{92}
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Regole per lasciare le forchette }}{80}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Prima Regola}}}{80}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Seconda Regola}}}{80}
+\contentsline {figure}{\numberline {5.12}{\ignorespaces Bigrafo $G$: prima propriet\`a di stallo }}{81}
+\contentsline {figure}{\numberline {5.13}{\ignorespaces Bigrafo $G'$: seconda propriet\`a di stallo }}{81}
+\contentsline {figure}{\numberline {5.14}{\ignorespaces Due bigrafi isomorfi }}{83}
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Primo Bigrafo}}}{83}
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Secondo Bigrafo}}}{83}
+\contentsline {figure}{\numberline {5.15}{\ignorespaces Bigrafo per il problema della sicurezza dell'azienda }}{88}
+\contentsline {figure}{\numberline {5.16}{\ignorespaces regola per l'entrata in una stanza ($R_0$)}}{89}
+\contentsline {figure}{\numberline {5.17}{\ignorespaces regola per l'uscita da una stanza ($R_1$)}}{89}
+\contentsline {figure}{\numberline {5.18}{\ignorespaces regola per il collegamento ad un computer ($R_2$)}}{89}
+\contentsline {figure}{\numberline {5.19}{\ignorespaces regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)}}{90}
+\contentsline {figure}{\numberline {5.20}{\ignorespaces regola per iniziare una connessione tra due smartphones ($R_4$)}}{90}
+\contentsline {figure}{\numberline {5.21}{\ignorespaces regola per trasferire un Token fra due smartphones ($R_5$)}}{91}
+\contentsline {figure}{\numberline {5.22}{\ignorespaces Applicazione delle regola $R_0$,$R_2$ e $R_3$ }}{91}
+\contentsline {figure}{\numberline {5.23}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{92}
+\contentsline {figure}{\numberline {5.24}{\ignorespaces Applicazione delle regole $R_1$,$R_4$ e $R_5$ }}{93}
+\contentsline {figure}{\numberline {5.25}{\ignorespaces regola per l'entrata sicura in una stanza ($secureR_0$)}}{93}
+\contentsline {figure}{\numberline {5.26}{\ignorespaces regola per l'uscita sicura da una stanza ($secureR_1$)}}{94}
 \addvspace {10\p@ }

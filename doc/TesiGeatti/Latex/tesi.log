@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  16 SEP 2015 20:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.9)  17 SEP 2015 16:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -891,18 +891,18 @@ LaTeX Warning: Label `sub:networkExe' multiply defined.
 ) (./examples.aux) (./conclusions.aux) (./appendix.aux))
 \openout1 = `tesi.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 106.
-LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 96.
+LaTeX Font Info:    ... okay on input line 96.
 
 Class PhdThesis: Adding American English Captions.
 Class PhdThesis: Adding Italian Captions.
@@ -967,8 +967,8 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \it@ocap on input line 106.
-LaTeX Info: Redefining \it@ccap on input line 106.
+LaTeX Info: Redefining \it@ocap on input line 96.
+LaTeX Info: Redefining \it@ccap on input line 96.
 
 
 File italian.ldf warning: 
@@ -976,7 +976,7 @@ italian.ldf    With OT1 encoding guillemets are poorly faked
 italian.ldf    Use T1 encoding
 italian.ldf    or specify a font with command \CaporaliFrom
 italian.ldf    See the documentation concerning the babel-italian typesetting 
-italian.ldf    on input line 106.
+italian.ldf    on input line 96.
 
 ABD: EveryShipout initializing macros
 \c@lstlisting=\count175
@@ -985,25 +985,25 @@ ABD: EveryShipout initializing macros
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.12} into 
 your preamble.
- on input line 106.
+ on input line 96.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
 
  []
 
 
 Package pdftex.def Warning: Option `bb' does not make sense,
-(pdftex.def)                using `viewport' instead on input line 108.
+(pdftex.def)                using `viewport' instead on input line 98.
 
 <UdineLogo.pdf, id=29, 406.51875pt x 406.51875pt>
 File: UdineLogo.pdf Graphic file (type pdf)
  <use UdineLogo.pdf>
-Package pdftex.def Info: UdineLogo.pdf used on input line 108.
+Package pdftex.def Info: UdineLogo.pdf used on input line 98.
 (pdftex.def)             Requested size: 352.11581pt x 633.78513pt.
 \@phd@tmplen=\skip68
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--108
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
 []| | [] 
  []
 
@@ -1180,29 +1180,29 @@ Underfull \vbox (badness 1661) has occurred while \output is active []
 Underfull \vbox (badness 4713) has occurred while \output is active []
 
  [55]
-[56] [57] [58] [59] [60] [61] [62] [63]
-Underfull \hbox (badness 10000) in paragraph at lines 902--903
+[56] [57] [58] [59] [60] [61] [62] [63] [64]
+Underfull \hbox (badness 10000) in paragraph at lines 917--918
 
  []
 
-[64]
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+Underfull \vbox (badness 1609) has occurred while \output is active []
 
-[65]
-Underfull \vbox (badness 1259) has occurred while \output is active []
+ [65]
+[66]
+Underfull \vbox (badness 2875) has occurred while \output is active []
 
- [66])
-[67]
+ [67])
+[68]
 \openout2 = `examples.aux'.
 
- (./examples.tex [68
-
-
-
-]
+ (./examples.tex
 Capitolo 5.
-[69] [70] [71] [72] [73]
+[69
+
+
+
+] [70] [71] [72] [73]
 Underfull \hbox (badness 10000) in paragraph at lines 462--464
 
  []
@@ -1212,90 +1212,60 @@ Underfull \hbox (badness 10000) in paragraph at lines 468--469
 
  []
 
-[74] [75] [76] [77] [78]
-Underfull \vbox (badness 2221) has occurred while \output is active []
-
- [79]
-[80]
-Underfull \hbox (badness 10000) in paragraph at lines 1323--1324
+[74] [75] [76] [77] [78] [79] [80] [81]
+Underfull \hbox (badness 10000) in paragraph at lines 1426--1427
 
  []
 
+[82] [83] [84] [85]
+Underfull \vbox (badness 5050) has occurred while \output is active []
 
-Underfull \hbox (badness 10000) in paragraph at lines 1344--1345
-
- []
-
-[81]
-
-LaTeX Warning: Reference `' on page 82 undefined on input line 1492.
-
-[82] [83] [84] [85] [86]
-
-LaTeX Warning: Text page 87 contains only floats.
-
-
-Overfull \vbox (2.15324pt too high) has occurred while \output is active []
-
-
+ [86]
 [87]
-Underfull \hbox (badness 10000) in paragraph at lines 1848--1849
+Underfull \hbox (badness 10000) in paragraph at lines 1944--1945
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1964--1965
-
- []
-
-[88]
-Underfull \hbox (badness 10000) in paragraph at lines 2066--2067
+[88] [89]
+Underfull \hbox (badness 10000) in paragraph at lines 2060--2061
 
  []
 
-[89] [90] [91]
-Underfull \hbox (badness 10000) in paragraph at lines 2199--2200
+[90]
+Underfull \hbox (badness 10000) in paragraph at lines 2162--2163
 
  []
 
-) [92] [93] [94
+[91] [92] [93] [94]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [95]
+Underfull \hbox (badness 10000) in paragraph at lines 2365--2366
 
-]
+ []
+
+) [96]
 \openout2 = `conclusions.aux'.
 
  (./conclusions.tex
 Conclusioni.
-
-Underfull \hbox (badness 10000) in paragraph at lines 2--3
-
- []
+) [97
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 4--5
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 6--7
-
- []
-
-) [95
 
 
 ]
 \openout2 = `appendix.aux'.
 
- (./appendix.tex [96
+ (./appendix.tex [98
 
 
 
 ]
 Appendice A.
-[97]) [98] (./tesi.bbl
+[99]) [100] (./tesi.bbl
 Bibliografia.
-) [99
+) [101
 
 
 
@@ -1309,11 +1279,11 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 28820 strings out of 493091
- 690022 string characters out of 6134965
- 885973 words of memory out of 5000000
- 31699 multiletter control sequences out of 15000+600000
- 16220 words of font info for 60 fonts, out of 8000000 for 9000
+ 28932 strings out of 493091
+ 691244 string characters out of 6134965
+ 907996 words of memory out of 5000000
+ 31810 multiletter control sequences out of 15000+600000
+ 17467 words of font info for 65 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,11n,82p,1368b,1803s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -1322,29 +1292,30 @@ Here is how much of TeX's memory you used:
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
-sr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
-/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/l
-ocal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loc
-al/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local
-/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/t
-exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texl
-ive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive
-/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/20
-14/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2
-014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/20
-14/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2014
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2014/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf-d
-ist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on tesi.pdf (111 pages, 772811 bytes).
+/usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
+usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/lo
+cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/loca
+l/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/
+texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/te
+xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texli
+ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/
+2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/201
+4/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/20
+14/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/201
+4/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2014/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2014/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2014/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2014/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf-di
+st/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2014/texm
+f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on tesi.pdf (113 pages, 790787 bytes).
 PDF statistics:
- 496 PDF objects out of 1000 (max. 8388607)
- 336 compressed objects within 4 object streams
+ 506 PDF objects out of 1000 (max. 8388607)
+ 343 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  120 words of extra memory for PDF output out of 10000 (max. 10000000)
 

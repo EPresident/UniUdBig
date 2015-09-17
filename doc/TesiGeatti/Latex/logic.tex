@@ -473,7 +473,7 @@ Il comportamento di un model checker MC è definito dalla seguente relazione:
 
 Nell'esempio \ref{fig:bsgExe}, il problema è quindi banale: il model checker ritorna vero se e solo se è vera la formula $MC,S_0 \models p \lor MC,S_1 \models p$.
 
-\subsection{Generazione degli stati}
+\subsection{Generazione degli stati}\label{sub:statesGen}
 Si è appena visto che in un model checker si possono esprimere delle proprietà: ogni MC ha però anche un altro grado di libertà, che riguarda la generazione degli stati. Come creare il grafo degli stati? E con che ordine?
 
 \begin{figure*}[!htbp]
@@ -856,8 +856,23 @@ Secondo la definizione di regola di reazione, il redex viene sostituito dal reac
 
 Infine, creando delle regole di reazione che consentano il mantenimento delle proprietà, è possibile usare il \emph{Property Matcher} anche dopo l'esecuzione di varie regole: di conseguenza lo possiamo usare anche nel model checker $MC_{big}$.
 
+\subsection{$MC_{big}$}
+Si è voluto implementare il model checker $MC_{big}$ in maniera che fosse il più flessibile possibile. I suoi gradi di libertà sono principalmente il modo in cui si esprimono le proprietà e il modo in cui esso genera i nuovi nodi del grafo degli stati. Si è visto che il primo problema è stato risolto introducendo una logica spaziale; il secondo problema invece ha richiesto l'introduzione di una particolare classe chiamata \emph{simulazione}.
 
+Ogni simulazione usa una particolare strategia, scelta tra quelle della sottosezione \ref{sub:statesGen}, per generare i nuovi nodi. Per esempio, si ha che la simulazione della classe \emph{BreathFirstSim} usa la strategia \emph{Breath First}. Si è quindi lasciato all'utente il compito di scegliere in che modo i nuovi stati vengano generati, in quanto le prestazione del model checker dipendono molto da questa scelta.
 
+Per usare $MC_{big}$ occorre quindi scrivere una particolare proprietà e scegliere una \emph{simulazione} per la generazione dei nuovi stati. Un esempio di codice è riportato qui sotto:
+\begin{lstlisting}
+Predicate trueP = new TruePredicate();
+Predicate notP = new NotPredicate(trueP);
+Sim simulation = new BreadthFirstSim(bigraph, rules);
+ModelChecker mc = new ModelChecker(sim, trueP);
+\end{lstlisting}
+dove \emph{bigraph} è un dato bigrafo e $rules$ è un array di regole di reazione. Infine, per verificare la proprietà specificata basta la seguente istruzione:
+\begin{lstlisting}
+mc.modelCheck();
+\end{lstlisting}
+che ritorna True o False, a seconda che esista o meno un nodo del grafo degli stati che rispetti la proprietà.
 
 
 \section{Esempi}

@@ -16,9 +16,7 @@
  */
 package big.examples.car;
 
-import big.brs.RuleApplication;
 import big.mc.ModelChecker;
-import big.predicate.IsoPredicate;
 import big.predicate.Predicate;
 import big.predicate.TruePredicate;
 import big.predicate.WarioPredicate;
@@ -34,7 +32,6 @@ import it.uniud.mads.jlibbig.core.std.RewritingRule;
 import it.uniud.mads.jlibbig.core.std.Root;
 import it.uniud.mads.jlibbig.core.std.Signature;
 import it.uniud.mads.jlibbig.core.std.SignatureBuilder;
-import java.util.List;
 
 /**
  * Example class. We want to represent a car with a limited fuel supply, and a
@@ -49,38 +46,45 @@ public class Car {
     private static final RewritingRule[] RULES = {new RR_Move()};
 
     public static void main(String[] args) {
-        BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();       
+        BigPPrinterVeryPretty pprt = new BigPPrinterVeryPretty();
         Bigraph state = generateLevel(8);
         Sim sim = new TrueRandomSim(state, RULES);
-        Predicate p = new WarioPredicate(goalReached(), new TruePredicate(), 
+        Predicate p = new WarioPredicate(goalReached(), new TruePredicate(),
                 new TruePredicate(), new TruePredicate());
         ModelChecker mc = new ModelChecker(new BreadthFirstSim(state, RULES), p);
-        System.out.println(pprt.prettyPrint(state,"State 0"));
+        System.out.println(pprt.prettyPrint(state, "State 0"));
 
         /*int i = 1;
-        while(!sim.simOver()){
-            List<RuleApplication> ras = sim.stepAndGet();
-            if(ras.size()>0){
-                state = ras.get(0).getBig();
-                System.out.println("Applied "+ras.get(0).getRuleName());
-                System.out.println(pprt.prettyPrint(state,"State "+(i++)));
-            }else{
-                state = new BigraphBuilder(SIGNATURE).makeBigraph();
-            }
-        }*/
-        
+         while(!sim.simOver()){
+         List<RuleApplication> ras = sim.stepAndGet();
+         if(ras.size()>0){
+         state = ras.get(0).getBig();
+         System.out.println("Applied "+ras.get(0).getRuleName());
+         System.out.println(pprt.prettyPrint(state,"State "+(i++)));
+         }else{
+         state = new BigraphBuilder(SIGNATURE).makeBigraph();
+         }
+         }*/
         System.out.print("Is the destination reachable? ");
-        if(mc.modelCheck()){
+        if (mc.modelCheck()) {
             System.out.println("YES.");
-        }else{
+        } else {
             System.out.println("NO");
         }
-       // System.out.println(pprt.prettyPrint(mc.getGraph().getLastNodeUsed().getState(),"Last Node Computed"));
+        // System.out.println(pprt.prettyPrint(mc.getGraph().getLastNodeUsed().getState(),"Last Node Computed"));
     }
-    
-    private void modelCheckerTest(){
-        
-        
+
+    private void modelCheckerTest() {
+        Bigraph state = generateLevel(8);
+        Predicate p = new WarioPredicate(goalReached(), new TruePredicate(),
+                new TruePredicate(), new TruePredicate());
+        ModelChecker mc = new ModelChecker(new BreadthFirstSim(state, RULES), p);
+        System.out.print("Is the destination reachable? ");
+        if (mc.modelCheck()) {
+            System.out.println("YES.");
+        } else {
+            System.out.println("NO");
+        }
     }
 
     private static Signature generateSignature() {
@@ -95,7 +99,7 @@ public class Car {
         return sb.makeSignature("Car Signature");
     }
 
-    private static Bigraph generateLevel(int fuel) {
+    public static Bigraph generateLevel(int fuel) {
         BigraphBuilder bb = new BigraphBuilder(SIGNATURE);
 
         Root root = bb.addRoot();
@@ -125,30 +129,30 @@ public class Car {
         bb.addNode("road", p6, p8.getPort(0).getHandle());
         bb.addNode("road", p6, p5.getPort(0).getHandle());
         bb.addNode("road", p7, p2.getPort(0).getHandle());
-        
+
         Node target = bb.addNode("target", p7);
-        
+
         Node car = bb.addNode("car", p0, target.getPort(0).getHandle());
-        
+
         for (int i = 0; i < fuel; i++) {
             bb.addNode("fuel", car);
-        }        
+        }
 
         return bb.makeBigraph(true);
     }
-    
-    private static Bigraph goalReached(){
+
+    private static Bigraph goalReached() {
         BigraphBuilder bb = new BigraphBuilder(SIGNATURE);
 
         Root root = bb.addRoot();
-        
+
         OuterName from = bb.addOuterName("from");
         Node place = bb.addNode("place", root, from);
         bb.addSite(place);
         Node tgt = bb.addNode("target", place);
         Node car = bb.addNode("car", place, tgt.getPort(0).getHandle());
         bb.addSite(car);
-        
+
         return bb.makeBigraph(true);
     }
 }

@@ -1,0 +1,20 @@
+Car Signature {car:(1,a), road:(1,a), fuel:(0,a), place:(1,a), target:(1,a)} :: <0,{}> -> <1,{}>
+E_12:e <- {0@N_13:place, 0@N_1A:road, 0@N_1B:road}
+E_14:e <- {0@N_15:place, 0@N_18:road}
+E_16:e <- {0@N_17:place, 0@N_19:road}
+E_1C:e <- {0@N_1E:car, 0@N_1D:target}
+0 <- {N_13:place, N_15:place, N_17:place}
+N_13:place <- {N_1E:car, N_18:road}
+N_15:place <- {N_19:road, N_1A:road}
+N_17:place <- {N_1B:road, N_1D:target}
+N_1E:car <- {N_1F:fuel, N_20:fuel, N_21:fuel, N_22:fuel, N_23:fuel}
+N_18:road <- {}
+N_19:road <- {}
+N_1A:road <- {}
+N_1B:road <- {}
+N_1D:target <- {}
+N_1F:fuel <- {}
+N_20:fuel <- {}
+N_21:fuel <- {}
+N_22:fuel <- {}
+N_23:fuel <- {}

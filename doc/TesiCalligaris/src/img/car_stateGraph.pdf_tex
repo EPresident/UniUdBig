@@ -1,0 +1,123 @@
+%% Creator: Inkscape 0.91_64bit, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'car_stateGraph.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{571bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.86514886)%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.81926443){\makebox(0,0)[b]{\smash{64}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.66164621){\makebox(0,0)[b]{\smash{60}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{car_stateGraph.pdf}}%
+    \put(0.2778494,0.74045532){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=4]{car_stateGraph.pdf}}%
+    \put(0.41970579,0.74045532){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=5]{car_stateGraph.pdf}}%
+    \put(0.55981084,0.74045532){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{car_stateGraph.pdf}}%
+    \put(0.66664096,0.74045532){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=7]{car_stateGraph.pdf}}%
+    \put(0.78397897,0.74045532){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=8]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.504028){\makebox(0,0)[b]{\smash{56}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=9]{car_stateGraph.pdf}}%
+    \put(0.06593994,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=10]{car_stateGraph.pdf}}%
+    \put(0.20779686,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=11]{car_stateGraph.pdf}}%
+    \put(0.37942558,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=12]{car_stateGraph.pdf}}%
+    \put(0.49150961,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=13]{car_stateGraph.pdf}}%
+    \put(0.59483711,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=14]{car_stateGraph.pdf}}%
+    \put(0.70867249,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=15]{car_stateGraph.pdf}}%
+    \put(0.8277618,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=16]{car_stateGraph.pdf}}%
+    \put(0.94159718,0.58283711){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=17]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.34640981){\makebox(0,0)[b]{\smash{52}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=18]{car_stateGraph.pdf}}%
+    \put(0.20779686,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=19]{car_stateGraph.pdf}}%
+    \put(0.34965325,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=20]{car_stateGraph.pdf}}%
+    \put(0.49150961,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=21]{car_stateGraph.pdf}}%
+    \put(0.59483711,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=22]{car_stateGraph.pdf}}%
+    \put(0.70867249,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=23]{car_stateGraph.pdf}}%
+    \put(0.8277618,0.42521892){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=24]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.1887916){\makebox(0,0)[b]{\smash{48}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=25]{car_stateGraph.pdf}}%
+    \put(0.20779686,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=26]{car_stateGraph.pdf}}%
+    \put(0.34965325,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=27]{car_stateGraph.pdf}}%
+    \put(0.49150961,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=28]{car_stateGraph.pdf}}%
+    \put(0.59483711,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=29]{car_stateGraph.pdf}}%
+    \put(0.70867249,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=30]{car_stateGraph.pdf}}%
+    \put(0.8277618,0.26760071){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=31]{car_stateGraph.pdf}}%
+    \put(0.50873206,0.03117338){\makebox(0,0)[b]{\smash{44}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=32]{car_stateGraph.pdf}}%
+    \put(0.34965325,0.10998249){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=33]{car_stateGraph.pdf}}%
+    \put(0.49150961,0.10998249){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=34]{car_stateGraph.pdf}}%
+    \put(0.59483711,0.10998249){\makebox(0,0)[b]{\smash{RR_Move}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=35]{car_stateGraph.pdf}}%
+    \put(0.70867249,0.10998249){\makebox(0,0)[b]{\smash{RR_Move}}}%
+  \end{picture}%
+\endgroup%

@@ -1,0 +1,57 @@
+public class RR_Move extends RewritingRule {
+
+    private static final Bigraph redex = generateRedex(),
+            reactum = generateReactum();
+    private static final InstantiationMap map = new InstantiationMap(3, 0, 1, 2);
+    /* new InstantiationMap(numSitiReactum,[mappa siti reactum->siti redex])*/
+	
+    public RR_Move() {
+        super(redex, reactum, map);
+    }
+
+    private static Bigraph generateRedex() {
+        BigraphBuilder bb = new BigraphBuilder(Car.SIGNATURE);
+
+        Root root = bb.addRoot();
+
+        OuterName to1 = bb.addOuterName("to1");
+        // addNode(Controllo,Parent,[Link])
+        Node p1 = bb.addNode("place", root, to1); 
+        bb.addSite(p1);
+
+        OuterName to0 = bb.addOuterName("to0");
+        Node to0 = bb.addNode("place", root, to0);
+        Node road = bb.addNode("road", to0, to1);
+        bb.addSite(to0);
+
+        OuterName tgt = bb.addOuterName("target");
+        Node car = bb.addNode("car", to0, tgt);
+        bb.addNode("fuel", car);
+        bb.addSite(car);
+
+        return bb.makeBigraph(true);
+    }
+
+    private static Bigraph generateReactum() {
+
+        BigraphBuilder bb = new BigraphBuilder(Car.SIGNATURE);
+
+        Root root = bb.addRoot();
+		
+        OuterName to1 = bb.addOuterName("to1");
+        Node p1 = bb.addNode("place", root, to1); 
+        bb.addSite(p1);
+
+        OuterName to0 = bb.addOuterName("to0");
+        Node to0 = bb.addNode("place", root, to0);
+        Node road = bb.addNode("road", to0, to1);
+        bb.addSite(to0);
+
+        OuterName tgt = bb.addOuterName("target");
+        Node car = bb.addNode("car", to1, tgt);
+        bb.addSite(car);
+
+        return bb.makeBigraph(true);
+    }
+
+}

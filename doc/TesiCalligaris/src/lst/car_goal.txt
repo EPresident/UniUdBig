@@ -1,0 +1,14 @@
+    private static Bigraph goalReached() {
+        BigraphBuilder bb = new BigraphBuilder(SIGNATURE);
+
+        Root root = bb.addRoot();
+
+        OuterName to = bb.addOuterName("to");
+        Node place = bb.addNode("place", root, to);
+        bb.addSite(place);
+        Node tgt = bb.addNode("target", place);
+        Node car = bb.addNode("car", place, tgt.getPort(0).getHandle());
+        bb.addSite(car);
+
+        return bb.makeBigraph(true);
+    }

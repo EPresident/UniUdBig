@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \chapter{Casi di studio}\label{ch:examples}
 In questo capitolo vedremo degli esempi che riguarderanno principalmente il model checker $MC_{big}$ e la sua logica. Si cambierï¿½ spesso dominio, mostrando come i bigrafi siano flessibili per rappresentare vari tipi di sistema.
 
@@ -2206,3 +2207,2381 @@ Quest'ultimo esempio mostra particolarmente bene con i bigrafi ed i BRS siano fl
 
 
 
+=======
+\chapter{Casi di studio}\label{ch:examples}
+In questo capitolo vedremo degli esempi che riguarderanno principalmente il model checker $MC_{big}$ e la sua logica. Si cambierà spesso dominio, mostrando come i bigrafi siano flessibili per rappresentare vari tipi di sistema.
+
+\section{NFA}\label{sec:nfa}
+In questa sezione si propone una codifica in bigrafi degli NFA (\emph{non-deterministic finite automata}). Come noto, ogni automa A denota un linguaggio L(A). Vedremo come l'implementazione di un automa con i bigrafi consenta di avere una sorta di analizzatore lessicale il cui motore interno funziona tramite BRS. In questa sede, si è costruito un modulo che accetta dall'utente una stringa $x$ e restituisce True se $x \in L(A)$, altrimenti False.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (10,5);
+%State q0
+\draw[thick] (2.5,2.5) circle [radius=0.5];
+\draw[thick] (2.5,2.5) circle [radius=0.45];
+\node at (2.5,2.5){$q_0$};
+%State q1
+\draw[thick] (5.5,2.5) circle [radius=0.5];
+\node at (5.5,2.5){$q_1$};
+%Edges
+\draw[->,thick] (2.5,3.0) to [out=45,in=135] (5.5,3.03);%qo-q1   a
+\node at (4.0,4.0) {$a$};
+\draw[<-,thick] (2.85,2.12) to [out=-20,in=-160] (5.15,2.15); %q1-q0   a
+\node[above] at (4.0,2.0) {$a$};
+\draw[<-,thick] (2.5,1.97) to [out=-45,in=-135] (5.5,2.0); %q1-q0   b
+\node at (4.0,1.0) {$b$};
+\end{tikzpicture}
+\caption{Automa per il linguaggio $(a(a+b))^*$ \label{fig:automa1}}
+\end{figure}
+
+
+Prendiamo l'automa di figura \ref{fig:automa1}, che chiameremo A. Definiamolo formalmente:
+\begin{prop}
+L'automa A è una quintupla $(Q,\Sigma,\delta,q_0,F)$, dove:
+\begin{itemize}
+	\item
+	$Q=\{q_0,q_1\}$ è l'insieme finito di stati
+	\item
+	$\Sigma = \{a,b\}$ è l'alfabeto di input
+	\item
+	$\delta : Q \times \Sigma \to Q$ è la funzione di transizione definita come:
+		\begin{center}
+		$\delta(q_0,a)=\{q_1\}$\\
+		$\delta(q_1,a)=\{q_0\}$\\
+		$\delta(q_1,b)=\{q_0\}$
+		\end{center}
+	\item
+	$q_0$ è lo stato iniziale
+	\item
+	$F=\{q_0\}$ è l'insieme di stati finali
+\end{itemize}
+\end{prop}
+
+A riconosce il linguaggio $L(A) = (a(a+b))^*$. 
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,7);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,5.5);
+%Edges
+\node[above] at (6.5,5.5){a};
+\draw[myGreen,thick] (3.0,4.5) to [out=45,in=270] (6.5,5.5);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=135,in=270] (6.5,5.5);%q1-a-q0
+\node[above] at (11.5,5.5){b};
+\draw[myGreen,thick] (10.0,2.5) to [out=70,in=270] (11.5,5.5);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+\end{tikzpicture}
+\caption{Bigrafo per l'automa A \label{fig:bigAutomata1}}
+\end{figure}
+
+
+Trattiamo ora il problema di come rappresentare gli automi tramite i bigrafi. Per prima cosa, guardiamo la figura \ref{fig:bigAutomata1}. I due stati $q_0$ e $q_1$ sono stati modellati con dei rettangoli aventi una sola porta. Le transizioni sono i nodi di tipo T. Ogni stato $q_i$ contiene al suo interno tutte le transizioni che partono da esso: per esempio $q_0$ contiene solo un nodo T perché la sola transizione che parte da $q_0$ è $q_0\stackrel{a}{\longrightarrow} q_1$, mentre $q_1$ contiene due nodi T, che modellano le transizioni $q_1\stackrel{a}{\longrightarrow} q_0$ e $q_1\stackrel{b}{\longrightarrow} q_0$. 
+
+Ogni transizione è quindi modellata da un nodo di controllo T con due porte: la prima è collegata al carattere che fa scattare la transizione, mentre la seconda è collegata allo stato destinazione. Nella precedente figura, si prenda in considerazione il nodo T dentro $q_0$: esso simboleggia la transizione $q_0\stackrel{a}{\longrightarrow} q_1$ perché:
+\begin{itemize}
+	\item
+	T è dentro $q_0$
+	\item
+	la prima porta di T è collegata all'outername `a'
+	\item
+	la seconda porta di T è collegata a $q_1$
+\end{itemize}
+
+Lo stesso discorso vale per le altre transizioni. Si noti come l'alfabeto $\Sigma$ sia rappresentato tramite \emph{l'insieme degli outernames}.
+Il nodo $A$ (Active) indica che lo stato $q_i$ che lo contiene è quello attivo, ovvero: l'automa si trova nello stato $q_i$ se e solo se $q_i$ contiene il nodo $A$.
+Infine, lo stato $q_i$ è uno stato finale ($q_i \in F$) se e solo se contiene al suo interno il nodo di tipo $F$ (Final). Queste considerazioni ci portano a definire la segnatura del bigrafo:
+
+\begin{prop}[Segnature per gli NFA]
+La segnatura del bigrafo rappresentante un generico NFA è definita come segue, dove la notazione $Node:n:$ significa che il nodo $Node$ ha $n$ porte:
+\begin{itemize}
+	\item
+	State : 1 
+	\item
+	Transition : 2
+	\item
+	ActiveState : 0 
+	\item
+	FinalState : 0 
+	\item
+	String : 0 
+	\item
+	Input : 3 
+\end{itemize}
+\end{prop}
+
+
+Dalla segnatura di sopra si scopre che ci sono due nuovi controlli: \emph{String} e \emph{Input}. Il nodo di tipo \emph{String} è quello che dovrà contenere la stringa che l'utente immetterà per farla riconoscere dall'automa, mentre ogni nodo di tipo \emph{Input} è un carattere della stringa. 
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,7);
+% aLinks
+\draw[myGreen, thick] (1.5,2.0) to [out=90,in=270] (3.0,4.0);
+\draw[myGreen, thick] (5.5,2.0) to [out=140,in=270] (3.0,4.0);
+\draw[myGreen, thick] (7.5,2.0) to [out=140,in=270] (3.0,4.0);
+% bLinks
+\draw[myGreen, thick] (3.5,2.0) to [out=60,in=270] (6.0,4.0);
+% Links between nodes
+\draw[myGreen, thick] (0.3,1.5) to [out=20,in=200] (1.0,1.5);% null-a
+\draw[myGreen, thick] (2.0,1.5) -- (3.0,1.5);% a-b
+\draw[myGreen, thick] (4.0,1.5) -- (5.0,1.5);% b-a
+\draw[myGreen, thick] (6.0,1.5) -- (7.0,1.5);% a-a
+\draw[myGreen, thick] (8.0,1.5) to [out=20,in=200] (8.7,1.5);% a-null
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (9.5,3.5);
+%String
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (9.0,3.0);
+%Inputs
+\draw[thick] (1.5,1.5) circle [radius=0.5];%a
+\node at (1.5,1.5){I};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%b
+\node at (3.5,1.5){I};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%a
+\node at (5.5,1.5){I};
+\draw[thick] (7.5,1.5) circle [radius=0.5];%a
+\node at (7.5,1.5){I};
+% aPorts
+\draw[fill] (1.0,1.5) circle [radius=0.05];
+\draw[fill] (2.0,1.5) circle [radius=0.05];
+\draw[fill] (1.5,2.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (3.0,1.5) circle [radius=0.05];
+\draw[fill] (4.0,1.5) circle [radius=0.05];
+\draw[fill] (3.5,2.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (5.0,1.5) circle [radius=0.05];
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\draw[fill] (5.5,2.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,1.5) circle [radius=0.05];
+\draw[fill] (8.0,1.5) circle [radius=0.05];
+\draw[fill] (7.5,2.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (3.0,4.0){a};
+\node[above] at (6.0,4.0){b};
+\end{tikzpicture}
+\caption{Bigrafo per la stringa ``abaa" \label{fig:bigString1}}
+\end{figure}
+
+Si prenda in considerazione la figura \ref{fig:bigString1}: ogni nodo di tipo $Input$ ha tre porte, numerate da sinistra verso destra con 0, 1 e 2. La porta numero 0 è collegata al carattere precedente: per esempio, il primo carattere $a$ non è collegato a nessun altro nodo. La porta numero 2 è collegata al carattere successivo. Infine la porta numero 1 è collegata alla lettera (che è un outername) che il carattere simboleggia. Così facendo si crea una \emph{lista} di caratteri che forma la vera e propria stringa. Il nodo di tipo $String$ raggruppa tutti questi caratteri al suo interno. Il bigrafo di figura \ref{fig:bigString1} rappresenta dunque la stringa ``abaa". Nell'implementazione, si è costruito un modulo che accetta dall'utente una stringa e la trasforma nel bigrafo equivalente, secondo le regole appena citate.
+
+Ora che si è definito come modellare un NFA e una sua stringa, rappresentiamo una istanza del problema. In particolare, costruiamo il bigrafo che ha come NFA l'automa di figura \ref{fig:bigAutomata1} e come stringa di input il bigrafo di figura \ref{fig:bigString1}. Il risultato è il bigrafo di figura \ref{fig:bigAutomataProblem}.
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}[scale=0.7]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (3.5,8.0) to [out=90,in=270] (5.0,10.0);
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (2.3,7.5) to [out=20,in=200] (3.0,7.5);% null-a
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (3.5,7.5) circle [radius=0.5];%a
+\node at (3.5,7.5){I};
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (3.0,7.5) circle [radius=0.05];
+\draw[fill] (4.0,7.5) circle [radius=0.05];
+\draw[fill] (3.5,8.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+\caption{Istanza del problema: la stringa ``abaa" viene accettata dall'automa A? \label{fig:bigAutomataProblem}}
+\end{figure}
+
+
+
+
+Vediamo ora come il bigrafo si può evolvere. L'idea principale è di far ``consumare" al sistema un carattere alla volta. Si veda la regola della figura \ref{fig:reactionRuleAutomata} che rappresenta la regola di reazione $R_0$: se il primo carattere della stringa è la lettera $\sigma$ e se lo stato attivo possiede una transizione tramite la lettera $\sigma$, allora si elimina tale carattere dal bigrafo e si sposta il nodo \emph{Active} nello stato destinazione.
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,8);
+%%%   Redex   %%%
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (6.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (0.2,0.2) rectangle (3.0,4.0);
+\draw[fill] (1.0,4.0) circle [radius=0.05]; % 1 port
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (0.5,0.5) rectangle (1.0,1.0);
+\node at (0.75,0.75){0};
+%Active
+\draw[thick] (2.0,1.0) circle [radius=0.5];
+\node at (2.0,1.0){A};
+%Transition
+\draw[thick] (2.0,3.0) circle [radius=0.5];
+\node at (2.0,3.0){T};
+\draw[fill] (2.0,3.5) circle [radius=0.05]; % 1 port
+\draw[fill] (2.5,3.0) circle [radius=0.05]; % 2 port
+%String
+\draw[rounded corners=2mm, thick] (2.0,4.3) rectangle (5.0,5.8);
+%Site 2
+\draw[rounded corners=1mm, fill=myGrey, dashed] (4.4,4.4) rectangle (4.9,4.9);
+\node at (4.6,4.6){2};
+%Input
+\draw[thick] (3.5,5.0) circle [radius=0.5];
+\draw[fill] (3.0,5.0) circle [radius=0.05]; % 1 port
+\draw[fill] (3.5,5.5) circle [radius=0.05]; % 2 port
+\draw[fill] (4.0,5.0) circle [radius=0.05]; % 3 port
+\node at (3.5,5.0){I};
+%State s1
+\draw[rounded corners=5mm,thick] (3.2,0.2) rectangle (5.8,4.0);
+\draw[fill] (5.0,4.0) circle [radius=0.05]; % 1 port
+%Site 1
+\draw[rounded corners=1mm, fill=myGrey, dashed] (3.5,0.5) rectangle (4.0,1.0);
+\node at (3.75,0.75){1};
+%Outers
+\node[above] at (1.0,6.5){x};
+\node[above] at (2.0,6.5){$\sigma$};
+\node[above] at (4.0,6.5){y};
+\node[above] at (5.5,6.5){z};
+%Links
+\draw[myGreen,thick] (1.0,4.0) to [out=110,in=250] (1.0,6.5);%s0-x
+\draw[myGreen,thick] (2.0,3.5) to [out=110,in=250] (2.0,6.5);%t-sigma
+\draw[myGreen,thick] (3.5,5.5) to [out=180,in=270] (1.8,5.8);%i-sigma
+\draw[myGreen,thick] (2.3,5.0) to [out=20,in=200] (3.0,5.0);%null-i
+\draw[myGreen,thick] (4.0,5.0) to [out=20,in=270] (4.0,6.5);%i-y
+\draw[myGreen,thick] (2.5,3.0) to [out=0,in=290] (5.6,5.1);%t-z
+\draw[myGreen,thick] (5.0,4.0) to [out=50,in=290] (5.5,6.5);%s1-z
+
+
+\draw[->, very thick, red] (6.2,3.0) -- (7.8,3.0);
+
+
+%%%   Reactum   %%%
+%Root
+\draw[rounded corners=5mm, dashed] (8.0,0.0) rectangle (14.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (8.2,0.2) rectangle (11.0,4.0);
+\draw[fill] (9.0,4.0) circle [radius=0.05]; % 1 port
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (8.5,0.5) rectangle (9.0,1.0);
+\node at (8.75,0.75){0};
+%State s1
+\draw[rounded corners=5mm,thick] (11.2,0.2) rectangle (13.8,4.0);
+\draw[fill] (13.0,4.0) circle [radius=0.05]; % 1 port
+%Site 1
+\draw[rounded corners=1mm, fill=myGrey, dashed] (11.5,0.5) rectangle (12.0,1.0);
+\node at (11.75,0.75){1};
+%Outers
+\node[above] at (9.0,6.5){x};
+\node[above] at (10.0,6.5){$\sigma$};
+\node[above] at (12.0,6.5){y};
+\node[above] at (13.5,6.5){z};
+%Transition
+\draw[thick] (10.0,3.0) circle [radius=0.5];
+\node at (10.0,3.0){T};
+\draw[fill] (10.0,3.5) circle [radius=0.05]; % 1 port
+\draw[fill] (10.5,3.0) circle [radius=0.05]; % 2 port
+%Active
+\draw[thick] (13.0,1.0) circle [radius=0.5];
+\node at (13.0,1.0){A};
+%String
+\draw[rounded corners=2mm, thick] (10.0,4.3) rectangle (13.0,5.8);
+%Site 2
+\draw[rounded corners=1mm, fill=myGrey, dashed] (12.4,4.4) rectangle (12.9,4.9);
+\node at (12.6,4.6){2};
+%Links
+\draw[myGreen,thick] (9.0,4.0) to [out=110,in=250] (9.0,6.5);%s0-x
+\draw[myGreen,thick] (10.0,3.5) to [out=110,in=250] (10.0,6.5);%t-sigma
+\draw[myGreen,thick] (10.5,3.0) to [out=0,in=290] (13.5,4.835);%t-z
+\draw[myGreen,thick] (13.0,4.0) to [out=50,in=290] (13.5,6.5);%s1-z
+
+\end{tikzpicture}
+\caption{Regola di reazione $R_0$ \label{fig:reactionRuleAutomata}}
+\end{figure}
+
+
+La regola $R_0$ è molto intuitiva: se per esempio prendiamo in considerazione il bigrafo di figura \ref{fig:bigAutomataProblem}, allora applicando la regola si ha che il primo carattere ($a$) viene eliminato ed il nodo $A$ passa dentro lo stato $q_1$. 
+Quindi il BRS per questo problema è definito da una sola regola ($R_0$), che itera finchè trova un match nel bigrafo, cioè si ferma solo quando il nodo di tipo $String$ \textbf{non} contiene più nessun nodo $Input$.
+
+Ora che abbiamo creato il BRS, è possibile usare il model checker $MC_{big}$ definendo la formula che esso andrà a verificare. Nella teoria degli automi, vale la seguente preposizione:
+
+\begin{prop}
+Una stringa x viene accettata se e solo se alla fine di essa l'automa si trova in uno stato finale.
+\end{prop}
+
+Nella nostra segnatura, tutti gli stati finali ($q_F \in F$) vengono distinti tramite un nodo $F$ all'interno di essi: essendo passivi, nessuna regola di reazione può modificarli. Per cui la proprietà da verificare sarà la seguente: ``Il nodo di tipo $String$ non deve contenere nessun altro nodo e il nodo $A$ e il nodo $F$ si devono trovare dentro lo stesso stato $S$". Nella logica di $MC_{big}$, questo si traduce nella formula:
+\begin{center}
+$\varphi = \wario_B(T,T,T)$
+\end{center}
+dove B è il bigrafo di figura \ref{fig:bigAimNFA}.
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (6.0,6.0);
+%State s0
+\draw[rounded corners=5mm,thick] (0.2,0.2) rectangle (3.0,4.0);
+\draw[fill] (1.0,4.0) circle [radius=0.05]; % 1 port
+\node at (3.5,0.5){State};
+%Site 0
+\draw[rounded corners=1mm, fill=myGrey, dashed] (0.5,0.5) rectangle (1.0,1.0);
+\node at (0.75,0.75){0};
+%Active
+\draw[thick] (2.0,1.0) circle [radius=0.5];
+\node at (2.0,1.0){A};
+%Final
+\draw[thick] (2.0,3.0) circle [radius=0.5];
+\node at (2.0,3.0){F};
+%String
+\draw[rounded corners=2mm, thick] (2.0,4.3) rectangle (5.0,5.8);
+\node at (5.0,4.0){String};
+%Links
+\draw[myGreen,thick] (1.0,4.0) to [out=110,in=250] (1.0,6.5);%s0-x
+\node[above] at (1.0,6.5){x};
+\end{tikzpicture}
+\caption{Bigrafo B \label{fig:bigAimNFA}}
+\end{figure}
+
+
+Si noti la semplicità di quest'ultima formula: il nodo di tipo $String$ deve essere vuoto, il che significa che tutti i caratteri sono stati ``consumati" dall'automa. Inoltre, il nodo attivo e il nodo finale si devono trovare nello stesso stato, assicurando che l'automa dopo aver letto tutta la stringa è finito in uno stato finale. Quindi possiamo affermare che:
+\begin{prop}\label{prop:strWario}
+Una stringa x viene accettata dall'automa A se e solo se \\$MC,S_i \models \varphi$ per qualche $i$, dove $\varphi = \wario_B(T,T,T)$.
+\end{prop}
+
+Infine, si noti come l'automa modellato tramite bigrafi sia \emph{non deterministico}: le transizioni sono modellate tramite regole di reazione che scattano dopo aver trovato un match. Il processo di matching però è per natura non deterministico, il che vuol dire che se nel bigrafo di partenza la regola $R_0$ trova più di un match, allora sceglie uno dei due in maniera non deterministica. Si prenda il bigrafo di figura \ref{fig:bigAutomataProblem}: se si aggiunge nel nodo $q_0$ un'altra transizione collegata all'outername `a' che porta ad un terzo stato $q_2$, allora l'automa diventa non deterministico, perché la regola $R_0$ troverà sempre due match nel bigrafo e ne sceglierà uno in maniera casuale.
+Riassumendo: nella versione bigrafica, gli automi non deterministici si distinguono da quelli deterministici \emph{solamente} perché nei primi esiste almeno un nodo che ha due o più archi uscenti con la stessa etichetta.\\
+
+
+Prendiamo l'istanza del problema in figura \ref{fig:bigAutomataProblem}. Seguiremo una traccia d'esecuzione, cioè faremo tutti i passi che fa $MC_{big}$ per verificare la proprietà desiderata. Vedremo come il grafo degli stati sarà molto semplice: questo spesso è un indice di buona progettazione. Vuol dire che il sistema è stato modellato correttamente, scegliendo poche regole ed evitando di costruire regole ad-hoc per casi particolari. Il nostro BRS è formato da una sola regola, il che evita per esempio che in uno stato $S_i$ venga applicata la regola sbagliata creando nodi inutili nel grafo degli stati.
+
+In figura \ref{fig:MCbigTrace}, c'è la traccia d'esecuzione di $MC_{big}$, mentre in \ref{fig:BSGAutomata} c'è il corrispondente grafo degli stati. \\
+
+
+\begin{figure*}[h]
+\centering
+\scalebox{.7}{
+\subfigure[Primo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (3.5,8.0) to [out=90,in=270] (5.0,10.0);
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (2.3,7.5) to [out=20,in=200] (3.0,7.5);% null-a
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (3.5,7.5) circle [radius=0.5];%a
+\node at (3.5,7.5){I};
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (3.0,7.5) circle [radius=0.05];
+\draw[fill] (4.0,7.5) circle [radius=0.05];
+\draw[fill] (3.5,8.0) circle [radius=0.05];
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+
+\hspace{3mm}
+
+\subfigure[Secondo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% bLinks
+\draw[myGreen, thick] (5.5,8.0) to [out=60,in=270] (8.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (4.0,7.5) -- (5.0,7.5);% a-b
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (12.0,1.5) circle [radius=0.5];
+\node at (12.0,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (5.5,7.5) circle [radius=0.5];%b
+\node at (5.5,7.5){I};
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% bPorts
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+\draw[fill] (6.0,7.5) circle [radius=0.05];
+\draw[fill] (5.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+}
+\end{figure*}
+
+
+\begin{figure*}[h]
+\centering
+\scalebox{.7}{
+\subfigure[Terzo Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (7.5,8.0) to [out=140,in=270] (5.0,10.0);
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (6.0,7.5) -- (7.0,7.5);% b-a
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (7.5,7.5) circle [radius=0.5];%a
+\node at (7.5,7.5){I};
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (7.0,7.5) circle [radius=0.05];
+\draw[fill] (8.0,7.5) circle [radius=0.05];
+\draw[fill] (7.5,8.0) circle [radius=0.05];
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+
+\hspace{5mm}
+
+\subfigure[Quarto Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+% aLinks
+\draw[myGreen, thick] (9.5,8.0) to [out=140,in=270] (5.0,10.0);
+% Links between nodes
+\draw[myGreen, thick] (8.0,7.5) -- (9.0,7.5);% a-a
+\draw[myGreen, thick] (10.0,7.5) to [out=20,in=200] (10.7,7.5);% a-null
+
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (12.0,1.5) circle [radius=0.5];
+\node at (12.0,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Inputs
+\draw[thick] (9.5,7.5) circle [radius=0.5];%a
+\node at (9.5,7.5){I};
+% aPorts
+\draw[fill] (9.0,7.5) circle [radius=0.05];
+\draw[fill] (10.0,7.5) circle [radius=0.05];
+\draw[fill] (9.5,8.0) circle [radius=0.05];
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+}
+\end{figure*}
+
+\begin{figure*}[h]
+\centering
+\scalebox{.7}{
+\subfigure[Quinto Passo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (14,14);
+%Root
+\draw[rounded corners=5mm, dashed] (-0.5,-0.5) rectangle (13.5,9.5);
+%Edges
+\draw[myGreen,thick] (3.0,4.5) to [out=90,in=270] (1.0,7.0) to [out=90,in=220] (5.0,10.0);%q0-a-q1
+\draw[myGreen,thick] (10.0,4.5) to [out=130,in=-20] (2.375,5.5);%q1-a-q0
+\draw[myGreen,thick] (10.0,2.5) to [out=30,in=270] (13.0,6.0) to [out=90,in=270] (8.0,10.0);%q1-b-q0
+
+\draw[myGreen,thick] (3.5,4.0) to [out=10,in=190] (8.0,4.0);%t0a - s1
+\draw[myGreen,thick] (9.5,4.0) to [out=180,in=0] (5.0,2.5);%t1a-s0
+\draw[myGreen,thick] (9.5,2.0) to [out=180,in=0] (5.0,2.5);%t1b-s0
+
+%First State
+\draw[rounded corners=5mm, thick] (0.0,0.0) rectangle (5.0,5.0);%s0
+\node[above] at (0.5,5.0){$q_0$};
+\draw[fill] (5.0,2.5) circle [radius=0.05];
+%\node[left] at (5.0,2.5){0};
+%Active
+\draw[thick] (1.5,1.5) circle [radius=0.5];
+\node at (1.5,1.5){A};
+%Final
+\draw[thick] (3.5,1.5) circle [radius=0.5];
+\node at (3.5,1.5){F};
+%transition q0-a-q1
+\draw[thick] (3.0,4.0) circle [radius=0.5];
+\node at (3.0,4.0){T};
+%\draw[fill] (3.5,4.0) circle [radius=0.05]; \node[below right] at (3.5,4.0){1};
+%\draw[fill] (3.0,4.5) circle [radius=0.05]; \node[above left] at (3.0,4.5){0};
+
+
+%Second State
+\draw[rounded corners=5mm, thick] (8.0,0.0) rectangle (13.0,5.0);%s1
+\node[above] at (12.5,5.0){$q_1$};
+\draw[fill] (8.0,4.0) circle [radius=0.05];
+%\node[right] at (8.0,4.0){0};
+%transition q1-a-q0
+\draw[thick] (10.0,4.0) circle [radius=0.5];
+\node at (10.0,4.0){T};
+%\draw[fill] (9.5,4.0) circle [radius=0.05];  \node[above left] at (9.5,4.0){1};
+%\draw[fill] (10.0,4.5) circle [radius=0.05];  \node[above right] at (10.0,4.5){0};
+%transition q1-b-q0
+\draw[thick] (10.0,2.0) circle [radius=0.5];
+\node at (10.0,2.0){T};
+%\draw[fill] (9.5,2.0) circle [radius=0.05];  \node[above left] at (9.5,2.0){1};
+%\draw[fill] (10.0,2.5) circle [radius=0.05];  \node[above left] at (10.0,2.5){0};
+
+
+%%%    String   %%%
+%String
+\draw[rounded corners=5mm, thick] (2.0,6.0) rectangle (11.0,9.0);
+%Alphabet
+\node[above] at (5.0,10.0){a};
+\node[above] at (8.0,10.0){b};
+\end{tikzpicture}
+}
+}
+\caption{Traccia d'esecuzione di $MC_{big}$ \label{fig:MCbigTrace}}
+\end{figure*}
+
+
+
+
+Si noti come l'ultimo stato $S_4$ soddisfi la formula $\varphi$:  il Wario Predicate \\$\wario_B(T,T,T)$ è soddisfatto dallo stato $S_4$, in formule $MC,S_4 \models \wario_B(T,T,T)$, perché il model checker trova in $S_4$ un match del bigrafo B. Poichè tutti gli argomenti del Wario Predicate sono True, basta che questo match esista perché il predicato sia soddisfatto. Quindi, la proposizione \ref{prop:strWario} è rispettata.
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,5);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=0.5];%s0
+\node at (1.5,1.5){$S_0$};
+\draw[thick] (3.5,1.5) circle [radius=0.5];%s1
+\node at (3.5,1.5){$S_1$};
+\draw[thick] (5.5,1.5) circle [radius=0.5];%s2
+\node at (5.5,1.5){$S_2$};
+\draw[thick] (7.5,1.5) circle [radius=0.5];%s3
+\node at (7.5,1.5){$S_3$};
+\draw[thick, red] (9.5,1.5) circle [radius=0.5];%s4
+\node[red] at (9.5,1.5){$S_4$};
+%Edges
+\draw[->, thick] (2.0,1.5) -- (3.0,1.5);%s0-s1
+\draw[->, thick] (4.0,1.5) -- (5.0,1.5);%s1-s2
+\draw[->, thick] (6.0,1.5) -- (7.0,1.5);%s2-s3
+\draw[->, thick] (8.0,1.5) -- (9.0,1.5);%s3-s4
+\end{tikzpicture}
+
+\caption{Grafo degli stati \label{fig:BSGAutomata}}
+\end{figure}
+
+
+\subsection{Implementazione}
+Si è costruito un modulo che accetta dall'utente una stringa e costruisce il rispettivo bigrafo. Se vogliamo sapere se una data stringa è riconosciuta dal \emph{NFA}, basta innanzitutto estendere la classe \emph{NFA} costruendo il proprio automa, e in seguito inserire una stringa appena il sistema lo chiede. Ora la stringa verrà processata e trasformata in bigrafo. Per esempio, se vogliamo risolvere il problema di figura \ref{fig:bigAutomataProblem}, allora dobbiamo estendere la classe $NFA$ costruendo il bigrafo di figura \ref{fig:bigAutomata1} ed infine inserire la stringa ``abaa":
+\begin{lstlisting}
+Insert the string: 
+abaa
+Does this NFA recognize the string "abaa"?	YES
+\end{lstlisting}
+Appena inseriamo la stringa, il software crea il bigrafo rappresentante l'$NFA$ che abbiamo precedentemente costruito, il quale è affiancato ad un altro bigrafo che contiene la stringa, proprio come in figura \ref{fig:bigAutomataProblem}. In questo caso, l'automa riconosce correttamente la parola. Se invece scegliamo una stringa che non appartiene al suo linguaggio, allora il sistema non la riconosce:
+\begin{lstlisting}
+Insert the string: 
+aaba
+Does this NFA recognize the string "aaba"?	NO
+\end{lstlisting}
+
+
+
+
+Questo esempio è molto importante perché mostra due aspetti fondamentali:
+\begin{itemize}
+	\item
+	il primo è la flessibilità dei bigrafi: tramite una sola regola di reazione si è riusciti a modellare un NFA. Inoltre, si presti attenzione al grafo degli stati: è molto semplice e lineare. Come già scritto, questo è un indizio di buona progettazione, perché significa che abbiamo creato una sola regola per tutti i casi possibili. Se avessimo creato una regola per casi particolari, allora ci sarebbero state diramazioni del grafo che avrebbero portato a vicoli ciechi, cioè rami in cui la foglia non rispetta la proprietà $\varphi$.
+	\item
+	il secondo è la generalità della logica per $MC_{big}$: si è espressa una proprietà di uno specifico dominio usando la logica generale creata per il model checker. In questo esempio si è usato il Wario Predicate, che permette di spostarsi all'interno del bigrafo e di verificare se una sua parte esiste e rispetta determinate proprietà. Nel NFA ci è bastato verificare che esistesse la parte denotata dal bigrafo B.
+\end{itemize}
+
+In questo esempio si è potuto apprezzare la comodità del model checker e della sua logica per verificare una generica proprietà, che rappresentano quindi uno strumento generale adatto per ogni BRS.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Problema dei filosofi a cena}
+In questa sezione si fornisce una codifica in bigrafi del problema dei filosofi a cena, introdotto da Dijkstra nel 1965 per esporre un problema di concorrenza tra processi paralleli.
+
+\begin{define}[Filosofi a cena]
+Cinque filosofi sono seduti a cena ad una tavola rotonda. Ogni filosofo ha davanti il piatto in cui mangiare e due forchette, una a destra e l'altra a sinistra: per cui nel tavolo sono presenti cinque filosofi, cinque piatti e cinque forchette. Ogni filosofo alterna periodi in cui mangia ad altri in cui pensa. Per mangiare, ha bisogno di entrambe le forchette, ma deve prenderle una per volta. Quando ha finito di mangiare, lascia le forchette e continua a pensare.
+
+Si progetti un algoritmo che eviti \emph{deadlock} o \emph{starvation}.
+\end{define}
+
+Il problema chiede di progettare un algoritmo che eviti queste due situazioni:
+\begin{itemize}
+	\item
+	ogni filosofo ha una forchetta e aspetta l'altra dal suo vicino: la situazione si trova in uno stato di stallo (\emph{deadlock})
+	\item
+	una parte di filosofi riesce a mangiare e pensare ripetute volte, a discapito di un'altra parte che non riesce mai a mangiare perché non ha mai due forchette, morendo di inedia (\emph{starvation}).
+\end{itemize}
+
+Il problema è una metafora, dove i filosofi sono processi paralleli in un calcolatore: il momento in cui devono prendere le forchette corrisponde alla lettura dei dati, che possono per l'appunto essere condivisi tra più processi come le forchette; il momento in cui un filosofo mangia corrisponde al momento in cui un processo consuma i dati che ha appena recuperato. Si vedranno due strategie: la prima causerà una situazione di deadlock, mentre la seconda lo eviterà e sarà una soluzione al problema.
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,6.0) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,4.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (4.0,5.0) -- (4.5,5.0) -- (4.25,5.8) -- (4.0,5.0);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (8.0,5.0) -- (8.5,5.0) -- (8.25,5.8) -- (8.0,5.0);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (8.25,5.7) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (8.25,5.7) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (4.25,5.7) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (4.25,5.7) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Codifica in bigrafi di un'istanza del problema \label{fig:diningPhil}}
+\end{figure}
+
+
+
+Per prima cosa, si definirà come il problema può essere tradotto in bigrafi. Si consideri la figura \ref{fig:diningPhil}: ogni filosofo è rappresentato da un nodo circolare con due porte; si immagini che ogni filosofo sia rivolto verso il centro del tavolo: si ha che la porta a sinistra \emph{dal punto di vista del filosofo} rappresenta la mano sinistra e la chiameremo \emph{porta 0}, mentre la porta a destra rappresenta la mano destra (\emph{porta 1}). Per esempio: la mano sinistra le filosofo $P_1$ è quella collegata a $F_1$, mentre la mano destra è quella collegata a $F_2$.
+
+Le forchette sono rappresentate come nodi triangolari e sono identificate tramite un outername, per esempio $F_4$. Modelliamo il fatto che la forchetta sinistra di un filosofo sia $F_i$ collegando la sua porta 0 all'outername $F_i$. Per esempio: il filosofo $P_4$ ha come forchetta sinistra $F_4$ perché la sua porta 0 è collegata a questo outername, mentre come forchetta destra $F_5$ perché la sua porta 1 punta a $F_5$.
+
+Inizialmente tutte le forchette sono posizionate sul tavolo. Modelliamo il fatto che un filosofo $P_i$ abbiamo preso la forchetta $F_k$ spostando quest'ultima all'interno di $P_i$.
+
+\subsection{Prima strategia}
+Tramite la prima strategia, che causerà situazioni di stallo, vogliamo fare vedere come il model checker $MC_{big}$ riesca ad individuare un deadlock. Essa prevede che ogni filosofo, per riuscire a mangiare, debba prendere prima la forchetta sinistra e poi quella destra, e le rimetta in ordine sul tavolo (prima la sinistra e poi la destra). Questa strategia causa un deadlock perché $P_i$ prende prima la forchetta $F_i$ per $i \in \{1,2,3,4,5\}$, e quindi ogni filosofo $P_i$ aspetta che $P_{i+1}$ liberi la forchetta causando uno stallo.
+
+
+\begin{figure}[th]
+\centering
+\subfigure[Prima Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (2.7,1.5) circle [radius=0.8];%Phil
+\draw[rounded corners=1mm, thick] (0.8,0.5) -- (1.2,0.5) -- (1.0,1.3) -- (0.8,0.5);%Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (1.9,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (3.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.2) to [out=90,in=270] (1.0,3.2);
+\draw[fill] (1.9,1.5) circle [radius=0.05];
+\draw[fill] (3.5,1.5) circle [radius=0.05];
+\draw[fill] (1.0,1.2) circle [radius=0.05];
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (7.7,1.5) circle [radius=0.8];%Phil
+\draw[rounded corners=1mm, thick] (7.6,1.0) -- (8.0,1.0) -- (7.8,1.8) -- (7.6,1.0);%Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (6.9,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (7.8,1.7) to [out=90,in=270] (6.0,3.2);
+\draw[fill] (6.9,1.5) circle [radius=0.05];
+\draw[fill] (8.5,1.5) circle [radius=0.05];
+\draw[fill] (7.8,1.7) circle [radius=0.05];
+
+\end{tikzpicture}
+}
+
+\hspace{3mm}
+
+\subfigure[Seconda Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (0.8,1.0) -- (1.2,1.0) -- (1.0,1.8) -- (0.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (3.0,0.2) -- (3.4,0.2) -- (3.2,1.0) -- (3.0,0.2);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.7) to [out=90,in=270] (1.0,3.2);
+\draw[myGreen,thick] (3.2,0.9) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (1.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (3.2,0.9) circle [radius=0.05];%outer fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (6.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (5.8,1.0) -- (6.2,1.0) -- (6.0,1.8) -- (5.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (6.8,1.0) -- (7.2,1.0) -- (7.0,1.8) -- (6.8,1.0);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (5.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (6.0,1.7) to [out=90,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.0,1.7) to [out=90,in=270] (8.5,3.2);
+\draw[fill] (5.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (7.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (6.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (7.0,1.7) circle [radius=0.05];%inner right fork
+
+\end{tikzpicture}
+}
+\caption{Regole per prendere le forchette \label{fig:takeFork}}
+\end{figure}
+
+
+
+In figura \ref{fig:takeFork}, ci sono le regole che consentono ad un filosofo di prendere le forchette. Si noti come si debba prendere prima la forchetta sinistra e poi la destra: la seconda regola infatti scatta se e solo se il filosofo possiede già la forchetta sinistra, che a sua volta ha potuto prendere se e solo se non possedeva ancora nessuna forchetta (nella regola \ref{fig:takeFork}.a non c'è nessun sito dentro il nodo del filosofo).
+
+
+
+
+
+\begin{figure}[th]
+\centering
+\subfigure[Prima Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (0.8,1.0) -- (1.2,1.0) -- (1.0,1.8) -- (0.8,1.0);%Right Fork
+\draw[rounded corners=1mm, thick] (1.8,1.0) -- (2.2,1.0) -- (2.0,1.8) -- (1.8,1.0);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (1.0,1.7) to [out=90,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.0,1.7) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (1.0,1.7) circle [radius=0.05];%inner fork
+\draw[fill] (2.0,1.7) circle [radius=0.05];%inner right fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (7.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (5.8,0.2) -- (6.2,0.2) -- (6.0,1.0) -- (5.8,0.2);%Right Fork
+\draw[rounded corners=1mm, thick] (7.8,1.0) -- (8.2,1.0) -- (8.0,1.8) -- (7.8,1.0);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (6.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (6.0,0.9) to [out=110,in=270] (6.0,3.2);
+\draw[myGreen,thick] (8.0,1.7) to [out=90,in=270] (8.5,3.2);
+\draw[fill] (6.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (8.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (6.0,0.9) circle [radius=0.05];%outer fork
+\draw[fill] (8.0,1.7) circle [radius=0.05];%inner fork
+\end{tikzpicture}
+}
+
+\hspace{3mm}
+
+\subfigure[Seconda Regola]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,6);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (4.0,3.0);
+%Nodes
+\draw[thick] (1.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (1.8,1.0) -- (2.2,1.0) -- (2.0,1.8) -- (1.8,1.0);%Left Fork
+%Outers
+\node[above] at (1.0,3.2){LF};
+\node[above] at (3.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (0.5,1.5) to [out=180,in=270] (1.0,3.2);
+\draw[myGreen,thick] (2.5,1.5) to [out=0,in=270] (3.5,3.2);
+\draw[myGreen,thick] (2.0,1.7) to [out=90,in=270] (3.5,3.2);
+\draw[fill] (0.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (2.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (2.0,1.7) circle [radius=0.05];%inner right fork
+
+\draw[->, red, thick] (4.1,1.5) -- (4.9,1.5);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (5.0,0.0) rectangle (9.0,3.0);
+%Nodes
+\draw[thick] (6.5,1.5) circle [radius=1.0];%Phil
+\draw[rounded corners=1mm, thick] (7.8,0.2) -- (8.2,0.2) -- (8.0,1.0) -- (7.8,0.2);%Left Fork
+%Outers
+\node[above] at (6.0,3.2){LF};
+\node[above] at (8.5,3.2){RF};
+%Link
+\draw[myGreen,thick] (5.5,1.5) to [out=180,in=270] (6.0,3.2);
+\draw[myGreen,thick] (7.5,1.5) to [out=0,in=270] (8.5,3.2);
+\draw[myGreen,thick] (8.0,0.9) to [out=60,in=270] (8.5,3.2);
+\draw[fill] (5.5,1.5) circle [radius=0.05];%left port
+\draw[fill] (7.5,1.5) circle [radius=0.05];%right port
+\draw[fill] (8.0,0.9) circle [radius=0.05];%inner right fork
+
+\end{tikzpicture}
+}
+\caption{Regole per lasciare le forchette \label{fig:dropFork}}
+\end{figure}
+
+
+
+Le regole per lasciare le forchette sono similari: quando un filosofo ha entrambe le forchette significa che ha mangiato e, grazie alla regola \ref{fig:dropFork}.a, lascia prima la forchetta a sinistra, come vuole la nostra strategia. Infine, tramite \ref{fig:dropFork}.b, lascia la forchetta destra.
+
+Queste quattro regole andranno a formare il BRS per il nostro problema. Si noti come un BRS di questo tipo sia particolarmente adatto per il problema della cena tra filosofi: quest'ultimo è infatti un problema di sincronizzazione tra processi paralleli che viene modellato perfettamente dalle regole non deterministiche del BRS. Ogni filosofo decide autonomamente quando incominciare a mangiare: per cui può essere che incominci il terzo filosofo così come il primo. Questa è la stessa situazione in cui operano le regole: per esempio, in figura \ref{fig:diningPhil} la regola \ref{fig:takeFork}.a trova cinque match e ne sceglie in modo non deterministico uno solo. In altre parole, il BRS modella bene il caso reale in cui i processi decidono di leggere dati autonomamente, senza che ci sia alcun ordine tra di loro.
+
+Ora si userà $MC_{big}$ per capire se con questa strategia c'è pericolo di deadlock. In questo caso, la proprietà da fare verificare al model checker è una disgiunzione tra due  \emph{IsoProperty}:
+\begin{center}
+$\varphi =  \pi_G \lor \pi_{G'}$
+\end{center}
+dove $G$ è il bigrafo di figura \ref{fig:diningAim1} e $G'$ quello di figura \ref{fig:diningAim2}. Nel primo, ogni filosofo $P_i$ contiene solamente la forchetta $F_i$, mentre nel secondo ogni filosofo $P_i$ contiene solamente $F_{i+1}$.
+
+Dato che la grammatica di $MC_{big}$ non contiene il simbolo $\lor$ per la disgiunzione, si è usata l'equivalenza di De Morgan, avendo quindi che:
+\begin{center}
+$\varphi =  \pi_G \lor \pi_{G'} = \lnot(\lnot \pi_G \land \lnot \pi_{G'})$
+\end{center}
+Infatti, nell'implementazione le righe corrispondenti alla creazione di questa proprietà sono queste riportate di seguito:
+\begin{lstlisting}
+Predicate p1 = new IsoPredicate(getAim1(n));
+Predicate p2 = new IsoPredicate(getAim2(n));
+Predicate notP1 = new NotPredicate(p1);
+Predicate notP2 = new NotPredicate(p2);
+Predicate andNP1NP2 = new AndPredicate(notP1,notP2);
+Predicate prop = new NotPredicate(andNP1NP2);
+\end{lstlisting}
+da cui si vede bene come si sia usata la legge di De Morgan.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[scale=0.88]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,5.25) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,3.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,0.25) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,0.25) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,3.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (3.8,0.8) -- (4.2,0.8) -- (4.0,1.4) -- (3.8,0.8);%F3
+\draw[rounded corners=1mm, thick] (7.8,0.8) -- (8.2,0.8) -- (8.0,1.4) -- (7.8,0.8);%F4
+\draw[rounded corners=1mm, thick] (8.8,3.8) -- (9.2,3.8) -- (9.0,4.4) -- (8.8,3.8);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.3) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.3) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (4.0,1.3) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (4.0,1.3) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (8.0,1.3) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (8.0,1.3) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (9.0,4.3) to [out=40,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (9.0,4.3) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Bigrafo $G$: prima proprietà di stallo \label{fig:diningAim1}}
+\end{figure}
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[scale=0.88]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,5.25) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,3.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,0.25) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,0.25) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,3.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (3.8,0.8) -- (4.2,0.8) -- (4.0,1.4) -- (3.8,0.8);%F3
+\draw[rounded corners=1mm, thick] (7.8,0.8) -- (8.2,0.8) -- (8.0,1.4) -- (7.8,0.8);%F4
+\draw[rounded corners=1mm, thick] (8.8,3.8) -- (9.2,3.8) -- (9.0,4.4) -- (8.8,3.8);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.3) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.3) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (4.0,1.3) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (4.0,1.3) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (8.0,1.3) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (8.0,1.3) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (9.0,4.3) to [out=20,in=300] (8.0,7.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (9.0,4.3) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+
+\end{tikzpicture}
+\caption{Bigrafo $G'$: seconda proprietà di stallo \label{fig:diningAim2}}
+\end{figure}
+
+
+$MC_{big}$ incomincia a computare l'intero grafo degli stati: esso è \textbf{teoricamente infinito} perché le quattro regole viste prima possono essere applicate un numero arbitrario di volte; per esempio, posso applicarle una dopo l'altra sempre sul filosofo $P_1$, facendolo mangiare e pensare all'infinito. Nella prossima sottosezione, vedremo invece che nella pratica il grafo degli stati è finito, pur rappresentando processi infiniti. 
+
+Con la strategia di questa sottosezione è impossibile trovarsi nella situazione di figura \ref{fig:diningAim2}. Quando $MC_{big}$ trova la situazione di stallo di figura \ref{fig:diningAim1}, il model checker smette di generare il grafo degli stati e ritorna False, perché si è causato un deadlock:
+\begin{prop}
+$MC_{big}$ ritorna False se e solo se esiste almeno una situazione di deadlock.
+\end{prop}
+
+Per convincersi che il bigrafo B rappresenti una situazione di deadlock, si noti come su di esso non si possa applicare più nessuna delle quattro regole: poichè la proprietà è una \emph{IsoProperty}, $MC_{big}$ cerca un nodo che sia uguale a B, cioè a cui non si possano applicare più regole. Un tale nodo del grafo degli stati si chiama \textbf{stato finale}.
+
+Si noti come ad ogni passo ogni regola trovi molti match: il grafo degli stati sarà molto grande. Si consideri la figura \ref{fig:diningPhil}: la regola \ref{fig:takeFork}.a può scattare su ognuno dei 5 filosofi; per esempio, ipotizziamo che scatti sul primo filosofo $P_1$. Ora, le possibilità sono molteplici:
+\begin{itemize}
+	\item
+	$P_1$ può prendere anche la forchetta destra: quindi scatta la regola \ref{fig:takeFork}.b
+	\item
+	uno qualsiasi degli altri quattro filosofi può prendere la propria forchetta sinistra: quindi statta la regola \ref{fig:takeFork}.a
+\end{itemize}
+per un totale di 6 stati possibili. Si vede bene come l'\textbf{esplosione combinatoria} faccia aumentare in modo esponenziale il numero di nodi del grafo degli stati. \\ 
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+5
+
+
+
+STRATEGY: Every philosopher takes first the left fork.
+Are deadlocks avoided?	NO
+Number of states of the Model Checker:	93
+Resolution Time:	4.786207234 seconds
+\end{lstlisting}
+
+Quello mostrato qui sopra è il risultato dell'esecuzione del software: si è implementato un modulo che costruisce il bigrafo con un numero di filosofi scelto dall'utente. In questo caso si è scelto di avere cinque filosofi come in figura \ref{fig:diningPhil}. In seguito, il sistema informa quale strategia si sta adottando: per ora ci interessa solamente la prima strategia. Nella riga seguente il software ritorna il risultato (cioè se c'è o non c'è un deadlock), ed infine il numero di nodi del grafo degli stati.
+
+Per verificare che la strategia in uso causa deadlock, con solamente cinque filosofi il model checker ha creato un grafo degli stati con 93 nodi. Questo è il risultato dell'esplosione combinatoria, che causa appunto un aumento esponenziale del numero di nodi che il model checker deve controllare.
+
+In questo esercizio si è usato l'isomorfismo con proprietà (\emph{Property Isomorphism}), il cui funzionamento, che è poco differente dal normale algoritmo, viene riportato qui sotto:
+
+\begin{prop}[Property Isomorphism]
+Due nodi costituiscono un match nel Property Isomorphism se e solo se lo fanno nel normale Isomorphism e hanno le stesse proprietà.
+\end{prop}
+
+\begin{figure}[!htbp]
+\centering
+\subfigure[Primo Bigrafo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\node at (3.0,4.0) {$P_2$};
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (4.0,5.0) -- (4.5,5.0) -- (4.25,5.8) -- (4.0,5.0);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (5.8,5.8) -- (6.2,5.8) -- (6.0,6.4) -- (5.8,5.8);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (6.0,6.4) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (6.0,6.4) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (4.25,5.7) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (4.25,5.7) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+\end{tikzpicture}
+}
+
+\hspace{1mm}
+
+\subfigure[Secondo Bigrafo]{
+\begin{tikzpicture}[scale=0.5]
+%\draw[help lines] (0,0) grid (13,8);
+%Root
+\draw[rounded corners=5mm,dashed] (0.0,0.0) rectangle (12.0,8.0);
+%Philosophers
+\draw[thick] (6.0,6.0) circle [radius=0.5];%P1
+\node at (6.0,6.0) {$P_1$};
+\draw[thick] (3.0,4.0) circle [radius=0.5];%P2
+\draw[thick] (4.0,1.0) circle [radius=0.5];%P3
+\node at (4.0,1.0) {$P_3$};
+\draw[thick] (8.0,1.0) circle [radius=0.5];%P4
+\node at (8.0,1.0) {$P_4$};
+\draw[thick] (9.0,4.0) circle [radius=0.5];%P5
+\node at (9.0,4.0) {$P_5$};
+%Forks
+\draw[rounded corners=1mm, thick] (2.8,3.8) -- (3.2,3.8) -- (3.0,4.4) -- (2.8,3.8);%F2
+\draw[rounded corners=1mm, thick] (2.0,2.0) -- (2.5,2.0) -- (2.25,2.8) -- (2.0,2.0);%F3
+\draw[rounded corners=1mm, thick] (5.75,1.0) -- (6.25,1.0) -- (6.0,1.8) -- (5.75,1.0);%F4
+\draw[rounded corners=1mm, thick] (10.0,2.0) -- (10.5,2.0) -- (10.25,2.8) -- (10.0,2.0);%F5
+\draw[rounded corners=1mm, thick] (8.0,5.0) -- (8.5,5.0) -- (8.25,5.8) -- (8.0,5.0);%F1
+%%%   Links   %%%
+%F1
+\draw[myGreen, thick] (6.5,6.0) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (8.25,5.7) to [out=90,in=270] (8.0,7.0);
+\draw[myGreen, thick] (9.0,4.5) to [out=90,in=270] (8.0,7.0);
+\draw[fill] (6.5,6.0) circle [radius=0.05]; \node[right] at (6.5,6.0){0};
+\draw[fill] (8.25,5.7) circle [radius=0.05];
+\draw[fill] (9.0,4.5) circle [radius=0.05];
+\node[above] at (8.0,7.0) {$F_1$};
+%F2
+\draw[myGreen, thick] (5.5,6.0) to [out=90,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.3) to [out=150,in=270] (3.0,7.0);
+\draw[myGreen, thick] (3.0,4.5) to [out=110,in=290] (3.0,7.0);
+\draw[fill] (5.5,6.0) circle [radius=0.05]; \node[left] at (5.5,6.0){1};
+\draw[fill] (3.0,4.3) circle [radius=0.05];
+\draw[fill] (3.0,4.5) circle [radius=0.05];
+\node[above] at (3.0,7.0) {$F_2$};
+%F3
+\draw[myGreen, thick] (3.0,3.5) to [out=270,in=270] (1.0,4.0);
+\draw[myGreen, thick] (2.25,2.7) to [out=130,in=270] (1.0,4.0);
+\draw[myGreen, thick] (3.5,1.0) to [out=180,in=270] (1.0,4.0);
+\draw[fill] (3.0,3.5) circle [radius=0.05];
+\draw[fill] (2.25,2.7) circle [radius=0.05];
+\draw[fill] (3.5,1.0) circle [radius=0.05];
+\node[above] at (1.0,4.0) {$F_3$};
+%F4
+\draw[myGreen, thick] (4.5,1.0) to [out=0,in=270] (6.0,3.0);
+\draw[myGreen, thick] (6.0,1.7) to [out=90,in=270] (6.0,3.0);
+\draw[myGreen, thick] (7.5,1.0) to [out=180,in=270] (6.0,3.0);
+\draw[fill] (4.5,1.0) circle [radius=0.05];
+\draw[fill] (6.0,1.7) circle [radius=0.05];
+\draw[fill] (7.5,1.0) circle [radius=0.05];
+\node[above] at (6.0,3.0) {$F_4$};
+%F5
+\draw[myGreen, thick] (8.5,1.0) to [out=0,in=290] (11.0,4.0);
+\draw[myGreen, thick] (10.25,2.8) to [out=90,in=270] (11.0,4.0);
+\draw[myGreen, thick] (9.0,3.5) to [out=270,in=270] (11.0,4.0);
+\draw[fill] (8.5,1.0) circle [radius=0.05];
+\draw[fill] (10.25,2.8) circle [radius=0.05];
+\draw[fill] (9.0,3.5) circle [radius=0.05];
+\node[above] at (11.0,4.0) {$F_5$};
+\end{tikzpicture}
+}
+\caption{Due bigrafi isomorfi \label{fig:isoDinings}}
+\end{figure}
+
+
+Nella libreria \emph{JLibbig}, c'è la possibilità di allegare ad ogni nodo delle proprietà. Si sono quindi dati degli identificativi per ogni filosofo ed ogni forchetta. In seguito, si sono usate le regole con proprietà introdotte nella sottosezione \ref{sec:dettImpl} per manterle anche dopo l'esecuzione delle quattro regole viste prima. 
+
+La creazione del \emph{Property Isomorphism} è stato indispensabile: senza di esso il model checker avrebbe riconosciuto come uguali i due bigrafi in figura \ref{fig:isoDinings}, causando un comportamento anomalo nella verifica delle proprietà. 
+
+Dalla figura \ref{fig:isoDinings} si capisce immediatamente che senza il \emph{Property Isomorphism} il grafo degli stati sarebbe molto più piccolo, perché non si esplorerebbero tutte le possibilità. Se $S_0$ è lo stato iniziale, allora ipotizziamo che $S_1$ sia lo stato in cui $P_1$ prende la sua forchetta sinistra $F_1$. Ora però, da $S_0$ si può anche applicare la regola sul filosofo $P_2$, che prenderà la forchetta $F_2$ dando vita allo stato $S_2$. Senza l'uso del \emph{Property Isomorphism}, il model checker troverà che $S_1 = S_2$, memorizzando solamente il primo. Quindi il model checker non distingue tra le due situazioni, creando un grafo degli stati \textbf{incompleto}.
+
+
+\subsection{Seconda strategia}
+Vediamo ora un modo per evitare i deadlock: si enumerino tutte le forchette presenti sul tavolo (nel nostro esempio consideriamo il pedice di $F_i$); per mangiare, ogni filosofo deve prendere per prima la forchetta con indice minore. Una traccia d'esecuzione basata sulla figura \ref{fig:diningPhil} potrebbe essere questa: tutti i filosofi $P_i$ ($i \in \{1,2,3,4\}$) prenderanno la forchetta $F_i$ tranne l'ultimo ($P_5$), che dovrà prendere $F_1$, che ha indice minore; questa forchetta però è già occupata da $P_1$ e quindi $P_5$ dovrà aspettare, lasciando libera $F_5$ che potrà essere utilizzata da $F_4$. Quest'ultimo riuscirà a mangiare e dopo un po' lascerà libera la forchetta $F_4$, che verrà presa da $P_3$, e così via. Infine, quando si libererà $F_1$, anche il filosofo $P_5$ riuscirà a mangiare. Con questa soluzione, si evitano quindi sia i deadlock sia le situazioni di starvation.
+
+Le regole sono uguali a quelle della strategia precedente con un'eccezione: si noti come l'ultimo filosofo debba prendere la prima forchetta (quella con indice minore) con la mano destra, mentre la seconda con la sinistra. Quindi si creano altre quattro regole ad-hoc per l'ultimo filosofo: deve prendere per prima la forchetta destra e per seconda quella sinistra, a differenza di tutti gli altri. Lo stesso vale per posare le forchette, per un totale di quattro nuove regole. La nuova strategia è quindi identica alla prima, modulo l'aggiunta di queste quattro regole. Il nodo finale viene identificato tramite un controllo $L$ (Last) al suo interno.
+
+Il BRS per questa strategia ha otto perciò regole. La proprietà da verificare resta la stessa: $\varphi = \pi_B$. Si vedrà però che ora $MC_{big}$ non riuscirà ad identificare nessuna situazione di deadlock. 
+
+Prima però si deve precisare un'aspetto importante: si sarebbe tentati di pensare che in assenza di deadlock il model checker continui all'infinito a generare stati. Infatti, se al bigrafo di partenza, che chiameremo $B_1$, applichiamo le quattro regole sempre al filosofo $P_1$, allora quest'ultimo (in ordine):
+\begin{itemize}
+	\item
+	prende la forchetta sinistra
+	\item
+	prende la forchetta destra
+	\item
+	posa la forchetta sinistra
+	\item
+	posa la forchetta destra
+\end{itemize}
+Dopo la quarta regola, si ritorna ad uno stato uguale al primo, che chiameremo $B_2$, e nulla vieta che queste quattro regole continuino ad eseguire all'infinito. Tramite il \emph{Property Isomorphism} si riesce ad evitare questa situazione: questo algoritmo riesce infatti a verificare che $B1$ e $B_2$ sono uguali, evitando quindi di tornare ad eseguire tutte le regole. Grazie ad esso, si è riusciti ad avere \textbf{un grafo degli stati finito per un processo infinito}.
+
+Riprendendo quanto detto nella sottosezione precedente sull'\emph{Property Isomorphism}, si ha che esso porta i seguenti benefici:
+\begin{itemize}
+	\item
+	il model checker computa un grafo degli stati \textbf{completo}, senza dimenticare nessuna possibile situazione
+	\item
+	il model checker verifica le proprietà di un processo infinito su un grafo degli stati \textbf{finito}.
+\end{itemize}
+
+$MC_{big}$ riesce quindi a computare l'intero grafo degli stati e, dato che per ogni suo nodo $S_i$ si ha che $MC,S_i \not \models \varphi$, ritorna True, a significare che la tecnica è priva di situazioni di deadlock o starvation.
+
+\begin{prop}
+$MC_{big}$ ritorna True se e solo se ogni stato non rappresenta una situazione di deadlock.
+\end{prop}
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+5
+
+
+
+STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
+Are deadlocks avoided?	YES
+Number of states of the Model Checker:	189
+Resolution Time:	14.129189577 seconds
+\end{lstlisting}
+
+
+Il risultato ora è quello della seconda strategia. Si noti come l'assenza di deadlock causi un aumento del numero di stati, che ora ha raggiunto il valore 189. Aumentando il numero di filosofi ci si rende conto dell'andamento esponenziale dell'esplosione. Infine si prendano in considerazione i tempi di risoluzione del problema: $MC_{big}$ impiega 20 minuti per capire che questa strategia è priva di deadlock.
+
+\begin{lstlisting}
+Insert the number of philosophers: 
+7
+
+
+
+STRATEGY: Every philosopher takes first the left fork.
+Are deadlocks avoided?	NO
+Number of states of the Model Checker:	801
+Resolution Time:	214.26274781 seconds
+
+
+
+STRATEGY: all the forks are enumerated. Every philosopher takes first the fork with the lower index.
+Are deadlocks avoided?	YES
+Number of states of the Model Checker:	1701
+Resolution Time:	1210.612988337 seconds
+\end{lstlisting}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Politiche di sicurezza}\label{sec:secureBuilding}
+In quest'ultimo esempio vedremo come tramite i bigrafi ed il model checker $MC_{big}$ si possano testare delle politiche di sicurezza. In particolare, faremo riferimento alla seguente situazione: un edificio appartenente ad un'azienda contiene varie stanze, ognuna con un computer al suo interno. L'azienda ha importanti file segreti (token) da mantenere al sicuro dentro ogni computer. Ha anche vari dipendenti, che possono entrare liberamente in ogni stanza e collegarsi ai vari computer. Uno di questi dipendenti si chiama Alice.
+Lei ed il suo complice Bob vogliono rubare un segreto dell'azienda, seguendo questo piano:
+
+\begin{itemize}
+	\item
+	Alice, che essendo una dipendente può collegarsi ad un computer, ruba il file segreto e lo trasferisce sul proprio smartphone.
+	\item
+	Alice esce dalla stanza, pur rimanendo all'interno dell'azienda
+	\item
+	Alice tramite il suo smartphone stabilisce un collegamento con quello di Bob, che si trova al di fuori dell'azienda, e trasferisce il file segreto, che ora è di dominio pubblico
+\end{itemize}
+
+Il nostro compito è quello di stabilire una politica di sicurezza che eviti a qualsiasi token dell'azienda di diventare pubblico, in questo caso di diventare in possesso di Bob. Si vedranno quindi due politiche: la prima consentirà a Bob di ottenere il token, mentre la seconda lo eviterà assicurando la sicurezza dell'azienda. 
+
+Tutte le possibili situazioni in cui Alice e Bob possono agire per rubare i file segreti verranno calcolate dal model checker $MC_{big}$, che alla fine dell'esecuzione dirà se la politica scelta sarà sicura o meno. Infine, si è costruito un modulo che offre all'utente la possibilità di visitare il grafo degli stati, consentendogli di ripercorrere tutte le azioni che hanno consentito a Alice e Bob di ottenere il file segreto.
+
+
+\subsection{Segnatura}
+Incominciamo con il definire la segnatura del bigrafo che modella il problema. Si consideri la figura \ref{fig:bigSafety}: il nodo più grande è ``\emph{Building}" e rappresenta l'edificio dell'azienda. In questo esempio, sono presenti due stanze, ognuna con un computer all'interno. Ogni computer contiene un ``\emph{Token}", che è uno dei file segreti dell'azienda. 
+
+I nodi per Alice e Bob sono modellati tramite due circonferenze, che però si trovano sotto radici diverse: Alice è dentro l'azienda, in quanto è una dipendente e può entrare a tutti gli effetti sia dentro il ``\emph{Building}" sia dentro le ``\emph{Room}". Invece Bob si trova al di fuori dell'azienda, perché non è un dipendente e quindi il suo accesso è vietato. Ai fini della verifica da parte del model checker, tutti i dipendenti verranno considerati con cattive intenzioni, ovvero: ogni dipendente sarà modellato da un nodo di controllo ``\emph{Alice}". Allo stesso modo, ogni persona al di fuori dell'azienda verrà modellata con un nodo di controllo ``\emph{Bob}".
+Sia Alice che Bob possiedono uno smartphone, che useranno per trasferire il ``\emph{Token}".
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (3.0,4.0) to [out=130,in=270] (2.5,4.5);%Alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+\node[above right] at (1.0,9.0) {Building};
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+\node[above right] at (2.0,8.0) {$Room_1$};
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\node[above right] at (3.5,6.0) {Computer};
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (3.7,5.3) -- (4.3,5.3) -- (4.0,5.9) -- (3.7,5.3);
+\draw[red] (4.0,5.6) to [out=270,in=90] (6.0,4.2);
+\node at (6.0,4.0){Token};
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+\node[above right] at (7.0,8.0) {$Room_2$};
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\node[above right] at (8.5,6.0) {Computer};
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+\draw[red] (9.0,5.6) to [out=270,in=90] (6.2,4.2);
+%Alice
+\draw[thick] (3.0,3.5) circle [radius=0.8];
+\node[below] at (3.0,2.7) {Alice};
+% Phone A
+\draw[rounded corners=1mm, thick] (2.8,3.0) rectangle (3.2,4.0);
+\draw[red] (3.0,3.2) to [out=180,in=90] (1.8,1.3);
+\node at (2.0,1.0){Smartphone};
+\draw[fill] (3.0,4.0) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+\node[right] at (6.8,1.0) {Bob};
+% Phone B
+\draw[rounded corners=1mm, thick] (5.8,0.5) rectangle (6.2,1.5);
+\draw[red] (6.0,1.0) to [out=180,in=50] (3.2,1.2);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\end{tikzpicture}
+\caption{Bigrafo per il problema della sicurezza dell'azienda \label{fig:bigSafety}}
+\end{figure}
+
+Ogni smartphone ed ogni computer possiedono una porta per consentire il collegamento: uno smartphone si può collegare ad un altro smartphone oppure ad un computer. Stabilito il collegamento, è possibile trasferire il Token. Per distinguere il ``\emph{Building}" dalle ``\emph{Room}", si è disegnato il primo tramite doppie linee.  
+
+
+\subsection{Prima politica}
+Vediamo ora la prima politica, che come già anticipato \textbf{non} assicurerà la sicurezza dell'azienda. Nei BRS, una politica si traduce in un insieme di regole di reazione, che descrivono come ogni nodo deve comportarsi. Per esempio, una regola potrebbe coinvolgere una ``\emph{Room}", obbligandola a chiedere un badge ad ogni dipendente che vuole entrare.
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (1.0,1.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (0.8,0.8) rectangle (1.2,1.2);
+\node at (1.0,1.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (12.0,2.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (11.8,1.8) rectangle (12.2,2.2);
+\node at (12.0,2.0){1};
+
+
+\end{tikzpicture}
+\caption{regola per l'entrata in una stanza ($R_0$)\label{fig:enterRoom}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (4.0,2.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (3.8,1.8) rectangle (4.2,2.2);
+\node at (4.0,2.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (9.0,1.0) circle [radius=0.8];
+%Site 1
+\draw[fill=myGrey, dashed] (8.8,0.8) rectangle (9.2,1.2);
+\node at (9.0,1.0){1};
+
+\end{tikzpicture}
+\caption{regola per l'uscita da una stanza ($R_1$)\label{fig:leaveRoom}}
+\end{figure}
+
+
+
+Le regole $R_0$ e $R_1$ modellano rispettivamente l'entrata e l'uscita da una stanza all'interno dell'azienda. Si noti come ogni dipendente, ovvero ogni nodo circolare all'interno dell'azienda, possa entrare liberamente in ogni stanza. La politica di sicurezza è quindi \textbf{minima}, perché non vengono fatti controlli e ogni dipendente può accedere al computer: in particolare, può collegarlo al suo smartphone e trasferire il Token. Se togliessimo il sito numero 1, allora si potrebbe entrare nella stanza solamente senza oggetti pericolosi: in altre parole, ogni dipendente non dovrebbe avere niente con sè per poter entrare in una stanza.
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Links
+\draw[myGreen,thick] (2.7,2.0) to [out=60,in=270] (2.5,4.3);%x
+\draw[myGreen,thick] (4.25,2.5) to [out=120,in=270] (4.5,4.3);%y
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (0.5,0.5) rectangle (5.5,3.5);
+%Computer
+\draw[rounded corners=2mm, thick] (1.0,1.0) rectangle (3.0,2.0);
+\draw[fill] (2.7,2.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.7,1.1) -- (2.3,1.1) -- (2.0,1.9) -- (1.7,1.1);
+%Alice
+\draw[thick] (4.3,2.0) circle [radius=0.8];
+%Alice phone
+\draw[rounded corners=1mm, thick] (4.0,1.5) rectangle (4.5,2.5);
+\draw[fill] (4.25,2.5) circle [radius=0.05];
+%Outers
+\node at (2.5,4.5){x};
+\node at (4.5,4.5){y};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Links
+\draw[myGreen,thick] (10.7,2.0) to [out=60,in=270] (10.5,4.3);%x
+\draw[myGreen,thick] (12.25,2.5) to [out=120,in=270] (10.8,3.0);
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (8.5,0.5) rectangle (13.5,3.5);
+%Computer
+\draw[rounded corners=2mm, thick] (9.0,1.0) rectangle (11.0,2.0);
+\draw[fill] (10.7,2.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (9.7,1.1) -- (10.3,1.1) -- (10.0,1.9) -- (9.7,1.1);
+%Alice
+\draw[thick] (12.3,2.0) circle [radius=0.8];
+%Alice phone
+\draw[rounded corners=1mm, thick] (12.0,1.5) rectangle (12.5,2.5);
+\draw[fill] (12.25,2.5) circle [radius=0.05];
+%Outers
+\node at (10.5,4.5){x};
+\node at (12.5,4.5){y};
+\end{tikzpicture}
+\caption{regola per il collegamento ad un computer ($R_2$)\label{fig:compConnect}}
+\end{figure}
+
+
+
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Links
+\draw[myGreen, thick] (2.0,1.3) to [out=90,in=270] (3.0,4.3);
+\draw[myGreen, thick] (4.5,3.0) to [out=90,in=270] (3.0,4.3);
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Computer
+\draw[rounded corners=2mm, thick] (0.3,0.3) rectangle (2.7,1.3);
+\draw[fill] (2.0,1.3) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,0.4) -- (1.8,0.4) -- (1.5,1.2) -- (1.2,0.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Links
+\draw[myGreen, thick] (10.0,1.3) to [out=90,in=270] (11.0,4.3);
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Computer
+\draw[rounded corners=2mm, thick] (8.3,0.3) rectangle (10.7,1.3);
+\draw[fill] (10.0,1.3) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (12.2,1.4) -- (12.8,1.4) -- (12.5,2.2) -- (12.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Outers
+\node at (11.0,4.5) {x};
+\end{tikzpicture}
+\caption{regola per il trasferimento di un token da un computer ad uno smartphone ($R_3$)\label{fig:transfer_comp}}
+\end{figure}
+
+
+Le regola $R_2$ e $R_3$ trattano il trasferimento di un Token dal computer ad uno smartphone: la prima stabilisce una connessione mentre la seconda esegue lo spostamento del file segreto. Si noti come lo smartphone del dipendente non debba contenere nessun altro token: se Alice ha già rubato un file segreto, allora il prossimo computer a cui si connette se ne accorgerà e non le darà il file segreto al suo interno.\\
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (1.0,1.0) rectangle (2.0,3.0);
+\draw[fill] (1.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,1.4) -- (1.8,1.4) -- (1.5,2.2) -- (1.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (4.1,2.2) rectangle (4.6,2.7);
+\node at (4.35,2.45) {0};
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Links
+\draw[myGreen, thick] (9.5,3.0) to [out=90,in=270] (11.0,4.3);
+\draw[myGreen, thick] (12.5,3.0) to [out=90,in=270] (11.0,4.3);
+%Phone
+\draw[rounded corners=3mm, thick] (9.0,1.0) rectangle (10.0,3.0);
+\draw[fill] (9.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (9.2,1.4) -- (9.8,1.4) -- (9.5,2.2) -- (9.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (12.1,2.2) rectangle (12.6,2.7);
+\node at (12.35,2.45) {0};
+%Outers
+\node at (11.0,4.5) {x};
+
+
+\end{tikzpicture}
+\caption{regola per iniziare una connessione tra due smartphones ($R_4$)\label{fig:call}}
+\end{figure}
+
+
+
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (3.0,4.0);
+%Links
+\draw[myGreen, thick] (1.5,3.0) to [out=90,in=270] (3.0,4.5);
+\draw[myGreen, thick] (4.5,3.0) to [out=90,in=270] (3.0,4.5);
+%Phone
+\draw[rounded corners=3mm, thick] (1.0,1.0) rectangle (2.0,3.0);
+\draw[fill] (1.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (1.2,1.4) -- (1.8,1.4) -- (1.5,2.2) -- (1.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (3.3,0.0) rectangle (6.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (4.0,1.0) rectangle (5.0,3.0);
+\draw[fill] (4.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (4.1,2.2) rectangle (4.6,2.7);
+\node at (4.35,2.45) {0};
+%Outers
+\node at (3.0,4.5) {x};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+%Root 1
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (11.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (9.0,1.0) rectangle (10.0,3.0);
+\draw[fill] (9.5,3.0) circle [radius=0.05];
+%Token
+\draw[rounded corners=1mm, thick] (12.2,1.4) -- (12.8,1.4) -- (12.5,2.2) -- (12.2,1.4);
+%Root 2
+\draw[rounded corners=3mm, dashed] (11.3,0.0) rectangle (14.0,4.0);
+%Phone
+\draw[rounded corners=3mm, thick] (12.0,1.0) rectangle (13.0,3.0);
+\draw[fill] (12.5,3.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (12.1,2.2) rectangle (12.6,2.7);
+\node at (12.35,2.45) {0};
+%Outers
+\node at (11.0,4.5) {x};
+
+
+\end{tikzpicture}
+\caption{regola per trasferire un Token fra due smartphones ($R_5$)\label{fig:transf_token}}
+\end{figure}
+
+
+
+Infine, le regole $R_4$ e $R_5$ consentono allo smarthphone di Alice di stabilire una connessione con quello di Bob e di trasferire il Token, che ora si trova al di fuori dell'azienda. Alice può chiamare solo se ha ottenuto il Token, come suggerisce il redex della regola $R_4$. Si noti come, una volta ottenuto il Token, Alice possa connettersi a Bob anche dall'interno dell'azienda.\\
+
+
+Vediamo ora l'applicazione delle regole sul bigrafo di figura \ref{fig:bigSafety}, che chiameremo $S_0$. Applicando in ordine le regole $R_0$, $R_2$ ed $R_3$ al bigrafo $S_0$ si ottiene il bigrafo di figura \ref{fig:threeRules}: Alice è entrata nella prima stanza, ha collegato il suo smartphone al computer ed ha trasferito un file segreto dell'azienda dal computer allo smartphone. Dato che abbiamo applicato tre regole, chiameremo questo bigrafo $S_3$.
+
+
+
+\begin{figure}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (5.0,7.5) to [out=90,in=45] (4.5,8.5);%alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (4.7,6.6) -- (5.3,6.6) -- (5.0,7.2) -- (4.7,6.6);
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+%Alice
+\draw[thick] (5.0,7.0) circle [radius=0.8];
+% Phone A
+\draw[rounded corners=1mm, thick] (4.6,6.5) rectangle (5.4,7.5);
+\draw[fill] (5.0,7.5) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+% Phone B
+\draw[rounded corners=1mm, thick] (5.8,0.5) rectangle (6.2,1.5);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+
+
+\end{tikzpicture}
+\caption{Applicazione delle regola $R_0$,$R_2$ e $R_3$ \label{fig:threeRules}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Edges
+\draw[-|, myGreen, thick] (6.0,1.5) to [out=90,in=45] (5.0,1.5);%bob port
+\draw[-|, myGreen, thick] (3.0,4.0) to [out=130,in=270] (2.5,4.5);%Alice port
+\draw[-|, myGreen, thick] (3.5,6.0) to [out=130,in=300] (3.5,7.0);%computer1 port
+\draw[-|, myGreen, thick] (8.5,6.0) to [out=130,in=300] (8.5,7.0);%computer2 port
+
+%Root
+\draw[rounded corners=5mm, dashed] (0.0,0.0) rectangle (13.0,10.0);
+%Building
+\draw[rounded corners=5mm, thick] (1.0,2.0) rectangle (12.0,9.0);
+\draw[rounded corners=5mm, thick] (1.05,2.05) rectangle (11.95,8.95);
+%Room 1
+\draw[rounded corners=3mm, thick] (2.0,5.0) rectangle (6.0,8.0);
+%Computer 1
+\draw[rounded corners=3mm, thick] (3.0,5.2) rectangle (5.0,6.0);
+\draw[fill] (3.5,6.0) circle [radius=0.05];
+%Token 1
+\draw[rounded corners=1mm, thick] (5.7,0.6) -- (6.3,0.6) -- (6.0,1.3) -- (5.7,0.6);
+%Room 2
+\draw[rounded corners=3mm, thick] (7.0,5.0) rectangle (11.0,8.0);
+%Computer 2
+\draw[rounded corners=3mm, thick] (8.0,5.2) rectangle (10.0,6.0);
+\draw[fill] (8.5,6.0) circle [radius=0.05];
+%Token 2
+\draw[rounded corners=1mm, thick] (8.7,5.3) -- (9.3,5.3) -- (9.0,5.9) -- (8.7,5.3);
+%Alice
+\draw[thick] (3.0,3.5) circle [radius=0.8];
+% Phone A
+\draw[rounded corners=1mm, thick] (2.8,3.0) rectangle (3.2,4.0);
+\draw[fill] (3.0,4.0) circle [radius=0.05];
+%Bob
+\draw[thick, red] (6.0,1.0) circle [radius=0.8];
+% Phone B
+\draw[rounded corners=1mm, thick] (5.6,0.5) rectangle (6.4,1.5);
+\draw[fill] (6.0,1.5) circle [radius=0.05];
+\end{tikzpicture}
+\caption{Applicazione delle regole $R_1$,$R_4$ e $R_5$ \label{fig:threeLastRules}}
+\end{figure}
+
+
+
+
+In figura \ref{fig:threeLastRules}, è raffigurato il bigrafo $S_6$, ottenuto tramite l'applicazione delle regole $R_1$,$R_4$ e $R_5$ al bigrafo $S_3$. In ordine: Alice è uscita dalla stanza con il Token, ha stabilito una connessione con Bob ed ha trasferito il file segreto. Si noti come non fosse necessario che Alice uscisse dalla stanza per chiamare Bob. Questa politica di sicurezza è quindi fallace, perché consente a Bob o a qualsiasi persona esterna di ottenere un file segreto dell'azienda.\\
+
+In molti casi l'azienda non ha un edificio semplice come quello di figura \ref{fig:bigSafety}, e quindi c'è bisogno di uno strumento automatico, che affronti il problema anche quando nell'edificio sono presenti numerose stanze, computers e soprattutto numerosi dipendenti. Per questi motivi si è usato $MC_{big}$ per la verifica: esso computa l'intero grafo degli stati, cioè considera tutte le possibili situazioni in cui l'azienda si può trovare, ed appena trova una situazione di pericolo ritorna False, a significare che la politica adottata dall'azienda non è sicura.
+\begin{prop}
+Il model checker $MC_{big}$ ritorna True se e solo se non c'è \emph{nessuna} situazione di pericolo.
+\end{prop}
+La proprietà da far verificare al model checker è molto semplice:
+\begin{center}
+$\varphi = \wario_B(T,T,T)$
+\end{center}
+dove B è il bigrafo di figura \ref{fig:bigBSafety}. Quindi la precedente proposizione, la possiamo tradurre in:
+\begin{prop}\label{prop:MCsafety}
+Il model checker $MC_{big}$ ritorna False $\Leftrightarrow \exists S_i$ t.c. $MC,S_i \models \wario_B(T,T,T)$. 
+Equivalentemente, ritorna True  $\Leftrightarrow \forall S_i$ $(MC,S_i \not \models \wario_B(T,T,T) )$.
+\end{prop}
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (13,10);
+%Root
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (5.0,5.0);
+%Outers
+\node at (3.0,5.5){x};
+%Link
+\draw[myGreen,thick] (2.5,4.0) to [out=90,in=270] (3.0,5.3);
+%Bob
+\draw[thick, red] (2.5,2.5) circle [radius=2.0];
+%Phone
+\draw[rounded corners=3mm, thick] (1.8,1.0) rectangle (3.2,4.0);
+\draw[fill] (2.5,4.0) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (2.2,1.2) rectangle (2.7,1.7);
+\node at (2.45,1.45) {0};
+%Token
+\draw[rounded corners=1mm,thick] (2.1,2.0) -- (2.9,2.0) -- (2.5,2.8) -- (2.1,2.0); 
+
+
+
+\end{tikzpicture}
+\caption{Applicazione delle regole $R_1$,$R_4$ e $R_5$ \label{fig:bigBSafety}}
+\end{figure}
+
+
+
+
+
+\subsection{Seconda strategia}
+Si vedrà ora una strategia che, tramite l'introduzione di due nuove regole, riesce a garantire la sicurezza dell'azienda. Le regole sono le stesse del caso precedente, eccetto $R_0$ e $R_1$, che ora sono state sostituite da $secureR_0$ e $secureR_1$, in figura \ref{fig:secureEnterRoom} e \ref{fig:secureLeaveRoom}.
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+%Outers
+\node at (1.5,4.5){x};
+%Links
+\draw[myGreen,thick] (1.0,1.5) to [out=90,in=270] (1.5,4.3);
+%Root
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (1.0,1.0) circle [radius=0.8];
+%Phone 
+\draw[rounded corners=2mm, thick] (0.6,0.5) rectangle (1.4,1.5);
+\draw[fill] (1.0,1.5) circle [radius=0.05];
+%Site
+\draw[rounded corners=1mm,fill=myGrey,dashed] (0.8,0.8) rectangle (1.2,1.2);
+\node at (1.0,1.0){1};
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (12.0,2.0) circle [radius=0.8];
+\end{tikzpicture}
+\caption{regola per l'entrata sicura in una stanza ($secureR_0$)\label{fig:secureEnterRoom}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,10);
+%%%   Redex   %%%
+\draw[rounded corners=3mm, dashed] (0.0,0.0) rectangle (6.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (2.5,0.5) rectangle (5.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (2.8,0.8) rectangle (3.2,1.2);
+\node at (3.0,1.0){0};
+%Alice
+\draw[thick] (4.0,2.0) circle [radius=0.8];
+
+\draw[->, red, thick] (6.2,2.0) -- (7.8,2.0);
+
+%%%   Reactum   %%%
+\draw[rounded corners=3mm, dashed] (8.0,0.0) rectangle (14.0,4.0);
+%Room
+\draw[rounded corners=2mm, thick] (10.5,0.5) rectangle (13.5,3.5);
+%Site 0
+\draw[fill=myGrey, dashed] (10.8,0.8) rectangle (11.2,1.2);
+\node at (11.0,1.0){0};
+%Alice
+\draw[thick] (9.0,1.0) circle [radius=0.8];
+%Phone
+\draw[rounded corners=2mm, thick] (8.7,0.3) rectangle (9.3,1.5);
+\draw[fill] (9.0,1.5) circle [radius=0.05];
+
+\end{tikzpicture}
+\caption{regola per l'uscita sicura da una stanza ($secureR_1$)\label{fig:secureLeaveRoom}}
+\end{figure}
+
+
+
+
+Ora Alice non può più trasferire il Token sul suo smartphone, e di conseguenza le uniche due regole applicabili sono $secureR_0$ e $secureR_1$. La proprietà che $MC_{big}$ dovrà verificare sarà sempre $\varphi = \wario_B(T,T,T)$: ora nessuno stato $S_i$ del grafo sarà tale che $MC,S_i \models \varphi$, per cui, data la proposizione \ref{prop:MCsafety}, il model checker ritornerà True. Questa politica rende sicura l'azienda.
+
+\subsection{Implementazione}
+Si sono costruite delle classi flessibili, in modo che l'utente possa definire il proprio edificio (per quanto grande esso sia) senza ridefinire le regole di reazione della politica di sicurezza. Per esempio, in \cite{BRSAnalysis} sono presenti le classi astratte \emph{Building} e \emph{SecureBuilding}, che modellano rispettivamente la prima e la seconda strategia. L'edificio rappresentato nelle figure precedenti è stato costruito nelle due classi \emph{MyBuilding} e \emph{MySecureBuilding}, che estendono le prime due, in modo da poter simulare entrambe.
+
+Se modelliamo il problema di figura \ref{fig:bigSafety} e lanciamo l'esecuzione, allora il sistema avrà il seguente output in cui informa che la prima politica non è sicura mentre la seconda lo è:
+\begin{lstlisting}
+1. First building: the policy does not ensure the safety
+Are the tokens inside the building safe?	NO
+
+
+
+2. Second building: the policy ensures the safety
+Are the tokens inside the building safe?	YES
+\end{lstlisting}
+Un'importante caratteristica di questo esempio, è il modulo che consente di poter navigare nel grafo degli stati: per esempio, se il titolare dell'azienda vuole sapere quali sono stati i singoli passi che hanno eseguito Alice e Bob per rubare il file segreto, allora può navigare nel grafo scegliendo di volta in volta che regola di reazione applicare.
+\begin{lstlisting}
+Do you want to visit the first graph?	(yes,no)
+yes
+40 - 0
+----- Printing Bigraph Root -----
+edge E_412{ N_411:Phone; }
+edge E_418{ N_417:Phone; }
+edge E_414{ N_413:Computer; }
+edge E_416{ N_415:Computer; }
+root 0 {}
+   node N_40D:Bob {}
+      node N_411:Phone { port0: Edge E_412;}
+   node N_40C:Building {}
+      node N_40F:Room {}
+         node N_415:Computer { port0: Edge E_416;}
+            node N_41A:Token {}
+      node N_40E:Room {}
+         node N_413:Computer { port0: Edge E_414;}
+            node N_419:Token {}
+      node N_410:Alice {}
+         node N_417:Phone { port0: Edge E_418;}
+----- Done Printing Root ------
+
+Choose a branch: 
+0- enter_room
+1- enter_room
+\end{lstlisting}
+Nell'output di cui sopra, il sistema chiede se si vuole visitare il grafo. Nel caso di risposta affermativa, stampa il primo nodo ($S_0$) del grafo degli stati da cui è partita l'esecuzione e ci chiede quale regola vogliamo applicare. In questo caso, Alice può entrare nella prima o nella seconda stanza: se scriviamo $0$ allora Alice, entrerà nella prima stanza e l'output sarà:
+\begin{lstlisting}
+----- Printing Bigraph enter_room -----
+edge E_4CB{ N_4CA:Phone; }
+edge E_4E3{ N_4E2:Computer; }
+edge E_4D4{ N_4D3:Computer; }
+edge E_4E5{ N_4E4:Phone; }
+root 0 {}
+   node N_4C7:Building {}
+      node N_4CE:Room {}
+         node N_4D3:Computer { port0: Edge E_4D4;}
+            node N_4D9:Token {}
+      node N_4DC:Room {}
+         node N_4DD:Alice {}
+            node N_4E4:Phone { port0: Edge E_4E5;}
+         node N_4E2:Computer { port0: Edge E_4E3;}
+            node N_4E6:Token {}
+   node N_4C6:Bob {}
+      node N_4CA:Phone { port0: Edge E_4CB;}
+----- Done Printing enter_room ------
+
+Choose a branch: 
+0- comp_connect
+1- leave_room
+\end{lstlisting}
+Alice è entrata nella stanza, e ora può semplicemente lasciarla ($1$) o connettersi al computer($0$).
+
+In questo modo, si consente all'utente di navigare all'interno del grafo degli stati e di poter vedere gli effetti di ogni regola di reazione. Quindi, il model checker $MC_{big}$ è ora più informativo: non dice solamente se le proprietà sono rispettate o meno, ma fornisce anche una feature per seguire dei percorsi sul grafo.\\
+
+
+
+Quest'ultimo esempio mostra particolarmente bene con i bigrafi ed i BRS siano flessibili per rappresentare qualsiasi dominio e la loro utilità in casi reali come questo. $MC_{big}$ e la sua logica, implementati per questa tesi, sono quindi di aiuto sia per bigrafi che modellano un formalismo (come quello per gli NFA) sia per i bigrafi \emph{domain specific} (come quest'ultimo esempio), rendendo l'isomorfismo tra bigrafi, il model checker e la sua relativa logica degli strumenti generali adatti ad ogni dominio.
+
+
+
+
+
+
+
+>>>>>>> Updated TesiGeatti

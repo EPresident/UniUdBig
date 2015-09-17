@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \chapter{Isomorfismo tra bigrafi}\label{ch:isoChapter}
 Si ï¿½ visto nel precedente capitolo come un bigrafo sia capace di evolversi all'interno di un BRS. In alcune situazioni, si vuole evitare evoluzioni infinite di un bigrafo, perchï¿½
 per esempio porterebbero sempre a stati uguali fra di loro.
@@ -1577,3 +1578,1584 @@ Si noti come il tempo di preparazione cresca linearmente con il numero di nodi, 
 
 
 
+=======
+\chapter{Isomorfismo tra bigrafi}\label{ch:isoChapter}
+Si è visto nel precedente capitolo come un bigrafo sia capace di evolversi all'interno di un BRS. In alcune situazioni, si vuole evitare evoluzioni infinite di un bigrafo, perché
+per esempio porterebbero sempre a stati uguali fra di loro.
+
+Per tenere traccia all'istante $t_k$ di tutti gli stati precedentemente assunti da un BRS ($t_0 \dots t_{k-1}$), si è costruita una struttura dati a grafo, dove ogni nodo
+è uno stato, cioè un bigrafo: si chiamerà questo grafo  ``\emph{grafo degli stati}". Se un BRS parte dallo stato $S_0$, è possibile che dopo $K$ regole di reazione lo stato $S_k$ sia uguale allo stato iniziale $S_0$. Questo significa che $S_0$ e $S_k$ hanno la stessa \emph{semantica}, cioè rappresentano lo stesso stato del sistema. Per cui, nel grafo degli stati, essi dovranno essere lo stesso medesimo nodo.
+
+Questo è equivalente a scrivere: ``se lo stato $S_{k}$ è stato ottenuto da $S_{k-1}$ tramite la regola $R$ e $S_k$ e $S_0$ sono isomorfi, allora da $S_{k-1}$ si ottiene
+$S_0$"
+\begin{center}
+se $S_{k-1}\stackrel{R}{\longrightarrow}S_{k}$ e $ S_k \bumpeq S_0 \qquad$ allora $S_{k-1}\stackrel{R}{\longrightarrow}S_{0}$
+\end{center}
+Capire quando due bigrafi sono isomorfi e quindi \emph{semanticamente equivalenti} è di fondamentale importanza se si vogliono evitare i così detti \emph{loop} fra regole: per evitare che fra $S_{i}$ e $S_{i+1}$ si continuino ad applicare sempre le due stesse regole $R_1$ e $R_2$ all'infinito, devo capire che:
+\begin{itemize} 
+	\item
+	da $S_{i}$, tramite la regola $R_1$, ottengo un bigrafo isomorfo a $S_{i+1}$
+	\item
+	da $S_{i+1}$, tramite la regola $R_2$, ottengo un bigrafo isomorfo a $S_{i}$
+\end{itemize}
+Questo concetto verrà chiarito con gli esempi sottostanti.
+
+\section{Esempio}\label{sub:networkExe}
+Si prenda l'esempio di una rete modellata tramite un bigrafo: si vuole fare in modo che, dato un pacchetto iniziale che ha
+come mittente l'host $A$, esso arrivi al destinatario $B$. Ci saranno quindi delle regole di reazione per i router, che permetteranno di inoltrare i pacchetti verso le sue interfacce di uscita. Poichè, utilizzando i soli bigrafi, servirebbero troppe regole di reazione per modellare il fatto che se il destinario è $X$ allora l'interfaccia di uscita del pacchetto è la numero $N$,  si può pensare di inoltrare il pacchetto verso tutte le uscite in modo non deterministico. Così facendo, il pacchetto arriverà sicuramente al destinatario.
+I problemi sono ora due:
+\begin{itemize}
+	\item
+	il pacchetto arriverà a destinatari non corretti. Si può introdurre una regola di reazione che elimini dall'host ogni pacchetto che non ha come destinatario l'host stesso.
+	\item
+	se prendiamo il $k$-esimo router $R_k$, allora il pacchetto ritornerà al $(k-1)$-esimo router $R_{k-1}$ , che a sua volta lo inoltrerà verso tutte le sue interfacce, e quindi 
+	anche nuovamente verso $R_{k}$. Si ha così un ciclo infinito di pacchetti tra $R_k$ e $R_{k-1}$.
+\end{itemize}
+
+In questa sede si tratterà il secondo di questi problemi, che ha un'apparentemente semplice soluzione: capire quando due bigrafi sono uguali. In questo esempio, è 
+facile capire che per risolvere il problema basta verificare se gli stati $S_{k+i}$ e $S_{k-1}$ sono uguali: se $S_{k}$ è il bigrafo in cui il pacchetto è nel router $R_{k}$, allora
+si applica la regola di inoltro e si generano tanti stati ($S_{k+1} \dots S_{k+j}$) quanti sono i router vicini a $R_k$; tra di questi ci sara anche $R_{k-1}$. Quindi, se supponiamo che nello stato $S_{k+i}$ il pacchetto torni indietro al router $R_{k-1}$, allora il problema è capire che $S_{k+i}$ è uguale $S_{k-1}$, cioè verificare che i due bigrafi siano isomorfi. In questo modo si sa che dallo stato $S_{k-1}$ non si dovrà più applicare la regola di inoltro verso $S_{k}$, perché questo causerebbe un ciclo infinito.
+
+\section{Formulazione del problema}
+Si è visto che il concetto di isomorfismo ci aiuta a capire quando due bigrafi sono uguali. Riportiamo di nuovo la sua definizione formale:
+\begin{define}[Isomorfismo]
+Due bigrafi $F$ e $G$ si dicono isomorfi se e solo se esiste una traduzione di supporto tra $F$ e $G$, cioè se e solo se $F$ e $G$ sono \emph{support equivalent} ($F \bumpeq G$).
+\end{define}
+
+La definizione di isomorfismo può far credere che esso sia un termine puramente sintattico, cioè che riguardi solamente la struttura dei due bigrafi. L'isomorfismo è invece un'operazione che riguarda tanto la sintassi quanto la semantica: due bigrafi strutturalmente uguali sono due bigrafi semanticamente equivalenti (figura \ref{fig:bigMulIso}).
+
+Il problema consiste quindi nel trovare un funzione biettiva che ha come dominio i nodi e gli archi del primo bigrafo, come codominio quelli del secondo bigrafo e che ne rispetti la struttura del primo. Come già visto, tale funzione si chiama \emph{traduzione di supporto}.
+
+Si noti come la traduzione di supporto consenta di ritenere isomorfi due bigrafi che sono uguali \emph{modulo permutazione}: tale funzione può infatti operare una permutazione sui nomi dei nodi e degli archi, così come sugli inner names e outer names. In altre parole, non c'è nessun vincolo sui nomi, ma solo sulla struttura del bigrafo. Si capirà meglio questo concetto negli esempi che seguiranno.
+
+
+\subsection{Complessità}\label{sub:isoComplexity}
+Stabilire la complessità del problema dell'isomorfismo tra bigrafi è molto importante, perché relazionandolo con altri problemi è possibile trovare un algoritmo efficiente per risolverlo. Facciamo un esempio: ipotizziamo che il problema dell'isomorfismo tra bigrafi (che chiameremo $P_{big}$) si trovi nella classe C, e che il problema $P_c$ sia \emph{completo} rispetto a questa classe. Per definizione di \emph{completezza}, ogni istanza di ogni problema appartenente alla classe C, quindi anche ogni istanza di $P_{big}$, può essere tradotta (cioè \emph{ridotta}) con una certa complessità al problema $P_c$.
+
+L'importanza di questa considerazione risiede in questo fatto: se si riesce a scoprire un algoritmo che operi in tempo polinomiale per risolvere il problema $P_c$ allora tutti i problemi della classe $C$, incluso $P_{big}$, sarebbero risolvibili in tempo polinomiale.
+
+Sia $P_{graph}$ il problema dell'isomorfismo tra grafi. Dato che $P_{graph}$ è in NP ma non è stato ancora dimostrato che sia completo, introduciamo la classe di complessità GI, definita come l'insieme dei problemi che possono essere ridotti in tempo polinomiale al problema $P_{graph}$. Si dimostrerà il seguente risultato:
+
+\begin{teor}[Complessità di $P_{big}$]
+Il problema dell'isomorfismo tra bigrafi è GI-completo.
+\end{teor}
+
+\begin{dimos}
+Per dimostrare l'equivalenza, procederemo in due direzioni: nella prima dimostreremo che esiste una riduzione in tempo polinomiale da $P_{graph}$ a $P_{big}$, cioè che ogni istanza del problema $P_{graph}$ può venire tradotta in un'istanza del problema $P_{big}$. Invece, nella seconda direzione, faremo l'inverso. Si dimostreranno quindi che esistono le seguenti riduzioni:\\
+
+$
+\begin{cases}   
+P_{graph} \le P_{big}\\
+P_{big} \le P_{graph}
+\end{cases}
+$
+\\
+
+
+\begin{itemize}
+	\item
+	$P_{graph} \le P_{big}$:\\
+	Ogni grafo $G$ può essere trasformato in un bigrafo $B$ tramite la seguente trasformazione. Innanzitutto, definiamo la segnatura di $B$: servono solamente due controlli, $Node$ con $0$ porte e $Port$ con una sola ($\{Node:0, Port:1\}$). Traduciamo ogni nodo $n_G$ di $G$ in un nodo $n_B$ di tipo $Node$ di $B$; in seguito, per ogni arco uscente o entrante di $n_G$ inseriamo in $n_B$ un nodo di controllo $Port$ e colleghiamo la sua porta all'altro nodo $n_B$ di $B$. Questa trasformazione consente quindi di trasformare ogni grafo in un bigrafo: dato che è possibile implementarla come una visita sul grafo, questa riduzione è in tempo polinomiale (\emph{Karp-riduzione} da  $P_{\pi}$ a $P_{big}$). Un esempio è rappresentato in figura \ref{fig:firstRed}.
+	
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,6);
+%Nodes
+\draw[thick] (1.0,4.0) circle [radius=0.3];
+\draw[thick] (2.0,1.0) circle [radius=0.3];
+\draw[thick] (5.0,2.0) circle [radius=0.3];
+\draw[thick] (5.0,5.0) circle [radius=0.3];
+%Edges
+\draw[myGreen,thick] (1.0,3.7) to [out=270,in=90] (2.0,1.3);
+\draw[myGreen,thick] (2.3,1.0) to [out=0,in=270] (5.0,1.7);
+\draw[myGreen,thick] (1.0,4.3) to [out=90,in=180] (4.7,5.0);
+\draw[myGreen,thick] (5.0,2.3) to [out=110,in=290] (5.0,4.7);
+\draw[myGreen,thick] (2.2,1.2) to [out=80,in=200] (4.8,4.8);
+
+%Red Arrow
+\draw[->,red,thick] (5.7,3.0) -- (7.5,3.0);
+
+%Root
+\draw[rounded corners=5mm,dashed] (8.0,0.0) rectangle (14.0,6.0);
+%Edges
+\draw[myGreen,thick] (9.0,3.7) to [out=270,in=90] (10.0,1.3);%n1-n2
+\draw[myGreen,thick] (9.3,4.0) to [out=0,in=180] (12.7,5.0);%n1-n4
+\draw[myGreen,thick] (10.3,1.0) to [out=0,in=180] (12.7,2.0);%n2-n3
+\draw[myGreen,thick] (10.3,1.3) to [out=100,in=240] (12.7,4.7);%n2-n4
+\draw[myGreen,thick] (13.0,2.3) to [out=90,in=270] (13.0,4.7);%n3-n4
+%Nodes
+\draw[thick] (9.0,4.0) circle [radius=0.6];%n1
+\draw[thick] (10.0,1.0) circle [radius=0.6];%n2
+\draw[thick] (13.0,2.0) circle [radius=0.6];%n3
+\draw[thick] (13.0,5.0) circle [radius=0.6];%n4
+%Ports
+\draw[fill] (9.0,3.7) circle [radius=0.1];%n1
+\draw[fill] (9.3,4.0) circle [radius=0.1];%n1
+\draw[fill] (10.0,1.3) circle [radius=0.1];%n2
+\draw[fill] (10.3,1.0) circle [radius=0.1];%n2
+\draw[fill] (10.3,1.3) circle [radius=0.1];%n2
+\draw[fill] (13.0,2.3) circle [radius=0.1];%n3
+\draw[fill] (12.7,2.0) circle [radius=0.1];%n3
+\draw[fill] (13.0,4.7) circle [radius=0.1];%n4
+\draw[fill] (12.7,5.0) circle [radius=0.1];%n4
+\draw[fill] (12.7,4.7) circle [radius=0.1];%n4
+\end{tikzpicture}
+\caption{Riduzione da $P_{graph}$ a $P_{big}$ \label{fig:firstRed}}
+\end{figure}
+
+
+	
+	
+	%Dando una particolare segnatura al bigrafo, ogni termine del $\pi$-Calcolo può essere tradotto in un bigrafo, quindi si ha che ogni istanza del problema $\pi$-SC ($\pi$  Structural Conguence), che controlla quando due termini sono equivalenti, può essere tradotta in tempo polinomiale in un'istanza del problema $P_{big}$, che controlla quando due bigrafi sono isomorfi. Questa è una \emph{Karp-riduzione} dal problema $P_{\pi}$ a $P_{big}$. In [...] si dimostra che il problema di congruenza tra termini del $\pi$-Calcolo, cioè $\pi$-SC, è equivalente al problema dell'isomorfismo tra \emph{grafi}, $P_{graph}$. Quindi, abbiamo trovato una riduzione che traduce ogni istanza del problema di isomorfismo tra grafi in un'istanza del problema di isomorfismo tra bigrafi.
+	
+	\item
+	$P_{big} \le P_{graph}$:\\
+	Il primo approccio potrebbe essere quello di trattare i casi del place graph e del link graph separatamente, ma questa sarebbe una soluzione sbagliata: come si vedrà dagli esempi seguenti, due bigrafi che hanno sia place graph sia link graph isomorfi potrebbero non essere isomorfi. Per questo motivo, si deve trasformare ogni bigrafo in un grafo tramite questa trasformazione, di cui si è riportato un esempio in figura \ref{fig:secondRed}. Ogni nodo, radice, sito, porta, innername, arco e outername viene trasformato in un nodo del grafo: in altre parole ogni entità del bigrafo (compresi gli archi) viene trasformata in un nodo.
+	
+	Ora, l'idea è quella di sfruttare le funzione $prnt$ e $link$ che compongono rispettivamente ogni place graph ed ogni link graph. Nel primo caso, se il nodo $n_1$ si trova all'interno di $n_2$ allora ci sarà un link tra questi due nodi. Nel secondo caso, se le porte $p1$ e $p_2$ sono collegate tramite l'arco $e_0$, allora nel grafo il nodo $e_0$ sarà collegato sia al nodo $p_1$ sia al nodo $p_2$. Come si vede bene dalla figura \ref{fig:secondRed}, si costruisce un grafo che tenga conto sia della struttura del place graph (archi rossi) sia di quella del link graph (archi verdi).
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,6);
+%Root
+\draw[rounded corners=4mm,dashed] (0.0,0.0) rectangle (6.0,5.0);
+\node[right] at (0.1,4.7){$0$};
+%Edges
+\draw[myGreen, thick] (1.0,3.8) to [out=80,in=280] (1.0,5.3);
+\draw[myGreen, thick] (2.0,4.0) to [out=80,in=280] (2.5,5.3);
+\draw[myGreen, thick] (3.45,3.45) to [out=80,in=90] (5.0,2.4);
+\node at (4.5,3.5) {$e_0$};
+%n1
+\draw[thick] (2.0,3.0) ellipse (1.6 and 1.0);
+\node at (1.0,1.9){$n_1$};
+%site
+\draw[rounded corners=1mm, fill=myGrey, dashed] (1.7,2.3) rectangle (2.2,2.8);
+\node at (1.95,2.55){$0$};
+%ports n1
+\draw[fill] (1.0,3.8) circle [radius=0.05]; \node at (1.0,3.5){$p_1$};
+\draw[fill] (2.0,4.0) circle [radius=0.05]; \node at (2.0,3.7){$p_2$};
+\draw[fill] (3.45,3.45) circle [radius=0.05]; \node[below left] at (3.45,3.45){$p_3$};
+%n2
+\draw[thick] (5.0,2.0) ellipse (0.5 and 0.4);
+\node at (5.0,1.4){$n_2$};
+%ports n2
+\draw[fill] (5.0,2.4) circle [radius=0.05];\node at (5.0,2.1){$p_4$};
+%Outers
+\node at (1.0,5.5){$out_1$};
+\node at (2.5,5.5){$out_2$};
+
+
+%Red Arrow
+\draw[->,thick,red] (6.2,2.5) -- (7.2,2.5);
+
+
+%Nodes
+\draw[thick] (8.0,4.0) circle [radius=0.3]; \node at (8.0,4.0){$0$};
+\draw[thick] (8.0,2.5) circle [radius=0.3]; \node at (8.0,2.5){$n_1$};
+\draw[thick] (8.0,1.0) circle [radius=0.3]; \node at (8.0,1.0){$0$};
+\draw[thick] (10.0,4.0) circle [radius=0.3]; \node at (10.0,4.0){$p_1$};
+\draw[thick] (10.0,2.5) circle [radius=0.3]; \node at (10.0,2.5){$p_2$};
+\draw[thick] (10.0,1.0) circle [radius=0.3]; \node at (10.0,1.0){$p_3$};
+\draw[thick] (12.0,4.0) circle [radius=0.4]; \node at (12.0,4.0){$out_1$};
+\draw[thick] (12.0,2.5) circle [radius=0.4]; \node at (12.0,2.5){$out_2$};
+\draw[thick] (12.0,1.0) circle [radius=0.3]; \node at (12.0,1.0){$e_0$};
+\draw[thick] (13.5,2.5) circle [radius=0.4]; \node at (13.5,2.5){$n_2$};
+\draw[thick] (13.5,1.0) circle [radius=0.3]; \node at (13.5,1.0){$p_4$};
+%Edges
+\draw[thick,red] (8.0,3.7) -- (8.0,2.8); %0-n1
+\draw[thick,red] (8.0,2.2) -- (8.0,1.3); %n1-0
+\draw[thick,red] (8.0,4.3) to[out=90,in=90] (13.5,2.9); %0-n2
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,4.0); %n1-p1
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,2.5); %n1-p2
+\draw[thick,myGreen] (8.3,2.5) to[out=0,in=180] (9.7,1.0); %n1-p3
+\draw[thick,myGreen] (10.3,4.0) to[out=10,in=190] (11.6,4.0); %p1-out1
+\draw[thick,myGreen] (10.3,2.5) to[out=10,in=190] (11.6,2.5); %p2-out2
+\draw[thick,myGreen] (10.3,1.0) to[out=10,in=190] (11.7,1.0); %p3-e0
+\draw[thick,myGreen] (13.5,2.1) to[out=280,in=100] (13.5,1.3); %n2-p4
+\draw[thick,myGreen] (12.3,1.0) to[out=10,in=190] (13.2,1.0); %e0-p4
+
+\end{tikzpicture}
+\caption{Riduzione da $P_{big}$ a $P_{graph}$ \label{fig:secondRed}}
+\end{figure}
+	
+	
+	%Procediamo ora con la seconda parte della dimostrazione: vogliamo dimostrare che ogni istanza del problema $P_{graph}$ può venire tradotta in tempo polinomiale in un'istanza del problema $P_{big}$. Si è visto nell'introduzione che ogni bigrafo è decomponibile in due strutture tra loro ortogonali (place graph e link graph), e che quindi l'isomorfismo può venire trattato separatamente per i due casi. Trattandosi di grafi, ogni istanza di $P_{big}$ può venire ridotta a due istanza di $P_{graph}$. Abbiamo quindi trovato una riduzione da $P_{big}$ a $P_{graph}$.
+\end{itemize}
+
+
+Si è quindi dimostrata l'equivalenza fra il problema dell'isomorfismo tra bigrafi e quella tra grafi, concludendo quindi che il problema $P_{big}$ è equivalente al problema $P_{graph}$.
+\end{dimos}
+
+\begin{corol}
+Il problema dell'isomorfismo tra bigrafi è \textbf{equivalente} al problema dell'isomorfismo tra grafi.
+\end{corol}
+
+
+Quindi si ha che $P_{big} \in GI$. Come già accennato, l'importanza di trovare la classe di complessità a cui appartiene un dato problema è enorme: se si trovasse un algoritmo che risolva in tempo polinomiale un problema NP-completo (cioè se la famosa domanda \emph{P is NP?} avesse risposta affermativa), allora tutti i problemi appartenenti alla classe NP, incluso $P_{big}$, potrebbero essere ridotti in tempo polinomiale al problema NP-completo di cui si ha l'algoritmo polinomiale. In questo modo, anche l'isomorfismo tra bigrafi sarebbe risolvibile in tempo polinomiale.
+
+
+\section{Strategia di soluzione}
+Dal punto di vista teorico, si è trattato questo problema come una \emph{rete di flusso}: esse consentono di specificare in modo molto preciso delle condizioni sulla \emph{struttura} dei grafi. Qui l'obbiettivo è trovare una traduzione di supporto, che conservi la struttura e sia biettiva: quest'ultima caratteristica per esempio può essere espressa come il fatto che ogni nodo del primo bigrafo deve essere associato ad uno ed un solo nodo del secondo bigrafo. Tramite la rete di flusso, si può specificare questa condizione dicendo che il flusso in uscita da ogni nodo deve essere esattamente 1. Questo è un primo esempio del motivo per cui si è scelta una rete di flusso per la modellizzazione.
+
+Si è scelto di trattare questo problema tramite la programmazione a vincoli. Questo paradigma permette di rappresentare al calcolatore un sistema di equazioni, che esso
+risolverà. Le equazioni saranno i vincoli che la rete di flusso dovrà rispettare. Nel nostro caso, ci basterà capire se esiste una soluzione al sistema, e non ci interessa sapere quali sono le sue soluzioni. Tutte le equazioni scritte sono lineari, con la conseguenza che si avrà un sistema lineare: questo permette di abbassare la complessità dell'algoritmo.
+
+Si è scelta il paradigma del \emph{Constraint Programming} per i seguenti motivi:
+\begin{itemize}
+	\item
+	la programmazione a vincoli consente di ridurre notevolmente il tempo di sviluppo dell'algoritmo e il numero di errori, specie per problemi NP, come l'isomorfismo tra bigrafi.
+	\item
+	il motore che risolve il sistema di equazioni è di solito soggetto a molti test, ed è quindi affidabile. C'è anche la possibilità di imporre delle euristiche che migliorano notevolmente le prestazioni, rendendolo quindi anche efficiente.
+	\item
+	il motore può venire considerato come una \emph{black box}, astraendosi quindi alla sua implementazioni interna, che può per esempio venire cambiata o migliorata nel tempo, evitando di affliggere il software che lo usa.
+\end{itemize}
+E' possibile che esista un algoritmo che risolva in modo più efficiente questo problema: se per esempio sarà inventato l'algoritmo che risolve in tempo polinomiale un isomorfismo tra grafi, allora per quanto dimostrato nella sottosezione \ref{sub:isoComplexity} anche questo problema potrà essere risolto in tempo polinomiale. Fino ad allora, la programmazione a vincoli, che può non risultare il metodo migliore per risolvere questo problema, crea un ottimo compromesso tra complessità dell'algoritmo e tempo di sviluppo.
+
+
+Si è precedentemente visto che ogni bigrafo è formato da due strutture ortogonali e totalmente indipendenti, il place graph ed il link graph. Il problema dell'isomorfismo verrà quindi trattato
+separatamente per le due strutture: ci saranno dei vincoli solamente per il place graph, ed altri solamente per il link graph. Infine, gli ultimi vincoli serviranno per conciliare le due soluzioni: si vedrà che senza di questi il calcolatore riconoscerà come uguali due bigrafi che hanno lo stesso link graph e lo stesso place graph modulo permutazione ma che non sono isomorfi (figura \ref{fig:falseIso}).
+
+
+\subsection{Esempi}\label{sub:isoExamples}
+Non è sempre banale capire quando due bigrafi sono isomorfi. Si forniscono quindi alcuni esempi per acquisire familiarità con questo concetto. 
+
+Il primo riprende il bigrafo di figura \ref{fig:bigMul} per la moltiplicazione tra numeri naturali. Si vuole mostrare che, semanticamente, l'operazione $2*4$ è equivalente
+all'operazione $4*2$. In altre parole, non importa l'ordine dei nodi.
+
+Incominciamo notando che i due link graph sono isomorfi, perché non hanno archi e presentano lo stesso numero di nodi. Prendiamo ora in esame il place graph: se si ritorna alla sua definizione, si nota subito come i due place graph siano uguali perché i nodi interni non sono ordinati.
+
+Il fatto di dimostrare che i due bigrafi sono isomorfi e semanticamente equivalenti, dimostra che la proprietà commutativa della moltiplicazione vale anche nella sua versione bigrafica.\\
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%Root
+\draw[rounded corners=4mm,dotted, thick] (1.0,0.0) rectangle (7.0,5.0);
+\node[below right] at (1.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (1.5,0.5) rectangle (6.5,4.5);%mul
+\node[below right] at (1.5,4.5) {mul};
+\draw[thick] (2.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (2.6,3.9) {num};
+\draw[thick] (2.0,3.0) rectangle (2.4,3.4);%one
+\node[above right] at (2.0,2.95) {1};
+\draw[thick] (2.8,3.0) rectangle (3.2,3.4);%one
+\node[above right] at (2.8,2.95) {1};
+\draw[thick] (2.0,2.4) rectangle (2.4,2.8);%one
+\node[above right] at (2.0,2.35) {1};
+\draw[thick] (2.8,2.4) rectangle (3.2,2.8);%one
+\node[above right] at (2.8,2.35) {1};
+\draw[thick] (5.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (5.2,3.9) {num};
+\draw[thick] (4.6,3.0) rectangle (5.0,3.4);%one
+\node[above right] at (4.6,2.95) {1};
+\draw[thick] (5.4,3.0) rectangle (5.8,3.4);%one
+\node[above right] at (5.4,2.95) {1};
+
+%Root
+\draw[rounded corners=4mm,dotted, thick] (8.0,0.0) rectangle (14.0,5.0);
+\node[below right] at (8.0,5.0) {0};
+%Nodes
+\draw[rounded corners=4mm, thick] (8.5,0.5) rectangle (13.5,4.5);%mul
+\node[below right] at (8.5,4.5) {mul};
+\draw[thick] (9.7,3.0) circle [radius=1.0] ;%num1
+\node[below] at (9.6,3.9) {num};
+\draw[thick] (9.0,3.0) rectangle (9.4,3.4);%one
+\node[above right] at (9.0,2.95) {1};
+\draw[thick] (9.8,3.0) rectangle (10.2,3.4);%one
+\node[above right] at (9.8,2.95) {1};
+\draw[thick] (12.3,3.0) circle [radius=1.0] ;%num2
+\node[below] at (12.2,3.9) {num};
+\draw[thick] (11.6,3.0) rectangle (12.0,3.4);%one
+\node[above right] at (11.6,2.95) {1};
+\draw[thick] (12.4,3.0) rectangle (12.8,3.4);%one
+\node[above right] at (12.4,2.95) {1};
+\draw[thick] (11.6,2.4) rectangle (12.0,2.8);%one
+\node[above right] at (11.6,2.35) {1};
+\draw[thick] (12.4,2.4) rectangle (12.8,2.8);%one
+\node[above right] at (12.4,2.35) {1};
+
+\end{tikzpicture}
+\caption{Bigrafi Isomorfi: $(4*2) = (2*4)$ \label{fig:bigMulIso}}
+\end{figure}
+
+
+Presentiamo un altro esempio, questa volta su un caso negativo. Si è specificato che per risolvere il problema si trattano separatamente i casi del place graph e del link graph: questo approccio però necessita di avere dei vincoli di ``coerenza" che uniscano le due soluzioni. Senza questi vincoli, si può incorrere nel seguente problema.
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Bigraph   %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (0.0,0.0) rectangle (6.0,4.0);
+\node[below right] at (0.0,4.0) {0};
+%Nodes
+\draw[rounded corners=3mm, thick] (0.5,0.5) rectangle (3.0,3.0);
+\node[above right] at (0.5,3.0) {$Q_1$};
+\draw[thick] (4.5,1.5) circle [radius=1.0];
+\node[above] at (4.5,2.5) {$C_1$};
+\draw[rounded corners=2mm, thick] (1.0,1.0) rectangle (2.0,2.0);
+\node[above right] at (1.0,2.0) {$Q_2$};
+%Edges
+\draw[myGreen, thick] (2.0,3.0) to [out=90,in=90] (4.0,2.35);
+\draw[fill=black] (2.0,3.0) circle [radius=0.05];
+\draw[fill=black] (4.0,2.35) circle [radius=0.05];
+
+
+%%%   First Bigraph   %%%
+%Root
+\draw[rounded corners=4mm,dotted, thick] (7.0,0.0) rectangle (13.0,4.0);
+\node[below right] at (7.0,4.0) {0};
+%Nodes
+\draw[rounded corners=3mm, thick] (7.5,0.5) rectangle (10.0,3.0);
+\node[above right] at (7.5,3.0) {$Q_1$};
+\draw[thick] (11.5,1.5) circle [radius=1.0];
+\node[above] at (11.5,2.5) {$C_1$};
+\draw[rounded corners=2mm, thick] (8.0,1.0) rectangle (9.0,2.0);
+\node[above right] at (8.0,2.0) {$Q_2$};
+%Edges
+\draw[myGreen, thick] (8.7,2.0) to [out=90,in=90] (11.0,2.35);
+\draw[fill=black] (8.7,2.0) circle [radius=0.05];
+\draw[fill=black] (11.0,2.35) circle [radius=0.05];
+
+
+\end{tikzpicture}
+\caption{Bigrafi non Isomorfi\label{fig:falseIso}}
+\end{figure}
+
+
+
+
+\begin{figure}[!htbp]
+\centering
+\subfigure[Place Graph isomorfi]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Place Graph   %%%
+%Root
+\node at (2.5,4.5){0};
+%Nodes
+\node at (1.5,3.5){$Q_1$};
+\node at (3.5,3.5){$C_1$};
+\node at (1.5,1.5){$Q_2$};
+%Edges
+\draw (2.5,4.2) -- (1.5,3.7);
+\draw (2.5,4.2) -- (3.5,3.7);
+\draw (1.5,3.2) -- (1.5,1.7);
+
+%%%   Second Place Graph   %%%
+%Root
+\node at (11.5,4.5){0};
+%Nodes
+\node at (10.5,3.5){$Q_1$};
+\node at (12.5,3.5){$C_1$};
+\node at (10.5,1.5){$Q_2$};
+%Edges
+\draw (11.5,4.2) -- (10.5,3.7);
+\draw (11.5,4.2) -- (12.5,3.7);
+\draw (10.5,3.2) -- (10.5,1.7);
+
+\end{tikzpicture}
+}
+\hspace{5mm}
+\subfigure[Link Graph isomorfi]{
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (14,5);
+%%%   First Link Graph   %%%
+\draw[thick] (1.0,2.0) circle [radius=0.2];
+\node[above left] at (1.0,2.0) {$Q_1$};
+\draw[thick] (2.0,4.0) circle [radius=0.2];
+\node[above left] at (2.0,4.0) {$C_1$};
+\draw[thick] (4.0,2.0) circle [radius=0.2];
+\node[above right] at (4.0,2.0) {$Q_2$};
+\draw[myGreen,thick] (1.0,2.2) to [out=90,in=270] (2.0,3.8);
+
+%%%   Second Link Graph   %%%
+\draw[thick] (10.0,2.0) circle [radius=0.2];
+\node[above left] at (10.0,2.0) {$Q_2$};
+\draw[thick] (11.0,4.0) circle [radius=0.2];
+\node[above left] at (11.0,4.0) {$C_1$};
+\draw[thick] (13.0,2.0) circle [radius=0.2];
+\node[above right] at (13.0,2.0) {$Q_1$};
+\draw[myGreen,thick] (10.0,2.2) to [out=90,in=270] (11.0,3.8);
+
+\end{tikzpicture}
+}
+\caption{Place Graph e Link Graph del bigrafo \ref{fig:falseIso}\label{fig:falsoIsoDecap}}
+\end{figure}
+
+Si considerino i due bigrafi di figura \ref{fig:falseIso} e i loro relativi place graph e link graph (figura \ref{fig:falsoIsoDecap}). Si nota subito che i due bigrafi \emph{non} sono isomorfi. Prendendo però i due place graph ci si accerta che essi lo sono. Lo stesso vale per i due link graph: sono entrambi formati da tre nodi, in cui c'è solamente un edge che collega il cerchio ad un quadrato.
+
+I casi separati del link graph e del place graph sembrano quindi suggerire che i due bigrafi siano isomorfi, mentre si vede subito che non è così. Quello che non abbiamo considerato sono appunto i \emph{vincoli di coerenza}, che informalmente dicono che il quadrato collegato al cerchio (nel primo link graph) deve essere quello che contiene un altro quadrato (nel primo place graph). Aggiunta questa condizione, si nota che le due soluzioni sono \emph{incompatibili}, avendo quindi che i due bigrafi \emph{non} sono isomorfi.
+
+
+
+
+
+
+%%%%%%%%%			VINCOLI 				%%%%%%%%%%%
+\section{Vincoli}
+In questa sezione si presentano le equazioni necessarie per risolvere il problema dell'isomorfismo. Come già anticipato, si lavorerà sulle \emph{reti di flusso}, che sono grafi orientati pesati. Distinguiamo le equazioni per il place graph, per il link graph e per la così detta coerenza.
+
+\subsection{Vincoli per il place graph}
+L'isomorfismo tra place graphs è un isomorfismo tra foreste. Si vuole infatti vedere quando la prima foresta è isomorfa alla seconda, a meno di permutazioni delle radici e dei siti. Una rete di flusso per questo problema è quella in figura \ref{fig:placeFlow}.
+
+\begin{figure*}[th]
+\centering
+\begin{tikzpicture}
+	%root
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	%level 2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	
+	%root
+	\draw [fill] (5.0,2.0) circle [radius=0.1];
+	%level 1
+	\draw [fill] (4.0,1.0) circle [radius=0.1];
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	%level 2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (5.0,1.9) -- (4.0,1.1);
+	\draw [myGreen, thick] (5.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+%level 0
+\draw [red] (1.1,2.0) to [out=60 , in=180 ] (4.9,2.0);
+%level 1
+\draw [red] (0.1,1.0) to [out=30 , in=150 ] (3.9,1.0);
+\draw [red] (0.1,1.0) to [out=-30 , in=210] (5.9,1.0);
+\draw [red] (2.1,1.0) to [out=-30 , in=180 ] (3.9,1.0);
+\draw [red] (2.1,1.0) to [out=30 , in=180] (5.9,1.0);
+%level 2
+\draw [red] (2.1,0.0) to [out=330 , in=180] (5.9,0.0);
+
+
+\end{tikzpicture}
+\caption{Rete di flusso per l'isomorfismo tra place graphs.	\label{fig:placeFlow}}
+\end{figure*}
+
+
+
+Alle due foreste (cioè ai due place graph, costituiti da archi di colore verde), che chiameremo $P_F$ e $P_G$, si sono aggiunti altri archi (quelli rossi) \emph{solamente} tra nodi della stessa altezza, creando così un grafo. Questa è la vera e propria rete di flusso per il problema dell'isomorfismo tra place graph. Ogni arco rosso è \emph{orientato}, perché va dai nodi della prima foresta ai nodi della seconda, e \emph{pesato}, perché gli è assegnato un numero naturale $p \in \{ 0, 1\}$.
+
+Nell'implementazione, trattata tramite la programmazione a vincoli, ogni arco rosso è una variabile. L'insieme delle variabili per il place graph sarà quindi:
+\begin{center}
+$M_{d,m,n} \in \{ 0, 1\} \qquad 0 \le d \le depth \qquad$\\ $\qquad \qquad m \in P_F^d$ \\ $\qquad \qquad n \in P_G^d$
+\end{center}
+dove \emph{depth} è l'altezza massima della prima foresta, e $P_F^d$ e $P_G^d$ indicano l'insieme di nodi/radici/siti che si trovano all'altezza $d$ rispettivamente nel place graph $P_F$ e $P_G$.\\
+In altre parole, creo una variabile che può assumere valore 0 o 1 per ogni coppia di nodi $(a,b)$ che si trovano sulla stessa altezza, dove $a$ appartiene al primo place graph mentre $b$ al secondo.
+
+I vincoli dovranno essere tali che, dopo l'esecuzione del sistema sul calcolatore, le variabili che assumeranno il valore 1 saranno quelle che \emph{formeranno} la vera e propria traduzione di supporto. Ovvero: 
+\begin{prop}\label{prop:traduzioneSupporto}
+La variabile $M_{d,m,n}$ assumerà il valore 1 se e solo se esiste una traduzione di supporto $\rho$ tale che $\rho(m)=n$.
+\end{prop}
+Tutte le altre variabili dovranno assumere il valore 0. Un altro modo di vedere la soluzione è questa: la funzione di traduzione di supporto sarà definita da tutte e sole le variabili con valore 1. Infine: 
+\begin{term}\label{term:matchVariabili}
+Quando la variabile $M_{d,m,n}=1$ diremo che $m$ e $n$ costituiscono un match.
+\end{term}
+
+Nell'esempio di figura \ref{fig:placeFlow}, la soluzione esiste ed è definita come in figura \ref{fig:placeFlowRis}, dove i numeri sopra le variabili (archi rossi) indicano i valori che esse hanno assunto dopo la risoluzione del sistema di equazioni.
+
+
+
+\begin{figure*}[th]
+\centering
+\begin{tikzpicture}
+%\draw[help lines] (0,0) grid (10,5);
+	%root
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	%level 2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	
+	%root
+	\draw [fill] (5.0,2.0) circle [radius=0.1];
+	%level 1
+	\draw [fill] (4.0,1.0) circle [radius=0.1];
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	%level 2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (5.0,1.9) -- (4.0,1.1);
+	\draw [myGreen, thick] (5.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+%level 0
+\draw [red] (1.1,2.0) to [out=60 , in=180 ] (4.9,2.0);
+\node[above] at (2.0,2.5) {1};
+%level 1
+\draw [red] (0.1,1.0) to [out=30 , in=150 ] (3.9,1.0);
+\node[above] at (2.0,1.5) {1};
+\draw [red] (0.1,1.0) to [out=-30 , in=210] (5.9,1.0);
+\node[above] at (1.0,0.5) {0};
+\draw [red] (2.1,1.0) to [out=-30 , in=180 ] (3.9,1.0);
+\node[above] at (3.0,0.5) {0};
+\draw [red] (2.1,1.0) to [out=30 , in=180] (5.9,1.0);
+\node[above] at (5.5,1.0) {1};
+%level 2
+\draw [red] (2.1,0.0) to [out=330 , in=180] (5.9,0.0);
+\node[above left] at (6.0,0.0) {1};
+
+
+\end{tikzpicture}
+\caption{Soluzione della rete di flusso \label{fig:placeFlowRis}}
+\end{figure*}
+
+Riassumendo, dobbiamo tradurre in vincoli il fatto che la funzione di traduzione di supporto sia biiettiva e che conservi la struttura del place graph $P_F$. Distingueremo quindi in vincoli di flusso, che serviranno per il primo problema, e in vincoli strutturali, per il secondo.
+
+Incominciamo con i \textbf{vincoli strutturali}: si è adottata una versione ricorsiva per i vincoli. Distinguiamo quindi in caso base e passo ricorsivo.
+\begin{itemize}
+	\item
+	\emph{Caso Base}: due nodi della stessa altezza che hanno un numero diverso di figli \emph{non} possono costituire un match. In formule:
+	\begin{center}
+	$M_{d,m,n} = 0 \qquad$ se $|prnt_F^{-1}(m)| \ne |prnt_G^{-1}(n)|$ \\ $\qquad \forall d\leq depth - 1$ \\ $ \qquad \qquad \forall m \in P_F^d$ e $n \in P_G^d$
+	\end{center}
+	Nella figura sottostante, si vede subito che la variabile $M_{0,r_0,r_0}=0$ perché $prnt_F^{-1}(r_0)=1 \ne 2=prnt_G^{-1}(r_0)$.
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%root 1
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	%level 1.2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	%root 2
+	\draw [fill] (3.0,2.0) circle [radius=0.1];
+	\node[above left] at (3.0,2.0){$r_0$};
+	%level 2.1
+	\draw [fill] (3.0,1.0) circle [radius=0.1];
+	%level 2.2
+	\draw [fill] (3.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (3.0,1.9) -- (3.0,1.1);
+	\draw [myGreen, thick] (3.0,0.9) -- (3.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%
+	
+	%root 1
+	\draw [fill] (8.0,2.0) circle [radius=0.1];
+	\node[above right] at (8.0,2.0){$r_0$};
+	%level 1.1
+	\draw [fill] (7.0,1.0) circle [radius=0.1];
+	\draw [fill] (9.0,1.0) circle [radius=0.1];
+	%level 1.2
+	\draw [fill] (9.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (8.0,1.9) -- (7.0,1.1);
+	\draw [myGreen, thick] (8.0,1.9) -- (9.0,1.1);
+	\draw [myGreen, thick] (9.0,0.9) -- (9.0,0.1);
+	
+	%root 2
+	\draw [fill] (6.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	%level 2.2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (6.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%%
+	
+	\draw[red] (3.0,2.1) to [out=20,in=160] (8.0,2.1);
+	\node[above] at (5.0,2.5){0}; 
+	
+	\end{tikzpicture}
+	\caption{Esempio per il primo vincolo \label{fig:firstConstraintExe}}
+	\end{figure*}
+	Si noti che questo vincolo viene applicato a tutti i nodi tranne ai siti, come specificato dalla condizione $\forall d\leq depth - 1$.
+	
+	\item
+	\emph{Caso Ricorsivo}:  se due nodi alla stessa altezza \emph{non} costituiscono un match, allora neanche i loro figli lo fanno. In formule:
+	\begin{center}
+	$M_{d,m,n} \le M_{d-1,prnt(m), prnt(n)} \qquad \forall d \ge 1\qquad \qquad$ \\ $\qquad \qquad \qquad \qquad \qquad \qquad \forall m \in P_F^d$ \\ $\qquad \qquad \qquad \qquad \qquad \qquad 	\forall n \in P_G^d$
+	\end{center}
+	Questo vincolo modella la seguente implicazione: 
+	\begin{center}
+	$M_{d-1,prnt(m), prnt(n)}=0 \qquad \Rightarrow \qquad M_{d,m,n}=0$
+	\end{center}
+	Esso costituisce il caso ricorsivo perché vale per tutti i nodi tranne le radici, e le radici sono ricoperte dal caso base. Si veda la figura \ref{fig:secondConstraintExe}: la variabile 
+	$M_{1,n_1,n_2}=0$ perché dalla figura \ref{fig:firstConstraintExe} sappiamo che $M_{0,r_0,r_0}=0$ e perché $prnt_F(n_1)=r_0$ e $prnt_G(n_2)=r_0$. Lo stesso ragionamento vale per la variabile $M_{1,n_1,n_3}$.
+	
+	
+		
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%root 1
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	%level 1.2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	%root 2
+	\draw [fill] (3.0,2.0) circle [radius=0.1];
+	\node[above left] at (3.0,2.0){$r_0$};
+	%level 2.1
+	\draw [fill] (3.0,1.0) circle [radius=0.1];
+	\node[above left] at (3.0,1.0) {$n_1$};
+	%level 2.2
+	\draw [fill] (3.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (3.0,1.9) -- (3.0,1.1);
+	\draw [myGreen, thick] (3.0,0.9) -- (3.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%
+	
+	%root 1
+	\draw [fill] (8.0,2.0) circle [radius=0.1];
+	\node[above right] at (8.0,2.0){$r_0$};
+	%level 1.1
+	\draw [fill] (7.0,1.0) circle [radius=0.1];
+	\node[above left] at (7.0,1.0){$n_2$};
+	\draw [fill] (9.0,1.0) circle [radius=0.1];
+	\node[above right] at (9.0,1.0){$n_3$};
+	%level 1.2
+	\draw [fill] (9.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (8.0,1.9) -- (7.0,1.1);
+	\draw [myGreen, thick] (8.0,1.9) -- (9.0,1.1);
+	\draw [myGreen, thick] (9.0,0.9) -- (9.0,0.1);
+	
+	%root 2
+	\draw [fill] (6.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	%level 2.2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (6.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%%
+	
+	\draw[red] (3.0,2.1) to [out=20,in=160] (8.0,2.1);
+	\node[above] at (5.0,2.5){0}; 
+	\draw[red] (3.1,1.0) to [out=20,in=170] (6.9,1.0);
+	\node[above] at (4.0,1.2){0};
+	\draw[red] (3.1,1.0) to [out=-20,in=190] (8.9,1.0);
+	\node[above] at (5.0,0.5){0};
+	
+	\end{tikzpicture}
+	\caption{Esempio per il secondo vincolo \label{fig:secondConstraintExe}}
+	\end{figure*}
+\end{itemize}
+
+
+Questi vincoli non sono però sufficienti per determinare un isomorfismo tra i due place graph $P_F$ e $P_G$. In particolare, la traduzione di supporto deve essere biiettiva, cioè associare un nodo/radice/sito di $P_F$ ad uno ed un solo nodo/radice/sito di $P_G$. Si sono quindi aggiunti i \textbf{vincoli di flusso}.
+
+\begin{itemize}
+	\item
+	\emph{Flusso in uscita}: il flusso totale in uscita da ogni nodo deve essere esattamente pari a 1. 
+	\begin{notaz}
+	Questo vincolo lo indicheremo con la notazione: $\delta^{+}(m)=1$, dove $m \in P_F^d$.
+	\end{notaz}
+	Esso si traduce nel fatto che la somma di tutte le variabili in uscita da ogni nodo/radice/sito di $P_F$ deve essere 1, ovvero: ogni nodo di F può costituire un match solamente con uno ed un solo altro nodo di G. In formule:
+	\begin{center}
+	$\sum\limits_{n}M_{d,m,n} = 1 \qquad 0 \le d \le depth \qquad  $ \\ $ \qquad \qquad m \in P_F^d$ \\ $ \qquad \qquad n \in P_G^d$
+	\end{center}
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%root 1
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	%level 1.2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	%root 2
+	\draw [fill] (3.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (3.0,1.0) circle [radius=0.1];
+	\node[above left] at (3.0,1.0) {$n_1$};
+	%level 2.2
+	\draw [fill] (3.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (3.0,1.9) -- (3.0,1.1);
+	\draw [myGreen, thick] (3.0,0.9) -- (3.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%
+	
+	%root 1
+	\draw [fill] (8.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (7.0,1.0) circle [radius=0.1];
+	\node[right] at (7.0,1.0){$n_2$};
+	\draw [fill] (9.0,1.0) circle [radius=0.1];
+	\node[above right] at (9.0,1.0){$n_3$};
+	%level 1.2
+	\draw [fill] (9.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (8.0,1.9) -- (7.0,1.1);
+	\draw [myGreen, thick] (8.0,1.9) -- (9.0,1.1);
+	\draw [myGreen, thick] (9.0,0.9) -- (9.0,0.1);
+	
+	%root 2
+	\draw [fill] (6.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	\node[above right] at (6.0,1.0){$n_1$};
+	%level 2.2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (6.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%%
+	
+	\draw[red] (3.1,1.0) to [out=50,in=130] (6.9,1.0);%n1-n2
+	\node at (4.0,2.0){0};
+	\draw[red] (3.1,1.0) to [out=-30,in=210] (8.9,1.0);%n1-n3
+	\node[above] at (4.0,0.0){0};
+	\draw[red] (3.1,1.0) to [out=20,in=170] (5.9,1.0);%n1-n1
+	\node[above] at (5.0,1.2){1};
+	
+	
+	\end{tikzpicture}
+	\caption{Esempio per il vincolo sul flusso in uscita \label{fig:thirdConstraintExe}}
+	\end{figure*}
+	In figura \ref{fig:thirdConstraintExe} si può vedere come la somma degli archi in uscita dal nodo $n_1$ sia 1, ovvero: 
+	$M_{1,n_1,n_1}+M_{1,n_1,n_2}+M_{1,n_1,n_3}=1$. \\
+	
+	\item
+	\emph{Flusso in entrata}: il flusso totale in entrata da ogni nodo deve essere esattamente pari a 1.
+	\begin{notaz}
+	Questo vincolo lo indicheremo con la notazione: $\delta^{-}(n)=1$, dove $n \in P_G^d$.
+	\end{notaz}
+	Esso è equivalente a dire che la somma di tutte le variabili in entrata da ogni nodo/radice/sito di $P_G$ deve essere 1. In altre parole: ogni nodo di G può costituire un match solamente con uno ed un solo altro nodo di F. In formule:
+	\begin{center}
+	$\sum\limits_{m}M_{d,m,n} = 1 \qquad 0 \le d \le depth \qquad  $ \\ $ \qquad \qquad m \in P_F^d$ \\ $ \qquad \qquad n \in P_G^d$
+	\end{center}
+	
+	
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (10,5);
+	%root 1
+	\draw [fill] (1.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (0.0,1.0) circle [radius=0.1];
+	\node[above left] at (0.0,1.0){$n_2$};
+	\draw [fill] (2.0,1.0) circle [radius=0.1];
+	\node[below left] at (2.0,1.0){$n_3$};
+	%level 1.2
+	\draw [fill] (2.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (1.0,1.9) -- (0.0,1.1);
+	\draw [myGreen, thick] (1.0,1.9) -- (2.0,1.1);
+	\draw [myGreen, thick] (2.0,0.9) -- (2.0,0.1);
+	
+	%root 2
+	\draw [fill] (3.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (3.0,1.0) circle [radius=0.1];
+	\node[above left] at (3.0,1.0) {$n_1$};
+	%level 2.2
+	\draw [fill] (3.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (3.0,1.9) -- (3.0,1.1);
+	\draw [myGreen, thick] (3.0,0.9) -- (3.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%
+	
+	%root 1
+	\draw [fill] (8.0,2.0) circle [radius=0.1];
+	%level 1.1
+	\draw [fill] (7.0,1.0) circle [radius=0.1];
+	\draw [fill] (9.0,1.0) circle [radius=0.1];
+	%level 1.2
+	\draw [fill] (9.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (8.0,1.9) -- (7.0,1.1);
+	\draw [myGreen, thick] (8.0,1.9) -- (9.0,1.1);
+	\draw [myGreen, thick] (9.0,0.9) -- (9.0,0.1);
+	
+	%root 2
+	\draw [fill] (6.0,2.0) circle [radius=0.1];
+	%level 2.1
+	\draw [fill] (6.0,1.0) circle [radius=0.1];
+	\node[above right] at (6.0,1.0){$n_1$};
+	%level 2.2
+	\draw [fill] (6.0,0.0) circle [radius=0.1];
+	%tree-edges G
+	\draw [myGreen, thick] (6.0,1.9) -- (6.0,1.1);
+	\draw [myGreen, thick] (6.0,0.9) -- (6.0,0.1);
+	
+	%%%%%%%%%%%%%%%%%%%%%%
+	
+	\draw[red] (0.1,1.0) to [out=30,in=150] (5.9,1.0);%n2-n1
+	\node at (4.0,2.0){0};
+	\draw[red] (2.1,1.0) to [out=-30,in=210] (5.9,1.0);%n3-n1
+	\node[above] at (4.0,0.0){0};
+	\draw[red] (3.1,1.0) to [out=20,in=170] (5.9,1.0);%n1-n1
+	\node[above] at (4.0,1.15){1};
+	
+	
+	\end{tikzpicture}
+	\caption{Esempio per il vincolo sul flusso in entrata \label{fig:fourthConstraintExe}}
+	\end{figure*}
+	In figura \ref{fig:fourthConstraintExe}, è stato espresso il vincolo che il flusso in entrata verso il nodo $n_1$ deve essere 1, cioè: 
+	$M_{1,n_1,n_1}+M_{1,n_2,n_1}+M_{1,n_3,n_1}=1$.
+	
+\end{itemize}
+
+Si capisce bene come questi due ultimi vincoli assicurino che la traduzione di supporto sia rispettivamente iniettiva e suriettiva, rendendola quindi \emph{biiettiva} come si voleva.
+
+
+
+%%%   LINK GRAPH   %%%
+\subsection{Vincoli per il link graph}
+L'isomorfismo tra link graph è un isomorfismo tra ipergrafi. In questo problema, sfruttiamo soprattutto la definizione di link graph: la sua struttura è definita dalla funzione \emph{link}, che collega Punti a Handles. I primi sono l'insieme delle porte e degli inner names, mentre i secondi sono l'insieme degli archi e degli outer names (sottosezione \ref{sub:linkGraph}). Si può quindi vedere ogni link graph come una funzione che ha come dominio i Punti e come codominio gli Handles. 
+
+Sulla base di queste osservazioni, possiamo costruire la \emph{rete di flusso} per questo problema nel seguente modo: innanzitutto chiamiamo i due link graph rispettivamente $L_F$ e $L_G$, e le loro funzioni come $link_F$ e $link_G$ (definite dagli archi verdi di figura \ref{fig:linkFlow}). Possiamo collegare tutti gli elementi del dominio di $link_F$ a tutti gli elementi del dominio di $link_G$, creando così archi \emph{orientati}, perché vanno da punti di $L_F$ a punti di $L_G$, e \emph{pesati}, perché possono assumere un valore $p \in \{0, 1\}$.
+Infine, facciamo lo stesso con i loro Handle: colleghiamo tutti gli elementi del codominio di $link_F$ a tutti gli elementi del codominio di $link_G$. \\
+Si è così creata la rete di flusso in figura \ref{fig:linkFlow}, dove $D_X$ (con $X \in \{ F, G\}$) indica il dominio di $link_X$ e $C_X$ il suo codominio. \\
+Per chiarezza visiva, si sono omessi alcuni archi rossi, ma si deve immaginare che ogni elemento di $D_F$ abbiamo tre archi verso ognuno degli elementi di $D_G$. Lo stesso vale per $C_F$.
+
+
+\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%%%   Domain   %%%
+	\draw[rounded corners = 2mm, dashed] (0.8,2.8) rectangle (2.0,4.2);
+	\node[above] at (1.5,4.2) {$D_F$};
+	%%%   Codomain   %%%
+	\draw[rounded corners = 2mm, dashed] (0.8,0.8) rectangle (2.0,2.2);
+	\node[above] at (1.5,0.1) {$D_G$};
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%%%   Domain   %%%
+	\draw[rounded corners = 2mm, dashed] (4.0,2.8) rectangle (5.2,4.2);
+	\node[above] at (4.7,4.2) {$C_F$};
+	%%%   Codomain   %%%
+	\draw[rounded corners = 2mm, dashed] (4.0,0.8) rectangle (5.2,2.2);
+	\node[above] at (4.7,0.1) {$C_G$};
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (1.4,2.0);%p3-p1
+	\draw [red, ->] (1.4,3.0) to [out=180,in=150] (0.9,1.5);%p3-p2
+	\draw [red, ->] (1.4,3.0) to [out=180,in=120] (1.4,1.0);%p3-p3
+	
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (4.6,2.0);%h3-h1
+	\draw [red, ->] (4.6,3.0) to [out=0,in=30] (5.1,1.5);%h3-h2
+	\draw [red, ->] (4.6,3.0) to [out=0,in=60] (4.6,1.0);%h3-h3
+	
+	
+	\end{tikzpicture}
+	\caption{Esempio di rete di flusso per il problema di isomorfismo tra link graphs. \label{fig:linkFlow}}
+\end{figure*}
+
+
+Incominciamo quindi con definire le variabili del sistema di equazioni:
+\begin{center}
+$x_{h,h'} \in \{0, 1\} \qquad h \in C_F = Y_F \uplus E_F \qquad$ \\ $\qquad \qquad \qquad \qquad h' \in C_G = Y_G \uplus E_G \qquad$
+\end{center}
+\begin{center}
+$y_{p,p'} \in \{0, 1\} \qquad p \in D_F = X_F \uplus P_F \qquad$ \\ $\qquad \qquad \qquad \qquad p' \in D_G = X_G \uplus P_G \qquad$
+\end{center}
+
+Si sono distinte le variabili che vanno dal dominio $D_F$ a $D_G$, che vengono chiamate $y$, da quelle che vanno dal codominio $C_F$ a $C_G$, chiamate $x$.
+Le soluzioni del sistema hanno lo stesso significato che avevano nel place graph: dopo l'esecuzione, le variabili che assumeranno il valore 1 saranno solamente quelle che costituiranno la vera e propria traduzione di supporto. Quindi, anche per questo problema, valgono la proposizione \ref{prop:traduzioneSupporto} e la notazione \ref{term:matchVariabili}.
+
+I vincoli che si devono scegliere hanno il compito di ``costituire" la funzione di traduzione di supporto, e devono quindi assicurare che essa sia biiettiva e che mantenga la struttura del primo link graph. Perciò, anche in questo caso, distinguiamo in \emph{vincoli di flusso}, per il primo problema, e in \emph{vincoli strutturali}, per il secondo.
+
+Incominciamo con il definire i \textbf{vincoli strutturali}. Essi hanno il compito di definire una funzione che va dal primo link graph al secondo, che sia in grado di mantenere la struttura del primo. In altre parole, devono controllare che le due strutture siano \emph{compatibili}. I vincoli strutturali fanno riferimento al caso negativo, cioè descrivono nel sistema quando due punti o due handle \emph{non} possono costituire un match. Da qui i due vincoli:
+
+\begin{itemize}
+	\item
+	\emph{Primo vincolo strutturale}: due handles (il primo di $L_F$ e il secondo di $L_G$) che hanno un numero diverso di pre-immagini \emph{non} possono costituire un match. In altre parole: se l'handle $h$ è immagine di due punti ma l'handle $h'$ lo è di uno solo, allora $h$ e $h'$ non possono essere associati. In formule:
+	\begin{center}
+	$x_{h,h'} = 0 \qquad \qquad \qquad |link^{-1}_F(h)| \ne |link^{-1}_G(h')| \qquad $ \\ 
+	$\qquad \qquad h \in C_F = Y_F \uplus E_F$ \\ 
+	$\qquad \qquad h' \in C_G = Y_G \uplus E_G$
+	\end{center}
+	In figura \ref{fig:firstLinkConstraint}, si può vedere come la variabile $x_{h_3,h_1}$ sia vincolata ad assumere il valore 0, infatti: $|link_F^{-1}(h_3)| = 0$ ma 
+	$|link_G^{-1}(h_1)| = 1$, quindi $x_{h_3,h_1} = 0$.
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (4.6,2.0);%h3-h1
+	\node[right] at (5.0,3.0){$h_3$};
+	\node[right] at (5.0,2.0){$h_1$};
+	
+	\end{tikzpicture}
+	\caption{Esempio per il primo vincolo. \label{fig:firstLinkConstraint}}
+	\end{figure*}
+
+	
+	\item
+	\emph{Secondo vincolo strutturale}: se due handles ($h \in C_F$ e $h' \in C_G$) non costituiscono un match, allora neanche i punti che hanno $h$ e $h'$ come immagine lo fanno. Questo vincolo modella la seguente implicazione:
+	\begin{center}
+	$x_{h,h'} = 0 \qquad \Rightarrow \qquad y_{p,p'} = 0$
+	\end{center}
+	dove $p \in link^{-1}_F(h)$ e $p' \in link^{-1}_G(h')$. Esso può essere tradotto tramite la seguente equazione.
+	\begin{center}
+	$y_{p,p'} \le x_{link_F(p),link_G(p')} \qquad \qquad \qquad p \in D_F = X_F \uplus P_F \qquad \qquad \qquad \qquad$ \\ 
+	$\qquad \qquad \qquad \qquad p' \in D_G = X_G \uplus P_G$
+	\end{center}
+	Si noti che questa equazione equivale all'implicazione precedente: se $x=0$, allora deve per forza essere che anche $y=0$.
+	
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\node [above] at (1.0,3.5) {$p_2$};
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2 	
+	\node[right] at (5.0,3.5){$h_2$};
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node [below] at (1.5,2.0) {$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	\node[right] at (5.0,2.0){$h_1$};
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (5.0,3.4) to [out=0,in=0] (4.6,2.0);%h2-h1
+	\node at (5.5,2.5) {0};
+	\draw [red, ->] (0.9,3.5) to [out=210,in=180] (1.4,2.0);%p2-p1
+	\node at (0.5,3.0) {0};
+	\draw [red, ->] (1.4,3.0) to [out=210,in=150] (1.4,2.0);%p3-p1
+	\node at (1.5,2.5) {0};
+	
+	\end{tikzpicture}
+	\caption{Esempio per il secondo vincolo. \label{fig:secondLinkConstraint}}
+	\end{figure*}
+	
+	In figura \ref{fig:secondLinkConstraint}, si può vedere un esempio per questo vincolo. Dal primo vincolo sappiamo che $x_{h_2,h_1} = 0$ perché 
+	$|link_F^{-1}(h_2)| = 2$ mentre $|link_G^{-1}(h_1)| = 1$. Aggiungendo il vincolo appena descritto, ricaviamo quindi che $y_{p_2,p_1} = 0$ e $y_{p_3,p_1} = 0$. Infatti, si vede subito che i punti $p_2$ e $p_3$ non possono costituire un match con $p_1$.
+\end{itemize}
+
+Descriviamo adesso i \textbf{vincoli di flusso}, che consentono di avere una funzione biiettiva. Il caso è analogo a quello per il place graph e la notazione rimane la stessa.
+
+\begin{itemize}
+	\item
+	\emph{Flusso in uscita}:
+		\begin{itemize}
+			\item
+			\emph{$\delta^+(p)=1$}:
+			Dobbiamo assicurare che ogni punto di $D_F$ sia associato ad uno e un solo punto di $D_G$, che si traduce in questa equazione:
+				\begin{center}
+				$\sum\limits_{p'}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_F \uplus P_F \qquad p' \in X_G \uplus P_G$
+				\end{center}
+			
+									
+				
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\node[above] at (4.5,3.0){$h_3$};
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (1.4,3.0) to [out=230,in=130] (1.4,2.0);%p3-p1
+	\node at (0.5,2.0) {0};
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (0.9,1.5);%p3-p2
+	\node at (1.0,1.0) {1};
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (1.4,1.0);%p3-p3
+	\node at (1.5,2.5) {0};
+	
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (4.6,2.0);%h3-h1
+	\node at (4.5,2.5) {0};
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (5.1,1.5);%h3-h2
+	\node at (5.5,2.0) {0};
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (4.6,1.0);%h3-h3
+	\node at (5.0,0.8) {1};
+	
+	
+	\end{tikzpicture}
+	\caption{Esempio per i due vincoli sul flusso in uscita. \label{fig:outFlowLinkConstraint}}
+	\end{figure*}
+			
+			\item
+			\emph{$\delta^+(h)=1$}:
+			E' l'analogo del caso precedente. Ogni handle di $C_F$ deve essere associato ad uno e un solo handle di $C_G$. La rispettiva equazione è:
+				\begin{center}
+				$\sum\limits_{h'}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_F \uplus E_F \qquad p' \in Y_F \uplus E_F$
+				\end{center}
+
+			
+			La figura \ref{fig:outFlowLinkConstraint} mostra un esempio di questi due vincoli.
+
+		\end{itemize}
+		
+		
+	\item
+	\emph{Flusso in entrata}:
+		\begin{itemize}
+			\item
+			\emph{$\delta^-(p')=1$}: ogni punto di $D_G$ può essere associato ad uno e un solo punto di $D_F$. In formule:
+				\begin{center}
+				$\sum\limits_{p}y_{p,p'} = 1 \qquad \qquad \qquad p \in X_F \uplus P_F \qquad p' \in X_G \uplus P_G$
+				\end{center}
+				
+			
+			\item
+			\emph{$\delta^-(h')=1$}: ogni handle di $C_G$ può essere associato ad uno e un solo handle di $C_F$. In formule:
+				\begin{center}
+				$\sum\limits_{h}y_{h,h'} = 1 \qquad \qquad \qquad h \in Y_F \uplus E_F \qquad p' \in Y_G \uplus E_G$
+				\end{center}
+			La figura \ref{fig:inFlowLinkConstraint} mostra un esempio per questi due vincoli.
+			
+			
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node[below] at (1.5,2.0){$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	\node[below] at (4.5,2.0){$h_1$};
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (1.4,4.0) to [out=180,in=180] (1.4,2.0);%p1-p1
+	\node at (1.0,4.0) {1};
+	\draw [red, ->] (0.9,3.5) to [out=180,in=180] (1.4,2.0);%p2-p1
+	\node at (0.5,3.5) {0};
+	\draw [red, ->] (1.4,3.0) to [out=230,in=130] (1.4,2.0);%p3-p1
+	\node at (1.5,2.5) {0};
+	
+	\draw [red, ->] (4.6,4.0) to [out=0,in=0] (4.6,2.0);%h1-h1
+	\node at (5.0,4.0) {1};
+	\draw [red, ->] (5.1,3.5) to [out=0,in=0] (4.6,2.0);%h2-h1
+	\node at (5.5,3.0) {0};
+	\draw [red, ->] (4.6,3.0) to [out=0,in=0] (4.6,2.0);%h3-h1
+	\node at (4.5,2.5) {0};
+	
+	
+	\end{tikzpicture}
+	\caption{Esempio per i due vincoli sul flusso in entrata. \label{fig:inFlowLinkConstraint}}
+	\end{figure*}
+			
+			\end{itemize}
+\end{itemize}
+
+Si noti che i quattro vincoli di flusso assicurano la iniettività e la suriettività della funzione di traduzione di supporto, rendendola quindi \emph{biiettiva}.
+
+
+\subsection{Vincoli di coerenza}
+Nella sottosezione \ref{sub:isoExamples}, dedicata ad alcuni esempi, la figura \ref{fig:falseIso} mostrava due bigrafi che, pur avendo i place graphs ed i link graphs isomorfi, \emph{non} erano tali. Questo perché il sistema di equazioni non era completo: non bastano cioè i vincoli visti fino ad ora, e bisogna integrarli con dei \textbf{vincoli di coerenza} che sono dedicati all'unione delle due soluzioni.
+
+Nell'esempio citato, si era già notato informalmente che il quadrato collegato al cerchio nel primo link graph deve essere quello più esterno nel primo place graph. Diamo ora le definizioni formali di questi vincoli:
+
+\begin{itemize}
+	\item
+	\emph{Primo vincolo di coerenza}: due porte costituiscono un match nei due link graphs \emph{se e solo se} i rispettivi nodi lo fanno nei due place graphs e le due porte hanno lo stesso indice. In formule:
+		\begin{center}
+		$y_{p,p'} = M_{d,m,m'} \qquad \qquad \qquad p=(m,i) \qquad p'=(m',i) \qquad \qquad$ \\ 
+		$\qquad \qquad \qquad p \in P_F \qquad p' \in P_G$ \\ 
+		$\qquad \qquad \qquad m \in V_F \qquad m' \in V_G$ \\ 
+		$i \in \mathbb{N}$ 
+		\end{center}
+	In altre parole, se due nodi $m$ e $m'$ non costituiscono un match nei due place graphs, allora neanche le loro porte lo fanno. D'altra parte, se $m$ e $m'$ costituiscono un match, cioè $M_{d,m,m'}=1$, allora le porte con lo stesso indice devono costituire un match: $y_{p,p'} = 1$.
+	
+	\item
+	\emph{Secondo vincolo di coerenza}: due porte con indici diversi non possono costituire un match. In formule:
+		\begin{center}
+		$y_{p,p'} = 0 \qquad \qquad \qquad p=(m,i) \qquad p'=(m',i) \qquad $ \\ 
+		$\qquad \qquad \qquad p \in P_F \qquad p' \in P_G$ \\ 
+		$\qquad \qquad \qquad m \in V_F \qquad m' \in V_G$ \\ 
+		$\qquad \qquad \qquad i, i' \in \mathbb{N} \qquad i \ne i'$ 
+		\end{center}
+	
+	\item
+	\emph{Terzo vincolo di coerenza}: se due punti sono di tipo diverso, cioè il primo è una porta e il secondo un inner name, allora essi non possono costituire un match.
+		\begin{center}
+		$y_{p,p'} = 0 \qquad \qquad \qquad p \in P_F \qquad p' \in X_G \qquad $ \\ 
+		\end{center}
+		Banalmente, vale anche il caso speculare, dove il primo punto è un inner name mentre il secondo è una porta:
+		\begin{center}
+		$y_{p,p'} = 0 \qquad \qquad \qquad p \in X_F \qquad p' \in P_G \qquad $ \\ 
+		\end{center}
+		
+	\item
+	\emph{Quarto vincolo di coerenza}: se due handles sono di tipo diverso, cioè il primo è un arco e il secondo un outername, allora essi non possono costituire un match.
+		\begin{center}
+		$y_{h,h'} = 0 \qquad \qquad \qquad h \in E_F \qquad h' \in Y_G \qquad $ \\ 
+		\end{center}
+		Il caso speculare, dove il primo handle è un outer name name mentre il secondo è un arco, è dato dalla formula:
+		\begin{center}
+		$y_{h,h'} = 0 \qquad \qquad \qquad h \in Y_F \qquad h' \in E_G \qquad $ \\ 
+		\end{center}
+	
+	\item
+	\emph{Quinto vincolo di coerenza}: un nodo può costituire un match solo con un altro nodo. Lo stesso vale per le radici e per i siti. Perciò, è impossibile per esempio che esista una variabile con valore 1 da una radice verso un nodo. I vincoli che coprono tutti i possibili casi sono:
+		\begin{center}
+		$M_{d,a,b} = 0 \qquad \qquad$ se $ \qquad a \in n \qquad b \in V_G $\\
+		oppure se $ \qquad \qquad \qquad a \in n \qquad b \in m $\\
+		oppure se $ \qquad \qquad \qquad a \in m \qquad b \in V_G $\\
+		oppure se $ \qquad \qquad \qquad a \in m \qquad b \in n $\\
+		oppure se $ \qquad \qquad \qquad a \in V_F \qquad b \in m $\\
+		oppure se $ \qquad \qquad \qquad a \in V_F \qquad b \in n $\\
+		\end{center}
+	\item
+	\emph{Sesto vincolo di coerenza}: due nodi con controlli diversi non possono costituire un match. Per esempio, in figura \ref{fig:falseIso} il quadrato più grande del primo bigrafo non può essere associato con il cerchio del secondo.
+	\begin{center}
+	$M_{d,a,b} = 0 \qquad \qquad \qquad ctrl_F(a) \ne ctrl_G(b)$
+	\end{center}
+	
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Implementazione}
+Tutti i vincoli sono stati espressi sul calcolatore tramite la libreria Java \emph{Choco v3.3.1}. Essa permette di rappresentare un sistema di equazioni che poi la stessa libreria risolverà. Forniamo quindi una panoramica della libreria ed alcuni esempi di vincoli che sono stati espressi.
+
+La prima fase, che precede la definizione dei vincoli, riguarda la creazione delle variabili. Ad ogni variabile si deve obbligatoriamente assegnare anche un dominio, che, per quanto grande sia, deve essere finito. A titolo di esempio, in \emph{Choco} possiamo creare le variabili $x$ e $y$ entrambe con dominio $\{0,1,2,3,4\}$ con le seguenti istruzioni:\\
+\begin{lstlisting}
+IntVar x = VariableFactory.enumerated("x", 0, 4, solver);
+IntVar y = VariableFactory.enumerated("y", 0, 4, solver);
+\end{lstlisting}
+Si noti come ogni variabile venga associata ad un \textbf{solver}, che è il motore interno che risolverà il sistema. Sia $x$ che $y$ sono associate allo stesso solver: questo equivale a dire che apparterranno allo stesso sistema di equazioni. La sintassi dei metodi è chiara: come primo argomento c'è il nome della variabile, come secondo ci può essere un vettore (che enumera tutti gli elementi del dominio) oppure il primo estremo dell'intervallo del dominio; come terzo argomento abbiamo il limite superiore del dominio, ed infine c'è il solver al quale le variabili dovranno fare riferimento.
+
+Esprimiamo ora degli esempi di vincoli, che sono appunto equazioni. Tutte le equazioni che appartengono allo stesso sistema, dovranno fare riferimento allo stesso solver. Nel solver di \emph{Choco}, le equazioni vengono aggiunte al sistema tramite il suo metodo \emph{post()}. Il sistema \\
+\begin{center}
+$\begin{cases}
+x+y=7 \\
+x \le 3 \\
+y > 1
+\end{cases}$
+\end{center}
+si può rappresentare con le seguenti istruzioni:\\
+\begin{lstlisting}
+IntVar[] sumV = {x,y};
+IntVar seven = VariableFactory.fixed("seven", 7, solver);
+solver.post(ICF.sum(sumV, "=", seven));
+solver.post(ICF.arithm(x,"<=",3));
+solver.post(ICF.arithm(y,">",1));
+\end{lstlisting}
+
+Si noti come tutti i vincoli facciano riferimento a ``solver", e che quindi faranno parte dello stesso sistema. Inoltre, con il metodo $sum$ si è dovuto creare una costante che rappresentasse il numero 7 (nel metodo $arithm$ questo non è necessario). Vediamo brevemente come si usano questi metodi: il metodo $fixed$ serve per creare una costante; è simile ad $enumerated$ e vuole come argomenti il nome della variabile, il valore della costante ed il solver al quale fare riferimento.
+
+Il metodo $sum$ accetta come primo argomento un vettore formato da tutte le variabili che costituiscono la somma, come secondo argomento l'operatore (per esempio $=$ oppure $\le$) ed infine la variabile che nell'equazione sta a destra dell'operatore.
+
+Il metodo $arithm$ consente di esprimere le più comuni equazioni aritmetiche: il primo argomento è una variabile, il secondo un operatore ($<,\le,=,\ge,>$) ed il terzo una variabile o un numero naturale.
+
+Con il seguente comando: 
+\begin{lstlisting}
+solver.findSolution();
+\end{lstlisting}
+la libreria cerca di risolvere il sistema di equazioni. Se esiste una soluzione ritorna True, altrimenti False. Si noti come in questa sede non ci interessino le soluzioni del sistema, che però potrebbero venire calcolate con il metodo:
+\begin{lstlisting}
+var.getValue() //dove var è una IntVar
+\end{lstlisting}
+per ogni variabile $var$ che fa parte del sistema.
+
+Da quanto appena visto, l'implementazioni dei vincoli per l'isomorfismo tra bigrafi è una traduzione quasi immediata delle formule della sezione precedente. Forniamo quindi solo alcuni esempi:
+\begin{itemize}
+	\item
+	Il vincolo sul flusso in uscita ($\delta^+(p)=1$) da ogni punto del primo link graph è $\sum\limits_{p'}y_{p,p'} = 1$. La sua traduzione nella libreria \emph{Choco vs 3.3.1} usa il metodo \emph{sum} visto prima. Si guardi la figura \ref{fig:outFlowChoco}: se vogliamo esprimere questo vincolo su $p_3$ allora la corrispondente istruzione sarà: 
+	\begin{lstlisting}
+	BoolVar p3_p1 = VF.bool("P3-P1", solver);
+	BoolVar p3_p2 = VF.bool("P3-P2", solver);
+	BoolVar p3_p3 = VF.bool("P3-P3", solver);
+	IntVar[] redArrows = {p3_p1 , p3_p2 , p3_p3};
+	IntVar one = VF.fixed("one", 1, solver);
+	solver.post(ICF.sum(redArrows, "=", one));
+	\end{lstlisting}
+
+	
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\node [below] at (1.5,1.0) {$p_3$};
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\node [below left] at (1.0,1.5) {$p_2$};
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node [below] at (1.5,2.0) {$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (1.4,3.0) to [out=230,in=130] (1.4,2.0);%p3-p1
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (0.9,1.5);%p3-p2
+	\draw [red, ->] (1.4,3.0) to [out=180,in=180] (1.4,1.0);%p3-p3
+	
+	\end{tikzpicture}
+	\caption{Implementazione del vincolo sul flusso in uscita. \label{fig:outFlowChoco}}
+	\end{figure*}
+	
+		
+	VF è la semplice abbreviazione per \emph{VariableFactory}. Come prima cosa, si sono create le tre variabili che corrispondo agli archi rossi della figura. Tutte e tre hanno dominio $\{0,1\}$, per cui possiamo dichiararle direttamente come variabili booleane. Dato che c'è una sommatoria, dobbiamo usare il metodo \emph{sum}: creiamo quindi il vettore con tutti i membri della somma ($redArrows$) e una costante per il numero 1 ($one$). L'ultima istruzione, aggiunge l'equazione $\sum\limits_{p'}y_{p,p'} = 1$ al sistema.
+	
+	
+	\item
+	Il vincolo $y_{p,p'} \le x_{link_F(p),link_G(p')}$ modella una semplice implicazione, come visto nella sezione precedente. Si prenda la figura \ref{fig:secConstraintChoco}: presi i due punti $p_2$ e $p_1$ rispettivamente del primo e del secondo link graph, si ha che questo vincolo può essere espresso tramite queste istruzioni:
+	\begin{lstlisting}
+	BoolVar p2_p1 = VF.bool("P2-P1", solver);
+	BoolVar h2_h1 = VF.bool("H2-H1", solver);	
+	solver.post(ICF.arithm(p2_p1, "<=", h2_h1));
+	\end{lstlisting}
+	
+	Come si può vedere, la traduzione è quasi immediata: il metodo $arithm$ consente di scrivere direttamente l'equazione, risultando quindi molto comodo.
+		
+	\begin{figure*}[th]
+	\centering
+	\begin{tikzpicture}
+	%\draw[help lines] (0,0) grid (8,5);
+	%%%   First Link Graph    %%%
+	%points G
+	\draw [fill] (1.5,3.0) circle [radius=0.1];%p3
+	\node [above] at (1.5,3.0) {$p_3$};
+	\draw [fill] (1.0,3.5) circle [radius=0.1];%p2
+	\node [above] at (1.0,3.5) {$p_2$};
+	\draw [fill] (1.5,4.0) circle [radius=0.1];%p1
+	%handles G
+	\draw [fill] (4.5,3.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,3.5) circle [radius=0.1];%h2 	
+	\node[right] at (5.0,3.5){$h_2$};
+	\draw [fill] (4.5,4.0) circle [radius=0.1];%h1
+	%hyper-edges G
+	\draw [myGreen, thick] (1.6,4.0) -- (4.4,4.0);
+	\draw [myGreen, thick] (1.1,3.5) -- (4.9,3.5);
+	\draw [myGreen, thick] (1.6,3.0) to [out=0,in=180] (3.5,3.5);
+	
+	%%%   Second Link Graph    %%%
+	%points H
+	\draw [fill] (1.5,1.0) circle [radius=0.1];%p3
+	\draw [fill] (1.0,1.5) circle [radius=0.1];%p2
+	\draw [fill] (1.5,2.0) circle [radius=0.1];%p1
+	\node [below] at (1.5,2.0) {$p_1$};
+	%handles H
+	\draw [fill] (4.5,1.0) circle [radius=0.1];%h3
+	\draw [fill] (5.0,1.5) circle [radius=0.1];%h2
+	\draw [fill] (4.5,2.0) circle [radius=0.1];%h1
+	\node[right] at (5.0,2.0){$h_1$};
+	%hyper-edges H
+	\draw [myGreen, thick] (1.6,2.0) -- (4.4,2.0);
+	\draw [myGreen, thick] (1.1,1.5) -- (4.9,1.5);
+	\draw [myGreen, thick] (1.6,1.0) to [out=0,in=180] (3.5,1.5);
+	
+	%%%   Red Edges   %%%
+	\draw [red, ->] (5.0,3.4) to [out=0,in=0] (4.6,2.0);%h2-h1
+	\draw [red, ->] (0.9,3.5) to [out=210,in=180] (1.4,2.0);%p2-p1
+
+	
+	\end{tikzpicture}
+	\caption{Implementazione del secondo vincolo strutturale \label{fig:secConstraintChoco}}
+	\end{figure*}
+	
+\end{itemize}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Benchmarks}\label{ref:sec:benchmarks}
+Nella sottosezione \ref{sub:isoComplexity} si è vista la complessità teorica del problema dell'isomorfismo tra bigrafi. Ora si vedranno dei test (benchmark) volti a misurare le prestazioni dell'algoritmo proposto. Tutti i test sono stati eseguiti su una macchina con queste caratteristiche:
+\begin{itemize}
+	\item
+	processore Intel Core i5 a 2.4GHz
+	\item
+	IDE: Eclipse Luna 4.4.2
+	\item
+	libreria per il constraint programming: \emph{Choco vs 3.3.1}
+\end{itemize}
+
+La preparazione dei dati è stata condotta con attenzione: si è implementato un metodo che potesse generare bigrafi casuali con il numero di nodi richiesto, per fare in modo che il tempo di risoluzione non dipendesse dalla struttura del bigrafo, che può essere semplice o complessa. Questo metodo è stato implementato in un modo molto semplice: \begin{itemize}
+	\item
+	per prima cosa si è costruito il place graph, che è equivalente a generare un albero casuale. All'inizio del metodo, si può specificare il numero di porte che gni nodo dell'albero possiede.
+	\item
+	in seguito, ogni porta di ogni nodo del place graph è stata collegata ad un outername scelto casualmente da un insieme precedentemente generato.
+\end{itemize}
+
+Si vedranno due grafici: 
+\begin{itemize}
+	\item
+	il primo rappresenta il \emph{tempo di preparazione} (figura \ref{fig:loadingTime}): è la misura di quanto l'algoritmo impiega per creare tutte le variabili ed i vincoli
+	\item
+	il secondo rappresenta il \emph{tempo d'esecuzione} (figura \ref{fig:workingTime}), cioè quanto tempo impiega la libreria \emph{Choco} per risolvere il sistema di equazioni
+\end{itemize}
+
+
+
+\begin{figure}[!htbp]
+\begin{tikzpicture}[x=.9cm,y=.6cm]
+
+  \draw[style=help lines,draw=gray!30,ystep=1,xstep=1] 
+    (0,0) grid (10,9);
+
+  % assi
+  \draw[->] (0,0) -- (10.5,0) node[right] {$nodes$};
+  \draw[->] (0,0) -- (0,9.5) node[above] {$time$};
+
+  % xticks e yticks
+  \foreach \x/\txt in 
+		{1/20, 2/40, 3/60, 4/80, 5/100, 6/120, 7/140, 8/160, 9/180}
+    \draw (\x, 1pt) -- (\x,-1pt) node[anchor=north] {$\txt$};  
+  \foreach \y/\txt in 
+		{2/50\,ms,4/100\,ms,6/150\,ms,8/200\,ms}
+    \draw (1pt,\y) -- (-1pt,\y) node[anchor=east] {$\txt$}; 
+	
+	\foreach \x/\md in {
+		1/0.9,
+		2/1.2,
+		3/1.9,
+		4/2.4,
+		5/3.5,
+		6/4.2,
+		7/5.6,
+		8/7.6,
+		9/8.1
+		}{
+		\draw[fill] (\x,\md) circle [radius=0.05];
+	};
+	\draw[color=black!50!red] plot [smooth] coordinates
+		{(1,0.9)(2,1.2)(3,1.9)(4,2.4)(5,3.5)(6,4.2)(7,5.6)(8,7.6)(9.0,8.1)};
+  \end{tikzpicture}
+\caption{Loading Time \label{fig:loadingTime}}
+\end{figure}
+
+
+
+
+
+\begin{figure}[!htbp]
+\begin{tikzpicture}[x=.9cm,y=.6cm]
+
+  \draw[style=help lines,draw=gray!30,ystep=1,xstep=1] 
+    (0,0) grid (10,9);
+
+  % assi
+  \draw[->] (0,0) -- (10.5,0) node[right] {$nodes$};
+  \draw[->] (0,0) -- (0,9.5) node[above] {$time$};
+
+  % xticks e yticks
+  \foreach \x/\txt in 
+		{1/20, 2/40, 3/60, 4/80, 5/100, 6/120, 7/140, 8/160, 9/180}
+    \draw (\x, 1pt) -- (\x,-1pt) node[anchor=north] {$\txt$};  
+  \foreach \y/\txt in 
+		{2/1\,s,4/10\,s,6/100\,s,8/1000\,s}
+    \draw (1pt,\y) -- (-1pt,\y) node[anchor=east] {$\txt$}; 
+	
+	\foreach \x/\md in {
+		1/0.1,
+		2/0.4,
+		3/2.05,
+		4/3.5,
+		5/4.3,
+		6/4.6,
+		7/4.9,
+		8/6.0,
+		9/6.3
+		}{
+		\draw[fill] (\x,\md) circle [radius=0.05];
+	};
+	\draw[color=black!50!red] plot [smooth] coordinates
+		{(1,0.1)(2,0.4)(3,2.05)(4,3.5)(5,4.3)(6,4.6)(7,4.9)(8,6.0)(9.0,6.3)};
+  \end{tikzpicture}
+\caption{Working Time \label{fig:workingTime}}
+\end{figure}
+
+
+
+Ogni grafico ha sulle ascisse il numero di nodi del problema: in altre parole, il problema testato in $x=n$ verifica l'isomorfismo tra due bigrafi con $n/2$ nodi ciascuno. Sulle ascisse c'è invece il tempo espresso in secondi. Il secondo grafico è in scala logaritmica: l'aumento del numero di nodi causa un esplosione combinatoria tra i due bigrafi, che porta ad un aumento esponenziale del numero di vincoli e quindi anche del relativo tempo d'esecuzione.\\
+
+Si noti come il tempo di preparazione cresca linearmente con il numero di nodi, rimanendo sempre sotto un secondo. Il tempo d'esecuzione invece aumenta drasticamente, arrivando fino a due minuti nel caso di due bigrafi con 90 nodi ciascuno.
+
+
+
+
+>>>>>>> Updated TesiGeatti

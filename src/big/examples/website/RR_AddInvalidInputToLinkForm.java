@@ -28,13 +28,13 @@ import it.uniud.mads.jlibbig.core.std.Root;
  *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public class RR_AddInvalidInputToLinkForm1 extends RewritingRule {
+public class RR_AddInvalidInputToLinkForm extends RewritingRule {
 
     private static final Bigraph redex = generateRedex(),
             reactum = generateReactum();
     private static final InstantiationMap map = new InstantiationMap(2, 0, 1);
 
-    public RR_AddInvalidInputToLinkForm1() {
+    public RR_AddInvalidInputToLinkForm() {
         super(redex, reactum, map);
     }
 

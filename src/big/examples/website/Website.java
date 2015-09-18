@@ -21,7 +21,6 @@ import big.predicate.Predicate;
 import big.predicate.TruePredicate;
 import big.predicate.WarioPredicate;
 import big.prprint.BigPPrinterVeryPretty;
-import big.sim.BreadthFirstSim;
 import big.sim.RandomSim;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.BigraphBuilder;
@@ -41,13 +40,19 @@ public class Website {
 
     public static Signature SIGNATURE = generateSignature();
     public static RewritingRule[] RULES = {new RR_BrowsePage(), new RR_ChangeLocus(),
-        new RR_ChangePage(), /*new RR_ChangePageFromForm(), new RR_AddValidInputToLinkForm(),
-        new RR_AddInvalidInputToLinkForm1()*/};
+        new RR_ChangePage(), new RR_ChangePageFromForm(), new RR_AddValidInputToLinkForm(),
+        new RR_AddInvalidInputToLinkForm()};
 
     public static void main(String[] args) {
         Bigraph state = generateECommerceSite(3);
         BigPPrinterVeryPretty pprnt = new BigPPrinterVeryPretty();
         System.out.println(pprnt.prettyPrint(state, "ECommerce site"));
+       /* Sim s = new RandomSim(state, RULES);
+        while(!s.simOver()){
+            for(RuleApplication ra : s.stepAndGet()){
+                System.out.println(pprnt.prettyPrint(ra.getBig()));
+            }            
+        }*/
         modelCheckerTest();
     }
 
@@ -68,13 +73,16 @@ public class Website {
     }
 
     private static boolean modelCheckerTest() {
+        BigPPrinterVeryPretty pprnt = new BigPPrinterVeryPretty();
         Bigraph state = generateECommerceSite(3);
         Predicate p = new WarioPredicate(goalReached(), new TruePredicate(),
                 new TruePredicate(), new TruePredicate());
         ModelChecker mc = new ModelChecker(new RandomSim(state, RULES), p);
         System.out.print("Is a transaction possible? ");
-        if (mc.modelCheck(100)) {
+        Bigraph witness = mc.getWitness();
+        if (witness != null) {
             System.out.println("YES.");
+            System.out.println(pprnt.prettyPrint(witness));
             return true;
         } else {
             System.out.println("NO");
@@ -112,6 +120,8 @@ public class Website {
         bb.addNode("info", locus);
         locus = bb.addNode("locus", home);
         bb.addNode("info", locus);
+        /*locus = bb.addNode("locus", home);
+        bb.addNode("linkForm", locus, goalLink);*/
         for (int i = 0; i < articles; i++) {
             locus = bb.addNode("locus", home);
             bb.addNode("link", locus, articleLinks[i]);
@@ -133,14 +143,13 @@ public class Website {
         bb.addNode("linkForm", locus, checkoutAuthLink);
         locus = bb.addNode("locus", checkout);
         bb.addNode("link", locus, homeLink);
-        bb.addNode("goal", goal);
         // fill checkout (logged in)
         locus = bb.addNode("locus", checkoutAuth);
         bb.addNode("info", locus);
         locus = bb.addNode("locus", checkoutAuth);
         bb.addNode("link", locus, homeLink);
         locus = bb.addNode("locus", checkoutAuth);
-        bb.addNode("linkForm", locus, goalLink);
+        bb.addNode("linkForm", locus, goalLink);     
         //fill goal
         locus = bb.addNode("locus", goal);
         bb.addNode("info", locus);
@@ -153,12 +162,10 @@ public class Website {
 
     private static Bigraph goalReached() {
         BigraphBuilder bb = new BigraphBuilder(SIGNATURE);
-
-        Root userRoot = bb.addRoot();
-        Node user = bb.addNode("user", userRoot);
-        //bb.addSite(userRoot);
         
         Root root = bb.addRoot();
+        Root userRoot = bb.addRoot();
+        Node user = bb.addNode("user", userRoot);
         bb.addSite(root);
         OuterName pageLink = bb.addOuterName("pageLink");
         Node page = bb.addNode("page", root, user.getPort(0).getHandle(), pageLink);

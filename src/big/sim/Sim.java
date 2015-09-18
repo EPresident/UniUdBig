@@ -55,10 +55,12 @@ public abstract class Sim {
     /**
      * Returns true if the simulation is over, which means that all possible
      * states have been created.
+     * Implementation is optional: some Sims might not know when all states have
+     * been computed.
      *
      * @return true if the simulation is over.
      */
-    public abstract boolean simOver();
+    public abstract boolean simOver() throws UnsupportedOperationException;
 
     /**
      * Computes the entire state graph.

@@ -14,28 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package big.brs;
+package big.bsg;
 
 import it.uniud.mads.jlibbig.core.std.Bigraph;
-import java.util.List;
 
 /**
- * Class encapsulating the behavior of a BRS, e.g. which rules are applied where,
- * when, and how many times.
+ *
  * @author EPresident <prez_enquiry@hotmail.com>
  */
-public interface BRS {
-    /**
-     * Apply a RewritingRule to (all redex matches within) a Bigraph.
-     * @param to Bigraph to match the rule on
-     * @return An Iterable with the resulting Bigraph(s)
-     */
-    public List<Bigraph> apply(Bigraph to);
-    /**
-     * Apply a RewritingRule to (all redex matches within) a Bigraph.
-     * @param to Bigraph to match the rule on
-     * @return An Iterable of RuleApplication objects, i.e. the resulting 
-     * Bigraphs paired with the rules that were applied on them.
-     */
-    public List<RuleApplication> apply_RA(Bigraph to);
+public class CardinalityBHF implements BigHashFunction{
+
+    @Override
+    public int bigHash(Bigraph big) {
+        return big.getNodes().size()+big.getEdges().size()+big.getRoots().size()+
+                big.getOuterNames().size()+big.getSites().size()+big.getInnerNames().size();
+    }
+    
 }

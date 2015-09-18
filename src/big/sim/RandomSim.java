@@ -18,8 +18,7 @@ package big.sim;
 
 import big.bsg.BigStateGraph;
 import big.bsg.BSGNode;
-import big.brs.BRS;
-import big.brs.BreadthFirstStrat;
+import big.brs.BreadthFirstBRS;
 import big.brs.RuleApplication;
 import it.uniud.mads.jlibbig.core.std.Bigraph;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
@@ -42,7 +41,7 @@ public class RandomSim extends Sim {
     private final LinkedList<BSGNode> nodeQueue;
 
     public RandomSim(Bigraph big, RewritingRule[] rwrls) {
-        super(new BigStateGraph(big), new BRS(new BreadthFirstStrat(), rwrls));
+        super(new BigStateGraph(big), new BreadthFirstBRS(rwrls));
         nodeQueue = new LinkedList<>();
         nodeQueue.add(bsg.getRoot());
         randomGen = new Random();
@@ -54,15 +53,18 @@ public class RandomSim extends Sim {
         List<RuleApplication> ras = brs.apply_RA(node.getState());
 
         // Random choice
-        if (ras.size() > 0) {
-            int rand = randomGen.nextInt(ras.size());
-            RuleApplication chosen = ras.get(rand);
-            ras.remove(rand);
-            ras.add(chosen);
+        if (ras.size() > 1) {
+            int rand = randomGen.nextInt(ras.size()-1);         
+            /*for (int i = 0; i < rand; i++) {
+                RuleApplication temp = ras.get(i);
+                ras.remove(i);
+                ras.add(temp);
+            }  */  
+            ras.add(0, ras.get(rand));
         }
 
         for (RuleApplication ra : ras) {
-            BSGNode newNode = bsg.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
+            BSGNode newNode = bsg.applyRewritingRule(node, ra.getRule(), ra.getBig());
             if (newNode != null) {
                 nodeQueue.add(newNode);
             }
@@ -78,19 +80,17 @@ public class RandomSim extends Sim {
         // Random choice
         if (ras.size() > 0) {
             int rand = randomGen.nextInt(ras.size());
-            RuleApplication chosen = ras.get(rand);
-            ras.remove(rand);
-            ras.add(chosen);
+            ras.add(0, ras.get(rand));
         }
         
         for (RuleApplication ra : ras) {
-            BSGNode newNode = bsg.applyRewritingRule(node, ra.getRuleName(), ra.getBig());
+            BSGNode newNode = bsg.applyRewritingRule(node, ra.getRule(), ra.getBig());
             if (newNode != null) {
                 nodeQueue.add(newNode);
-            }
-            lra.add(ra);
+                lra.add(ra);
+            }          
         }
-        System.out.println(lra.size()+" applications");
+       // System.out.println(lra.size()+" applications");
         return lra;
     }
 

@@ -32,21 +32,24 @@ public class RuleApplication {
     protected RewritingRule rule;
     protected String ruleName;
 
-    protected RuleApplication(Bigraph b, RewritingRule rr, String s) {
+    public RuleApplication(Bigraph b, RewritingRule rr, String s) {
         big = b;
         rule = rr;
         ruleName = s;
     }
 
-    protected RuleApplication(Bigraph b, RewRuleWProps rr) {
+    public RuleApplication(Bigraph b, RewRuleWProps rr) {
         big = b;
         rule = rr;
         ruleName = rr.getName();
     }
+    
+    public RuleApplication(Bigraph b, RewritingRule rr) {
+        big = b;
+        rule = rr;
+        ruleName = rr.getClass().getSimpleName();
+    }
 
-    /*protected RuleApplication(Bigraph b, String s) {
-
-     }*/
     public Bigraph getBig() {
         return big;
     }

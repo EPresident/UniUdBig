@@ -35,11 +35,14 @@ public class BSGNode {
      * Hash code is pre-computed and stored here.
      */
     private final int hashCode;
+    private final String id;
+    private static int idNum=0;
     
     protected BSGNode(Bigraph big, int hash){
         state=big;
         links=new LinkedList<>();
         hashCode=hash;
+        id="BSGN_"+idNum++;
     }
     
     /**
@@ -66,6 +69,12 @@ public class BSGNode {
     public int getHashCode() {
         return hashCode;
     }
+
+    public String getId() {
+        return id;
+    }
+    
+    
         
     /**
      * Encapsulates a link as a (Destination Node, Rule Applied) couple.

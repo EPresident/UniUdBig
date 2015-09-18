@@ -63,7 +63,7 @@ public class CarPrint {
         System.out.println(big.toString());
         System.out.println(pprt.prettyPrint(big,"Car Example"));
         bfs.fullSim(1000);
-        System.out.println(bfs.getGraph().toDotLang());
+        System.out.println("Grafo degli stati:\n"+bfs.getGraph().toDotLang());
         dlp.printDotFile(big, "Car_Example", "car_example");
     }
 }

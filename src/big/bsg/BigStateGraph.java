@@ -24,7 +24,6 @@ import java.util.List;
 import big.bsg.BSGNode.BSGLink;
 import big.iso.Isomorphism;
 import it.uniud.mads.jlibbig.core.std.RewritingRule;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -57,7 +56,7 @@ public class BigStateGraph {
      * Tells if the graph is acyclic or not.
      */
     private final boolean acyclic;
-   // private int collisions = 0;
+    // private int collisions = 0;
 
     public BigStateGraph(Bigraph big, boolean acyclic, BigHashFunction bhf,
             Isomorphism isomorphism, int hashCapacity) {
@@ -98,59 +97,27 @@ public class BigStateGraph {
      * @return The new state reached (as a BSGNode) or null if there's
      * duplicate.
      */
-<<<<<<< HEAD
-<<<<<<< HEAD
-    public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule, Bigraph reactum) {
-        for (BSGNode previous : nodes) {
-            BSGNode dupNode = findDuplicate(reactum, previous);
-            if (dupNode != null) {// Found a duplicate
-                redex.addLink(dupNode, rewritingRule);
-                return null;
-            }
-        }
-        // Generate a new state, build links
-        BSGNode newNode = new BSGNode(reactum, hashFunc);
-        nodes.add(newNode);
-        redex.addLink(newNode, rewritingRule);
-
-        return newNode;
-    }
-
-    /**
-     *
-     * @param subject bigraph on which we want to verify the isomorphism
-     * @param object BSGNode that we test
-     * @return null if there are no duplicates or, if there are, the duplicate
-     * as a BSGNode.
-     */
-    private BSGNode findDuplicate(Bigraph subject, BSGNode object) {
-        // Use the hash table to find possible duplicates
-        int redexHash = object.getHashCode();
-        int reactumHash = PLACELINK_HASH.bigHash(subject);
-        if (redexHash != reactumHash) {
-            // No duplicates detected
-            return null;
-        } else {
-            // Hash collision suggests possible duplicate (or isomorphism)
-=======
-=======
->>>>>>> refs/remotes/origin/master
     public BSGNode applyRewritingRule(BSGNode redex, RewritingRule rewRule, Bigraph reactum) {
         int hash = hashFunc.bigHash(reactum);
         BSGNode newNode = new BSGNode(reactum, hash);
         if (nodes.containsKey(hash)) {
             // Possible duplicate found
             LinkedList<BSGNode> bucket = nodes.get(hash);
-<<<<<<< HEAD
->>>>>>> dev/codeReview
-=======
->>>>>>> refs/remotes/origin/master
             // Check isomorphism
             for (BSGNode bsgn : bucket) {
                 if (iso.areIsomorph(newNode.getState(), bsgn.getState())) {
                     if (!acyclic) {
                         // Cycle link
-                        redex.addLink(bsgn, rewRule, true);
+                        boolean linkExists = false;
+                        for (BSGLink link : redex.getLinks()) {
+                            if (link.getDestNode() == bsgn && link.getRewRule() == rewRule) {
+                                linkExists = true;
+                                break;
+                            }
+                        }
+                        if (!linkExists) {
+                            redex.addLink(bsgn, rewRule, false);
+                        }
                     }
                     return null;
                 }
@@ -166,7 +133,6 @@ public class BigStateGraph {
             redex.addLink(newNode, rewRule, false);
             return newNode;
         }
-
     }
 
     public BSGNode getRoot() {
@@ -188,8 +154,8 @@ public class BigStateGraph {
 
     public int getGraphSize() {
         int size = 0;
-        for(LinkedList<BSGNode> bucket: nodes.values()){
-            size+=bucket.size();
+        for (LinkedList<BSGNode> bucket : nodes.values()) {
+            size += bucket.size();
         }
         return size;
     }
@@ -208,18 +174,29 @@ public class BigStateGraph {
      * @return the Dot Language representation of this graph.
      */
     public String toDotLang() {
-        LinkedList<BSGNode> queue = new LinkedList<>();
-        queue.add(root);
+        /*LinkedList<BSGNode> queue = new LinkedList<>();
+         queue.add(root);
+         StringBuilder sb = new StringBuilder("digraph stateGraph{\n\n");
+         while (!queue.isEmpty()) {
+         BSGNode curr = queue.pop();
+         for (BSGLink l : curr.getLinks()) {
+         if (!l.isBackwards()) {
+         queue.addLast(l.getDestNode());
+         }
+         sb.append(curr.getHashCode()).append("->")
+         .append(l.getDestNode().getHashCode()).append("[label=")
+         .append(l.getRewRule().getClass().getSimpleName()).append("];\n");
+         }
+         }
+         sb.append("\n}");*/
         StringBuilder sb = new StringBuilder("digraph stateGraph{\n\n");
-        while (!queue.isEmpty()) {
-            BSGNode curr = queue.pop();
-            for (BSGLink l : curr.getLinks()) {
-                if (!l.isBackwards()) {
-                    queue.addLast(l.getDestNode());
+        for (LinkedList<BSGNode> ln : nodes.values()) {
+            for (BSGNode n : ln) {
+                for (BSGLink l : n.getLinks()) {
+                    sb.append(n.getId()).append("->")
+                            .append(l.getDestNode().getId()).append("[label=")
+                            .append(l.getRewRule().getClass().getSimpleName()).append("];\n");
                 }
-                sb.append(curr.getHashCode()).append("->")
-                        .append(l.getDestNode().getHashCode()).append("[label=")
-                        .append(l.getRewRule().getClass().getSimpleName()).append("];\n");
             }
         }
         sb.append("\n}");

@@ -1,0 +1,21 @@
+----- Printing Bigraph Car Example -----
+edge E_12{ N_1B:road; N_1A:road; N_13:place; }
+edge E_1C{ N_1D:target; N_1E:car; }
+edge E_14{ N_15:place; N_18:road; }
+edge E_16{ N_17:place; N_19:road; }
+root 0 {}
+   node N_17:place { port0: Edge E_16;}
+      node N_1D:target { port0: Edge E_1C;}
+      node N_1B:road { port0: Edge E_12;}
+   node N_13:place { port0: Edge E_12;}
+      node N_18:road { port0: Edge E_14;}
+      node N_1E:car { port0: Edge E_1C;}
+         node N_1F:fuel {}
+         node N_20:fuel {}
+         node N_21:fuel {}
+         node N_22:fuel {}
+         node N_23:fuel {}
+   node N_15:place { port0: Edge E_14;}
+      node N_19:road { port0: Edge E_16;}
+      node N_1A:road { port0: Edge E_12;}
+----- Done Printing Car Example ------

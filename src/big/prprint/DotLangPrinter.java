@@ -260,7 +260,8 @@ public class DotLangPrinter {
 
         // scan outernames
         for (OuterName o : pprtBig.getOuterNames()) {
-            String oID = normalizeName(o.toString());
+            //String oID = normalizeName(o.toString());
+            String oID = "\""+o.toString()+"\"";
             for (Point p : o.getPoints()) {
                 // Point.toString() output: portNumber@nodeID:controlType
                 String[] portId = p.toString().split(":")[0].split("@");
@@ -308,7 +309,7 @@ public class DotLangPrinter {
             }
         }
         if (!named) {
-            sb.append(id);
+            sb.append(n.getControl().getName());
         }
         /*  if (n.getProperty("Name") != null) {
          sb.append(n.getProperty("Name").get());
@@ -316,6 +317,7 @@ public class DotLangPrinter {
          } else {
          sb.append(id);
          }*/
+        
         return sb.toString();
     }
 
@@ -527,7 +529,7 @@ public class DotLangPrinter {
             } else {
                 sb.append(normalizeName(id)).append("[shape=ellipse");
             }
-            sb.append(",label=").append(normalizeName(name)).append("];\n");
+            sb.append(",label=\"").append(normalizeName(name)).append("\"];\n");
             return "";
         }
 

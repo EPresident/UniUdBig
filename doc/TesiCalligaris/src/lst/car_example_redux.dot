@@ -1,0 +1,40 @@
+digraph Car Example {
+// Ranghi usati per allineare i nodi su piu' righe
+ranksep=.75;{
+outernames->rank0->rank1->rank2->rank3[style=invisible arrowhead=none];outernames[shape=none style=invisible];
+[...] // Omissis
+}
+
+// Place graph e nodi
+
+N_17 -> 0
+N_1D -> N_17
+N_1B -> N_17
+N_13 -> 0
+N_18 -> N_13
+[...] 
+{
+rank=same;
+rank0;0[shape=box color=blue,label="Root0"];
+}
+{
+rank=same;
+rank1;N_17[shape=ellipse,label="place"];
+N_13[shape=ellipse,label="place"];
+N_15[shape=ellipse,label="place"];
+}
+[...]
+
+// Link graph e archi
+N_1B -> E_12[arrowhead=none color=grey style=dashed k=2];
+N_1A -> E_12[arrowhead=none color=grey style=dashed k=2];
+N_13 -> E_12[arrowhead=none color=grey style=dashed k=2];
+E_12[shape=point];
+[...]
+
+
+// Outer Names
+{
+rank=same;
+outernames;
+}}

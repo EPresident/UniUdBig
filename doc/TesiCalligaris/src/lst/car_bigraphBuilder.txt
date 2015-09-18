@@ -1,0 +1,21 @@
+BigraphBuilder bb = new BigraphBuilder(SIGNATURE);
+
+Root root = bb.addRoot();
+
+Node p0 = bb.addNode("place", root);
+Node p1 = bb.addNode("place", root);
+Node p2 = bb.addNode("place", root);
+
+bb.addNode("road", p0, p1.getPort(0).getHandle());
+bb.addNode("road", p1, p2.getPort(0).getHandle());
+bb.addNode("road", p1, p0.getPort(0).getHandle());
+bb.addNode("road", p2, p0.getPort(0).getHandle());
+
+
+Node target = bb.addNode("target", p2);
+Node car = bb.addNode("car",p0,target.getPort(0).getHandle());
+for (int i = 0; i < 5; i++) {
+     bb.addNode("fuel", car);
+}
+
+Bigraph big = bb.makeBigraph(true);

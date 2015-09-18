@@ -1,0 +1,61 @@
+%% Creator: Inkscape 0.91_64bit, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'placing_elem1.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{173.84886764bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.62059842)%
+    \put(0.26243527,0.07798738){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.78886254\unitlength}\raggedright $\gamma_{1,1}:2\to2$\end{minipage}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{placing_elem1.pdf}}%
+    \put(0.02736189,0.54159779){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
+    \put(0.47806014,0.54968134){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=2]{placing_elem1.pdf}}%
+    \put(0.12420615,0.34352092){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{1}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=3]{placing_elem1.pdf}}%
+    \put(0.57676677,0.34552157){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0}}}%
+  \end{picture}%
+\endgroup%

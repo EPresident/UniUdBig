@@ -6,7 +6,7 @@
 %%
 %% PhdThesis.dtx  (with options: `class')
 %% 
-%% Copyright (C) 1995-2012 Marco Comini <comini@dimi.uniud.it>.
+%% Copyright (C) 1995-2015 Marco Comini <comini@dimi.uniud.it>.
 %% 
 %% This class is the Phd Thesis format of the Computer Science Deartment of
 %% the Pisa and Udine Universities -- Italy.
@@ -20,7 +20,7 @@
 %% author.
 %% 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
-\ProvidesClass{PhdThesis}[2010/10/30 2.0o PhdThesis document class]
+\ProvidesClass{PhdThesis}[2015/03/10 2.0q PhdThesis document class]
 %%%%%
 %%%%% Options
 %%%%%
@@ -79,8 +79,6 @@
 \DeclareOption{UdinePhdThesis}{\def\@phd@shapefile{UdinePhdThesis}
 \PassOptionsToClass{twoside}{book}}
 \ExecuteOptions{UdinePhdThesis}
-\DeclareOption{UdinePhdThesisCR}{\def\@phd@shapefile{UdinePhdThesisCR}
-\PassOptionsToClass{twoside}{book}}
 \DeclareOption{UdineMstThesis}{\def\@phd@shapefile{UdineMstThesis}
 \PassOptionsToClass{twoside}{book}}
 \DeclareOption{UdineBachThesis}{\def\@phd@shapefile{UdineBachThesis}
@@ -592,7 +590,7 @@ should NOT be used in mainmatter mode}
 \null%\vfil
 \begin{center}%
 \vskip -2cm
-\textsc{\@phd@university}\par
+\textsc{\@phd@topfront}\par
 \vskip 2em plus .25em minus .25em
 {\large\textsc{\thesisname\ifx\@phd@number\@empty\else:
 \@phd@number\fi}\par}
@@ -884,6 +882,9 @@ should NOT be used in mainmatter mode}
 \ClassError{PhdThesis}{cannot load `\@phd@shapefile' shape document file}
 {No help, sorry}
 }
+\DeclareRobustCommand{\Institution}[1]{\gdef\@phd@institution{#1}}
+\DeclareRobustCommand{\Division}[1]{\gdef\@phd@division{#1}}
+\DeclareRobustCommand{\StudyCourse}[1]{\gdef\@phd@studycourse{#1}}
 \InputIfFileExists{\@phd@shapefile.cfg}{
 \ClassWarningNoLine{PhdThesis}{loaded LOCAL `\@phd@shapefile' page layout}
 }{

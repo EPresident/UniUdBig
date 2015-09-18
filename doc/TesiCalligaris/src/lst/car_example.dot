@@ -1,0 +1,77 @@
+digraph Car Example {
+// "Ranghi" usati per allineare i nodi su più righe
+ranksep=.75;{
+outernames->rank0->rank1->rank2->rank3[style=invisible arrowhead=none];outernames[shape=none style=invisible];
+rank0[label="roots" shape=none style=invisible];
+rank1[shape=none style=invisible];
+rank2[shape=none style=invisible];
+rank3[shape=none style=invisible];
+
+}
+
+// Place graph e nodi
+
+N_17 -> 0
+N_1D -> N_17
+N_1B -> N_17
+N_13 -> 0
+N_18 -> N_13
+N_1E -> N_13
+N_1F -> N_1E
+N_20 -> N_1E
+N_21 -> N_1E
+N_22 -> N_1E
+N_23 -> N_1E
+N_15 -> 0
+N_19 -> N_15
+N_1A -> N_15
+{
+rank=same;
+rank0;0[shape=box color=blue,label="Root0"];
+}
+{
+rank=same;
+rank1;N_17[shape=ellipse,label="place"];
+N_13[shape=ellipse,label="place"];
+N_15[shape=ellipse,label="place"];
+}
+{
+rank=same;
+rank2;N_1D[shape=ellipse,label="target"];
+N_1B[shape=ellipse,label="road"];
+N_18[shape=ellipse,label="road"];
+N_1E[shape=ellipse,label="car"];
+N_19[shape=ellipse,label="road"];
+N_1A[shape=ellipse,label="road"];
+}
+{
+rank=same;
+rank3;N_1F[shape=ellipse,label="fuel"];
+N_20[shape=ellipse,label="fuel"];
+N_21[shape=ellipse,label="fuel"];
+N_22[shape=ellipse,label="fuel"];
+N_23[shape=ellipse,label="fuel"];
+}
+
+
+// Link graph e archi
+N_1B -> E_12[arrowhead=none color=grey style=dashed k=2];
+N_1A -> E_12[arrowhead=none color=grey style=dashed k=2];
+N_13 -> E_12[arrowhead=none color=grey style=dashed k=2];
+E_12[shape=point];
+N_1D -> E_1C[arrowhead=none color=grey style=dashed k=2];
+N_1E -> E_1C[arrowhead=none color=grey style=dashed k=2];
+E_1C[shape=point];
+N_15 -> E_14[arrowhead=none color=grey style=dashed k=2];
+N_18 -> E_14[arrowhead=none color=grey style=dashed k=2];
+E_14[shape=point];
+N_17 -> E_16[arrowhead=none color=grey style=dashed k=2];
+N_19 -> E_16[arrowhead=none color=grey style=dashed k=2];
+E_16[shape=point];
+
+
+// Outer Names
+{
+rank=same;
+outernames;
+}}

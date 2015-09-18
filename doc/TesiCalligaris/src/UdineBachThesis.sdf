@@ -6,7 +6,7 @@
 %%
 %% PhdThesis.dtx  (with options: `sdf,Udine,Bach')
 %% 
-%% Copyright (C) 1995-2012 Marco Comini <comini@dimi.uniud.it>.
+%% Copyright (C) 1995-2015 Marco Comini <comini@dimi.uniud.it>.
 %% 
 %% This class is the Phd Thesis format of the Computer Science Deartment of
 %% the Pisa and Udine Universities -- Italy.
@@ -44,15 +44,25 @@
 }
 %%% Provides strings required by maketitlepage (and patched maketitle)
 \def\@phd@address{%
+Dipartimento di Matematica e Informatica\\
 Universit\`a degli Studi di Udine\\
 Via delle Scienze, 206\\
-33100 Udine --- Italia
+33100 Udine\\
+Italia
 }
-\gdef\@phd@university{%
-Universit\`a degli Studi di Udine\\[0.5em]
-Dipartimento di Matematica e Informatica\\[0.5em]
-Corso di Laurea in Informatica%
+\gdef\@phd@topfront{%
+\@phd@institution%
+\\[0.5em]
+\@phd@division%
+\\[0.5em]
+\@phd@studycourse%
 }
+\gdef\@phd@institution{%
+Universit\`a degli Studi di Udine}
+\gdef\@phd@division{%
+Dipartimento di Matematica e Informatica}
+\gdef\@phd@studycourse{%
+Corso di Laurea in Informatica}
 %%% Redefines maketitle
 \AtBeginDocument{
 \RequirePackage{graphicx}
@@ -67,7 +77,7 @@ Corso di Laurea in Informatica%
 \let\footnotesize\small
 \let\footnoterule\relax
 \null%\vfil%
-\noindent{\Large\textsc{\@phd@university}}
+\noindent{\Large\textsc{\@phd@topfront}}
 \normalsize
 \vfill
 \begin{center}%
@@ -83,7 +93,7 @@ Corso di Laurea in Informatica%
  \parbox[t]{0.40\textwidth}{\@author}
 \end{lrbox}
 \parbox[t]{0.40\textwidth}{
- \textsc{\@phd@varname}\\[1ex]
+ \textsc{\@phd@varname:}\\[1ex]
  \usebox{\@phd@tmpbox}
 }
 ~~
@@ -96,7 +106,7 @@ Corso di Laurea in Informatica%
  \begin{lrbox}{\@phd@tmpbox}
   \parbox[t]{0.40\textwidth}{\@phd@supervisor}
  \end{lrbox}
- \textsc{\@phd@varname}\\[1ex]
+ \textsc{\@phd@varname:}\\[1ex]
  \usebox{\@phd@tmpbox}\\[2em]
  % \vskip 2em
 \fi
@@ -108,7 +118,7 @@ Corso di Laurea in Informatica%
  \begin{lrbox}{\@phd@tmpbox}
   \parbox[t]{0.40\textwidth}{\@phd@cosupervisor}
  \end{lrbox}
- \textsc{\@phd@varname}\\[1ex]
+ \textsc{\@phd@varname:}\\[1ex]
  \usebox{\@phd@tmpbox}\\[2em]
  % \vskip 2em
 \fi
@@ -120,7 +130,7 @@ Corso di Laurea in Informatica%
  \begin{lrbox}{\@phd@tmpbox}
   \parbox[t]{0.40\textwidth}{\@phd@tutor}
  \end{lrbox}
- \textsc{\@phd@varname}\\[1ex]
+ \textsc{\@phd@varname:}\\[1ex]
  \usebox{\@phd@tmpbox}\\[2em]
  % \vskip 2em
 \fi
@@ -159,7 +169,7 @@ Corso di Laurea in Informatica%
 \end{minipage}
 \end{lrbox}
 \sbox{\@phd@tmpbox}{%
-\includegraphics[height=.75\paperheight]{UdineLogo}%
+\includegraphics[height=.75\paperheight,bb=180 0 405 405, clip]{UdineLogo}%
 }
 \newlength{\@phd@tmplen}
 \setlength{\@phd@tmplen}{\heightof{\usebox{\@phd@tmpbox}}}

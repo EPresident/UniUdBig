@@ -1,0 +1,12 @@
+    private void modelCheckerTest() {
+        Bigraph state = generateLevel(8);
+        Predicate p = new WarioPredicate(goalReached(), new TruePredicate(),
+                new TruePredicate(), new TruePredicate());
+        ModelChecker mc = new ModelChecker(new BreadthFirstSim(state, RULES), p);
+        System.out.print("Is the destination reachable? ");
+        if (mc.modelCheck()) {
+            System.out.println("YES.");
+        } else {
+            System.out.println("NO");
+        }
+    }

@@ -99,6 +99,7 @@ public class BigStateGraph {
      * duplicate.
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     public BSGNode applyRewritingRule(BSGNode redex, String rewritingRule, Bigraph reactum) {
         for (BSGNode previous : nodes) {
             BSGNode dupNode = findDuplicate(reactum, previous);
@@ -132,13 +133,18 @@ public class BigStateGraph {
         } else {
             // Hash collision suggests possible duplicate (or isomorphism)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     public BSGNode applyRewritingRule(BSGNode redex, RewritingRule rewRule, Bigraph reactum) {
         int hash = hashFunc.bigHash(reactum);
         BSGNode newNode = new BSGNode(reactum, hash);
         if (nodes.containsKey(hash)) {
             // Possible duplicate found
             LinkedList<BSGNode> bucket = nodes.get(hash);
+<<<<<<< HEAD
 >>>>>>> dev/codeReview
+=======
+>>>>>>> refs/remotes/origin/master
             // Check isomorphism
             for (BSGNode bsgn : bucket) {
                 if (iso.areIsomorph(newNode.getState(), bsgn.getState())) {
@@ -181,7 +187,11 @@ public class BigStateGraph {
     }
 
     public int getGraphSize() {
-        return nodes.size();
+        int size = 0;
+        for(LinkedList<BSGNode> bucket: nodes.values()){
+            size+=bucket.size();
+        }
+        return size;
     }
 
     public List<BSGNode> getNodes() {

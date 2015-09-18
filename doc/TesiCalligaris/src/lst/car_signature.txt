@@ -1,0 +1,11 @@
+private static Signature generateSignature() {
+     SignatureBuilder sb = new SignatureBuilder();
+
+     sb.add("car", true, 1);
+     sb.add("fuel", true, 0);
+     sb.add("place", true, 1);
+     sb.add("road", true, 1);
+     sb.add("target", true, 1);
+
+     return sb.makeSignature("Car Signature");
+}

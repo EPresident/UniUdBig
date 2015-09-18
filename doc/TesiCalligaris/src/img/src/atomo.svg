@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg4919"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="atomo.svg">
+  <title
+     id="title4970">Atomo</title>
+  <defs
+     id="defs4921" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2"
+     inkscape:cx="-21.996055"
+     inkscape:cy="966.28635"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="706"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4924">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Atomo</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Livello 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="81.944008"
+       y="147.25989"
+       id="text4927"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4929"
+         x="81.944008"
+         y="147.25989">$A_{pq}\circ 1$</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.80484867;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.41454599, 2.41454599;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4931"
+       width="151.77145"
+       height="95.432053"
+       x="26.330996"
+       y="32.264603"
+       rx="0"
+       ry="17.182035" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="65"
+       y="16.647896"
+       id="text4933"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4935"
+         x="65"
+         y="16.647896">$p$</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="151.57143"
+       y="17.362181"
+       id="text4937"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4939"
+         x="151.57143"
+         y="17.362181">$q$</tspan></text>
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4941"
+       cx="102.68201"
+       cy="79.686295"
+       rx="50.002552"
+       ry="25.253813" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4943"
+       cx="87.150909"
+       cy="55.518398"
+       r="2.6516504" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path4943-9"
+       cx="113.66741"
+       cy="54.634537"
+       r="2.6516504" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.75px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="49.25"
+       y="58.862183"
+       id="text4960"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4962"
+         x="49.25"
+         y="58.862183">$A$</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#008100;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0"
+       d="m 86,52.362182 c 0,0 -18.25,-22.25 -16.5,-31.25"
+       id="path4964"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#008100;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0"
+       d="m 116.5,53.112182 c 0,0 41,-13.75 39.25,-31.75"
+       id="path4968"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

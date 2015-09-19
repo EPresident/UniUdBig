@@ -71,7 +71,7 @@ public class Test {
             i = 0;
             System.out.println("Choose a branch: ");
             for (BSGLink bsgl : links) {
-                System.out.println(i + "- " + bsgl.rewRule);
+                System.out.println(i + "- " + bsgl.getRewRule());
                 i++;
             }
             int choice = 0;
@@ -89,8 +89,8 @@ public class Test {
                 System.err.println("Expected a number as input: " + nfex.getMessage());
                 System.exit(1);
             }
-            prName = links.get(choice).rewRule;
-            currentNode = links.get(choice).destNode;
+            prName = links.get(choice).getRewRule().getClass().getSimpleName();
+            currentNode = links.get(choice).getDestNode();
             links = currentNode.getLinks();
         }
 	}

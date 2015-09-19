@@ -1,0 +1,1225 @@
+%%
+%% This is file `theorems.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% theorems.dtx  (with options: `package')
+%% 
+%% Copyright (C) 1995-2015 Marco Comini <comini@dimi.uniud.it>.
+%% 
+%% This package adds mathematical features (theorem-like envs, etc) with a LOT
+%% of options.
+%% 
+%% This package is distributed in the hope that it will be useful, but WITHOUT
+%% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%% FITNESS FOR A PARTICULAR PURPOSE.
+%% 
+%% Direct use of code from this package in another package which is either
+%% sold for profit, or not made freely available, is explicitly forbidden by
+%% the author.
+%% 
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{theorems}[2015/04/01 3.5j adds mathematical features]
+\DeclareRobustCommand{\showPackageTheoremsVersion}{Theorems 3.5j 2015/04/01}
+\newif\ifThmNoExtendedOn
+\newif\ifThmExtendedOn
+\newif\ifThmDraftOn
+\newif\ifThm@holes
+\newif\ifThm@holesfloat
+\newif\ifThm@holeskillcites
+\newif\ifThm@keep
+\newif\ifThm@myhyphen
+\newif\ifThm@seccnt
+\newif\ifThm@seceqn
+\newif\ifThm@usecolors
+\newif\ifThm@useadjustbox
+\newif\ifThm@noqed\Thm@noqedfalse
+\DeclareOption{adjustbox}{\Thm@useadjustboxtrue}
+\ExecuteOptions{adjustbox}
+\DeclareOption{noadjustbox}{\Thm@useadjustboxfalse}
+\DeclareOption{colors}{\Thm@usecolorstrue}
+\ExecuteOptions{colors}
+\DeclareOption{nocolors}{\Thm@usecolorsfalse}
+\DeclareOption{seceqn}{\Thm@seceqntrue}
+\ExecuteOptions{seceqn}
+\DeclareOption{plaineqn}{\Thm@seceqnfalse}
+\DeclareOption{plaindefs}{\AtEndOfPackage{%
+\let\Thm@definition@in\Thm@shape@PlainIt@in
+\let\Thm@definition@out\Thm@shape@PlainIt@out
+}}
+\ExecuteOptions{plaindefs}
+\DeclareOption{plainexamples}{\AtEndOfPackage{%
+\let\Thm@example@in\Thm@PlainQed@in
+\let\Thm@example@out\Thm@PlainQed@out
+}}
+\DeclareOption{plainremarks}{\AtEndOfPackage{%
+\let\Thm@remark@in\Thm@PlainQed@in
+\let\Thm@remark@out\Thm@PlainQed@out
+}}
+\DeclareOption{plainproofs}{\AtEndOfPackage{%
+\let\Thm@proof@in\Thm@PlainProof@in
+\let\Thm@proof@out\Thm@PlainProof@out
+}}
+\ExecuteOptions{plainexamples}
+\ExecuteOptions{plainremarks}
+\ExecuteOptions{plainproofs}
+\DeclareOption{fancydefs}{\AtEndOfPackage{%
+\let\Thm@definition@in\Thm@PlainQed@in
+\let\Thm@definition@out\Thm@PlainQed@out
+}}
+\DeclareOption{fancyexamples}{\AtEndOfPackage{%
+\let\Thm@example@in\Thm@shape@FancyRm@in
+\let\Thm@example@out\Thm@shape@FancyRm@out
+}}
+\DeclareOption{fancyremarks}{\AtEndOfPackage{%
+\let\Thm@remark@in\Thm@shape@FancyRm@in
+\let\Thm@remark@out\Thm@shape@FancyRm@out
+}}
+\DeclareOption{fancyproofs}{\AtEndOfPackage{%
+\let\Thm@proof@in\Thm@FancyProof@in
+\let\Thm@proof@out\Thm@FancyProof@out
+}}
+\DeclareOption{normalversion}{\ThmExtendedOnfalse\ThmNoExtendedOnfalse}
+\ExecuteOptions{normalversion}
+\DeclareOption{extended}{\ThmExtendedOntrue
+\ifThmNoExtendedOn
+\PackageWarningNoLine{theorems}{Strange you also specified `noextended' option}
+\ThmNoExtendedOnfalse
+\fi
+}
+\DeclareOption{noextended}{\ThmNoExtendedOntrue
+\ifThmExtendedOn
+\PackageWarningNoLine{theorems}{Strange you also specified `extended' option}
+\ThmExtendedOnfalse
+\fi
+}
+\DeclareOption{smallproofs}{\AtEndOfPackage{%
+\let\Thm@proof@in\Thm@smallProof@in
+\let\Thm@proof@out\Thm@smallProof@out
+}}
+\DeclareOption{plainmathop}{\let\Thm@mathoperfont\operator@font}
+\ExecuteOptions{plainmathop}
+\DeclareOption{itmathop}{\let\Thm@mathoperfont\mathit}
+\DeclareOption{rmmathop}{\let\Thm@mathoperfont\mathrm}
+\DeclareOption{sfmathop}{\let\Thm@mathoperfont\mathsf}
+\DeclareOption{draft}{\ThmDraftOntrue\Thm@holestrue}
+\DeclareOption{final}{\ThmDraftOnfalse\Thm@holesfalse}
+\ExecuteOptions{final}
+%%% Flag Thm@langdef
+\newif\if@Thm@langdef\@Thm@langdeffalse
+\DeclareOption{english}{\@Thm@langdeftrue\AtEndOfPackage{
+\Thm@setcaptions{english}{\Thm@captions@english}
+\PackageInfo{theorems}{Adding British English Captions}
+}}
+\DeclareOption{american}{\@Thm@langdeftrue\AtEndOfPackage{
+\Thm@setcaptions{american}{\Thm@captions@american}
+\PackageInfo{theorems}{Adding American English Captions}
+}}
+\DeclareOption{italian}{\@Thm@langdeftrue\AtEndOfPackage{
+\Thm@setcaptions{italian}{\Thm@captions@italian}
+\PackageInfo{theorems}{Adding Italian Captions}
+}}
+\DeclareOption{spanish}{\@Thm@langdeftrue\AtEndOfPackage{
+\Thm@setcaptions{spanish}{\Thm@captions@spanish}
+\PackageInfo{theorems}{Adding Spanish Captions}
+}}
+\DeclareOption{keep}{\Thm@keeptrue}
+\ExecuteOptions{keep}
+\DeclareOption{redefine}{\Thm@keepfalse}
+\DeclareOption{globalproofs}{\AtEndOfPackage{%
+\let\Thm@PrfLocEqn@i\relax
+\let\Thm@PrfLocEqn@o\relax
+}}
+\ExecuteOptions{globalproofs}
+\DeclareOption{localproofs}{\AtEndOfPackage{%
+\let\Thm@PrfLocEqn@i\Thm@localEqnProof@i
+\let\Thm@PrfLocEqn@o\Thm@localEqnProof@o
+}}
+\DeclareOption{notagproofs}{\def\Thm@PrfLocEqnTag#1{#1}}
+\ExecuteOptions{notagproofs}
+\DeclareOption{tagproofs}{\def\Thm@PrfLocEqnTag#1{Prf.#1}}
+\DeclareOption{seccnt}{\Thm@seccnttrue}
+\ExecuteOptions{seccnt}
+\DeclareOption{plaincnt}{\Thm@seccntfalse}
+\DeclareOption{bolditemtag}{\AtEndOfPackage{%
+\let\Thm@itemtag@shp\Thm@BoldItem
+}}
+\ExecuteOptions{bolditemtag}
+\DeclareOption{squareitemtag}{\AtEndOfPackage{%
+\let\Thm@itemtag@shp\Thm@SquareItem
+}}
+\DeclareOption{floatholes}{\Thm@holesfloattrue}
+\DeclareOption{nofloatholes}{\Thm@holesfloatfalse}
+\ExecuteOptions{nofloatholes}
+\DeclareOption{killcites}{\Thm@holeskillcitestrue}
+\ExecuteOptions{killcites}
+\DeclareOption{keepcites}{\Thm@holeskillcitesfalse}
+\DeclareOption{blackqed}{
+\def\Thm@qedSymb{\vrule height.5em width.5em\Thm@holesfloatfalse}
+}
+\ExecuteOptions{blackqed}
+\DeclareOption{blankqed}{
+\AtBeginDocument{\RequirePackage{latexsym}}
+\def\Thm@qedSymb{\ensuremath{\Box}}
+}
+\DeclareOption{myhyphen}{
+\Thm@myhyphentrue
+}
+\ExecuteOptions{myhyphen}
+\AtBeginDocument{
+\ifThm@myhyphen
+\def\-{\penalty 10000\hskip 0pt \discretionary{}{}{}\penalty 10000\hskip 0pt}
+\fi
+}
+\DeclareOption{normhyphen}{
+\Thm@myhyphenfalse
+}
+%%% begin Undocumented options
+\DeclareOption{buchi}{\Thm@holestrue}
+\DeclareOption{nobuchi}{\Thm@holesfalse}
+%%% end Undocumented options
+\DeclareOption*{\PackageWarningNoLine{theorems}{Unknown option `\CurrentOption'}}
+\InputIfFileExists{theorems.cfg}{}{\PackageWarningNoLine{theorems}%
+{No preferences file}}
+\ProcessOptions\relax
+\if@Thm@langdef\else
+\PackageWarningNoLine{theorems}{no language has been specified,
+English will be used}
+\AtEndOfPackage{
+\Thm@setcaptions{english}{\Thm@captions@english}
+\PackageInfo{theorems}{Adding British English Captions}
+}
+\fi
+%%%%%%%%%%%%%%%%%
+%%              %
+%% Package Code %
+%%              %
+%%%%%%%%%%%%%%%%%
+\ifThm@useadjustbox
+\IfFileExists{adjustbox.sty}{\AtBeginDocument{\RequirePackage{adjustbox}}}
+{\Thm@useadjustboxfalse}
+\fi
+\ifThm@useadjustbox\else
+\newsavebox{\Thm@tempbox}
+\newenvironment*{adjustbox}[1]{
+\vrule width 1pt\,\vrule width 1pt%\,
+\ifThm@usecolors\begin{lrbox}{\Thm@tempbox}\else\,\fi%
+\begin{minipage}{0.95\columnwidth}
+}{%
+\end{minipage}%
+\ifThm@usecolors\end{lrbox}%
+\colorbox{lightyellow}{\usebox{\Thm@tempbox}}\fi%
+\,\vrule width 1pt\,\vrule width 1pt%
+\ignorespacesafterend%
+}
+\fi
+\if@compatibility
+\let\Thm@replace=\@gobbletwo
+\else
+\def\Thm@replace#1#2{\PackageWarning{theorems}{No \protect#1 command, using
+ \protect#2 instead.}\gdef#1{#2}#1}
+\fi
+\ifThm@usecolors
+\AtBeginDocument{
+\RequirePackage{color}
+\definecolor{lightyellow}{RGB}{255,255,230}
+\definecolor{lightblue}{RGB}{240,250,255}
+\definecolor{lightgreen}{RGB}{245,255,245}
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkyellow}{RGB}{200,200,0}
+\def\Thm@bgcolorext{lightgreen}
+\def\Thm@frcolorext{darkgreen}
+\def\Thm@bgcolorplnote{lightblue}
+\def\Thm@frcolorplnote{blue}
+\def\Thm@bgcolordrftplnote{lightyellow}
+\def\Thm@frcolordrftplnote{darkyellow}
+\def\Thm@bgcolorhole{lightyellow}
+}
+\fi
+\def\Thm@declare@robustcommand#1{%
+\ifx#1\@undefined
+\PackageInfo{theorems}{NO previous `\noexpand#1' command definition}
+\else\ifx#1\relax
+\PackageWarningNoLine{theorems}{EMPTY previous `\noexpand#1' command definition}
+\else
+\PackageWarningNoLine{theorems}{REDEFINED previous `\noexpand#1' command}
+\fi\fi
+\def\Thm@tmp{\declare@robustcommand#1}
+\Thm@tmp
+}
+\def\Thm@provide@robustcommand#1{%
+\ifx#1\@undefined
+\PackageInfo{theorems}{NO previous `\noexpand#1' command definition}
+\def\Thm@tmp{\declare@robustcommand#1}
+\else\ifx#1\relax
+\PackageInfo{theorems}{EMPTY previous `\noexpand#1' command definition}
+\def\Thm@tmp{\declare@robustcommand#1}
+\else
+\PackageWarningNoLine{theorems}{KEEPED previous `\noexpand#1' command definition}
+\def\Thm@tmp{\declare@robustcommand\Thm@dummy}
+\fi\fi
+\Thm@tmp
+}
+\new@environment{Thm@dummy}{\relax}{\relax}
+\def\Thm@provide@environment#1{%
+\@ifundefined{#1}{%
+\PackageInfo{theorems}{NO previous `\noexpand#1' environment definition}
+\def\Thm@tmp{\new@environment{#1}}
+}{
+\PackageWarningNoLine{theorems}{KEEPED previous `\noexpand#1' environment definition}
+\def\Thm@tmp{\renew@environment{Thm@dummy}}
+}
+\Thm@tmp
+}
+\Thm@provide@robustcommand{\newdefinition}{\Thm@deftheo}
+\expandafter\@ifdefinable\csname Thm@reserved\endcsname
+{\@definecounter{Thm@reserved}%
+\expandafter\xdef\csname theThm@reserved\endcsname{\@thmcounter{Thm@reserved}}%
+\global\@namedef{Thm@reserved}{\@thm{Thm@reserved}{Package `theorem.sty'}}%
+\global\@namedef{endThm@reserved}{\@endtheorem}}
+\def\Thm@deftheo{\@ifstar{\Thm@Newtheo}{\Thm@newtheo}}
+\def\Thm@Newtheo#1{\Thm@chkth\Thm@Nthm{#1}}
+\def\Thm@newtheo#1{\@ifnextchar[{\Thm@chkth\Thm@othm{#1}}{\Thm@chkth\Thm@nthm{#1}}}
+\ifThm@keep
+\def\Thm@chkth#1#2{
+\@ifundefined{#2}{%
+\PackageInfo{theorems}{NO Previous `#2' environment definition}%
+\def\Thm@reserved{#1{#2}}
+}{%
+\PackageWarningNoLine{theorems}{Previous `#2' environment definition SAVED}%
+\def\Thm@reserved{%
+\let\Thm@reserved\relax
+\let\endThm@reserved\relax
+#1{Thm@reserved}}
+}%
+\Thm@reserved}%
+\else
+\def\Thm@chkth#1#2{
+\@ifundefined{#2}{%
+\PackageInfo{theorems}{NO Previous `#2' environment definition}%
+}{%
+\PackageWarningNoLine{theorems}{Previous `#2' environment definition KILLED}%
+}%
+\expandafter\let\csname #2\endcsname\relax
+\expandafter\let\csname end#2\endcsname\relax
+#1{#2}}
+\fi
+\def\Thm@nthm#1#2{\@ifnextchar[{\Thm@xnthm{#1}{#2}}{\Thm@ynthm{#1}{#2}}}
+\def\Thm@xnthm#1#2[#3]{%
+\expandafter\@ifdefinable\csname #1\endcsname
+{\@definecounter{#1}\@newctr{#1}[#3]%
+\expandafter\xdef\csname the#1\endcsname{%
+\expandafter\noexpand\csname the#3\endcsname\@thmcountersep
+\@thmcounter{#1}}%
+\global\@namedef{#1}{\Thm@thm{#1}{#2}{#1}}%
+\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@ynthm#1#2{%
+\expandafter\@ifdefinable\csname #1\endcsname
+{\@definecounter{#1}%
+\expandafter\xdef\csname the#1\endcsname{\@thmcounter{#1}}%
+\global\@namedef{#1}{\Thm@thm{#1}{#2}{#1}}%
+\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@othm#1[#2]#3{%
+\@ifundefined{c@#2}{%\@nocounterr{#2}
+\PackageWarningNoLine{theorems}{Counter #2 undefined, skipping definiton of environment #1.}%
+}%
+{\expandafter\@ifdefinable\csname #1\endcsname
+{\global\@namedef{the#1}{\@nameuse{the#2}}%
+\global\@namedef{#1}{\Thm@thm{#2}{#3}{#1}}%
+\global\@namedef{end#1}{\@nameuse{Thm@#1@out}\ignorespaces}
+\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}}
+\def\Thm@thm#1#2#3{\refstepcounter{#1}\@ifnextchar[{\Thm@ythm{#1}{#2}{#3}}%
+{\Thm@xthm{#1}{#2}{#3}}}
+\def\Thm@xthm#1#2#3{\@nameuse{Thm@#3@in}{#2\ \@nameuse{the#1}}\ignorespaces}
+\def\Thm@ythm#1#2#3[#4]{\@nameuse{Thm@#3@in}{#2\ \@nameuse{the#1}\ (#4)}\ignorespaces}
+\def\Thm@Nthm#1#2{\Thm@Ynthm{#1}{#2}}
+\def\Thm@Ynthm#1#2{%
+\expandafter\@ifdefinable\csname #1\endcsname
+{\global\@namedef{#1}{\Thm@Thm{#1}{#2}{#1}}%
+\global\@namedef{end#1}{\@nameuse{Thm@#1@out}}
+\global\expandafter\let\csname Thm@#1@in\endcsname\Thm@shape@PlainIt@in
+\global\expandafter\let\csname Thm@#1@out\endcsname\Thm@shape@PlainIt@out
+}}
+\def\Thm@Thm#1#2#3{\@ifnextchar[{\Thm@Ythm{#1}{#2}{#3}}
+{\Thm@Xthm{#1}{#2}{#3}}}
+\def\Thm@Xthm#1#2#3{\@nameuse{Thm@#3@in}{#2}\ignorespaces}
+\def\Thm@Ythm#1#2#3[#4]{\@nameuse{Thm@#3@in}{#2\ #4}\ignorespaces}
+\Thm@provide@robustcommand{\definitionstyle}[2]{%
+\expandafter\def\csname Thm@#1@in\endcsname{\csname Thm@shape@#2@in\endcsname}
+\expandafter\def\csname Thm@#1@out\endcsname{\csname Thm@shape@#2@out\endcsname}
+\expandafter\providecommand\csname Thm@shape@#2@in\endcsname{%
+\PackageError{theorems}{SHAPE \string#2 is not defined!}%
+{Use admissible shapes in \string\definitionstyle command}
+\Thm@shape@PlainIt@in}
+\expandafter\providecommand\csname Thm@shape@#2@out\endcsname{\Thm@shape@PlainIt@out}
+}
+\def\Thm@shape@PlainIt@in#1{\trivlist\Thm@PlainItem{\hskip\labelsep{\scshape\bfseries{#1}}}\itshape}
+\def\Thm@shape@PlainIt@out{\endtrivlist}
+\def\Thm@shape@PlainRm@in#1{\trivlist\Thm@PlainItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@PlainRm@out{\endtrivlist}
+\def\Thm@shape@FancyRm@in#1{\trivlist\Thm@FancyItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@FancyRm@out{\vskip-\lastskip%kill previous vskips
+\nobreak\smallskip\hrule width \columnwidth\endtrivlist}
+\def\Thm@shape@SquareRm@in#1{\trivlist\Thm@SquareItem{\hskip\labelsep{\scshape\bfseries{#1}}}}
+\def\Thm@shape@SquareRm@out{\endtrivlist}
+\def\Thm@FancyQed@in#1{%
+\global\Thm@noqedfalse
+\normalfont\topsep6\p@\@plus6\p@
+\Thm@shape@FancyRm@in{#1}%
+}
+\def\Thm@FancyQed@out{%
+\Thm@shape@FancyRm@out
+\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse
+}
+\def\Thm@FancyProof@in#1{%
+\global\Thm@noqedfalse\Thm@PrfLocEqn@i
+\normalfont\topsep6\p@\@plus6\p@
+\Thm@shape@FancyRm@in{#1\@addpunct{.}}
+}
+\def\Thm@FancyProof@out{%
+\Thm@PrfLocEqn@o\Thm@shape@FancyRm@out
+\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse
+}
+\def\Thm@PlainQed@in#1{
+\global\Thm@noqedtrue
+\normalfont\topsep6\p@\@plus6\p@
+\Thm@shape@PlainRm@in{#1}
+}
+\def\Thm@PlainQed@out{%
+\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@shape@PlainRm@out
+}
+\def\Thm@PlainProof@in#1{%
+\global\Thm@noqedtrue\Thm@PrfLocEqn@i
+\normalfont\topsep6\p@\@plus6\p@
+\Thm@shape@PlainRm@in{#1\@addpunct{.}}
+}
+\def\Thm@PlainProof@out{%
+\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@PrfLocEqn@o\Thm@shape@PlainRm@out
+}
+\def\Thm@smallProof@in#1{%
+\global\Thm@noqedtrue\Thm@PrfLocEqn@i
+\normalfont\small\topsep6\p@\@plus6\p@
+\Thm@shape@PlainRm@in{#1\@addpunct{.}}
+}
+\def\Thm@smallProof@out{%
+\ifThm@noqed\Thm@qed\fi\global\Thm@noqedfalse\Thm@PrfLocEqn@o\Thm@shape@PlainRm@out
+}
+\newcounter{Thm@store@equation}
+\def\Thm@localEqnProof@i{
+\setcounter{Thm@store@equation}{\value{equation}}
+\let\Thm@theequation\theequation
+\setcounter{equation}{0}
+\renewcommand*\theequation{\Thm@PrfLocEqnTag{\@arabic\c@equation}}
+}
+\def\Thm@localEqnProof@o{
+\setcounter{equation}{\value{Thm@store@equation}}
+\let\theequation\Thm@theequation
+}
+\def\Thm@FancyItem#1{\item[{#1}]\mbox{}\hrulefill%\hrulefill\mbox{}
+\par\nobreak\@nobreaktrue\everypar{%
+\if@nobreak
+\@nobreakfalse
+\clubpenalty \@M
+\if@afterindent \else
+{\setbox\z@\lastbox}%
+\fi
+\else
+\clubpenalty \@clubpenalty
+\everypar{}%
+\fi}}
+\def\Thm@PlainItem#1{\item[{#1}]}
+\def\Thm@BoldItem#1{\item[\textbf{\boldmath{{#1}}}]}%\big)
+\def\Thm@SquareItem#1{\item[\leavevmode\hbox{\hskip-\@wholewidth%
+\vbox{\hbox{\,\textbf{\boldmath #1}\,\vrule\@height.2ex\@depth.7ex\@width.7pt}%\@width\@wholewidth
+\hrule\@height.7pt\vskip-\@wholewidth}\hskip-\@wholewidth}]}%\@height\@wholewidth
+\Thm@provide@robustcommand{\@addpunct}[1]{\ifnum\spacefactor>\@m \else#1\fi}
+\def\Thm@makeqed#1{
+\ifmmode % if math mode, assume display: omit penalty etc.
+\else \leavevmode\unskip\penalty9999 \mbox{}\nobreak\hfill
+\fi
+\quad\hbox{#1}}
+\def\Thm@qed{\Thm@makeqed{%\leavevmode
+ \hbox to.77778em{%
+ \hfil\Thm@qedSymb%
+ \hfil}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                %
+%% Standard layout theorem-like environments, ... %
+%%                                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifThm@seccnt
+\@ifundefined{c@section}{%
+\PackageWarningNoLine{theorems}{No section counter for environments}
+\Thm@deftheo{theorem}{\theoremname}
+}{%
+\Thm@deftheo{theorem}{\theoremname}[section]}
+\else
+\Thm@deftheo{theorem}{\theoremname}
+\fi
+\Thm@deftheo{answer}[theorem]{\answername}
+\Thm@deftheo{application}[theorem]{\applicationname}
+\Thm@deftheo{assumption}[theorem]{\assumptionname}
+\Thm@deftheo{claim}[theorem]{\claimname}
+\Thm@deftheo{conjecture}[theorem]{\conjecturename}
+\Thm@deftheo{construction}[theorem]{\constructionname}
+\Thm@deftheo{corollary}[theorem]{\corollaryname}
+\Thm@deftheo{counterexample}[theorem]{\counterexamplename}
+\Thm@deftheo{criterion}[theorem]{\criterionname}
+\Thm@deftheo{exercise}[theorem]{\exercisename}
+\Thm@deftheo{fact}[theorem]{\factname}
+\Thm@deftheo{lemma}[theorem]{\lemmaname}
+\Thm@deftheo{notation}[theorem]{\notationname}
+\Thm@deftheo{note}[theorem]{\notename}
+\Thm@deftheo{observation}[theorem]{\observationname}
+\Thm@deftheo{problem}[theorem]{\problemname}
+\Thm@deftheo{property}[theorem]{\propertyname}
+\Thm@deftheo{proposal}[theorem]{\proposalname}
+\Thm@deftheo{proposition}[theorem]{\propositionname}
+\Thm@deftheo{question}[theorem]{\questionname}
+\Thm@deftheo{result}[theorem]{\resultname}
+\Thm@deftheo{solution}[theorem]{\solutionname}
+\Thm@deftheo{thesis}[theorem]{\thesisname}
+\Thm@deftheo{warning}[theorem]{\warningname}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                    %
+%% Non-standard layout theorem-like environments, ... %
+%%                                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Thm@deftheo{definition}[theorem]{\definitionname}
+\Thm@deftheo{example}[theorem]{\examplename}
+\Thm@deftheo{notethat}[theorem]{\notethatname}
+\Thm@deftheo{remark}[theorem]{\remarkname}
+\Thm@deftheo*{apndxproof}{\proofname}
+\Thm@deftheo*{proof}{\proofname}
+\Thm@provide@environment{keywords}[1][\keywordsenvname]{\quotation
+{\bfseries #1:} %\vspace{-.5em}\vspace{\z@}
+}{\endquotation}
+\Thm@provide@environment{terms}[1][\termsenvname]{\quotation
+{\bfseries #1:} %\vspace{-.5em}\vspace{\z@}
+}{\endquotation}
+\newenvironment*{pleasenote}[1][\pleasenotename]
+{\begin{Thm@noteblock}{#1}{\Thm@frcolorplnote}{\Thm@bgcolorplnote}}
+{\end{Thm@noteblock}}
+\newenvironment*{Thm@noteblock}[3]{
+\Thm@alter@float@cmds%
+\begin{adjustbox}{minipage=[b]{\columnwidth-17pt},%
+cframe={#2} 1pt 3pt,%margin=1ex,
+bgcolor=#3,env=center}
+\Thm@margin@put{#1}\vskip-\lastskip\ignorespaces%
+}{
+\end{adjustbox}
+\par\smallskip\noindent%
+\Thm@restore@float@cmds%
+\ignorespacesafterend%
+}
+\def\Thm@margin@put#1{%\leavevmode
+\vbox to 0pt{%\@bsphack
+\strut\vadjust{%
+\rlap{\kern-\parindent
+\@tempdimc\columnwidth
+\advance\@tempdimc\marginparsep
+\kern\@tempdimc
+\setbox0=\vtop to 0pt{%
+\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}{%
+\parbox[t]{1.3\marginparwidth}{\raggedright#1}
+}\vss}%
+\vtop to 0pt{\kern 0pt
+\kern-\dp\strutbox
+\kern-\ht0
+\box0 \vss}}%
+}%\@esphack
+}}
+\newenvironment*{pleasenote*}[1][\pleasenotename]
+{\begin{Thm@noteblock*}{#1}}
+{\end{Thm@noteblock*}}
+\newenvironment*{Thm@noteblock*}[1]{
+\def\Thm@notestar@tag##1{\Thm@margin@put{##1 #1}}%
+\nobreak\bigskip\hrule width \columnwidth\Thm@notestar@tag{$\downarrow$}
+\nobreak\smallskip\hrule width \columnwidth%
+\nobreak\ignorespaces%
+}{%
+\nobreak\bigskip\hrule width \columnwidth\Thm@notestar@tag{$\uparrow$}
+\nobreak\smallskip\hrule width \columnwidth\bigskip%
+\nobreak\ignorespacesafterend%
+}
+\newenvironment{draftpleasenote}[1][draft]{%
+\ifThmDraftOn
+\begin{Thm@noteblock}{#1}{\Thm@frcolordrftplnote}{\Thm@bgcolordrftplnote}
+\else\Thm@kill@bgroup\fi%
+}{%
+\ifThmDraftOn\end{Thm@noteblock}%
+\else\Thm@kill@egroup\fi%
+\ignorespacesafterend%
+}
+\newenvironment{draftpleasenote*}[1][draft]{%
+\ifThmDraftOn\begin{Thm@noteblock*}{#1}%
+\else\Thm@kill@bgroup\fi%
+}{%
+\ifThmDraftOn\end{Thm@noteblock*}%
+\else\Thm@kill@egroup\fi%
+\ignorespacesafterend%
+}
+\newcounter{Thm@store@section}
+\newcounter{Thm@store@subsection}
+\newcounter{Thm@store@subsubsection}
+\newcounter{Thm@store@theorem}
+\def\Thm@kill@bgroup{%
+\setcounter{Thm@store@equation}{\value{equation}}%
+\setcounter{Thm@store@section}{\value{section}}%
+\setcounter{Thm@store@subsection}{\value{subsection}}%
+\setcounter{Thm@store@subsubsection}{\value{subsubsection}}%
+\setcounter{Thm@store@theorem}{\value{theorem}}%
+\let\label\Thm@labelinhole
+\Thm@alter@float@cmds%
+\setbox0=\vbox\bgroup
+}
+\def\Thm@kill@egroup{%
+\egroup%
+\let\label\Thm@save@label
+\setcounter{equation}{\value{Thm@store@equation}}%
+\setcounter{section}{\value{Thm@store@section}}%
+\setcounter{subsection}{\value{Thm@store@subsection}}%
+\setcounter{subsubsection}{\value{Thm@store@subsubsection}}%
+\setcounter{theorem}{\value{Thm@store@theorem}}%
+\Thm@restore@float@cmds\ignorespacesafterend%
+}
+\newenvironment{Thm@nofloat}[1]{%
+\gdef\Thm@captionname{#1}
+\ifvmode\smallskip\par\noindent\else\\[0.5ex]\fi
+\begin{adjustbox}{minipage=[b]{\columnwidth-30pt},%
+cframe=blue 1pt 3pt,bgcolor=yellow,env=center}
+}{
+\end{adjustbox}
+\par\smallskip\noindent\ignorespacesafterend%
+}
+\newcounter{Thm@hidden@floats}
+\setcounter{Thm@hidden@floats}{-1000}
+\newcounter{Thm@altered@float@cnt}
+\def\Thm@alter@float@cmds{%
+\let\holecite\Thm@holeciteIN
+\ifThm@holeskillcites
+\let\@citex\Thm@citexinhole
+\fi
+\global\advance \c@Thm@altered@float@cnt 1
+\ifnum \c@Thm@altered@float@cnt > 1
+\PackageWarning{theorems}{\theThm@altered@float@cnt-Nested float-hiding block}
+\else
+\renewcommand*{\caption}[2][]{\refstepcounter{Thm@hidden@floats}%
+\par\smallskip\Thm@captionname~\theThm@hidden@floats: ##2.\\
+\smallskip}%
+\let\label\Thm@labelinhole
+\renewenvironment{figure}[1][]{\begin{Thm@nofloat}{\figurename}}{\end{Thm@nofloat}}%
+\renewenvironment{table}[1][]{\begin{Thm@nofloat}{\tablename}}{\end{Thm@nofloat}}%
+\renewenvironment{figure*}[1][]{\begin{Thm@nofloat}{\figurename*}}{\end{Thm@nofloat}}%
+\renewenvironment{table*}[1][]{\begin{Thm@nofloat}{\tablename*}}{\end{Thm@nofloat}}%
+\fi
+\Thm@alter@footnote
+}
+\def\Thm@restore@float@cmds{%
+\let\holecite\Thm@holeciteOUT
+\let\@citex\Thm@save@citeX
+\global\advance \c@Thm@altered@float@cnt -1
+\ifnum \c@Thm@altered@float@cnt = 0
+\let\caption\Thm@save@caption%
+\let\label\Thm@save@label%
+\let\beginfigure\Thm@save@beginfigure%
+\let\endfigure\Thm@save@endfigure%
+\let\begintable\Thm@save@begintable%
+\let\endtable\Thm@save@endtable%
+\expandafter\let\csname beginfigure*\endcsname\Thm@save@beginfigurestar%
+\expandafter\let\csname endfigure*\endcsname\Thm@save@endfigurestar%
+\expandafter\let\csname begintable*\endcsname\Thm@save@begintablestar%
+\expandafter\let\csname endtable*\endcsname\Thm@save@endtablestar%
+\fi
+\Thm@restore@footnote
+}
+\newcounter{Thm@altered@footnote@cnt}
+\def\Thm@alter@footnote{%
+\global\advance \c@Thm@altered@footnote@cnt 1
+\ifnum \c@Thm@altered@footnote@cnt > 1
+\PackageWarning{theorems}{\theThm@altered@footnote@cnt-Nested footnote-hiding block}
+\else
+\let\footnote\Thm@footnoteinhole%
+\let\marginpar\Thm@marginparinhole%
+\global\let\Thm@endholehook\@empty
+\fi
+}
+\def\Thm@restore@footnote{%
+\global\advance \c@Thm@altered@footnote@cnt -1
+\ifnum \c@Thm@altered@footnote@cnt = 0
+\let\footnote\Thm@save@footnote%
+\let\marginpar\Thm@save@marginpar%
+\Thm@endholehook\global\let\Thm@endholehook\@empty
+\fi
+}
+\DeclareRobustCommand{\Thm@footnoteinhole}[1]{\footnotemark
+\g@addto@macro\Thm@endholehook{\footnotetext{#1}}}
+\DeclareRobustCommand{\Thm@marginparinhole}[1]{%
+\PackageWarning{theorems}{\noexpand\marginpar moved to end of hole}
+\g@addto@macro\Thm@endholehook{\Thm@save@marginpar{#1}}}
+\def\Thm@extended@switch#1#2#3{%
+\ifThmNoExtendedOn%
+#3%
+\else%
+\ifThmDraftOn%
+#1%
+\else
+\ifThmExtendedOn%
+#2%
+\else
+#3%
+\fi%
+\fi%
+\fi}
+\def\Thm@noextndd@switch#1#2#3{%
+\ifThmExtendedOn%
+#3%
+\else
+\ifThmDraftOn%
+#1%
+\else%
+#2%
+\fi%
+\fi}
+\def\Thm@extvers@switch@in#1#2#3#4#5{#1%
+{\begin{#2}{\fcolorbox{black}{\ifThm@usecolors \Thm@bgcolorext\else white\fi}{#3} #4}#5
+\Thm@alter@float@cmds\ignorespaces}
+{\ignorespaces}{\Thm@kill@bgroup}
+}
+\def\Thm@extvers@switch@out#1#2{#1{\end{#2}\Thm@restore@float@cmds\ignorespacesafterend}{\ignorespacesafterend}{\Thm@kill@egroup}}
+\def\Thm@extendedvers@in#1#2#3{\Thm@extvers@switch@in{\Thm@extended@switch}{#1}{extnd}{#2}{#3}}
+\def\Thm@noextnddvers@in#1#2#3{\Thm@extvers@switch@in{\Thm@noextndd@switch}{#1}{NOext}{#2}{#3}}
+\def\Thm@extendedvers@out#1{\Thm@extvers@switch@out{\Thm@extended@switch}{#1}}
+\def\Thm@noextnddvers@out#1{\Thm@extvers@switch@out{\Thm@noextndd@switch}{#1}}
+\newenvironment{extendedvers}[1][]
+{\Thm@extendedvers@in{Thm@noteblock}{#1}{{\Thm@frcolorext}{\Thm@bgcolorext}}}
+    {\Thm@extendedvers@out{Thm@noteblock}\ignorespacesafterend}
+\newenvironment{extendedvers*}[1][]
+{\Thm@extendedvers@in{Thm@noteblock*}{#1}{}}
+    {\Thm@extendedvers@out{Thm@noteblock*}\ignorespacesafterend}
+\newenvironment{noextendedvers}[1][]
+{\Thm@noextnddvers@in{Thm@noteblock}{#1}{{\Thm@frcolorext}{\Thm@bgcolorext}}}
+    {\Thm@noextnddvers@out{Thm@noteblock}\ignorespacesafterend}
+\newenvironment{noextendedvers*}[1][]
+{\Thm@noextnddvers@in{Thm@noteblock*}{#1}{}}
+{\Thm@noextnddvers@out{Thm@noteblock*}\ignorespacesafterend}
+\newenvironment{extendedversion}[1][]{\begin{extendedvers}[#1]}{\end{extendedvers}\ignorespacesafterend}
+\newenvironment{extendedversion*}[1][]{\begin{extendedvers*}[#1]}{\end{extendedvers*}\ignorespacesafterend}
+%%%%%%%%%%%%%%%%%%%%%
+%%                  %
+%% Package Commands %
+%%                  %
+%%%%%%%%%%%%%%%%%%%%%
+\Thm@provide@robustcommand{\binom}[2]  {{{#1}\choose{#2}}}
+\Thm@declare@robustcommand{\itemtag}[1][$\bullet$]{\Thm@itemtag@shp{#1}}
+\Thm@declare@robustcommand{\bolditem}[1][$\bullet$]{\Thm@BoldItem{#1}}
+\Thm@declare@robustcommand{\mathoper}[1]{\mathop{\Thm@mathoperfont{#1}}\nolimits}
+\Thm@provide@robustcommand{\qed}{\ifThm@noqed\Thm@qed\else\PackageWarning{theorems}%
+{`\protect\qed'\space command supressed}\fi\global\Thm@noqedfalse}
+\Thm@declare@robustcommand{\starred}[2][*] {\mathrel{\mathord{#2}{}^{#1}}}
+\Thm@declare@robustcommand{\Starred}[2][*] {\mathrel{\mathord{#2}{}_{#1}}}
+\Thm@provide@robustcommand{\tildeop}[1] {\mathop{\tilde{#1}}}
+\Thm@provide@robustcommand{\widetildeop}[1] {\mathop{\widetilde{#1}}}
+\Thm@provide@robustcommand{\tildebin}[1] {\mathbin{\tilde{#1}}}
+\Thm@provide@robustcommand{\widetildebin}[1] {\mathbin{\widetilde{#1}}}
+\Thm@provide@robustcommand{\qqquad}{\qquad\qquad}
+\Thm@declare@robustcommand{\Explain}[2][\qquad] {\\* & #1
+\textstyle{\text{\normalsize\textbf{[}\,{#2}\,\textbf{]}}}\notag}
+\Thm@declare@robustcommand{\explain}[2][\,] {& #1 &
+\textstyle{\text{\normalsize [\,{#2}\,]}}\notag}
+\Thm@declare@robustcommand{\smartref}[1]{\Thm@smartref#1\@@}
+\def\Thm@smartref#1:#2\@@{%
+\expandafter\ifx\csname Thm@smrt@#1\endcsname\relax%
+\PackageWarning{theorems}{Sorry, smartref-prefix `#1' unknown,
+please supply it with \newsmartprefix}%
+UNKNOWNPREFIX~\ref{#1:#2}%
+\else%
+\csname Thm@smrt@#1\endcsname~%
+\csname Thm@smrtpre@#1\endcsname%
+\ref{#1:#2}%
+\csname Thm@smrtpost@#1\endcsname%
+\fi%
+}
+\Thm@declare@robustcommand{\smartrefs}[1]{\Thm@refs#1\@@}%\expandafter
+\def\Thm@refs#1:#2\@@{%
+\expandafter\Thm@Rlist#1:#2,\@nil:\@nil,\@nil:\@nil,\@nil:\@nil\@@\Thm@tB{\Thm@tC}}
+\long\def\Thm@Rlist#1:#2,#3:#4,#5\@@#6#7{%
+\def#6{#3}%
+\ifx #6\@nnil%
+\smartref{#1:#2}\PackageWarning{theorems}
+{ONLY Reference `#1:#2' in list}
+\else%
+\expandafter\ifx\csname Thm@Msmrt@#1\endcsname\relax%
+\PackageWarning{theorems}{Sorry, smartrefs-prefix `#1' unknown,
+please supply it with \newsmartsprefix, prefix `#1' unknown}%
+\def\Thm@tA{UNKNOWNPREFIX\ }%
+\else%
+\def\Thm@tA{\csname Thm@Msmrt@#1\endcsname\ }%
+\fi%
+\def\Thm@tC{#1}\Thm@Rloop#1:#2,#3:#4,#5\@@#6{#7}%
+\fi}
+\long\def\Thm@Rloop#1:#2,#3:#4,#5\@@#6#7{%
+\def#6{#1}\ifx #6\@nnil\else%
+\def#6{#3}\ifx #6\@nnil\def\Thm@tA{ \andname~}\fi%
+\Thm@tA%
+\csname Thm@Msmrtpre@#1\endcsname%
+\ref{#1:#2}%
+\csname Thm@Msmrtpost@#1\endcsname%
+\def#6{#1}\ifx #6#7\else??\PackageWarning{theorems}{Reference `#1:#2' not
+correct for list}\fi%
+\def\Thm@tA{,\penalty\@m\ }%
+\Thm@Rloop#3:#4,#5\@@#6{#7}\fi}
+\Thm@declare@robustcommand{\pointref}[1]{\Thm@pointref#1\@@}
+\def\Thm@pointref pt:#1:#2:#3\@@{%
+\pointname~\ref{pt:#1:#2:#3} of \smartref{#2:#3}}
+\Thm@declare@robustcommand{\newsmartprefix}[2]{\@namedef{Thm@smrt@#1}{#2}}
+\newsmartprefix{ans}{\answername}
+\newsmartprefix{appndx}{\appendixname}
+\newsmartprefix{appl}{\applicationname}
+\newsmartprefix{ass}{\assumptionname}
+\newsmartprefix{ch}{\chaptername}
+\newsmartprefix{clm}{\claimname}
+\newsmartprefix{cnj}{\conjecturename}
+\newsmartprefix{cntex}{\counterexamplename}
+\newsmartprefix{const}{\constructionname}
+\newsmartprefix{cor}{\corollaryname}
+\newsmartprefix{crt}{\criterionname}
+\newsmartprefix{def}{\definitionname}
+\newsmartprefix{exr}{\exercisename}
+\newsmartprefix{ex}{\examplename}
+\newsmartprefix{fct}{\factname}
+\newsmartprefix{fig}{\figurename}
+\newsmartprefix{lem}{\lemmaname}
+\newsmartprefix{notation}{\notationname}
+\newsmartprefix{ntth}{\notethatname}
+\newsmartprefix{nt}{\notename}
+\newsmartprefix{obs}{\observationname}
+\newsmartprefix{part}{\partname}
+\newsmartprefix{pb}{\problemname}
+\newsmartprefix{proposal}{\proposalname}
+\newsmartprefix{prop}{\propertyname}
+\newsmartprefix{prp}{\propositionname}
+\newsmartprefix{pt}{\pointname}
+\newsmartprefix{qst}{\questionname}
+\newsmartprefix{rem}{\remarkname}
+\newsmartprefix{res}{\resultname}
+\newsmartprefix{sec}{\sectionname}
+\newsmartprefix{sol}{\solutionname}
+\newsmartprefix{subsec}{\subsectionname}
+\newsmartprefix{tab}{\tablename}
+\newsmartprefix{tbl}{\tablename}
+\newsmartprefix{thesis}{\thesisname}
+\newsmartprefix{th}{\theoremname}
+\newsmartprefix{warn}{\warningname}
+%%% begin Undocumented commands
+\Thm@declare@robustcommand{\newsmartprefixextended}[4]{%
+\@namedef{Thm@smrt@#1}{#2}
+\@namedef{Thm@smrtpre@#1}{#3}
+\@namedef{Thm@smrtpost@#1}{#4}
+}
+%%% end Undocumented commands
+\newsmartprefixextended{eq}{\equationname}{(}{)}
+\Thm@declare@robustcommand{\newsmartsprefix}[2]{\@namedef{Thm@Msmrt@#1}{#2}}
+\newsmartsprefix{ch}{\chaptersname}
+\newsmartsprefix{clm}{\claimsname}
+\newsmartsprefix{cnj}{\conjecturesname}
+\newsmartsprefix{cntex}{\counterexamplesname}
+\newsmartsprefix{cor}{\corollariesname}
+\newsmartsprefix{crt}{\criterionsname}
+\newsmartsprefix{def}{\definitionsname}
+\newsmartsprefix{exr}{\exercisesname}
+\newsmartsprefix{ex}{\examplesname}
+\newsmartsprefix{fct}{\factsname}
+\newsmartsprefix{fig}{\figuresname}
+\newsmartsprefix{lem}{\lemmasname}
+\newsmartsprefix{nt}{\notesname}
+\newsmartsprefix{obs}{\observationsname}
+\newsmartsprefix{pb}{\problemsname}
+\newsmartsprefix{proposal}{\proposalsname}
+\newsmartsprefix{prop}{\propertysname}
+\newsmartsprefix{prp}{\propositionsname}
+\newsmartsprefix{pt}{\pointsname}
+\newsmartsprefix{qst}{\questionsname}
+\newsmartsprefix{rem}{\remarksname}
+\newsmartsprefix{sec}{\sectionsname}
+\newsmartsprefix{subsec}{\sectionsname}
+\newsmartsprefix{tab}{\tablesname}
+\newsmartsprefix{tbl}{\tablesname}
+\newsmartsprefix{th}{\theoremsname}
+%%% begin Undocumented commands
+\Thm@declare@robustcommand{\newsmartsprefixextended}[4]{%
+\@namedef{Thm@Msmrt@#1}{#2}
+\@namedef{Thm@Msmrtpre@#1}{#3}
+\@namedef{Thm@Msmrtpost@#1}{#4}
+}
+%%% end Undocumented commands
+\newsmartsprefixextended{eq}{\equationsname}{(}{)}
+\Thm@declare@robustcommand{\itemlabel}[1][$\bullet$]{\item[#1]\def\@currentlabel{#1}}
+\Thm@declare@robustcommand{\setlabel}[1]{\def\@currentlabel{#1}}
+\Thm@declare@robustcommand{\hidelabel}[1]{}
+\Thm@declare@robustcommand{\marginnote}[1]{\marginpar{%
+\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}{%
+\parbox[t]{1.4\marginparwidth}{#1}}
+}}
+\ifThmDraftOn
+\Thm@declare@robustcommand{\draftmarginnote}{\marginnote}
+\RequirePackage[notref,notcite]{showkeys}[1995/11/22]
+\DeclareRobustCommand{\draft}[1]{#1}
+\DeclareRobustCommand{\official}[1]{}
+\Thm@declare@robustcommand{\annote}[1]
+{\leavevmode\vbox to\z@{%
+\vss %\SK@refcolor
+\rlap{\vrule\raise .75em%
+\hbox{\underbar{\colorbox{yellow}
+{\normalfont\footnotesize\ttfamily#1}}}}}} %
+\else
+\DeclareRobustCommand{\draftmarginnote}[1]{}
+\DeclareRobustCommand{\draft}[1]{}
+\DeclareRobustCommand{\official}[1]{#1}
+\Thm@declare@robustcommand{\annote}[1]{}
+\fi
+\Thm@extended@switch{
+\DeclareRobustCommand{\extended}[1]{\Thm@alter@footnote%
+\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorext\else white\fi}{#1}%
+\Thm@restore@footnote}
+}{
+\DeclareRobustCommand{\extended}[1]{#1}
+}{
+\DeclareRobustCommand{\extended}[1]{}
+}
+\Thm@noextndd@switch{
+\DeclareRobustCommand{\noextended}[1]{\Thm@alter@footnote%
+\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorext\else white\fi}{#1}%
+\Thm@restore@footnote}
+}{
+\DeclareRobustCommand{\noextended}[1]{#1}
+}{
+\DeclareRobustCommand{\noextended}[1]{}
+}
+\DeclareRobustCommand\Thm@holeciteIN{%
+  \@ifnextchar [{\@tempswatrue\Thm@save@citeX}{\@tempswafalse\Thm@save@citeX[]}}
+\DeclareRobustCommand{\Thm@holeciteOUT}[2][]{\PackageError{theorems}%
+{Attention, this command cannot be used outside a `\protect\hole'\space command}%
+{No more to say}
+}
+\let\holecite\Thm@holeciteOUT
+\def\Thm@citexinhole[#1]#2{\leavevmode[\texttt{#2}\if@tempswa , #1\fi]%
+\PackageInfo{theorems}{citation `#2' supressed}}
+\AtBeginDocument{ % collect \cite when all packages has been loaded
+\let\Thm@save@citeX\@citex
+\let\Thm@save@caption\caption
+\let\Thm@save@beginfigure\beginfigure
+\let\Thm@save@endfigure\endfigure
+\let\Thm@save@begintable\begintable
+\let\Thm@save@endtable\endtable
+\def\Thm@save@beginfigurestaraux{\csname beginfigure*\endcsname}%
+\let\Thm@save@beginfigurestar\Thm@save@beginfigurestaraux
+\def\Thm@save@endfigurestaraux{\csname endfigure*\endcsname}%
+\let\Thm@save@endfigurestar\Thm@save@endfigurestaraux
+\def\Thm@save@begintablestaraux{\csname begintable*\endcsname}%
+\let\Thm@save@begintablestar\Thm@save@begintablestaraux
+\def\Thm@save@endtablestaraux{\csname endtable*\endcsname}%
+\let\Thm@save@endtablestar\Thm@save@endtablestaraux
+\let\Thm@save@footnote\footnote
+\let\Thm@save@marginpar\marginpar
+}
+\DeclareRobustCommand{\Thm@labelinhole}[1]{%
+\PackageWarning{theorems}{Beware of references to label `#1'}
+\let\Thm@tmp\@currentlabel%
+\ifThmDraftOn
+\def\@currentlabel{\fbox{\Thm@tmp\,\fbox{IN HOLE}}}%
+\fi
+\Thm@save@label{#1}}
+\AtBeginDocument{\let\Thm@save@label\label} % collect \label when all packages has been loaded
+\ifThm@holes
+\ifThm@holesfloat
+\DeclareRobustCommand{\hole}[1]{%
+\Thm@alter@footnote
+\let\holecite\Thm@holeciteIN
+\ifThm@holeskillcites
+\let\@citex\Thm@citexinhole
+\fi
+\let\label\Thm@labelinhole
+\marginnote{moved hole}%\framebox[.9\marginparwidth]{}
+\begin{figure}[p]
+\@tempdima \floatpagefraction\textheight%
+\@tempdima.53\@tempdima%
+\vrule height\@tempdima depth\@tempdima width2pt\,%
+\parbox{.9\columnwidth}{\textbf{page \thepage:} #1}
+\end{figure}
+\Thm@restore@footnote
+\let\label\Thm@save@label
+\let\holecite\Thm@holeciteOUT
+\let\@citex\Thm@save@citeX}
+\else
+\DeclareRobustCommand{\hole}[1]{%
+\Thm@alter@footnote
+\let\holecite\Thm@holeciteIN
+\ifThm@holeskillcites
+\let\@citex\Thm@citexinhole
+\fi
+\let\label\Thm@labelinhole
+\begin{center}
+\fcolorbox{black}{\ifThm@usecolors\Thm@bgcolorhole\else white\fi}%\fbox%
+{ \rule {.25cm}{0cm}
+\rule[-.1cm]{0cm}{.4cm} \parbox{.83\columnwidth}{\begin{center}
+#1\end{center}} \rule {.25cm}{0cm}}\end{center}
+\Thm@restore@footnote
+\let\label\Thm@save@label
+\let\holecite\Thm@holeciteOUT
+\let\@citex\Thm@save@citeX}
+\fi
+\else
+\newcounter{Thm@holes}
+\DeclareRobustCommand{\hole}[1]{\PackageInfo{theorems}
+{final document version. `\protect\hole'\space command
+supressed}\addtocounter{Thm@holes}{1}\ignorespaces}
+\AtEndDocument{\ifnum\c@Thm@holes>0
+\PackageWarningNoLine{theorems}{\theThm@holes\space%
+`\protect\hole'\space command(s) supressed}\fi}
+\fi
+\ifThm@seceqn
+\Thm@provide@robustcommand{\numberwithin}[2]{%
+\@ifundefined{c@#1}{\@nocounterr{#1}}{%
+\@ifundefined{c@#2}{\@nocnterr{#2}}{%
+\@addtoreset{#1}{#2}%
+\toks@\expandafter\expandafter\expandafter{\csname the#1\endcsname}%
+\expandafter\xdef\csname the#1\endcsname
+{\expandafter\noexpand\csname the#2\endcsname.\the\toks@}}}}
+\renewcommand*\theequation{\@arabic\c@equation}
+\numberwithin{equation}{section}
+\fi
+\AtBeginDocument{
+\Thm@provide@robustcommand{\allowdisplaybreaks}[1][x]{}
+\Thm@provide@robustcommand{\boldsymbol}{\Thm@replace\boldsymbol\mathbf}
+\Thm@provide@robustcommand{\eqref}[1]{\textup{(\ref{#1})}}
+\Thm@provide@robustcommand{\mathbb}{\Thm@replace\mathbb\mathbf}
+\Thm@provide@robustcommand{\notag}{\nonumber}
+\allowdisplaybreaks
+}
+\AtBeginDocument{\@ifpackageloaded{babel}{}{
+\PackageWarningNoLine{theorems}{The package babel is not loaded}
+}}
+\def\Thm@setcaptions#1#2{%
+\@ifpackageloaded{babel}{%
+\expandafter\addto\csname captions#1\expandafter\endcsname
+\expandafter{#2}%
+}{#2}%
+}
+\def\Thm@captions@american{%
+\def\andname{and}%
+\def\answername{Answer}%
+\def\applicationname{Application}%
+\def\assumptionname{Assumption}%
+\def\chaptername{Chapter}%
+\def\chaptersname{Chapters}%
+\def\claimname{Claim}%
+\def\claimsname{Claims}%
+\def\conjecturename{Conjecture}%
+\def\conjecturesname{Conjectures}%
+\def\constructionname{Construction}%
+\def\corollariesname{Corollaries}%
+\def\corollaryname{Corollary}%
+\def\counterexamplename{Counterexample}%
+\def\counterexamplesname{Counterexamples}%
+\def\criterionname{Criterion}%
+\def\criterionsname{Criterions}%
+\def\definitionname{Definition}%
+\def\definitionsname{Definitions}%
+\def\equationname{Equation}%
+\def\equationsname{Equations}%
+\def\examplename{Example}%
+\def\examplesname{Examples}%
+\def\exercisename{Exercise}%
+\def\exercisesname{Exercises}%
+\def\factname{Fact}%
+\def\factsname{Facts}%
+\def\figuresname{Figures}%
+\def\keywordsenvname{Key Words}%
+\def\lemmaname{Lemma}%
+\def\lemmasname{Lemmata}%
+\def\notationname{Notation}%
+\def\notename{Note}%
+\def\notesname{Notes}%
+\def\notethatname{Note}%
+\def\observationname{Observation}%
+\def\observationsname{Observations}%
+\def\pleasenotename{Attention!}%
+\def\pointname{Point}%
+\def\pointsname{Points}%
+\def\problemname{Problem}%
+\def\problemsname{Problems}%
+\def\proofname{Proof}%
+\def\proofofname{of}%
+\def\propertyname{Property}%
+\def\propertysname{Properties}%
+\def\proposalname{Proposal}%
+\def\proposalsname{Proposals}%
+\def\propositionname{Proposition}%
+\def\propositionsname{Propositions}%
+\def\questionname{Question}%
+\def\questionsname{Questions}%
+\def\remarkname{Remark}%
+\def\remarksname{Remarks}%
+\def\resultname{Result}%
+\def\sectionname{Section}%
+\def\sectionsname{Sections}%
+\def\solutionname{Solution}%
+\def\subsectionname{Subsection}%
+\def\subsectionsname{Subsections}%
+\def\tablesname{Tables}%
+\def\termsenvname{General Terms}%
+\def\theoremname{Theorem}%
+\def\theoremsname{Theorems}%
+\def\thesisname{Thesis}%
+\def\warningname{Warning}%
+}
+\let\Thm@captions@english\Thm@captions@american
+\def\Thm@captions@italian{%
+\def\andname{e}%
+\def\answername{Risposta}%
+\def\applicationname{Applicazione}%
+\def\assumptionname{Assunzione}%
+\def\chaptername{Capitolo}%
+\def\chaptersname{Capitoli}%
+\def\claimname{Asserzione}%
+\def\claimsname{Asserzioni}%
+\def\conjecturename{Congettura}%
+\def\conjecturesname{Congetture}%
+\def\constructionname{Costruzione}%
+\def\corollariesname{Corollari}%
+\def\corollaryname{Corollario}%
+\def\counterexamplename{Controesempio}%
+\def\counterexamplesname{Controesempi}%
+\def\criterionname{Criterio}%
+\def\criterionsname{Criteri}%
+\def\definitionname{Definizione}%
+\def\definitionsname{Definizioni}%
+\def\equationname{Equazione}%
+\def\equationsname{Equazioni}%
+\def\examplename{Esempio}%
+\def\examplesname{Esempi}%
+\def\exercisename{Esercizio}%
+\def\exercisesname{Esercizi}%
+\def\factname{Fatto}%
+\def\factsname{Fatti}%
+\def\figuresname{Figure}%
+\def\keywordsenvname{Parole Chiave}%
+\def\lemmaname{Lemma}%
+\def\lemmasname{Lemmi}%
+\def\notationname{Notazione}%
+\def\notename{Nota}%
+\def\notesname{Note}%
+\def\notethatname{Notare}%
+\def\observationname{Osservazione}%
+\def\observationsname{Osservazioni}%
+\def\pleasenotename{Attenzione!}%
+\def\pointname{Punto}%
+\def\pointsname{Punti}%
+\def\problemname{Problema}%
+\def\problemsname{Problemi}%
+\def\proofname{Dimostrazione}%
+\def\proofofname{del}%
+\def\propertyname{Propriet\`a}%
+\def\propertysname{Propriet\`a}%
+\def\proposalname{Proposta}%
+\def\proposalsname{Proposte}%
+\def\propositionname{Proposizione}%
+\def\propositionsname{Proposizione}%
+\def\questionname{Domanda}%
+\def\questionsname{Domande}%
+\def\remarkname{Osservazione}%
+\def\remarksname{Osservazioni}%
+\def\resultname{Risultato}%
+\def\sectionname{Sezione}%
+\def\sectionsname{Sezioni}%
+\def\solutionname{Soluzione}%
+\def\subsectionname{Sottosezione}%
+\def\subsectionsname{Sottosezioni}%
+\def\tablesname{Tabelle}%
+\def\termsenvname{Termini Generali}%
+\def\theoremname{Teorema}%
+\def\theoremsname{Teoremi}%
+\def\thesisname{Tesi}%
+\def\warningname{Avvertimento}%
+}
+\def\Thm@captions@spanish{%
+\def\andname{y}%
+\def\answername{Respuesta}%
+\def\applicationname{Aplicaci\'on}%
+\def\assumptionname{Suposici\'on}%
+\def\chaptername{Cap\'{\i}tulo}%
+\def\chaptersname{Cap\'{\i}tulos}%
+\def\claimname{Afirmaci\'on}%
+\def\claimsname{Afirmaciones}%
+\def\conjecturename{Conjetura}%
+\def\conjecturesname{Conjeturas}%
+\def\constructionname{Construcci\'on}%
+\def\corollariesname{Corolarios}%
+\def\corollaryname{Corolario}%
+\def\counterexamplename{Contraejemplo}%
+\def\counterexamplesname{Contraejemplos}%
+\def\criterionname{Requisito}%
+\def\criterionsname{Requisitos}%
+\def\definitionname{Definici\'on}%
+\def\definitionsname{Definiciones}%
+\def\equationname{Ecuaci\'on}%
+\def\equationsname{Ecuaciones}%
+\def\examplename{Ejemplo}%
+\def\examplesname{Ejemplos}%
+\def\exercisename{Ejercicio}%
+\def\exercisesname{Ejercicios}%
+\def\factname{Hecho}%
+\def\factsname{Hechos}%
+\def\figuresname{Figuras}%
+\def\keywordsenvname{Palabras Clave}%
+\def\lemmaname{Lema}%
+\def\lemmasname{Lemas}%
+\def\notationname{Notaci\'on}%
+\def\notename{Nota}%
+\def\notesname{Notas}%
+\def\notethatname{Nota}%
+\def\observationname{Observaci\'on}%
+\def\observationsname{Observaciones}%
+\def\pleasenotename{Atenci\'on!}%
+\def\pointname{Punto}%
+\def\pointsname{Puntos}%
+\def\problemname{Problema}%
+\def\problemsname{Problemas}%
+\def\proofname{Demostraci\'on}%
+\def\proofofname{de}%
+\def\propertyname{Propiedad}%
+\def\propertysname{Propiedades}%
+\def\proposalname{Propuesta}%
+\def\proposalsname{Propuestas}%
+\def\propositionname{Proposici\'on}%
+\def\propositionsname{Proposiciones}%
+\def\questionname{Pregunta}%
+\def\questionsname{Preguntas}%
+\def\remarkname{Observaci\'on}%
+\def\remarksname{Observaciones}%
+\def\resultname{Resultado}%
+\def\sectionname{Secci\'on}%
+\def\sectionsname{Secciones}%
+\def\solutionname{Soluci\'on}%
+\def\subsectionname{Subsecci\'on}%
+\def\subsectionsname{Subsecciones}%
+\def\tablesname{Tablas}%
+\def\termsenvname{T\'erminos Generales}%
+\def\theoremname{Teorema}%
+\def\theoremsname{Teoremas}%
+\def\thesisname{Tesis}%
+\def\warningname{Advertencia}%
+}
+\endinput
+%%
+%% End of file `theorems.sty'.

@@ -1,0 +1,156 @@
+%&PDFLaTeX
+\documentclass[11pt,UdineBachThesis,american,italian,draft]{PhdThesis}[2007/09/20]
+\StudyCourse{Corso di Laurea in Tecnologie Web e Multimediali}
+
+\usepackage[final]{graphicx}
+
+% here more packages
+\usepackage[latin1]{inputenc}
+\usepackage[italian]{babel}
+%Package aggiuntivi:
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{subfigure}
+\usepackage[final]{listings}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{setspace}
+\usepackage{pbox}
+\usepackage{verbatim}
+\usepackage{pgfplots}
+\usepackage{rotating}
+\usepackage{booktabs, longtable, tabu}
+\usepackage{url} % hyperref works too
+\urlstyle{same}
+\usetikzlibrary{shapes, positioning, trees, arrows, shadows, calc, matrix}
+
+%Settings for the Listings package
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%this only if you like to use some of its features (like smartrefs)
+%\usepackage{theorems}[2003/12/05]
+
+% consider to use hyperref
+%\usepackage[bookmarks=true,bookmarksopen=true,pdfhighlight=/I,pdfpagemode=UseOutlines]{hyperref}%if you use pdflatex
+%\usepackage[hypertex, colorlinks=true, backref]{hyperref}%if you use latex
+
+% learn to use includes! 
+%\includeonly{introduction,preliminaries, }
+
+% here macros
+%Comandi
+\newtheoremstyle{mystyle}{}{}{\normalfont}{}{\bfseries}{.}{ }{}
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{define}{Definizione}[section]
+\newtheorem*{notaz}{Notazione}
+\newtheorem*{term}{Terminologia}
+\newtheorem{prop}{Proposizione}[section]
+\theoremstyle{mystyle}
+\newtheorem*{dimos}{Dimostrazione}
+\newtheorem{corol}{Corollario}[section]
+
+%Tikz style
+\definecolor{myGreen}{RGB}{18,142,21}
+\definecolor{myGrey}{RGB}{222,223,222}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+%\newcommand{\wario}{
+%\begin{rotate}{180}M\end{rotate}
+%}
+
+\newcommand{\wario}{
+\raisebox{\depth}{\rotatebox{180}{M}}
+}
+
+
+\title{Verifica di proprietà locali su BRS}
+\author{Luca Geatti}
+\email{geatti.luca@spes.uniud.it}
+\supervisor{Prof.\ Marino Miculan}
+\cosupervisor{Dott.\ Marco Peressotti}
+\date{2014-2015}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Inizio del documento
+\begin{document}
+\pagestyle{empty}
+\maketitle
+
+%Dedica
+\begin{dedication}
+	Ai miei genitori
+\end{dedication}
+
+%Sommario
+%\begin{abstract}
+%    Qui ci va una "fotografia" del lavoro svolto nella tesi: un estremo riassunto per fare capire al lettore se è quello che cerca.
+%\end{abstract}
+%
+
+%Ringraziamenti
+%\begin{acknowledgments}
+%	Here the acknowledgments
+%\end{acknowledgments}
+
+\frontmatter %numeri romani per l'indice e l'introduzione
+\partstyle{serifbig}
+\chaptertitlestyle{serifbig}
+\pagestyle{serif}
+\tableofcontents
+\listoffigures
+%\listoftables
+
+%\begin{preface}
+%    Here the preface
+%\end{preface}
+
+\mainmatter %numeri arabi per il vero contenuto
+%otherwise use
+% \mainmatter
+% \include{introduction}%with \chapter{\introductionname} instead of \introduction
+
+% \part{First Part}
+\include{introduction}
+\include{bigraphs}
+\include{isomorfismo}
+\include{logic}
+\include{examples}
+
+
+% others chapters(through include) and/or parts
+% \include{...}
+% \part{...}
+% ...
+
+\backmatter
+\include{conclusions}
+% if you don't have an appendix just delete (comment) the following 3 lines
+\appendix
+\include{appendix}
+\backmatter %Fine numerazione pagine
+
+\bibliography{biblio}
+\bibliographystyle{plain_ita}
+% \printindex%use makeindex to generate the index
+\end{document}
